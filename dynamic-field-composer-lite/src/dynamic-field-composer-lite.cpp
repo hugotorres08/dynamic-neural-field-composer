@@ -62,6 +62,9 @@ int main(int argc, char* argv[])
     const std::shared_ptr<Element> mexicanHatKernel_b = factory.create(ElementLabel::MEXICAN_HAT_KERNEL, "mh kernel b", size, ep);
     const std::shared_ptr<Element> normalNoise_b = factory.create(ElementLabel::MEXICAN_HAT_KERNEL, "mh kernel a", size, ep);
 
+    GaussFieldCouplingParameters gfcp;
+    gfcp.sigma = 5.0;
+    ep.gfcp = gfcp
     const std::shared_ptr<Element> gfc = factory.create(ElementLabel::FIELD_COUPLING, "gfc a - b", size, ep);
 
     simulation->addElement(neuralField);
@@ -79,7 +82,6 @@ int main(int argc, char* argv[])
     neuralField_b->addInput(mexicanHatKernel_b);
     mexicanHatKernel_b->addInput(neuralField_b);
     neuralField_b->addInput(gfc);
-
 
     simulation->init();
 

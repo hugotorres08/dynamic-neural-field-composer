@@ -18,6 +18,7 @@ struct ElementParameters
     GaussKernelParameters gkp;
     MexicanHatKernelParameters mhkp;
     NormalNoiseParameters nnp;
+    GaussFieldCouplingParameters gfcp;
 };
 
 class ElementFactory
@@ -56,7 +57,7 @@ public:
 
         elementCreators[ElementLabel::FIELD_COUPLING] = [](const std::string& id, int size, const ElementParameters& params)
             {
-                return std::make_shared<GaussFieldCoupling>(id, size);
+                return std::make_shared<GaussFieldCoupling>(id, size, params.gfcp);
             };
     }
 

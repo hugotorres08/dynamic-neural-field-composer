@@ -2,7 +2,8 @@
 
 
 
-GaussFieldCoupling::GaussFieldCoupling(const std::string& id, const int& size)
+GaussFieldCoupling::GaussFieldCoupling(const std::string& id, const int& size, const GaussFieldCouplingParameters& gfcp)
+	: gfcp(gfcp)
 {
 	assert(size > 0);
 
@@ -48,14 +49,3 @@ void GaussFieldCoupling::addCoupling(const WeightedCoupling& coupling)
 {
 	couplings.emplace_back(coupling);
 }
-
-
-
-//if (parameters.circular)
-//g = mathtools::circularGauss(size, parameters.sigma, parameters.position);
-//else
-//std::cout << "Not implemented yet" << std::endl;
-//
-//if (!parameters.normalized)
-//for (int i = 0; i < size; i++)
-//	components["output"][i] = parameters.amplitude * g[i];
