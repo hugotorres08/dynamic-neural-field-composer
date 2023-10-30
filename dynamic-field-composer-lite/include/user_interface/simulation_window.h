@@ -46,7 +46,7 @@ private:
 		{
 			NeuralFieldParameters nfp = { tau, restingLevel };
 			ActivationFunctionParameters afp = { ActivationFunctionType::Sigmoid, sigmoidSteepness, 0};
-			std::shared_ptr<NeuralField> neuralField = std::make_shared<NeuralField>(id, size, nfp, afp);
+			std::shared_ptr<NeuralField> neuralField = std::make_shared<NeuralField>(id, size, nfp);
 			simulation->addElement(neuralField);
 		}
 	}

@@ -10,7 +10,7 @@ std::shared_ptr<NeuralField> createSampleElement(const std::string& elementId)
 {
     NeuralFieldParameters nfp{ 1, -5 };
     ActivationFunctionParameters afp{ ActivationFunctionType::Sigmoid, 1, 0 };
-    return std::make_shared<NeuralField>(elementId, 100, nfp, afp);
+    return std::make_shared<NeuralField>(elementId, 100, nfp);
 }
 
 

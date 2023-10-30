@@ -12,7 +12,7 @@
 
 enum ElementLabel
 {
-	UNITIALIZED = 0,
+	UNINITIALIZED = 0,
 	NEURAL_FIELD,
 	GAUSS_STIMULUS,
 	GAUSS_KERNEL,
@@ -32,20 +32,6 @@ const std::map<ElementLabel, std::string> ElementLabelToString = {
 	{ SUM_DIMENSION, "sum dimension" },
 };
 
-enum class ElementDegeneracyType
-{
-	NONE = 0,
-
-	NEURONS_DEACTIVATE,
-	NEURONS_DEACTIVATE_PERCENTAGE,
-
-	WEIGHTS_DEACTIVATE,
-	WEIGHTS_DEACTIVATE_PERCENTAGE,
-	WEIGHTS_RANDOMIZE,
-	WEIGHTS_RANDOMIZE_PERCENTAGE,
-	WEIGHTS_REDUCE,
-	WEIGHTS_REDUCE_PERCENTAGE,
-};
 
 class Element
 {
@@ -69,12 +55,12 @@ public:
 	void setUniqueIdentifier(const std::string& uniqueIdentifier);
 	void setSize(uint8_t size);
 
-	int getSize();
+	int getSize() const;
 	std::string getUniqueIdentifier() const;
-	ElementLabel getLabel();
+	ElementLabel getLabel() const;
 	std::vector<double> getComponent(const std::string& componentName);
 	std::vector<double>* getComponentPtr(const std::string& componentName);
 	std::vector < std::shared_ptr<Element>> getInputs();
 
-	~Element();
+	virtual ~Element() = default;
 };

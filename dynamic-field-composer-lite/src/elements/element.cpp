@@ -2,7 +2,7 @@
 
 Element::Element()
 {
-	label = ElementLabel::UNITIALIZED;
+	label = ElementLabel::UNINITIALIZED;
 	uniqueIdentifier = std::string();
 	size = 0;
 	components["output"] = {};
@@ -15,7 +15,7 @@ void Element::addInput(const std::shared_ptr<Element>& inputElement, const std::
 	if (!inputElement)
 		throw Exception(ErrorCode::ELEM_INPUT_IS_NULL);
 
-	auto existingInput = inputs.find(inputElement);
+	const auto existingInput = inputs.find(inputElement);
 	if (existingInput != inputs.end())
 		throw Exception(ErrorCode::ELEM_INPUT_ALREADY_EXISTS);
 	
@@ -71,7 +71,7 @@ void Element::setUniqueIdentifier(const std::string& uniqueIdentifier)
 {
 	//this->uniqueIdentifier = uniqueIdentifier;
 
-	// for now, element renaming can be pottentially damaging for the simulation
+	// for now, element renaming can be potentially damaging for the simulation
 	throw Exception(ErrorCode::ELEM_RENAME_NOT_ALLOWED, uniqueIdentifier);
 }
 
@@ -81,11 +81,11 @@ void Element::setSize(uint8_t size)
 	//components.at("output").resize(size);
 	//components.at("input").resize(size);
 
-	// for now, element resizing can be pottentially damaging for the simulation
+	// for now, element resizing can be potentially damaging for the simulation
 	throw Exception(ErrorCode::ELEM_SIZE_NOT_ALLOWED, uniqueIdentifier);
 }
 
-int Element::getSize()
+int Element::getSize() const
 {
 	return size;
 }
@@ -95,7 +95,7 @@ std::string Element::getUniqueIdentifier() const
 	return uniqueIdentifier;
 }
 
-ElementLabel Element::getLabel()
+ElementLabel Element::getLabel() const
 {
 	return label;
 }
@@ -123,9 +123,4 @@ std::vector<std::shared_ptr<Element>> Element::getInputs()
 		inputVec.push_back(key);
 
 	return inputVec;
-}
-
-Element::~Element()
-{
-	// nothing requires cleanup 
 }

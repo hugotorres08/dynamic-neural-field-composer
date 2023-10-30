@@ -6,6 +6,7 @@ TEST_CASE("Application", "[Application]")
 {
 	SECTION("Application TO DO")
 	{
+		std::cout << "test";
 		//Application application;
 	}
 }

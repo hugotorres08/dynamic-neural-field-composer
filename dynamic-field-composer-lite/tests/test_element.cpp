@@ -8,7 +8,7 @@ std::shared_ptr<NeuralField> createSampleNeuralField(const std::string& elementI
 {
     NeuralFieldParameters nfp{ 1, -5};
     ActivationFunctionParameters afp{ ActivationFunctionType::Sigmoid, 1, 0 };
-    return std::make_shared<NeuralField>(elementId, size, nfp, afp);
+    return std::make_shared<NeuralField>(elementId, size, nfp);
 }
 
 // Mock class for testing Element
@@ -100,7 +100,7 @@ TEST_CASE("Element class tests", "[element]")
         // Create a mock Element object for testing
         auto element = std::make_shared<MockElement>();
         // Check element label
-        REQUIRE(element->getLabel() == ElementLabel::UNITIALIZED);
+        REQUIRE(element->getLabel() == ElementLabel::UNINITIALIZED);
     }
     SECTION("setUniqueIdentifier() method")
     {

@@ -31,7 +31,6 @@ private:
 	bool normalized;
 	std::array<uint32_t, 2> kernelRange;
 	std::vector<uint32_t> extIndex;
-	bool degenerate;
 public:
 	GaussKernel(const std::string& id, const int& size,
 		const GaussKernelParameters& parameters,

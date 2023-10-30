@@ -11,6 +11,7 @@ add_library(dynamic-field-composer-lite
     
     "src/application/application.cpp"
     
+    "src/elements/element_factory.cpp"
     "src/elements/element.cpp"
     "src/elements/field_coupling.cpp"
     "src/elements/neural_field.cpp" 

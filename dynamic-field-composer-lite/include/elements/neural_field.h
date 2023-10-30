@@ -29,6 +29,7 @@ struct NeuralFieldParameters
 {
 	double tau;
 	double startingRestingLevel;
+	ActivationFunctionParameters activationFunctionParameters;
 
 	// Overload the == operator
 	bool operator==(const NeuralFieldParameters& other) const
@@ -42,11 +43,9 @@ class NeuralField : public Element
 {
 protected:
 	NeuralFieldParameters parameters;
-	ActivationFunctionParameters activationFunctionParameters;
 public:
-	NeuralField(std::string id, const int& size,
-		const NeuralFieldParameters& parameters, 
-		const ActivationFunctionParameters& activationFunctionParameters);
+	NeuralField(const std::string& id, const int& size,
+		const NeuralFieldParameters& parameters);
 	void init() override;
 	void step(const double& t, const double& deltaT) override;
 	void close() override;
@@ -54,9 +53,9 @@ public:
 	double calculateCentroid();
 
 	void setParameters(const NeuralFieldParameters& parameters);
-	NeuralFieldParameters getParameters();
+	NeuralFieldParameters getParameters() const;
 
-	~NeuralField();
+	//~NeuralField() = default;
 
 protected:
 	void calculateActivation(const double& t, const double& deltaT);

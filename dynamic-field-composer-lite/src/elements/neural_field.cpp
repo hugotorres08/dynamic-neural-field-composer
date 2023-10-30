@@ -1,10 +1,9 @@
 #include "elements/neural_field.h"
 
 
-NeuralField::NeuralField(std::string id, const int& size,
-	const NeuralFieldParameters& parameters, 
-	const ActivationFunctionParameters& activationFunctionParameters)
-	: parameters(parameters), activationFunctionParameters(activationFunctionParameters)
+NeuralField::NeuralField(const std::string& id, const int& size,
+	const NeuralFieldParameters& parameters)
+	: parameters(parameters)
 {
 	// Assert that the size is positive
 	assert(size > 0);
@@ -44,14 +43,9 @@ void NeuralField::setParameters(const NeuralFieldParameters& parameters)
 	init();
 }
 
-NeuralFieldParameters NeuralField::getParameters()
+NeuralFieldParameters NeuralField::getParameters() const
 {
 	return parameters;
-}
-
-NeuralField::~NeuralField()
-{
-	// no cleanup required
 }
 
 void NeuralField::calculateActivation(const double& t, const double& deltaT)
@@ -65,17 +59,14 @@ void NeuralField::calculateActivation(const double& t, const double& deltaT)
 
 void NeuralField::calculateOutput()
 {
-	switch (activationFunctionParameters.type)
+	switch (parameters.activationFunctionParameters.type)
 	{
 		case ActivationFunctionType::Sigmoid:
 			components["output"] = mathtools::sigmoid(components["activation"], 
-				activationFunctionParameters.steepness, activationFunctionParameters.xShift);
+				parameters.activationFunctionParameters.steepness, parameters.activationFunctionParameters.xShift);
 			break;
 		case ActivationFunctionType::Heaviside:
-			components["output"] = mathtools::heaviside(components["activation"], activationFunctionParameters.xShift);
-			break;
-		default:
-			// this should never happenl; return exception
+			components["output"] = mathtools::heaviside(components["activation"], parameters.activationFunctionParameters.xShift);
 			break;
 	}
 }

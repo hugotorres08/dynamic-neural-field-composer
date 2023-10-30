@@ -15,7 +15,7 @@ TEST_CASE("NeuralField class tests", "[neural_field]")
 
 	SECTION("NeuralField constructor and getParameters() method")
 	{
-        NeuralField nf(id, size, nfp, afp);
+        NeuralField nf(id, size, nfp);
 
         REQUIRE(nf.getLabel() == ElementLabel::NEURAL_FIELD);
         REQUIRE(nf.getUniqueIdentifier() == id);
@@ -30,7 +30,7 @@ TEST_CASE("NeuralField class tests", "[neural_field]")
 
     SECTION("init() method")
     {
-        NeuralField nf(id, size, nfp, afp);
+        NeuralField nf(id, size, nfp);
 
         nf.init();
 
@@ -52,7 +52,7 @@ TEST_CASE("NeuralField class tests", "[neural_field]")
     }
 
     SECTION("step() method") {
-        NeuralField nf(id, size, nfp, afp);
+        NeuralField nf(id, size, nfp);
 
         // Run a single step
         nf.step(0, 1);
@@ -62,7 +62,7 @@ TEST_CASE("NeuralField class tests", "[neural_field]")
 
     SECTION("setParameters() method")
     {
-        NeuralField nf(id, size, nfp, afp);
+        NeuralField nf(id, size, nfp);
         double newtau = 1.5;
         double newsigmoidSteepness = 2.5;
         double newstartingRestingLevel = -1;
