@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
     const std::shared_ptr<Element> neuralField = factory.create(ElementLabel::NEURAL_FIELD, "neural field a", size, ep);
 
 	GaussStimulusParameters gsp;
-    gsp.amplitude = 15;
+    gsp.amplitude = 20;
     gsp.circular = true;
     gsp.position = 50;
     gsp.sigma = 5;
@@ -43,7 +43,7 @@ int main(int argc, char* argv[])
     const std::shared_ptr<Element> gaussKernel = factory.create(ElementLabel::GAUSS_KERNEL, "gauss kernel a", size, ep);
 
     MexicanHatKernelParameters mhkp;
-    mhkp.amplitudeExc = 5;
+    mhkp.amplitudeExc = 45;
     mhkp.sigmaExc = 5;
     mhkp.amplitudeInh = 10;
     mhkp.sigmaInh = 5;
@@ -52,21 +52,34 @@ int main(int argc, char* argv[])
     const std::shared_ptr<Element> mexicanHatKernel = factory.create(ElementLabel::MEXICAN_HAT_KERNEL, "mh kernel a", size, ep);
 
     NormalNoiseParameters nnp;
-    nnp.amplitude = 1;
+    nnp.amplitude = 0.01;
     ep.nnp = nnp;
     const std::shared_ptr<Element> normalNoise = factory.create(ElementLabel::MEXICAN_HAT_KERNEL, "mh kernel a", size, ep);
 
 
-    simulation->addElement(neuralField);
-    simulation->addElement(gaussStimulus);
-    //simulation->addElement(gaussKernel);
-    simulation->addElement(mexicanHatKernel);
+    const std::shared_ptr<Element> neuralField_b = factory.create(ElementLabel::NEURAL_FIELD, "neural field b", size, ep);
+    const std::shared_ptr<Element> gaussKernel_b = factory.create(ElementLabel::GAUSS_KERNEL, "gauss kernel b", size, ep);
+    const std::shared_ptr<Element> mexicanHatKernel_b = factory.create(ElementLabel::MEXICAN_HAT_KERNEL, "mh kernel b", size, ep);
+    const std::shared_ptr<Element> normalNoise_b = factory.create(ElementLabel::MEXICAN_HAT_KERNEL, "mh kernel a", size, ep);
 
-    //neuralField->addInput(gaussKernel);
-    //gaussKernel->addInput(neuralField);
+    const std::shared_ptr<Element> gfc = factory.create(ElementLabel::FIELD_COUPLING, "gfc a - b", size, ep);
+
+    simulation->addElement(neuralField);
+    simulation->addElement(neuralField_b);
+    simulation->addElement(gaussStimulus);
+    simulation->addElement(mexicanHatKernel);
+    simulation->addElement(mexicanHatKernel_b);
+
+    simulation->addElement(gfc);
 
     neuralField->addInput(mexicanHatKernel);
     mexicanHatKernel->addInput(neuralField);
+    gfc->addInput(neuralField);
+
+    neuralField_b->addInput(mexicanHatKernel_b);
+    mexicanHatKernel_b->addInput(neuralField_b);
+    neuralField_b->addInput(gfc);
+
 
     simulation->init();
 

@@ -8,6 +8,7 @@
 #include "mexican_hat_kernel.h"
 #include "neural_field.h" 
 #include "normal_noise.h"
+#include "gauss_field_coupling.h"
 
 
 struct ElementParameters
@@ -51,6 +52,11 @@ public:
         elementCreators[ElementLabel::NORMAL_NOISE] = [](const std::string& id, int size, const ElementParameters& params)
             {
                 return std::make_shared<NormalNoise>(id, size, params.nnp);
+            };
+
+        elementCreators[ElementLabel::FIELD_COUPLING] = [](const std::string& id, int size, const ElementParameters& params)
+            {
+                return std::make_shared<GaussFieldCoupling>(id, size);
             };
     }
 
