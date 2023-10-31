@@ -30,7 +30,6 @@ add_library(dynamic-field-composer-lite
     "src/user_interface/simulation_window.cpp" 
  "src/elements/gauss_field_coupling.cpp") 
 
-
 # Set the desired output directory relative to the project
 set(OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/data")
 
@@ -55,6 +54,7 @@ add_subdirectory(lib)
 
 target_link_libraries(launch-dynamic-field-composer-lite PUBLIC imgui)
 target_link_libraries(launch-dynamic-field-composer-lite PUBLIC implot)
+target_link_libraries(launch-dynamic-field-composer-lite PUBLIC profiling-tools)
 target_link_libraries(launch-dynamic-field-composer-lite PRIVATE dynamic-field-composer-lite)
 
 # Set C++ standard and compile options

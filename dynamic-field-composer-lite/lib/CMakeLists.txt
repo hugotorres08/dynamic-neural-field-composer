@@ -46,3 +46,5 @@ target_compile_definitions(implot PUBLIC IMPLOT_DEBUG IMPLOT_DLL_EXPORT IMPLOT_B
 set_property(TARGET implot PROPERTY CXX_STANDARD 11)
 
 include_directories(./implot/)
+
+add_subdirectory(profiling-tools)
