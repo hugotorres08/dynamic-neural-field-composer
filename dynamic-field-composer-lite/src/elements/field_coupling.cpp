@@ -9,7 +9,7 @@ FieldCoupling::FieldCoupling(const std::string& id, const int& outputSize, const
 	this->label = ElementLabel::FIELD_COUPLING;
 	this->uniqueIdentifier = id;
 	this->size = outputSize;
-	components["input"] = std::vector<double>(inputSize); 
+	components["input"] = std::vector<double>(inputSize);
 	components["output"] = std::vector<double>(outputSize);
 	mathtools::resizeMatrix(weights, components["input"].size(), components["output"].size());
 
@@ -25,7 +25,7 @@ void FieldCoupling::init()
 	std::fill(components["input"].begin(), components["input"].end(), 0);
 	std::fill(components["output"].begin(), components["output"].end(), 0);
 
-	if(readWeights())
+	if (readWeights())
 		trained = true;
 	else
 	{
@@ -88,7 +88,7 @@ void FieldCoupling::resetWeights()
 
 void FieldCoupling::setUpdateAllWeights(const bool& updateAllWeights)
 {
-		this->updateAllWeights = updateAllWeights;
+	this->updateAllWeights = updateAllWeights;
 }
 
 void FieldCoupling::updateWeights(const std::vector<double>& input, const std::vector<double>& output)
@@ -160,6 +160,7 @@ void FieldCoupling::writeWeights() const
 			file << '\n';  // Write new line after each row
 		}
 		file.close();  // Close the file
+		std::cout << "Saved weights to: " << weightsFilePath << std::endl;
 	}
 	else
 	{

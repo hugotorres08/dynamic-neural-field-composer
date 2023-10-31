@@ -12,6 +12,9 @@ GaussKernel::GaussKernel(const std::string& id, const int& size,
 	this->label = ElementLabel::GAUSS_KERNEL;
 	this->uniqueIdentifier = id;
 	this->size = size;
+
+	kernelRange = { 0, 0 };
+
 	components["kernel"] = std::vector<double>(size);
 	components["output"] = std::vector<double>(size);
 	components["input"] = std::vector<double>(size);
@@ -28,7 +31,7 @@ void GaussKernel::init()
 
 	uint32_t rangeXsize = kernelRange[0] + kernelRange[1] + 1;
 	std::vector<int> rangeX(rangeXsize);
-	int startingValue = kernelRange[0];
+	const int startingValue = static_cast<int>(kernelRange[0]);
 	std::iota(rangeX.begin(), rangeX.end(), -startingValue);
 	std::vector<double> gauss(size);
 	if (normalized)
@@ -42,7 +45,7 @@ void GaussKernel::init()
 
 	components["input"].resize(extIndex.size());
 	parameters.fullSum = 0;
-	std::fill(components["input"].begin(), components["input"].end(), 0);
+	std::ranges::fill(components["input"], 0.0);
 }
 
 void GaussKernel::step(const double& t, const double& deltaT)
@@ -53,7 +56,7 @@ void GaussKernel::step(const double& t, const double& deltaT)
 	parameters.fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
 
 	std::vector<double> convolution(size);
-	std::vector<double> subDataInput = mathtools::obtainCircularVector(extIndex, components["input"]);
+	const std::vector<double> subDataInput = mathtools::obtainCircularVector(extIndex, components["input"]);
 
 
 	if (circular)
@@ -61,7 +64,6 @@ void GaussKernel::step(const double& t, const double& deltaT)
 	else
 		convolution = mathtools::conv(subDataInput, components["kernel"]);
 
-	//components["output"] = convolution;
 	for (int i = 0; i < components["output"].size(); i++)
 		components["output"][i] = convolution[i] + parameters.amplitudeGlobal * parameters.fullSum;
 }
@@ -70,21 +72,13 @@ void GaussKernel::close()
 {
 }
 
-
 void GaussKernel::setParameters(const GaussKernelParameters& parameters)
 {
 	this->parameters = parameters;
 	init();
 }
 
-
-GaussKernelParameters GaussKernel::getParameters()
+GaussKernelParameters GaussKernel::getParameters() const
 {
 	return parameters;
 }
-
-GaussKernel::~GaussKernel()
-{
-	// nothing requires cleanup
-}
-

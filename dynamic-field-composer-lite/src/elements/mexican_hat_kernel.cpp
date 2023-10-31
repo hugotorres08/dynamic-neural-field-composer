@@ -13,6 +13,8 @@ MexicanHatKernel::MexicanHatKernel(const std::string& id, const int& size,
 	this->uniqueIdentifier = id;
 	this->size = size;
 
+	kernelRange = {0, 0};
+
 	components["kernel"] = std::vector<double>(size);
 	components["output"] = std::vector<double>(size);
 	components["input"] = std::vector<double>(size);
@@ -20,7 +22,7 @@ MexicanHatKernel::MexicanHatKernel(const std::string& id, const int& size,
 
 void MexicanHatKernel::init()
 {
-	double maxSigma = std::max(parameters.amplitudeExc * parameters.sigmaExc, parameters.amplitudeInh * parameters.sigmaInh);
+	const double maxSigma = std::max(parameters.amplitudeExc * parameters.sigmaExc, parameters.amplitudeInh * parameters.sigmaInh);
 	kernelRange = mathtools::computeKernelRange(maxSigma, parameters.cutOfFactor, size, circular);
 
 	if (circular)
@@ -30,7 +32,7 @@ void MexicanHatKernel::init()
 
 	uint32_t rangeXsize = kernelRange[0] + kernelRange[1] + 1;
 	std::vector<int> rangeX(rangeXsize);
-	int startingValue = kernelRange[0];
+	const int startingValue = static_cast<int>(kernelRange[0]);
 	std::iota(rangeX.begin(), rangeX.end(), -startingValue);
 	std::vector<double> gaussExc(size);
 	std::vector<double> gaussInh(size);
@@ -48,7 +50,7 @@ void MexicanHatKernel::init()
 		components["kernel"][i] = parameters.amplitudeExc * gaussExc[i] - parameters.amplitudeInh * gaussInh[i];
 
 	parameters.fullSum = 0;
-	std::fill(components["input"].begin(), components["input"].end(), 0);
+	std::ranges::fill(components["input"], 0.0);
 }
 
 void MexicanHatKernel::step(const double& t, const double& deltaT)
@@ -58,7 +60,7 @@ void MexicanHatKernel::step(const double& t, const double& deltaT)
 	parameters.fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
 
 	std::vector<double> convolution(size);
-	std::vector<double> subDataInput = mathtools::obtainCircularVector(extIndex, components["input"]);
+	const std::vector<double> subDataInput = mathtools::obtainCircularVector(extIndex, components["input"]);
 
 	if (circular)
 		convolution = mathtools::conv_valid(subDataInput, components["kernel"]);
@@ -78,12 +80,7 @@ void MexicanHatKernel::setParameters(const MexicanHatKernelParameters& parameter
 	this->parameters = parameters;
 }
 
-MexicanHatKernelParameters MexicanHatKernel::getParameters()
+MexicanHatKernelParameters MexicanHatKernel::getParameters() const
 {
 	return parameters;
-}
-
-MexicanHatKernel::~MexicanHatKernel()
-{
-	// nothing requires cleanup
 }

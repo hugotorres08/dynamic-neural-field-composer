@@ -12,6 +12,8 @@ NeuralField::NeuralField(const std::string& id, const int& size,
 	this->uniqueIdentifier = id;
 	this->size = size;
 
+	centroid = -1.0;
+
 	components["input"] = std::vector<double>(size);
 	components["activation"] = std::vector<double>(size);
 	components["output"] = std::vector<double>(size);
@@ -20,9 +22,10 @@ NeuralField::NeuralField(const std::string& id, const int& size,
 
 void NeuralField::init()
 {
-	std::fill(components["activation"].begin(), components["activation"].end(), parameters.startingRestingLevel);
-	std::fill(components["input"].begin(), components["input"].end(), 0);
-	std::fill(components["resting level"].begin(), components["resting level"].end(), parameters.startingRestingLevel);
+	std::ranges::fill(components["activation"], parameters.startingRestingLevel);
+	std::ranges::fill(components["input"], 0.0);
+	std::ranges::fill(components["resting level"], parameters.startingRestingLevel);
+
 	calculateOutput();
 }
 
@@ -31,6 +34,7 @@ void NeuralField::step(const double& t, const double& deltaT)
 	updateInput();
 	calculateActivation(t, deltaT);
 	calculateOutput();
+	calculateCentroid();
 }
 
 void NeuralField::close()
@@ -48,6 +52,11 @@ NeuralFieldParameters NeuralField::getParameters() const
 	return parameters;
 }
 
+double NeuralField::getCentroid() const
+{
+	return centroid;
+}
+
 void NeuralField::calculateActivation(const double& t, const double& deltaT)
 {
 	for (int i = 0; i < size; i++)
@@ -63,7 +72,7 @@ void NeuralField::calculateOutput()
 	{
 		case ActivationFunctionType::Sigmoid:
 			components["output"] = mathtools::sigmoid(components["activation"], 
-				parameters.activationFunctionParameters.steepness, parameters.activationFunctionParameters.xShift);
+				parameters.activationFunctionParameters.steepness, static_cast<double>(parameters.activationFunctionParameters.xShift));
 			break;
 		case ActivationFunctionType::Heaviside:
 			components["output"] = mathtools::heaviside(components["activation"], parameters.activationFunctionParameters.xShift);
@@ -71,13 +80,12 @@ void NeuralField::calculateOutput()
 	}
 }
 
-double NeuralField::calculateCentroid()
+void NeuralField::calculateCentroid()
 {
-
-	double centroid = 0.0;
 	const std::vector<double> f_output = mathtools::heaviside(components["activation"], 0.1);
 
-	if (*std::max_element(f_output.begin(), f_output.end()) > 0)
+	//if (*std::max_element(f_output.begin(), f_output.end()) > 0)
+	if (*std::ranges::max_element(f_output) > 0) 
 	{
 		const bool isAtLimits = (f_output[0] > 0) || (f_output[size - 1] > 0);
 
@@ -109,6 +117,4 @@ double NeuralField::calculateCentroid()
 	}
 	else
 		centroid = -1.0;
-
-	return centroid;
 }

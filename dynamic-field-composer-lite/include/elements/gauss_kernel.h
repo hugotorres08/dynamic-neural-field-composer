@@ -13,13 +13,15 @@ struct GaussKernelParameters
 	double fullSum;
 	int cutOfFactor = 5;
 	
-	bool operator==(const GaussKernelParameters& other) const
-	{
-		return sigma == other.sigma &&
-			amplitude == other.amplitude &&
-			amplitudeGlobal == other.amplitudeGlobal &&
-			fullSum == other.fullSum &&
-			cutOfFactor == other.cutOfFactor;
+	bool operator==(const GaussKernelParameters& other) const {
+		constexpr double epsilon = 1e-6; // Set an appropriate epsilon value
+
+		// Compare floating-point values with tolerance (epsilon)
+		return std::abs(sigma - other.sigma) < epsilon &&
+			std::abs(amplitude - other.amplitude) < epsilon &&
+			std::abs(amplitudeGlobal - other.amplitudeGlobal) < epsilon &&
+			std::abs(fullSum - other.fullSum) < epsilon &&
+			std::abs(cutOfFactor - other.cutOfFactor) < epsilon;
 	}
 };
 
@@ -41,7 +43,7 @@ public:
 	void close() override;
 
 	void setParameters(const GaussKernelParameters& parameters);
-	GaussKernelParameters getParameters();
+	GaussKernelParameters getParameters() const;
 
-	~GaussKernel();
+	~GaussKernel() override = default;
 };

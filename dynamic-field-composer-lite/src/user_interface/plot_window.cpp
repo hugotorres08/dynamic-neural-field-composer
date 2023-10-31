@@ -37,12 +37,12 @@ void PlotWindow::render()
 		renderElementSelector();
 	renderPlots();
 }
-
-void PlotWindow::renderPlots()
+ 
+void PlotWindow::renderPlots() const
 {
 	configure();
 
-	std::string plotTitle = "Plot window " + std::to_string(id);
+	const std::string plotTitle = "Plot window " + std::to_string(id);
 	if (ImGui::Begin(plotTitle.c_str()))
 	{
 		if (ImPlot::BeginPlot(plotTitle.c_str()))
@@ -50,7 +50,7 @@ void PlotWindow::renderPlots()
 			ImPlot::SetupAxes("Field position", "Amplitude");
 			ImPlot::SetupLegend(ImPlotLocation_NorthEast, ImPlotLegendFlags_Outside);
 
-			uint8_t numOfPlots = visualization->getNumberOfPlots();
+			const int numOfPlots = visualization->getNumberOfPlots();
 			for (int j = 0; j < numOfPlots; j++)
 			{
 				std::string label = visualization->getPlottingLabel(j);
@@ -64,15 +64,15 @@ void PlotWindow::renderPlots()
 	ImGui::End();
 }
 
-void PlotWindow::renderElementSelector()
+void PlotWindow::renderElementSelector() const
 {
-	auto simulation = visualization->getAssociatedSimulationPtr();
-	const uint8_t numberOfElementsInSimulation = simulation->getNumberOfElements();
+	const auto simulation = visualization->getAssociatedSimulationPtr();
+	const int numberOfElementsInSimulation = simulation->getNumberOfElements();
 
 	static std::string selectedElementId{};
 	static int currentElementIdx = 0;
 
-	std::string selectorTitle = "Plot selector " + std::to_string(id);
+	const std::string selectorTitle = "Plot selector " + std::to_string(id);
 
 	if (ImGui::Begin(selectorTitle.c_str()))
 	{
@@ -80,7 +80,7 @@ void PlotWindow::renderElementSelector()
 		{
 			for (int n = 0; n < numberOfElementsInSimulation; n++)
 			{
-				auto element = simulation->getElement(n);
+				const auto element = simulation->getElement(n);
 				std::string elementId = element->getUniqueIdentifier();
 				const bool isSelected = (currentElementIdx == n);
 				if (ImGui::Selectable(elementId.c_str(), isSelected))
@@ -120,7 +120,7 @@ void PlotWindow::renderElementSelector()
 	ImGui::End();
 }
 
-void PlotWindow::configure()
+void PlotWindow::configure() const
 {
 	ImPlot::SetNextAxesLimits(plotDimensions.xMin, plotDimensions.xMax, plotDimensions.yMin, plotDimensions.yMax);
 	ImPlotStyle& style = ImPlot::GetStyle();

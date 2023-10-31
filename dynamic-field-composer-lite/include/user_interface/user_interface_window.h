@@ -20,6 +20,6 @@ class UserInterfaceWindow
 public:
 	UserInterfaceWindow();
 	virtual void render() = 0;
-	~UserInterfaceWindow() = default;
+	virtual ~UserInterfaceWindow() = default;
 };
 

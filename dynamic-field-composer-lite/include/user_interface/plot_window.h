@@ -24,10 +24,10 @@ public:
 	PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector = true);
 	PlotWindow(const std::shared_ptr<Visualization>& visualization, const PlotDimensions& dimensions, bool renderPlotSelector = true);
 	void render() override;
-	~PlotWindow() = default;
+	~PlotWindow() override = default;
 private:
-	void renderPlots();
-	void renderElementSelector();
-	void configure();
+	void renderPlots() const;
+	void renderElementSelector() const;
+	void configure() const;
 };
 

@@ -32,19 +32,17 @@ public:
 	void resetElement(const std::string& idOfElementToReset, const std::shared_ptr<Element>& newElement);
 
 	void createInteraction(const std::string& stimulusElementId, const std::string& stimulusComponent, 
-		const std::string& receivingElementId);
-	//void trainCoupling(const std::string& couplingUniqueIdentifier);
+		const std::string& receivingElementId) const;
 
 	std::shared_ptr<Element> getElement(const std::string& id) const;
-	std::shared_ptr<Element> getElement(uint8_t index) const;
-	std::vector<double> getComponent(const std::string& id, const std::string& componentName);
-	std::vector<double>* getComponentPtr(const std::string& id, const std::string& componentName);
-	uint8_t getNumberOfElements() const;
+	std::shared_ptr<Element> getElement(int index) const;
+	std::vector<double> getComponent(const std::string& id, const std::string& componentName) const;
+	std::vector<double>* getComponentPtr(const std::string& id, const std::string& componentName) const;
+	int getNumberOfElements() const;
 	std::vector < std::shared_ptr<Element>> getElementsThatHaveSpecifiedElementAsInput(const std::string& specifiedElement, 
-		const std::string& inputComponent = "output");
+		const std::string& inputComponent = "output") const;
 
+	bool isInitialized() const;
 
-	bool isInitialized();
-
-	~Simulation();
+	~Simulation() = default;
 };

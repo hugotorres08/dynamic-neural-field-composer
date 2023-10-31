@@ -1,10 +1,10 @@
 #include "user_interface/user_interface.h"
 
-UserInterface::UserInterface(std::shared_ptr<Simulation> simulation, std::vector<std::shared_ptr<Visualization>> visualizations)
+UserInterface::UserInterface(const std::shared_ptr<Simulation>& simulation, const std::vector<std::shared_ptr<Visualization>>& visualizations)
 	: simulation(simulation), visualizations(visualizations)
 {
     closeUI = false;
-	windowHandle = NULL;
+	windowHandle = nullptr;
 	windowClass = {};
 
     for (auto& visualization : visualizations)
@@ -13,12 +13,6 @@ UserInterface::UserInterface(std::shared_ptr<Simulation> simulation, std::vector
         windows.push_back(std::make_shared<PlotWindow>(visualization));
 
     }
-
-    // Setup windows here
-    //windows.push_back(std::make_shared<PlotWindow>(visualizations[1]));
-   /* windows.push_back(std::make_shared<SimulationWindow>(simulation));
-    windows.push_back(std::make_shared<CouplingWindow>(simulation));
-    windows.push_back(std::make_shared<DegeneracyWindow>(simulation));*/
 }
 
 void UserInterface::init()
@@ -151,7 +145,7 @@ void UserInterface::step()
 	frameCtx->FenceValue = fenceValue;
 }
 
-void UserInterface::close()
+void UserInterface::close() const
 {
 	WaitForLastSubmittedFrame();
 
@@ -165,17 +159,17 @@ void UserInterface::close()
 	::UnregisterClassW(windowClass.lpszClassName, windowClass.hInstance);
 }
 
-void UserInterface::activateWindow(const std::shared_ptr<UserInterfaceWindow> window)
+void UserInterface::activateWindow(const std::shared_ptr<UserInterfaceWindow>& window)
 {
     windows.push_back(window);
 }
 
-const bool UserInterface::getCloseUI()
+bool UserInterface::getCloseUI() const
 {
 	return closeUI;
 }
 
-void UserInterface::render()
+void UserInterface::render() const
 {
     for (const auto& window : windows)
         window->render();

@@ -10,7 +10,7 @@ Visualization::Visualization(std::shared_ptr<Simulation> sim)
 	plottingLabelAndData = {};
 }
 
-void Visualization::setSimulation(std::shared_ptr<Simulation> sim)
+void Visualization::setSimulation(const std::shared_ptr<Simulation>& sim)
 {
 	if (sim == nullptr)
 		throw Exception(ErrorCode::VIS_INVALID_SIM);
@@ -42,7 +42,7 @@ std::shared_ptr<const Simulation> Visualization::getAssociatedSimulationPtr() co
 
 std::string Visualization::getPlottingLabel(const int& index) const 
 {
-	if (index < 0 || index >= plottingLabelAndData.size())
+	if (index < 0 || index >= static_cast<int>(plottingLabelAndData.size()))
 		throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
 
 	return plottingLabelAndData[index].first;
@@ -50,13 +50,13 @@ std::string Visualization::getPlottingLabel(const int& index) const
 
 std::vector<double>* Visualization::getPlottingData(const int& index) const
 {
-	if (index < 0 || index >= plottingLabelAndData.size())
+	if (index < 0 || index >= static_cast<int>(plottingLabelAndData.size()))
 		throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
 
 	return plottingLabelAndData[index].second;
 }
 
-uint8_t Visualization::getNumberOfPlots() const 
+int Visualization::getNumberOfPlots() const 
 {
-	return plottingLabelAndData.size();
+	return static_cast<int>(plottingLabelAndData.size());
 }

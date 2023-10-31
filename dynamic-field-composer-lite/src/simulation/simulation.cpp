@@ -8,36 +8,33 @@ Simulation::Simulation(const double& deltaT, const double& tZero, const double& 
 	elements = {};
 }
 
-void Simulation::init()
-{
+void Simulation::init() {
 	t = tZero;
-	for (int i = 0; i < elements.size(); i++)
-		elements[i]->init();
+	for (const auto& element : elements)
+		element->init();
 
 	initialized = true;
 }
 
-void Simulation::step()
-{
+void Simulation::step() {
 	t += deltaT;
-	for (int i = 0; i < elements.size(); i++)
-		elements[i]->step(t, deltaT);
+	for (const auto& element : elements)
+		element->step(t, deltaT);
 }
 
-void Simulation::close()
-{
-	for (int i = 0; i < elements.size(); i++)
-		elements[i]->close();
-
+void Simulation::close() {
+	for (const auto& element : elements)
+		element->close();
+	
 	initialized = false;
 }
 
 void Simulation::run(const double& runTime)
 {
 	if (runTime <= 0)
-		throw Exception(ErrorCode::SIM_RUNTIME_LESS_THAN_ZERO, (int)runTime);
+		throw Exception(ErrorCode::SIM_RUNTIME_LESS_THAN_ZERO, static_cast<int>(runTime));
 
-	double simTime = t + runTime;
+	const double simTime = t + runTime;
 
 	if (!initialized)
 		init();
@@ -51,17 +48,25 @@ void Simulation::run(const double& runTime)
 void Simulation::addElement(const std::shared_ptr<Element>& element)
 {
 	// Check if an element with the same id already exists
-	std::string newElementId = element->getUniqueIdentifier();
-	for (int i = 0; i < elements.size(); i++) {
-		if (elements[i]->getUniqueIdentifier() == newElementId) {
+	const std::string newElementId = element->getUniqueIdentifier();
+	//for (int i = 0; i < elements.size(); i++) {
+	//	if (elements[i]->getUniqueIdentifier() == newElementId) {
+	//		throw Exception(ErrorCode::SIM_ELEM_ALREADY_EXISTS, newElementId);
+	//		// Element with the same id already exists, throw an exception or handle the error
+	//		//throw Exception(ErrorCode::SIM_ELEM_ALREADY_EXISTS, newElementId);
+	//		// Alternatively, you can handle the error in any other way that makes sense for your application
+	//		// such as logging an error message, returning an error code, etc.
+	//		// ...
+	//	}
+	//}
+	for (const auto& element : elements) {
+		if (element->getUniqueIdentifier() == newElementId) {
 			throw Exception(ErrorCode::SIM_ELEM_ALREADY_EXISTS, newElementId);
-			// Element with the same id already exists, throw an exception or handle the error
-			//throw Exception(ErrorCode::SIM_ELEM_ALREADY_EXISTS, newElementId);
-			// Alternatively, you can handle the error in any other way that makes sense for your application
-			// such as logging an error message, returning an error code, etc.
+			// Handle the error here, such as logging an error message, returning an error code, etc.
 			// ...
 		}
 	}
+
 
 	elements.push_back(element);
 	element->init();
@@ -69,13 +74,15 @@ void Simulation::addElement(const std::shared_ptr<Element>& element)
 
 void Simulation::removeElement(const std::string& elementId)
 {
-	for (int i = 0; i < elements.size(); i++)
-	{
-		// Remove the element from the inputs of all other elements
-		elements[i]->removeInput(elementId);
-	}
+	//for (int i = 0; i < elements.size(); i++)
+	//{
+	//	// Remove the element from the inputs of all other elements
+	//	elements[i]->removeInput(elementId);
+	//}
+	for (const auto& element : elements)
+		element->removeInput(elementId);
 
-	for (int i = 0; i < elements.size(); i++)
+	for (int i = 0; i < static_cast<int>(elements.size()); i++)
 	{
 		// Remove the element from the simulation
 		if (elements[i]->getUniqueIdentifier() == elementId)
@@ -90,12 +97,22 @@ void Simulation::removeElement(const std::string& elementId)
 void Simulation::resetElement(const std::string& idOfElementToReset, const std::shared_ptr<Element>& newElement)
 {
 	bool elementFound = false;
-	for (int i = 0; i < elements.size(); i++)
+	//for (int i = 0; i < elements.size(); i++)
+	//{
+	//	if (elements[i]->getUniqueIdentifier() == idOfElementToReset)
+	//	{
+	//		elements[i] = newElement;
+	//		elements[i]->init();
+	//		elementFound = true;
+	//		break;
+	//	}
+	//}
+	for (auto& element : elements) 
 	{
-		if (elements[i]->getUniqueIdentifier() == idOfElementToReset)
+		if (element->getUniqueIdentifier() == idOfElementToReset) 
 		{
-			elements[i] = newElement;
-			elements[i]->init();
+			element = newElement;
+			element->init();
 			elementFound = true;
 			break;
 		}
@@ -107,50 +124,53 @@ void Simulation::resetElement(const std::string& idOfElementToReset, const std::
 }
 
 void Simulation::createInteraction(const std::string& stimulusElementId, 
-	const std::string& stimulusComponent, const std::string& receivingElementId)
+	const std::string& stimulusComponent, const std::string& receivingElementId) const
 {
-	std::shared_ptr<Element> stimulusElement = getElement(stimulusElementId);
-	std::shared_ptr<Element> receivingElement = getElement(receivingElementId);
+	const std::shared_ptr<Element> stimulusElement = getElement(stimulusElementId);
+	const std::shared_ptr<Element> receivingElement = getElement(receivingElementId);
 	receivingElement->addInput(stimulusElement, stimulusComponent);
 }
 
-
 std::shared_ptr<Element> Simulation::getElement(const std::string& id) const
 {
-	for (int i = 0; i < elements.size(); i++)
-		if (elements[i]->getUniqueIdentifier() == id)
-			return std::shared_ptr<Element>(elements[i]);
+	//for (int i = 0; i < elements.size(); i++)
+	//	if (elements[i]->getUniqueIdentifier() == id)
+	//		return std::shared_ptr<Element>(elements[i]);
+
+	for (const auto& element : elements)
+		if (element->getUniqueIdentifier() == id)
+			return element;
 
 	throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, id);
 }
 
-std::shared_ptr<Element> Simulation::getElement(uint8_t index) const 
+std::shared_ptr<Element> Simulation::getElement(const int index) const 
 {
-	if (index < elements.size())
+	if (index < static_cast<int>(elements.size()))
 		return elements[index];
-	else
-		throw Exception(ErrorCode::SIM_ELEM_INDEX, (int)index);
+
+	throw Exception(ErrorCode::SIM_ELEM_INDEX, index);
 }
 
-std::vector<double> Simulation::getComponent(const std::string& id, const std::string& componentName)
+std::vector<double> Simulation::getComponent(const std::string& id, const std::string& componentName) const
 {
 
-	std::shared_ptr<Element> foundElement = getElement(id);
+	const std::shared_ptr<Element> foundElement = getElement(id);
 	return foundElement->getComponent(componentName);
 }
 
-std::vector<double>* Simulation::getComponentPtr(const std::string& id, const std::string& componentName)
+std::vector<double>* Simulation::getComponentPtr(const std::string& id, const std::string& componentName) const
 {
-	std::shared_ptr<Element> foundElement = getElement(id);
+	const std::shared_ptr<Element> foundElement = getElement(id);
 	return foundElement->getComponentPtr(componentName);
 }
 
-uint8_t Simulation::getNumberOfElements() const
+int Simulation::getNumberOfElements() const
 {
-	return elements.size();
+	return static_cast<int>(elements.size());
 }
 
-std::vector<std::shared_ptr<Element>> Simulation::getElementsThatHaveSpecifiedElementAsInput(const std::string& specifiedElement, const std::string& inputComponent)
+std::vector<std::shared_ptr<Element>> Simulation::getElementsThatHaveSpecifiedElementAsInput(const std::string& specifiedElement, const std::string& inputComponent) const
 {
 	std::vector<std::shared_ptr<Element>> elementsThatHaveSpecifiedElementAsInput;
 	for (int i = 0; i < elements.size(); i++)
@@ -158,15 +178,15 @@ std::vector<std::shared_ptr<Element>> Simulation::getElementsThatHaveSpecifiedEl
 		if (elements[i]->hasInput(specifiedElement, inputComponent))
 			elementsThatHaveSpecifiedElementAsInput.push_back(elements[i]);
 	}
+	//for (const auto& element : elements) {
+	//	if (element->hasInput(specifiedElement, inputComponent)) {
+	//		elementsThatHaveSpecifiedElementAsInput.push_back(element);
+	//	}
+	//}
 	return elementsThatHaveSpecifiedElementAsInput;
 }
 
-bool Simulation::isInitialized()
+bool Simulation::isInitialized() const
 {
 	return initialized;
-}
-
-Simulation::~Simulation()
-{
-	// nothing requires cleanup
 }

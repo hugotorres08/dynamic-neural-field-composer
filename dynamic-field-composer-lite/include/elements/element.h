@@ -5,6 +5,9 @@
 #include <unordered_map>
 #include <map>
 #include <memory>
+#include <ranges>
+#include <algorithm>
+
 #include <cassert>
 #include <cmath>
 
@@ -29,7 +32,6 @@ const std::map<ElementLabel, std::string> ElementLabelToString = {
 	{ GAUSS_KERNEL, "gauss kernel" },
 	{ MEXICAN_HAT_KERNEL, "mexican hat kernel" },
 	{ NORMAL_NOISE, "normal noise" },
-	{ SUM_DIMENSION, "sum dimension" },
 };
 
 
@@ -52,8 +54,8 @@ public:
 	bool hasInput(const std::string& inputElementId, const std::string& inputComponent);
 	void updateInput();
 
-	void setUniqueIdentifier(const std::string& uniqueIdentifier);
-	void setSize(uint8_t size);
+	static void setUniqueIdentifier(const std::string& uniqueIdentifier);
+	void setSize(int size) const;
 
 	int getSize() const;
 	std::string getUniqueIdentifier() const;

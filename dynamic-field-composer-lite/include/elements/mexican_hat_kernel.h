@@ -47,7 +47,7 @@ public:
 	void close() override;
 
 	void setParameters(const MexicanHatKernelParameters& parameters);
-	MexicanHatKernelParameters getParameters();
+	MexicanHatKernelParameters getParameters() const;
 
-	~MexicanHatKernel();
+	~MexicanHatKernel() override = default;
 };

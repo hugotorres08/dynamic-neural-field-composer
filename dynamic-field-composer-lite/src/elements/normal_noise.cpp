@@ -1,6 +1,6 @@
 #include "elements/normal_noise.h"
 
-NormalNoise::NormalNoise(std::string id, const int& size, const NormalNoiseParameters& parameters)
+NormalNoise::NormalNoise(const std::string& id, const int& size, const NormalNoiseParameters& parameters)
 	: parameters(parameters)
 {
 	// Assert that the size is positive
@@ -14,12 +14,12 @@ NormalNoise::NormalNoise(std::string id, const int& size, const NormalNoiseParam
 
 void NormalNoise::init()
 {
-	std::fill(components["output"].begin(), components["output"].end(), 0);
+	std::ranges::fill(components["output"], 0.0);
 }
 
 void NormalNoise::step(const double& t, const double& deltaT)
 {
-	std::vector<double> rand = mathtools::generateNormalVector(size);
+	const std::vector<double> rand = mathtools::generateNormalVector(size);
 
 	for (int i = 0; i < size; i++)
 		components["output"][i] = parameters.amplitude / sqrt(deltaT) * rand[i];
@@ -30,12 +30,7 @@ void NormalNoise::setParameters(const NormalNoiseParameters& parameters)
 	this->parameters = parameters;
 }
 
-NormalNoiseParameters NormalNoise::getParameters()
+NormalNoiseParameters NormalNoise::getParameters() const
 {
 	return parameters;
-}
-
-NormalNoise::~NormalNoise()
-{
-	// nothing requires cleanup 
 }

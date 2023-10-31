@@ -29,10 +29,18 @@ void Element::addInput(const std::shared_ptr<Element>& inputElement, const std::
 
 void Element::removeInput(const std::string& inputElementId)
 {
-	for (auto& [key, value] : inputs)
+	//for (auto& [key, value] : inputs)
+	//{
+	//	if (key->uniqueIdentifier == inputElementId)
+	//	{
+	//		inputs.erase(key);
+	//		return;
+	//	}
+	//}
+
+	for (auto& key : inputs | std::views::keys) 
 	{
-		if (key->uniqueIdentifier == inputElementId)
-		{
+		if (key->uniqueIdentifier == inputElementId) {
 			inputs.erase(key);
 			return;
 		}
@@ -42,20 +50,28 @@ void Element::removeInput(const std::string& inputElementId)
 
 bool Element::hasInput(const std::string& inputElementId, const std::string& inputComponent)
 {
-	for (auto& [key, value] : inputs)
-	{
-		if (key->uniqueIdentifier == inputElementId && value == inputComponent)
-			return true;
-	}
+	//for (auto& [key, value] : inputs)
+	//{
+	//	if (key->uniqueIdentifier == inputElementId && value == inputComponent)
+	//		return true;
+	//}
+	//return false;
+	bool found = std::ranges::any_of(inputs, [&](const auto& pair) {
+		const auto& [key, value] = pair;
+		return key->uniqueIdentifier == inputElementId && value == inputComponent;
+		});
+	if (found)
+		return true;
 	return false;
+
 }
 
 void Element::updateInput()
 {
-	std::fill(components["input"].begin(), components["input"].end(), 0);
+	std::ranges::fill(components["input"], 0);
 
 	for (const auto& input_pair : inputs) {
-		auto inputElement = input_pair.first;
+		const auto inputElement = input_pair.first;
 		auto inputElementComponent = input_pair.second;
 		auto& inputElementComponents = inputElement->components;
 		const auto& inputElementComponentValue = inputElementComponents.at(inputElementComponent);
@@ -75,7 +91,7 @@ void Element::setUniqueIdentifier(const std::string& uniqueIdentifier)
 	throw Exception(ErrorCode::ELEM_RENAME_NOT_ALLOWED, uniqueIdentifier);
 }
 
-void Element::setSize(uint8_t size)
+void Element::setSize(int size) const
 {
 	//this->size = size;
 	//components.at("output").resize(size);
@@ -102,24 +118,30 @@ ElementLabel Element::getLabel() const
 
 std::vector<double> Element::getComponent(const std::string& componentName)
 {
-	for (int i = 0; i < components.size(); i++)
+	/*for (int i = 0; i < components.size(); i++)
 		if (components.find(componentName) != components.end())
-			return components.at(componentName);
+			return components.at(componentName);*/
+	if (components.contains(componentName))
+		return components.at(componentName);
 	throw Exception(ErrorCode::ELEM_COMP_NOT_FOUND, uniqueIdentifier, componentName);
 }
 
 std::vector<double>* Element::getComponentPtr(const std::string& componentName)
 {
-	for (int i = 0; i < components.size(); i++)
-		if (components.find(componentName) != components.end())
-			return &components.at(componentName);
+	if (components.contains(componentName))
+		return &components.at(componentName);
 	throw Exception(ErrorCode::ELEM_COMP_NOT_FOUND, uniqueIdentifier, componentName);
 }
 
 std::vector<std::shared_ptr<Element>> Element::getInputs()
 {
 	std::vector<std::shared_ptr<Element>> inputVec;
-	for (const auto& [key, value] : inputs)
+	inputVec.reserve(inputs.size());
+
+	//for (const auto& [key, value] : inputs)
+	//	inputVec.push_back(key);
+
+	for (const auto& key : inputs | std::views::keys)
 		inputVec.push_back(key);
 
 	return inputVec;

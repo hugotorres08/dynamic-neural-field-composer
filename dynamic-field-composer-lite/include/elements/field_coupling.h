@@ -30,7 +30,7 @@ protected:
 	std::string weightsFilePath;
 public:
 	FieldCoupling(const std::string& id, const int& outputSize, const int& inputSize, const FieldCouplingParameters& parameters, const LearningRule& learningRule);
-	
+
 	void init() override;
 	void step(const double& t, const double& deltaT) override;
 	void close() override;
@@ -47,7 +47,7 @@ public:
 	const std::vector<std::vector<double>>& getWeights() const;
 
 	~FieldCoupling() = default;
-	
+
 protected:
 	void getInputFunction();
 	void computeOutput();

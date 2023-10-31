@@ -78,17 +78,18 @@ private:
 
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 public:
-	UserInterface(std::shared_ptr<Simulation> simulation, std::vector<std::shared_ptr<Visualization>> visualizations);
+	UserInterface(const std::shared_ptr<Simulation>& simulation, 
+		const std::vector<std::shared_ptr<Visualization>>& visualizations);
 
 	void init();
 	void step();
-	void close();
+	void close() const;
 
-	void activateWindow(const std::shared_ptr<UserInterfaceWindow> window);
+	void activateWindow(const std::shared_ptr<UserInterfaceWindow>& window);
 
-	const bool getCloseUI();
+	bool getCloseUI() const;
 	~UserInterface() = default;
 
 private:
-	void render();
+	void render() const;
 };

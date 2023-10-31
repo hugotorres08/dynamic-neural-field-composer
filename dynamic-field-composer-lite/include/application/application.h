@@ -13,18 +13,18 @@ private:
 	std::shared_ptr<UserInterface> userInterface;
 	bool activateUserInterface;
 public:
-	Application(std::shared_ptr<Simulation> simulation, 
+	Application(const std::shared_ptr<Simulation>& simulation, 
 		bool activateUserInterface = true);
 
-	void init();
-	void step();
-	void close();
+	void init() const;
+	void step() const;
+	void close() const;
 
-	void activateUserInterfaceWindow(const std::shared_ptr<UserInterfaceWindow> window);
+	void activateUserInterfaceWindow(const std::shared_ptr<UserInterfaceWindow>& window) const;
 	void setActivateUserInterfaceAs(bool activateUserInterface);
+	bool getCloseUI() const;
 
-	const bool getCloseUI();
-	~Application();
+	~Application() = default;
 private:
 	void addVisualization();
 };

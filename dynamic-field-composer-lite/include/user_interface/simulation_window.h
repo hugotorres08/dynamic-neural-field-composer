@@ -17,14 +17,14 @@ class SimulationWindow : public UserInterfaceWindow
 private:
 	std::shared_ptr<Simulation> simulation;
 public:
-	SimulationWindow(std::shared_ptr<Simulation> simulation);
+	SimulationWindow(const std::shared_ptr<Simulation>& simulation);
 	void render() override;
-	~SimulationWindow() = default;
+	~SimulationWindow() override = default;
 private:
-	void renderStartSimulationButton();
+	void renderStartSimulationButton() const;
 	void renderAddElement();
-	void renderSetInteraction();
-	void renderRemoveElement();
+	void renderSetInteraction() const;
+	void renderRemoveElement() const;
 
 	void renderElementProperties(const std::pair<int, std::string>& elementId);
 
@@ -128,42 +128,4 @@ private:
 			simulation->addElement(mexicanHatKernel);
 		}
 	}
-	/*void addNormalNoise()
-	{
-		static char id[CHAR_SIZE] = "field u";
-		ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
-		static double size = 100;
-		ImGui::InputDouble("size", &size, 1.0f, 10.0f, "%.2f");
-		static double tau = 20;
-		ImGui::InputDouble("tau", &tau, 1.0f, 10.0f, "%.2f");
-		static double sigmoidSteepness = 1;
-		ImGui::InputDouble("sigmoid steepness", &sigmoidSteepness, 1.0f, 10.0f, "%.2f");
-		static double restingLevel = -5.0f;
-		ImGui::InputDouble("resting level", &restingLevel, 1.0f, 10.0f, "%.2f");
-		if (ImGui::Button("Add", { 100.0f, 30.0f }))
-		{
-			std::shared_ptr<NeuralField> neural_field(new NeuralField(id, size, tau, restingLevel, sigmoidSteepness));
-			for (const auto& pair : simulations)
-				pair.second->addElement(neural_field);
-		}
-	}
-	void addElementneuralField()
-	{
-		static char id[CHAR_SIZE] = "field u";
-		ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
-		static double size = 100;
-		ImGui::InputDouble("size", &size, 1.0f, 10.0f, "%.2f");
-		static double tau = 20;
-		ImGui::InputDouble("tau", &tau, 1.0f, 10.0f, "%.2f");
-		static double sigmoidSteepness = 1;
-		ImGui::InputDouble("sigmoid steepness", &sigmoidSteepness, 1.0f, 10.0f, "%.2f");
-		static double restingLevel = -5.0f;
-		ImGui::InputDouble("resting level", &restingLevel, 1.0f, 10.0f, "%.2f");
-		if (ImGui::Button("Add", { 100.0f, 30.0f }))
-		{
-			std::shared_ptr<NeuralField> neural_field(new NeuralField(id, size, tau, restingLevel, sigmoidSteepness));
-			for (const auto& pair : simulations)
-				pair.second->addElement(neural_field);
-		}
-	}*/
 };

@@ -1,6 +1,6 @@
 #include "./user_interface/simulation_window.h"
 
-SimulationWindow::SimulationWindow(std::shared_ptr<Simulation> simulation)
+SimulationWindow::SimulationWindow(const std::shared_ptr<Simulation>& simulation)
 	: simulation(simulation)
 {
 }
@@ -17,12 +17,10 @@ void SimulationWindow::render()
 	ImGui::End();
 }
 
-void SimulationWindow::renderStartSimulationButton()
+void SimulationWindow::renderStartSimulationButton() const
 {
 	if (ImGui::Button("Start simulation"))
-	{
 		simulation->init();
-	}
 }
 
 void SimulationWindow::renderAddElement()
@@ -38,15 +36,15 @@ void SimulationWindow::renderAddElement()
 	}
 }
 
-void SimulationWindow::renderSetInteraction()
+void SimulationWindow::renderSetInteraction() const
 {
 	if (ImGui::CollapsingHeader("Set interactions between elements"))
 	{
-		uint8_t numberOfElementsInSimulation = simulation->getNumberOfElements();
+		const int numberOfElementsInSimulation = simulation->getNumberOfElements();
 
 		for (int i = 0; i < numberOfElementsInSimulation; i++)
 		{
-			auto simulationElement = simulation->getElement(i);
+			const auto simulationElement = simulation->getElement(i);
 			std::string elementId = simulationElement->getUniqueIdentifier();
 
 			if (ImGui::TreeNode(elementId.c_str()))
@@ -83,15 +81,15 @@ void SimulationWindow::renderSetInteraction()
 	}
 }
 
-void SimulationWindow::renderRemoveElement()
+void SimulationWindow::renderRemoveElement() const
 {
 	if (ImGui::CollapsingHeader("Remove elements from simulation"))
 	{
-		uint8_t numberOfElementsInSimulation = simulation->getNumberOfElements();
+		int numberOfElementsInSimulation = simulation->getNumberOfElements();
 
 		for (int i = 0; i < numberOfElementsInSimulation; i++)
 		{
-			auto simulationElement = simulation->getElement(i);
+			const auto simulationElement = simulation->getElement(i);
 			std::string elementId = simulationElement->getUniqueIdentifier();
 
 			if (ImGui::TreeNode(elementId.c_str()))
@@ -132,9 +130,6 @@ void SimulationWindow::renderElementProperties(const std::pair<int, std::string>
 			break;
 		case ElementLabel::NORMAL_NOISE:
 			// normal noise to do
-			break;
-		case ElementLabel::SUM_DIMENSION:
-			// sum dimension to do
 			break;
 		default:
 			std::cout << "There is a missing element in the TreeNode\n";
