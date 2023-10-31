@@ -6,12 +6,14 @@ GaussFieldCoupling::GaussFieldCoupling(const std::string& id, const int& size, c
 	: gfcp(gfcp)
 {
 	assert(size > 0);
+	assert(gfcp.inputFieldSize > 0);
+	assert(gfcp.sigma > 0.0);
 
 	this->label = ElementLabel::FIELD_COUPLING;
 	this->uniqueIdentifier = id;
 	this->size = size;
 
-	components["input"] = std::vector<double>(size); // not right!!
+	components["input"] = std::vector<double>(gfcp.inputFieldSize);
 	components["output"] = std::vector<double>(size);
 }
 
@@ -32,20 +34,28 @@ void GaussFieldCoupling::close()
 
 void GaussFieldCoupling::updateOutput()
 {
-	for (const auto& coupling : couplings)
-	{
-		if (components["input"][static_cast<int>(coupling.x_i)] > 0)
-		{
-			std::vector<double> gauss = mathtools::circularGauss(size, 5.0, coupling.x_j);
-			for (auto& element : gauss)
-				element *= coupling.w_i_j * element;
+	std::vector<double> summedGaussians = std::vector<double>(size);
+	std::ranges::fill(summedGaussians, 0.0);
 
-			components["output"] = gauss;
+	for (const auto& coupling : gfcp.couplings)
+	{
+		const auto activationAtx_i = components["input"][static_cast<int>(coupling.x_i)];
+		if (activationAtx_i > 0.0)
+		{
+			std::vector<double> gauss = mathtools::circularGauss(size, gfcp.sigma, coupling.x_j);
+			for (auto& element : gauss)
+				element *= coupling.w_i_j * activationAtx_i * element;
+
+			for (int i = 0; i < size; i++)
+				summedGaussians[i] += gauss[i];
+			
 		}
 	}
+	components["output"] = summedGaussians;
+
 }
 
 void GaussFieldCoupling::addCoupling(const WeightedCoupling& coupling)
 {
-	couplings.emplace_back(coupling);
+	gfcp.couplings.emplace_back(coupling);
 }

@@ -64,6 +64,11 @@ int main(int argc, char* argv[])
 
     GaussFieldCouplingParameters gfcp;
     gfcp.sigma = 5.0;
+    gfcp.inputFieldSize = size;
+
+    gfcp.addCoupling({ 50, 80, 10 });
+    gfcp.addCoupling({50, 20, 8});
+
     ep.gfcp = gfcp;
     const std::shared_ptr<Element> gfc = factory.create(ElementLabel::FIELD_COUPLING, "gfc a - b", size, ep);
 
@@ -72,11 +77,7 @@ int main(int argc, char* argv[])
     simulation->addElement(gaussStimulus);
     simulation->addElement(mexicanHatKernel);
     simulation->addElement(mexicanHatKernel_b);
-
-    {
-        Timer t{ "Time it takes to add a gfc element to the simulation." };
-		simulation->addElement(gfc);
-    }
+	simulation->addElement(gfc);
 
     neuralField->addInput(mexicanHatKernel);
     mexicanHatKernel->addInput(neuralField);
