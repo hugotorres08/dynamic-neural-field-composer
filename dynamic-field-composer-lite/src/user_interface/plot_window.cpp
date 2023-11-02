@@ -81,7 +81,7 @@ void PlotWindow::renderElementSelector() const
 			for (int n = 0; n < numberOfElementsInSimulation; n++)
 			{
 				const auto element = simulation->getElement(n);
-				std::string elementId = element->getUniqueIdentifier();
+				std::string elementId = element->getUniqueName();
 				const bool isSelected = (currentElementIdx == n);
 				if (ImGui::Selectable(elementId.c_str(), isSelected))
 				{

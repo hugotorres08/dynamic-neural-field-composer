@@ -1,9 +1,14 @@
 #include "elements/element.h"
 
+#include <iostream>
+
 Element::Element()
 {
 	label = ElementLabel::UNINITIALIZED;
-	uniqueIdentifier = std::string();
+
+	uniqueIdentifier = uniqueIdentifierCounter++;
+	uniqueName = std::string();
+
 	size = 0;
 	components["output"] = {};
 	components["input"] = {};
@@ -40,7 +45,7 @@ void Element::removeInput(const std::string& inputElementId)
 
 	for (auto& key : inputs | std::views::keys) 
 	{
-		if (key->uniqueIdentifier == inputElementId) {
+		if (key->uniqueName == inputElementId) {
 			inputs.erase(key);
 			return;
 		}
@@ -48,7 +53,46 @@ void Element::removeInput(const std::string& inputElementId)
 	//throw Exception(ErrorCode::ELEM_INPUT_NOT_FOUND, inputElementId);
 }
 
-bool Element::hasInput(const std::string& inputElementId, const std::string& inputComponent)
+void Element::removeInput(int uniqueId)
+{
+	//for (auto& [key, value] : inputs)
+	//{
+	//	if (key->uniqueIdentifier == inputElementId)
+	//	{
+	//		inputs.erase(key);
+	//		return;
+	//	}
+	//}
+
+	for (auto& key : inputs | std::views::keys)
+	{
+		if (key->uniqueIdentifier == uniqueId) {
+			inputs.erase(key);
+			return;
+		}
+	}
+	//throw Exception(ErrorCode::ELEM_INPUT_NOT_FOUND, inputElementId);
+}
+
+bool Element::hasInput(const std::string& inputElementName, const std::string& inputComponent)
+{
+	//for (auto& [key, value] : inputs)
+	//{
+	//	if (key->uniqueIdentifier == inputElementId && value == inputComponent)
+	//		return true;
+	//}
+	//return false;
+	bool found = std::ranges::any_of(inputs, [&](const auto& pair) {
+		const auto& [key, value] = pair;
+		return key->uniqueName == inputElementName && value == inputComponent;
+		});
+	if (found)
+		return true;
+	return false;
+
+}
+
+bool Element::hasInput(int inputElementId, const std::string& inputComponent)
 {
 	//for (auto& [key, value] : inputs)
 	//{
@@ -83,7 +127,7 @@ void Element::updateInput()
 	}
 }
 
-void Element::setUniqueIdentifier(const std::string& uniqueIdentifier)
+void Element::setUniqueIdentifier(int uniqueIdentifier)
 {
 	//this->uniqueIdentifier = uniqueIdentifier;
 
@@ -106,7 +150,12 @@ int Element::getSize() const
 	return size;
 }
 
-std::string Element::getUniqueIdentifier() const
+std::string Element::getUniqueName() const
+{
+	return uniqueName;
+}
+
+int Element::getUniqueIdentifier() const
 {
 	return uniqueIdentifier;
 }
@@ -123,14 +172,14 @@ std::vector<double> Element::getComponent(const std::string& componentName)
 			return components.at(componentName);*/
 	if (components.contains(componentName))
 		return components.at(componentName);
-	throw Exception(ErrorCode::ELEM_COMP_NOT_FOUND, uniqueIdentifier, componentName);
+	throw Exception(ErrorCode::ELEM_COMP_NOT_FOUND, uniqueName, componentName);
 }
 
 std::vector<double>* Element::getComponentPtr(const std::string& componentName)
 {
 	if (components.contains(componentName))
 		return &components.at(componentName);
-	throw Exception(ErrorCode::ELEM_COMP_NOT_FOUND, uniqueIdentifier, componentName);
+	throw Exception(ErrorCode::ELEM_COMP_NOT_FOUND, uniqueName, componentName);
 }
 
 std::vector<std::shared_ptr<Element>> Element::getInputs()
@@ -145,4 +194,36 @@ std::vector<std::shared_ptr<Element>> Element::getInputs()
 		inputVec.push_back(key);
 
 	return inputVec;
+}
+
+void Element::printParameters() const
+{
+	std::cout << "Unique Identifier: " << uniqueIdentifier << std::endl;
+	std::cout << "Unique Name: " << uniqueName << std::endl;
+	std::cout << "Label: " << ElementLabelToString.at(label) << std::endl;
+	std::cout << "Size: " << size << std::endl;
+
+	std::cout << "Components:" << std::endl;
+	for (const auto& pair : components)
+	{
+		const std::string& componentName = pair.first;
+		const std::vector<double>& componentValues = pair.second;
+
+		std::cout << componentName << ": ";
+		for (const auto& value : componentValues)
+		{
+			std::cout << value << " ";
+		}
+		std::cout << std::endl;
+	}
+
+	std::cout << "Inputs:" << std::endl;
+	for (const auto& inputPair : inputs)
+	{
+		const std::shared_ptr<Element>& inputElement = inputPair.first;
+		const std::string& inputComponent = inputPair.second;
+
+		std::cout << "Input Element Unique Identifier: " << inputElement->getUniqueName()
+			<< ", Input Component: " << inputComponent << std::endl;
+	}
 }

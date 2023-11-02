@@ -10,7 +10,7 @@ GaussFieldCoupling::GaussFieldCoupling(const std::string& id, const int& size, c
 	assert(gfcp.sigma > 0.0);
 
 	this->label = ElementLabel::FIELD_COUPLING;
-	this->uniqueIdentifier = id;
+	this->uniqueName = id;
 	this->size = size;
 
 	components["input"] = std::vector<double>(gfcp.inputFieldSize);

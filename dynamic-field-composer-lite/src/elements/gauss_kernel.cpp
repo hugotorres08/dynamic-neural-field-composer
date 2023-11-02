@@ -10,7 +10,7 @@ GaussKernel::GaussKernel(const std::string& id, const int& size,
 	assert(size > 0);
 
 	this->label = ElementLabel::GAUSS_KERNEL;
-	this->uniqueIdentifier = id;
+	this->uniqueName = id;
 	this->size = size;
 
 	kernelRange = { 0, 0 };

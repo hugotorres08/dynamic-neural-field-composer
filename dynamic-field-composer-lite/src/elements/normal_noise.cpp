@@ -7,7 +7,7 @@ NormalNoise::NormalNoise(const std::string& id, const int& size, const NormalNoi
 	assert(size > 0);
 
 	this->label = ElementLabel::NORMAL_NOISE;
-	this->uniqueIdentifier = id;
+	this->uniqueName = id;
 	this->size = size;
 	components["output"] = std::vector<double>(size);
 }

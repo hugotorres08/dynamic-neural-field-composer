@@ -7,7 +7,7 @@ FieldCoupling::FieldCoupling(const std::string& id, const int& outputSize, const
 	assert(outputSize > 0 && inputSize > 0);
 
 	this->label = ElementLabel::FIELD_COUPLING;
-	this->uniqueIdentifier = id;
+	this->uniqueName = id;
 	this->size = outputSize;
 	components["input"] = std::vector<double>(inputSize);
 	components["output"] = std::vector<double>(outputSize);
@@ -16,7 +16,7 @@ FieldCoupling::FieldCoupling(const std::string& id, const int& outputSize, const
 	// Initialize the weight matrix with random values
 	mathtools::fillMatrixWithRandomValues(weights, -1, 1);
 
-	weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/" + uniqueIdentifier + "_weights.txt";
+	weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/" + uniqueName + "_weights.txt";
 }
 
 
@@ -175,5 +175,5 @@ void FieldCoupling::saveWeights() const
 
 void FieldCoupling::setWeightsFilePath(const std::string& filePath)
 {
-	weightsFilePath = filePath + "/" + uniqueIdentifier + "_weights.txt";
+	weightsFilePath = filePath + "/" + uniqueName + "_weights.txt";
 }

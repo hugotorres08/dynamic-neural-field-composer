@@ -34,11 +34,12 @@ const std::map<ElementLabel, std::string> ElementLabelToString = {
 	{ NORMAL_NOISE, "normal noise" },
 };
 
-
 class Element
 {
 protected:
-	std::string uniqueIdentifier;
+	static inline int uniqueIdentifierCounter = 0;
+	int uniqueIdentifier;
+	std::string uniqueName;
 	ElementLabel label;
 	int size;
 	std::unordered_map<std::string, std::vector<double>> components;
@@ -51,18 +52,23 @@ public:
 
 	void addInput(const std::shared_ptr<Element>& inputElement, const std::string& inputComponent = "output");
 	void removeInput(const std::string& inputElementId);
-	bool hasInput(const std::string& inputElementId, const std::string& inputComponent);
+	void removeInput(int uniqueId);
+	bool hasInput(const std::string& inputElementName, const std::string& inputComponent);
+	bool hasInput(int inputElementId, const std::string& inputComponent);
 	void updateInput();
 
-	static void setUniqueIdentifier(const std::string& uniqueIdentifier);
+	static void setUniqueIdentifier(int uniqueIdentifier);
 	void setSize(int size) const;
 
 	int getSize() const;
-	std::string getUniqueIdentifier() const;
+	int getUniqueIdentifier() const;
+	std::string getUniqueName() const;
 	ElementLabel getLabel() const;
 	std::vector<double> getComponent(const std::string& componentName);
 	std::vector<double>* getComponentPtr(const std::string& componentName);
 	std::vector < std::shared_ptr<Element>> getInputs();
+
+	void printParameters() const;
 
 	virtual ~Element() = default;
 };

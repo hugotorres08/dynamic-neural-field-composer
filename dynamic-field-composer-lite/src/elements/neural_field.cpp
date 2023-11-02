@@ -9,7 +9,7 @@ NeuralField::NeuralField(const std::string& id, const int& size,
 	assert(size > 0);
 
 	this->label = ElementLabel::NEURAL_FIELD;
-	this->uniqueIdentifier = id;
+	this->uniqueName = id;
 	this->size = size;
 
 	centroid = -1.0;

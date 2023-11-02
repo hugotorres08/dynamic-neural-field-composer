@@ -55,8 +55,6 @@ int main(int argc, char* argv[])
     nnp.amplitude = 0.01;
     ep.nnp = nnp;
     const std::shared_ptr<Element> normalNoise = factory.create(ElementLabel::MEXICAN_HAT_KERNEL, "mh kernel a", size, ep);
-
-
     const std::shared_ptr<Element> neuralField_b = factory.create(ElementLabel::NEURAL_FIELD, "neural field b", size, ep);
     const std::shared_ptr<Element> gaussKernel_b = factory.create(ElementLabel::GAUSS_KERNEL, "gauss kernel b", size, ep);
     const std::shared_ptr<Element> mexicanHatKernel_b = factory.create(ElementLabel::MEXICAN_HAT_KERNEL, "mh kernel b", size, ep);
@@ -89,6 +87,7 @@ int main(int argc, char* argv[])
 
     simulation->init();
 
+    neuralField_b->printParameters();
 
     try {
         app.init();

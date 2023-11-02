@@ -48,7 +48,7 @@ void Simulation::run(const double& runTime)
 void Simulation::addElement(const std::shared_ptr<Element>& element)
 {
 	// Check if an element with the same id already exists
-	const std::string newElementId = element->getUniqueIdentifier();
+	const int newElementId = element->getUniqueIdentifier();
 	//for (int i = 0; i < elements.size(); i++) {
 	//	if (elements[i]->getUniqueIdentifier() == newElementId) {
 	//		throw Exception(ErrorCode::SIM_ELEM_ALREADY_EXISTS, newElementId);
@@ -85,7 +85,7 @@ void Simulation::removeElement(const std::string& elementId)
 	for (int i = 0; i < static_cast<int>(elements.size()); i++)
 	{
 		// Remove the element from the simulation
-		if (elements[i]->getUniqueIdentifier() == elementId)
+		if (elements[i]->getUniqueName() == elementId)
 		{
 			elements.erase(elements.begin() + i);
 			return;
@@ -109,7 +109,7 @@ void Simulation::resetElement(const std::string& idOfElementToReset, const std::
 	//}
 	for (auto& element : elements) 
 	{
-		if (element->getUniqueIdentifier() == idOfElementToReset) 
+		if (element->getUniqueName() == idOfElementToReset) 
 		{
 			element = newElement;
 			element->init();
@@ -138,7 +138,7 @@ std::shared_ptr<Element> Simulation::getElement(const std::string& id) const
 	//		return std::shared_ptr<Element>(elements[i]);
 
 	for (const auto& element : elements)
-		if (element->getUniqueIdentifier() == id)
+		if (element->getUniqueName() == id)
 			return element;
 
 	throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, id);

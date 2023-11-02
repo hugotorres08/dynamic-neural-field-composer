@@ -45,7 +45,7 @@ void SimulationWindow::renderSetInteraction() const
 		for (int i = 0; i < numberOfElementsInSimulation; i++)
 		{
 			const auto simulationElement = simulation->getElement(i);
-			std::string elementId = simulationElement->getUniqueIdentifier();
+			std::string elementId = simulationElement->getUniqueName();
 
 			if (ImGui::TreeNode(elementId.c_str()))
 			{
@@ -56,7 +56,7 @@ void SimulationWindow::renderSetInteraction() const
 					for (int n = 0; n < numberOfElementsInSimulation; n++)
 					{
 						auto element = simulation->getElement(n);
-						std::string elementId = element->getUniqueIdentifier();
+						std::string elementId = element->getUniqueName();
 						const bool isSelected = (currentElementIdx == n);
 						if (ImGui::Selectable(elementId.c_str(), isSelected))
 						{
@@ -90,7 +90,7 @@ void SimulationWindow::renderRemoveElement() const
 		for (int i = 0; i < numberOfElementsInSimulation; i++)
 		{
 			const auto simulationElement = simulation->getElement(i);
-			std::string elementId = simulationElement->getUniqueIdentifier();
+			std::string elementId = simulationElement->getUniqueName();
 
 			if (ImGui::TreeNode(elementId.c_str()))
 			{

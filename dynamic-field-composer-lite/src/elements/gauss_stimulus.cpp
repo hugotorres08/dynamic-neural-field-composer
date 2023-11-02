@@ -10,7 +10,7 @@ GaussStimulus::GaussStimulus(const std::string& id, const int& size, const Gauss
 		throw Exception(ErrorCode::GAUSS_STIMULUS_POSITION_OUT_OF_RANGE, id);
 
 	this->label = ElementLabel::GAUSS_STIMULUS;
-	this->uniqueIdentifier = id;
+	this->uniqueName = id;
 	this->size = size;
 	components["output"] = std::vector<double>(size);
 	this->parameters.circular = true;
