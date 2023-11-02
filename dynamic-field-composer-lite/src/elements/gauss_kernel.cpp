@@ -11,7 +11,6 @@ GaussKernel::GaussKernel(const std::string& id, const int& size,
 	this->uniqueName = id;
 	this->size = size;
 
-
 	components["kernel"] = std::vector<double>(size);
 	components["output"] = std::vector<double>(size);
 	components["input"] = std::vector<double>(size);

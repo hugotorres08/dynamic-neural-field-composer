@@ -53,7 +53,7 @@ TEST_CASE("Element class tests", "[element]")
 
         // Add input
         auto inputElement = createSampleNeuralField("inputElement");
-        REQUIRE(inputElement->getUniqueIdentifier() == "inputElement");
+        REQUIRE(inputElement->getUniqueName() == "inputElement");
         element->addInput(inputElement, "output");
 
         // Remove input
@@ -93,7 +93,7 @@ TEST_CASE("Element class tests", "[element]")
         // Create a mock Element object for testing
         auto element = std::make_shared<MockElement>();
         // Check unique identifier
-        REQUIRE(element->getUniqueIdentifier() == "");
+        REQUIRE(element->getUniqueName() == "");
     }
     SECTION("getLabel() method")
     {
@@ -107,7 +107,7 @@ TEST_CASE("Element class tests", "[element]")
         // Create a mock Element object for testing
         auto element = std::make_shared<MockElement>();
         // Set unique identifier
-        REQUIRE_THROWS_AS(element->setUniqueIdentifier("randomId"), Exception);
+        REQUIRE_THROWS_AS(element->setUniqueIdentifier(5), Exception);
     }
     SECTION("setSize() method")
     {

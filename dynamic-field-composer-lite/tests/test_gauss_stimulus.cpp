@@ -18,7 +18,7 @@ TEST_CASE("GaussStimulus class tests", "[GaussStimulus]")
         GaussStimulus gaussStimulus(id, size, gsp);
 
         REQUIRE(gaussStimulus.getLabel() == ElementLabel::GAUSS_STIMULUS);
-        REQUIRE(gaussStimulus.getUniqueIdentifier() == id);
+        REQUIRE(gaussStimulus.getUniqueName() == id);
         REQUIRE(gaussStimulus.getSize() == size);
         REQUIRE(gaussStimulus.getComponent("output").size() == size);
 

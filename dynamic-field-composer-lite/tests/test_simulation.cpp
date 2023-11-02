@@ -91,8 +91,8 @@ TEST_CASE("Simulation class tests", "[simulation]")
         sim.addElement(receivingElement);
 
         // Create interaction
-        sim.createInteraction(stimulusElement->getUniqueIdentifier(), "output",
-            receivingElement->getUniqueIdentifier());
+        sim.createInteraction(stimulusElement->getUniqueName(), "output",
+            receivingElement->getUniqueName());
 
         // Check that the interaction has been created correctly
         REQUIRE(receivingElement->hasInput(stimulusElement->getUniqueIdentifier(), "output"));
@@ -109,14 +109,14 @@ TEST_CASE("Simulation class tests", "[simulation]")
         sim.addElement(element2);
         
         // Create interaction to test if the input is then removed correctly
-        sim.createInteraction(element1->getUniqueIdentifier(), "output",
-            element2->getUniqueIdentifier());
-        REQUIRE(element2->hasInput(element1->getUniqueIdentifier(), "output") == true);
+        sim.createInteraction(element1->getUniqueName(), "output",
+            element2->getUniqueName());
+        REQUIRE(element2->hasInput(element1->getUniqueName(), "output") == true);
 
         // Remove first element
-        sim.removeElement(element1->getUniqueIdentifier());
+        sim.removeElement(element1->getUniqueName());
         REQUIRE(sim.getNumberOfElements() == 1);
-        REQUIRE(element2->hasInput(element1->getUniqueIdentifier(), "output") == false);
+        REQUIRE(element2->hasInput(element1->getUniqueName(), "output") == false);
 
 
         // Try to remove non-existing element, should throw exception
@@ -135,10 +135,10 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
         // Reset first element with a new element
         std::shared_ptr<NeuralField> newElement = createSampleElement("Element1");
-        sim.resetElement(element1->getUniqueIdentifier(), newElement);
+        sim.resetElement(element1->getUniqueName(), newElement);
 
         // Check if element is reset
-        REQUIRE(sim.getComponent(element1->getUniqueIdentifier(), "output") == sim.getComponent("Element1", "output"));
+        REQUIRE(sim.getComponent(element1->getUniqueName(), "output") == sim.getComponent("Element1", "output"));
 
         // Try to reset non-existing element, should throw exception
         REQUIRE_THROWS_AS(sim.resetElement("non_existing_element", newElement), Exception);
@@ -156,7 +156,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
         // Test case 1: Get element by valid ID
         std::shared_ptr<Element> foundElement1 = sim.getElement("Element1");
-        REQUIRE(foundElement1->getUniqueIdentifier() == "Element1");
+        REQUIRE(foundElement1->getUniqueName() == "Element1");
 
         // Test case 2: Get element by invalid ID
         REQUIRE_THROWS_AS(sim.getElement("nonexistentElement"), Exception);
@@ -174,7 +174,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
         // Test case 1: Get element by valid ID
         std::shared_ptr<Element> foundElement1 = sim.getElement(0);
-        REQUIRE(foundElement1->getUniqueIdentifier() == "Element1");
+        REQUIRE(foundElement1->getUniqueName() == "Element1");
 
         // Test case 2: Get element by invalid ID
         REQUIRE_THROWS_AS(sim.getElement(2), Exception);

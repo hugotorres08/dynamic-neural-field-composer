@@ -18,7 +18,7 @@ TEST_CASE("NeuralField class tests", "[neural_field]")
         NeuralField nf(id, size, nfp);
 
         REQUIRE(nf.getLabel() == ElementLabel::NEURAL_FIELD);
-        REQUIRE(nf.getUniqueIdentifier() == id);
+        REQUIRE(nf.getUniqueName() == id);
         REQUIRE(nf.getSize() == size);
         REQUIRE(nf.getParameters() == nfp);
 

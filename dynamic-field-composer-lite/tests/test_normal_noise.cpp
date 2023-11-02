@@ -11,7 +11,7 @@ TEST_CASE("NormalNoise class tests", "[NormalNoise]")
 	{
 		NormalNoise noise("test", size, params);
 		REQUIRE(noise.getLabel() == ElementLabel::NORMAL_NOISE);
-		REQUIRE(noise.getUniqueIdentifier() == "test");
+		REQUIRE(noise.getUniqueName() == "test");
 		REQUIRE(noise.getSize() == size);
 		REQUIRE(noise.getParameters() == params);
 		REQUIRE(noise.getComponent("output").size() == size);

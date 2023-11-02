@@ -14,7 +14,7 @@ TEST_CASE("GaussKernel class tests", "[GaussKernel]")
 	{
 		GaussKernel kernel("test", size, params);
 		REQUIRE(kernel.getLabel() == ElementLabel::GAUSS_KERNEL);
-		REQUIRE(kernel.getUniqueIdentifier() == "test");
+		REQUIRE(kernel.getUniqueName() == "test");
 		REQUIRE(kernel.getSize() == size);
 		REQUIRE(kernel.getParameters() == params);
 		REQUIRE(kernel.getComponent("input").size() == size);

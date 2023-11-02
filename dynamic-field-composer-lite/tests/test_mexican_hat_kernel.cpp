@@ -19,7 +19,7 @@ TEST_CASE("MexicanHatKernel class tests", "[MexicanHatKernel]")
         MexicanHatKernel kernel("test", size, params);
 
         REQUIRE(kernel.getLabel() == ElementLabel::MEXICAN_HAT_KERNEL);
-        REQUIRE(kernel.getUniqueIdentifier() == "test");
+        REQUIRE(kernel.getUniqueName() == "test");
         REQUIRE(kernel.getSize() == size);
         REQUIRE(kernel.getParameters() == params);
 

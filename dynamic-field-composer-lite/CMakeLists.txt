@@ -19,6 +19,8 @@ add_library(dynamic-field-composer-lite
     "src/elements/mexican_hat_kernel.cpp"
     "src/elements/gauss_kernel.cpp"
     "src/elements/normal_noise.cpp"
+    "src/elements/gauss_field_coupling.cpp" 
+    "src/elements/kernel.cpp"
     
     "src/mathtools/mathtools.cpp"
 
@@ -27,8 +29,10 @@ add_library(dynamic-field-composer-lite
     "src/user_interface/user_interface.cpp"
     "src/user_interface/user_interface_window.cpp"
     "src/user_interface/plot_window.cpp"
-    "src/user_interface/simulation_window.cpp" 
- "src/elements/gauss_field_coupling.cpp" "src/elements/kernel.cpp") 
+    "src/user_interface/simulation_window.cpp"
+
+    "src/architecture/architecture_builder.cpp"
+) 
 
 # Set the desired output directory relative to the project
 set(OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/data")
