@@ -3,7 +3,7 @@
 #include <array>
 
 #include "mathtools/mathtools.h"
-#include "element.h"
+#include "kernel.h"
 
 struct GaussKernelParameters
 {
@@ -25,18 +25,13 @@ struct GaussKernelParameters
 	}
 };
 
-class GaussKernel : public Element
+class GaussKernel : public Kernel
 {
 private:
 	GaussKernelParameters parameters;
-	bool circular;
-	bool normalized;
-	std::array<uint32_t, 2> kernelRange;
-	std::vector<uint32_t> extIndex;
 public:
 	GaussKernel(const std::string& id, const int& size,
-		const GaussKernelParameters& parameters,
-		bool circular = true, bool normalized = true);
+		const GaussKernelParameters& parameters);
 
 	void init() override;
 	void step(const double& t, const double& deltaT) override;

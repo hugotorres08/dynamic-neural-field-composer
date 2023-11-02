@@ -5,7 +5,7 @@
 #include <string>
 #include <array>
 
-#include "element.h"
+#include "kernel.h"
 
 struct MexicanHatKernelParameters
 {
@@ -29,18 +29,13 @@ struct MexicanHatKernelParameters
 	}
 };
 
-class MexicanHatKernel : public Element
+class MexicanHatKernel : public Kernel
 {
 private:
 	MexicanHatKernelParameters parameters;
-	bool circular;
-	bool normalized;
-	std::array<uint32_t, 2> kernelRange;
-	std::vector<uint32_t> extIndex;
 public:
 	MexicanHatKernel(const std::string& id, const int& size,
-		const MexicanHatKernelParameters& parameters,
-		bool circular = true, bool normalized = true);
+		const MexicanHatKernelParameters& parameters);
 
 	void init() override;
 	void step(const double& t, const double& deltaT) override;

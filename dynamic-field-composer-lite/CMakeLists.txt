@@ -28,7 +28,7 @@ add_library(dynamic-field-composer-lite
     "src/user_interface/user_interface_window.cpp"
     "src/user_interface/plot_window.cpp"
     "src/user_interface/simulation_window.cpp" 
- "src/elements/gauss_field_coupling.cpp") 
+ "src/elements/gauss_field_coupling.cpp" "src/elements/kernel.cpp") 
 
 # Set the desired output directory relative to the project
 set(OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/data")

@@ -42,13 +42,13 @@ private:
 		static double restingLevel = -5.0f;
 		ImGui::InputDouble("resting level", &restingLevel, 1.0f, 10.0f, "%.2f");
 
-		if (ImGui::Button("Add", { 100.0f, 30.0f }))
+		/*if (ImGui::Button("Add", { 100.0f, 30.0f }))
 		{
 			NeuralFieldParameters nfp = { tau, restingLevel };
 			ActivationFunctionParameters afp = { ActivationFunctionType::Sigmoid, sigmoidSteepness, 0};
 			std::shared_ptr<NeuralField> neuralField = std::make_shared<NeuralField>(id, size, nfp);
 			simulation->addElement(neuralField);
-		}
+		}*/
 	}
 	void addElementGaussStimulus()
 	{
@@ -63,12 +63,12 @@ private:
 		static double position = 50;
 		ImGui::InputDouble("position", &position, 1.0f, 10.0f, "%.2f");
 
-		if (ImGui::Button("Add", { 100.0f, 30.0f }))
+		/*if (ImGui::Button("Add", { 100.0f, 30.0f }))
 		{
 			GaussStimulusParameters gsp = {sigma, amplitude, position };
 			std::shared_ptr<GaussStimulus> gaussStimulus = std::make_shared<GaussStimulus>(id, size, gsp);
 			simulation->addElement(gaussStimulus);
-		}
+		}*/
 	}
 	void addElementFieldCoupling()
 	{
@@ -79,12 +79,12 @@ private:
 		static double sigma = 5;
 		ImGui::InputDouble("sigma", &sigma, 1.0f, 10.0f, "%.2f");
 
-		if (ImGui::Button("Add", { 100.0f, 30.0f }))
+		/*if (ImGui::Button("Add", { 100.0f, 30.0f }))
 		{
 			FieldCouplingParameters fcp = { sigma };
 			std::shared_ptr<FieldCoupling> gaussCoupling = std::make_shared<FieldCoupling>(id, size, size, fcp, LearningRule::DELTA_KROGH_HERTZ);
 			simulation->addElement(gaussCoupling);
-		}
+		}*/
 	}
 	void addElementGaussKernel()
 	{
@@ -97,12 +97,12 @@ private:
 		static double amplitude = 2;
 		ImGui::InputDouble("amplitude", &amplitude, 1.0f, 10.0f, "%.2f");
 
-		if (ImGui::Button("Add", { 100.0f, 30.0f }))
+		/*if (ImGui::Button("Add", { 100.0f, 30.0f }))
 		{
 			GaussKernelParameters gkp = { sigma, amplitude };
 			std::shared_ptr<GaussKernel> gaussKernel = std::make_shared<GaussKernel>(id, size, gkp);
 			simulation->addElement(gaussKernel);
-		}
+		}*/
 	}
 	void addElementMexicanHatKernel()
 	{
@@ -121,11 +121,11 @@ private:
 		static double amplitudeGlobal = 0;
 		ImGui::InputDouble("global amplitude", &amplitudeGlobal, 1.0f, 10.0f, "%.2f");
 
-		if (ImGui::Button("Add", { 100.0f, 30.0f }))
+		/*if (ImGui::Button("Add", { 100.0f, 30.0f }))
 		{
 			MexicanHatKernelParameters mhkp = { sigmaExc, amplitudeExc, sigmaInh, amplitudeInh, amplitudeGlobal };
 			std::shared_ptr<MexicanHatKernel> mexicanHatKernel = std::make_shared<MexicanHatKernel>(id, size, mhkp);
 			simulation->addElement(mexicanHatKernel);
-		}
+		}*/
 	}
 };
