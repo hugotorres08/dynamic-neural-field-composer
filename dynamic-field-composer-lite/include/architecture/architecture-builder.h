@@ -8,8 +8,9 @@
 struct DynamicNeuralField
 {
 	std::shared_ptr<NeuralField> nf;
-	std::shared_ptr<NormalNoise> nn;
 	std::shared_ptr<Kernel> k;
+	std::shared_ptr<NormalNoise> nn;
+	std::shared_ptr<GaussKernel> nk;
 	int size;
 	int kernelType;
 };

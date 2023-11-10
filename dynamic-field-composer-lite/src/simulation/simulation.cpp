@@ -69,7 +69,7 @@ void Simulation::addElement(const std::shared_ptr<Element>& element)
 
 
 	elements.push_back(element);
-	element->init();
+	element->init(); 
 }
 
 void Simulation::removeElement(const std::string& elementId)

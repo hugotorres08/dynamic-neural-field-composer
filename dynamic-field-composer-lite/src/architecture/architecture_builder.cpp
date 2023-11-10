@@ -12,7 +12,9 @@ void ArchitectureBuilder::generate()
 {
 	readDynamicNeuralFieldParameters();
 
-    for(int i = 0; i < static_cast<int>(unparsedDynamicNeuralFieldParameters.size()); i++)
+    const int numberOfFields = static_cast<int>(unparsedDynamicNeuralFieldParameters.size());
+    
+    for(int i = 0; i < numberOfFields; i++)
     {
 		parseDynamicNeuralFieldParameters();
 		createDynamicNeuralFieldElements();
@@ -52,6 +54,7 @@ void ArchitectureBuilder::readDynamicNeuralFieldParameters()
 void ArchitectureBuilder::parseDynamicNeuralFieldParameters()
 {
     // Get the first line from the unparsed parameters
+    // size dx tau h g[1-2] k[3-5] q
     const std::string line = unparsedDynamicNeuralFieldParameters.front();
     unparsedDynamicNeuralFieldParameters.erase(unparsedDynamicNeuralFieldParameters.begin());
     std::istringstream iss(line);
@@ -67,8 +70,17 @@ void ArchitectureBuilder::parseDynamicNeuralFieldParameters()
     //dynamicNeuralFieldParameters.nfp.dx = parsedParameters[0];
     dynamicNeuralFieldParameters.nfp.tau = parsedParameters[1];
     dynamicNeuralFieldParameters.nfp.startingRestingLevel = - parsedParameters[2];
-    dynamicNeuralFieldParameters.nfp.activationFunctionParameters
-	= { ActivationFunctionType::Sigmoid, 10.0, 0 };
+
+    // Parse the activation function type
+    int tempAfpType;
+	iss >> tempAfpType;
+    dynamicNeuralFieldParameters.nfp.activationFunctionParameters.type = static_cast<ActivationFunctionType>(tempAfpType);
+    // Depending on the activation function, parse additional parameters
+	if(dynamicNeuralFieldParameters.nfp.activationFunctionParameters.type == ActivationFunctionType::Sigmoid)
+    {
+        iss >> dynamicNeuralFieldParameters.nfp.activationFunctionParameters.steepness;
+    }
+    iss >> dynamicNeuralFieldParameters.nfp.activationFunctionParameters.xShift;
 
     // Parse the kernel type
     iss >> dynamicNeuralField.kernelType;
@@ -87,13 +99,9 @@ void ArchitectureBuilder::parseDynamicNeuralFieldParameters()
             >> dynamicNeuralFieldParameters.mhkp.amplitudeInh
             >> dynamicNeuralFieldParameters.mhkp.sigmaInh
             >> dynamicNeuralFieldParameters.mhkp.amplitudeGlobal;
-        dynamicNeuralFieldParameters.mhkp.amplitudeGlobal = -dynamicNeuralFieldParameters.mhkp.amplitudeGlobal;
+    	dynamicNeuralFieldParameters.mhkp.amplitudeGlobal = -dynamicNeuralFieldParameters.mhkp.amplitudeGlobal;
+    	dynamicNeuralFieldParameters.mhkp.cutOfFactor = 5;
 
-    }
-    else
-    {
-        std::cerr << "Error: Invalid kernel type." << std::endl;
-        // Handle the error in an appropriate way, e.g., throw an exception
     }
 
     // Parse the last value as the amplitude of the normal noise
@@ -115,20 +123,29 @@ void ArchitectureBuilder::createDynamicNeuralFieldElements()
 
     dynamicNeuralField.nn = std::make_shared<NormalNoise>("normal noise " + std::to_string(elementCount++),
         dynamicNeuralField.size, dynamicNeuralFieldParameters.nnp);
+    GaussKernelParameters gkp;
+    gkp.amplitude = 0.25;
+    gkp.sigma = 0.2;
+    dynamicNeuralField.nk = std::make_shared<GaussKernel>("noise kernel " + std::to_string(elementCount++),
+        dynamicNeuralField.size, gkp);
 }
 
 void ArchitectureBuilder::addElementsToSimulation() const
 {
     simulation->addElement(dynamicNeuralField.nf);
     simulation->addElement(dynamicNeuralField.k);
+    simulation->addElement(dynamicNeuralField.nn);
+    simulation->addElement(dynamicNeuralField.nk);
 }
 
 void ArchitectureBuilder::setupInteractionsBetweenElements() const
 {
     dynamicNeuralField.nf->addInput(dynamicNeuralField.k);
+    dynamicNeuralField.nf->addInput(dynamicNeuralField.nk);
+
     dynamicNeuralField.k->addInput(dynamicNeuralField.nf);
 
-    //missing normal noise interactions
+    dynamicNeuralField.nk->addInput(dynamicNeuralField.nn);
 }
 
 void ArchitectureBuilder::clearDynamicNeuralFieldParametersAndDynamicNeuralField()

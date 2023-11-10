@@ -62,6 +62,11 @@ void GaussKernel::step(const double& t, const double& deltaT)
 
 	for (int i = 0; i < components["output"].size(); i++)
 		components["output"][i] = convolution[i] + parameters.amplitudeGlobal * parameters.fullSum;
+	//for (int i = 0; i < components["output"].size(); i++)
+	//	components["output"][i] = convolution[i];
+	//for (int i = 0; i < components["output"].size(); i++)
+	//	components["output"][i] += parameters.amplitudeGlobal;
+
 }
 
 void GaussKernel::close()

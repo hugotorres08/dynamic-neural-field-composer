@@ -5,7 +5,7 @@
 #include <unordered_set>
 
 
-enum class ActivationFunctionType
+enum ActivationFunctionType
 {
 	Sigmoid,
 	Heaviside,

@@ -45,6 +45,9 @@ void MexicanHatKernel::init()
 	for (int i = 0; i < components["kernel"].size(); i++)
 		components["kernel"][i] = parameters.amplitudeExc * gaussExc[i] - parameters.amplitudeInh * gaussInh[i];
 
+	for (int i = 0; i < components["kernel"].size(); i++)
+		components["kernel"][i] += parameters.amplitudeGlobal;
+
 	parameters.fullSum = 0;
 	std::ranges::fill(components["input"], 0.0);
 }

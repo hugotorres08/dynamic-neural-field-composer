@@ -20,7 +20,7 @@ int main(int argc, char* argv[])
  //   ElementParameters ep;
  //   constexpr int size = 100;
 
-	//NeuralFieldParameters nfp;
+//NeuralFieldParameters nfp;
  //   nfp.tau = 20;
  //   nfp.startingRestingLevel = -10;
  //   nfp.activationFunctionParameters.type = ActivationFunctionType::Heaviside;
@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
  //   ep.nfp = nfp;
  //   const std::shared_ptr<Element> neuralField = factory.create(ElementLabel::NEURAL_FIELD, "neural field a", size, ep);
 
-	//GaussStimulusParameters gsp;
+//GaussStimulusParameters gsp;
  //   gsp.amplitude = 20;
  //   gsp.circular = true;
  //   gsp.position = 50;
@@ -92,8 +92,6 @@ int main(int argc, char* argv[])
     ArchitectureBuilder architecture{"example-1", simulation};
 
     architecture.generate();
-
-    simulation->init();
 
     try {
         app.init();
