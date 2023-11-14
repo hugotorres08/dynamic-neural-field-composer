@@ -34,6 +34,8 @@ public:
 	void step(const double& t, const double& deltaT) override;
 	void close() override;
 
+	GaussFieldCouplingParameters getParameters() const;
+
 	~GaussFieldCoupling() override = default;
 private:
 	void updateOutput();

@@ -59,3 +59,8 @@ void GaussFieldCoupling::addCoupling(const WeightedCoupling& coupling)
 {
 	gfcp.couplings.emplace_back(coupling);
 }
+
+GaussFieldCouplingParameters GaussFieldCoupling::getParameters() const
+{
+	return gfcp;
+}

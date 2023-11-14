@@ -63,12 +63,12 @@ private:
 		static double position = 50;
 		ImGui::InputDouble("position", &position, 1.0f, 10.0f, "%.2f");
 
-		/*if (ImGui::Button("Add", { 100.0f, 30.0f }))
+		if (ImGui::Button("Add", { 100.0f, 30.0f }))
 		{
 			GaussStimulusParameters gsp = {sigma, amplitude, position };
 			std::shared_ptr<GaussStimulus> gaussStimulus = std::make_shared<GaussStimulus>(id, size, gsp);
 			simulation->addElement(gaussStimulus);
-		}*/
+		}
 	}
 	void addElementFieldCoupling()
 	{
