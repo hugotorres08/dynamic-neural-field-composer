@@ -5,6 +5,8 @@
 #include "../elements/element_factory.h"
 #include "simulation/simulation.h"
 
+#include "architecture-file-handler.h"
+
 struct DynamicNeuralField
 {
 	std::shared_ptr<NeuralField> neuralField;
@@ -22,23 +24,18 @@ struct DynamicNeuralFieldCoupling
 	std::array<int, 2> idsOfCoupledDynamicNeuralFields;
 };
 
-struct ArchitectureFileLocations
-{
-	std::string architectureFileLocation;
-	std::string fieldCouplingFileLocation;
-};
 
 class ArchitectureBuilder
 {
 private:
 	std::string identifier;
 	std::shared_ptr<Simulation> simulation;
-	std::vector<std::string> unparsedDynamicNeuralFieldParameters;
-	std::vector<std::string> unparsedDynamicNeuralFieldCouplingsParameters;
+
+	ArchitectureFileHandler fileHandler;
+
 	ElementParameters architectureParameters;
 	DynamicNeuralField dynamicNeuralField;
 	DynamicNeuralFieldCoupling dynamicNeuralFieldCoupling;
-	ArchitectureFileLocations files;
 public:
 	ArchitectureBuilder(std::string identifier, const std::shared_ptr<Simulation>& simulation);
 	ArchitectureBuilder(const ArchitectureBuilder& other);
@@ -50,23 +47,15 @@ public:
 	void readArchitecture();
 	void saveArchitecture();
 private:
-	void readDynamicNeuralFieldParameters();
-	void parseDynamicNeuralFieldParameters();
+	void parseDynamicNeuralFieldParameters(const std::string& line);
 	void createDynamicNeuralFieldElements();
 	void addElementsToSimulation() const;
 	void setupInteractionsBetweenElements() const;
 	void clearDynamicNeuralFieldParametersAndDynamicNeuralField();
 
-	void readDynamicNeuralFieldCouplingsParameters();
-	void parseDynamicNeuralFieldCouplingsParameters();
+	void parseDynamicNeuralFieldCouplingsParameters(const std::string& line);
 	void createDynamicNeuralFieldCouplings();
 	void addDynamicNeuralFieldCouplingsToSimulation() const;
 	void setupInteractionBetweenFields() const;
 	void clearDynamicNeuralFieldCouplingsParameters();
-
-	//void saveNeuralFieldParameters() const;
-	//void saveGaussKernelParameters() const;
-	//void saveMexicanHatKernelParameters() const;
-	//void saveNormalNoiseParameters() const;
-	//void saveFieldCouplingParameters() const;
 };

@@ -31,7 +31,8 @@ add_library(dynamic-field-composer-lite
     "src/user_interface/plot_window.cpp"
     "src/user_interface/simulation_window.cpp"
 
-    "src/architecture/architecture_builder.cpp"
+    "src/architecture/architecture-builder.cpp"
+    "src/architecture/architecture-file-handler.cpp"
 ) 
 
 # Set the desired output directory relative to the project
