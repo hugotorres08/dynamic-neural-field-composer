@@ -46,6 +46,18 @@ public:
 
 	void readArchitecture();
 	void saveArchitecture();
+
+	void createArchitecture();
+
+	void setArchitectureParameters(const ElementParameters& elementParameters);
+	void setDynamicNeuralField(const DynamicNeuralField& dynamicNeuralField);
+	void setDynamicNeuralFieldCoupling(const DynamicNeuralFieldCoupling& coupling);
+
+	ElementParameters getArchitectureParameters() const;
+	DynamicNeuralField getDynamicNeuralField() const;
+	DynamicNeuralFieldCoupling getDynamicNeuralFieldCoupling() const;
+	std::string getIdentifier() const;
+
 private:
 	void parseDynamicNeuralFieldParameters(const std::string& line);
 	void createDynamicNeuralFieldElements();

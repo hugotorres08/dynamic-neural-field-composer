@@ -141,6 +141,46 @@ void ArchitectureBuilder::saveArchitecture()
 
 }
 
+void ArchitectureBuilder::createArchitecture()
+{
+
+}
+
+void ArchitectureBuilder::setArchitectureParameters(const ElementParameters& elementParameters)
+{
+    architectureParameters = elementParameters;
+}
+
+void ArchitectureBuilder::setDynamicNeuralField(const DynamicNeuralField& dynamicNeuralField)
+{
+    this->dynamicNeuralField = dynamicNeuralField;
+}
+
+void ArchitectureBuilder::setDynamicNeuralFieldCoupling(const DynamicNeuralFieldCoupling& coupling)
+{
+    dynamicNeuralFieldCoupling = coupling;
+}
+
+ElementParameters ArchitectureBuilder::getArchitectureParameters() const
+{
+    return architectureParameters;
+}
+
+DynamicNeuralField ArchitectureBuilder::getDynamicNeuralField() const
+{
+    return dynamicNeuralField;
+}
+
+DynamicNeuralFieldCoupling ArchitectureBuilder::getDynamicNeuralFieldCoupling() const
+{
+    return dynamicNeuralFieldCoupling;
+}
+
+std::string ArchitectureBuilder::getIdentifier() const
+{
+    return identifier;
+}
+
 void ArchitectureBuilder::parseDynamicNeuralFieldParameters(const std::string& line)
 {
     // Format: "size dx tau h activationFunctionType [steepness xShift] kernelType [c sigma c_glob] q"
@@ -299,3 +339,4 @@ void ArchitectureBuilder::clearDynamicNeuralFieldCouplingsParameters()
 {
     dynamicNeuralFieldCoupling = DynamicNeuralFieldCoupling{};
 }
+
