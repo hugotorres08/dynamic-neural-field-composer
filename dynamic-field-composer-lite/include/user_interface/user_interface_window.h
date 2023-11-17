@@ -3,12 +3,12 @@
 
 #include <memory>
 
-#include "../lib/imgui/imgui.h"
-#include "../lib/imgui/backends/imgui_impl_win32.h"
-#include "../lib/imgui/backends/imgui_impl_dx12.h"
+#include "imgui.h"
+#include "imgui_impl_win32.h"
+#include "imgui_impl_dx12.h"
 
-#include "../lib/implot/implot.h"
-#include "../lib/implot/implot_internal.h"
+#include "implot.h"
+#include "implot_internal.h"
 
 
 #include "./simulation/visualization.h"
