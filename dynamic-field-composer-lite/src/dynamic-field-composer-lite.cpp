@@ -2,6 +2,8 @@
 
 // This .cpp file is an example of how you can use the library to create your own DNF simulation.
 
+#include "example.h"
+
 int main(int argc, char* argv[])
 {
     // After defining the simulation, we can create the application.

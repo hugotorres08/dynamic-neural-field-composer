@@ -16,7 +16,6 @@ endif()
 
 set(PROJECT_NAME dynamic-neural-field-composer)
 
-
 # Set VCPKG root directory
 set(VCPKG_ROOT $ENV{VCPKG_ROOT})
 
@@ -60,7 +59,7 @@ add_library(${LIB_PROJECT}
     "src/architecture/architecture-file-handler.cpp"
 )
 target_include_directories(${LIB_PROJECT} PUBLIC ${PROJECT_SOURCE_DIR}/include)
-target_include_directories (${LIB_PROJECT} PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include") # or whatever path
+target_include_directories (${LIB_PROJECT} PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include")
 
 # Setup imgui
 find_package(imgui CONFIG REQUIRED)
@@ -75,6 +74,8 @@ add_executable(${PROJECT_NAME} "src/dynamic-field-composer-lite.cpp")
 target_include_directories(${PROJECT_NAME} PRIVATE include)
 target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui ${LIB_PROJECT})
 
+find_package(MyCppProject REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE MyCppProject)
 
 # Setup Catch2
 enable_testing()
