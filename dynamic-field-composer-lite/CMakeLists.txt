@@ -57,6 +57,7 @@ add_library(${LIB_PROJECT}
     "src/architecture/architecture-file-handler.cpp"
 )
 target_include_directories(${LIB_PROJECT} PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_include_directories (${LIB_PROJECT} PUBLIC "${CMAKE_CURRENT_LIST_DIR}/include") # or whatever path
 
 # Setup imgui
 find_package(imgui CONFIG REQUIRED)
