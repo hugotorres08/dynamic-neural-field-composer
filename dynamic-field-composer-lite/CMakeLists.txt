@@ -14,6 +14,9 @@ if(NOT DEFINED ENV{VCPKG_ROOT})
   message(FATAL_ERROR "ERROR: This project requires VCPKG.\n")
 endif()
 
+set(PROJECT_NAME dynamic-neural-field-composer)
+
+
 # Set VCPKG root directory
 set(VCPKG_ROOT $ENV{VCPKG_ROOT})
 
@@ -26,7 +29,7 @@ set(OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/data")
 add_compile_definitions(OUTPUT_DIRECTORY="${OUTPUT_DIRECTORY}")
 
 # Add library project
-set(LIB_PROJECT ${CMAKE_PROJECT_NAME}_LIB)
+set(LIB_PROJECT ${PROJECT_NAME}_LIB)
 add_library(${LIB_PROJECT}
     "src/simulation/simulation.cpp"
     "src/simulation/visualization.cpp" 
@@ -68,9 +71,9 @@ find_package(implot CONFIG REQUIRED)
 target_link_libraries(${LIB_PROJECT} PRIVATE implot::implot)
 
 # Add executable project
-add_executable(${CMAKE_PROJECT_NAME} "src/dynamic-field-composer-lite.cpp")
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE include)
-target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE imgui::imgui ${LIB_PROJECT})
+add_executable(${PROJECT_NAME} "src/dynamic-field-composer-lite.cpp")
+target_include_directories(${PROJECT_NAME} PRIVATE include)
+target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui ${LIB_PROJECT})
 
 
 # Setup Catch2
@@ -80,7 +83,7 @@ include(CTest)
 include(Catch)
 
 # Add test project
-set(TEST_PROJECT ${CMAKE_PROJECT_NAME}_TEST)
+set(TEST_PROJECT ${PROJECT_NAME}_TEST)
 add_executable(${TEST_PROJECT} 
     tests/test.cpp 
     tests/test_application.cpp
