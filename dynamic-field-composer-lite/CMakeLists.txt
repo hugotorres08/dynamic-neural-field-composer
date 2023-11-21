@@ -14,6 +14,9 @@ if(NOT DEFINED ENV{VCPKG_ROOT})
   message(FATAL_ERROR "ERROR: This project requires VCPKG.\n")
 endif()
 
+
+find_package(MyCppProject REQUIRED)
+
 # Set VCPKG root directory
 set(VCPKG_ROOT $ENV{VCPKG_ROOT})
 
@@ -56,7 +59,7 @@ add_library(${LIB_PROJECT}
     "src/architecture/architecture-builder.cpp"
     "src/architecture/architecture-file-handler.cpp"
 )
-target_include_directories(${LIB_PROJECT} PRIVATE ${PROJECT_SOURCE_DIR}/include)
+target_include_directories(${LIB_PROJECT} PUBLIC ${PROJECT_SOURCE_DIR}/include ${CMAKE_CURRENT_BINARY_DIR})
 
 # Setup imgui
 find_package(imgui CONFIG REQUIRED)
