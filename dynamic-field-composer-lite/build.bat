@@ -24,15 +24,25 @@ IF NOT DEFINED VCPKG_ROOT (
 :: Using MSBuild may require elevation
 "%VCPKG_ROOT%\vcpkg.exe" integrate install
 
+:: Create build folders
+mkdir %PROJECT_ROOT%\build\x64-release
+mkdir %PROJECT_ROOT%\build\x64-debug
+
 :: Run CMake
-cmake -S "%PROJECT_ROOT%" -B "%PROJECT_ROOT%\build" -DCMAKE_TOOLCHAIN_FILE="%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake"
+cmake -G "Visual Studio 17 2022" -A x64 -S "%PROJECT_ROOT%" -B "%PROJECT_ROOT%\build\x64-release" -DCMAKE_TOOLCHAIN_FILE="%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake"
 
-:: Optionally, you can add more CMake configuration here if needed
+:: Build your project using the generated build files 
+cmake --build "%PROJECT_ROOT%\build\x64-release" --config Release
 
-:: Build your project using the generated build files (replace 'YourProject.sln' with your actual solution file)
-cmake --build "%PROJECT_ROOT%\build" --config Release
+:: Run CMake
+cmake -G "Visual Studio 17 2022" -A x64 -S "%PROJECT_ROOT%" -B "%PROJECT_ROOT%\build\x64-debug" -DCMAKE_TOOLCHAIN_FILE="%VCPKG_ROOT%/scripts/buildsystems/vcpkg.cmake"
+
+:: Build your project using the generated build files 
+cmake --build "%PROJECT_ROOT%\build\x64-debug" --config Debug
 
 :: Optionally, you can run your executable here if applicable
 
 pause
 exit /b 1
+
+
