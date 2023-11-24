@@ -1,8 +1,8 @@
 ﻿cmake_minimum_required(VERSION 3.15)
 
-project (dynamic-neural-field-composer
-    DESCRIPTION "A lighter version of a C++ application to develop Dynamic Neural Field Architectures"
-	LANGUAGES CXX
+project(dynamic-neural-field-composer
+        DESCRIPTION "A lighter version of a C++ application to develop Dynamic Neural Field Architectures"
+        LANGUAGES CXX
 )
 
 # Define library version
@@ -10,15 +10,18 @@ set(DNF_COMPOSER_VERSION_MAJOR 1 CACHE STRING "major version" FORCE)
 set(DNF_COMPOSER_VERSION_MINOR 0 CACHE STRING "minor version" FORCE)
 set(DNF_COMPOSER_VERSION ${DNF_COMPOSER_VERSION_MAJOR}.${DNF_COMPOSER_VERSION_MINOR} CACHE STRING "version" FORCE)
 
-set(DNF_COMPOSER_INC_INSTALL_DIR "include")
-set(DNF_COMPOSER_RUNTIME_INSTALL_DIR "bin")
-set(DNF_COMPOSER_LIBRARY_INSTALL_DIR "bin")
-set(DNF_COMPOSER_ARCHIVE_INSTALL_DIR "lib")
-set(DNF_COMPOSER_FRAMEWORK_INSTALL_DIR "bin")
-set(DNF_COMPOSER_CMAKE_CONFIG_INSTALL_DIR "share/${CMAKE_PROJECT_NAME}/cmake")
-set(DNF_COMPOSER_ADDITIONAL_FILES_INSTALL_DIR "share/${CMAKE_PROJECT_NAME}")
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set(DNF_COMPOSER_LIB_PREFIX "")
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+    set(DNF_COMPOSER_LIB_PREFIX "debug")
+endif()
+
+set(DNF_COMPOSER_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
+set(DNF_COMPOSER_RUNTIME_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/bin")
+set(DNF_COMPOSER_LIBRARY_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/${DNF_COMPOSER_LIB_PREFIX}")
+set(DNF_COMPOSER_ARCHIVE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/${DNF_COMPOSER_LIB_PREFIX}")
+set(DNF_COMPOSER_FRAMEWORK_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/bin")
+set(DNF_COMPOSER_CMAKE_CONFIG_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME}")
+set(DNF_COMPOSER_ADDITIONAL_FILES_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/share/${CMAKE_PROJECT_NAME}")
 
 # Set C++ standard
 set(CMAKE_CXX_STANDARD 20)
@@ -26,7 +29,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 # Check whether VCPKG is set up in your system
 if(NOT DEFINED ENV{VCPKG_ROOT})
-  message(FATAL_ERROR "ERROR: This project requires VCPKG.\n")
+    message(FATAL_ERROR "ERROR: This project requires VCPKG.\n")
 endif()
 
 # Set VCPKG root directory
@@ -40,36 +43,51 @@ set(OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/data")
 # Pass the OUTPUT_DIRECTORY as a preprocessor definition
 add_compile_definitions(OUTPUT_DIRECTORY="${OUTPUT_DIRECTORY}")
 
-
-# Set header files
-set(header
+# Set header files grouped by directories
+set(simulation_headers
     "include/simulation/simulation.h"
-    "include/simulation/visualization.h" 
-     
+    "include/simulation/visualization.h"
+)
+set(application_headers
     "include/application/application.h"
-     
+)
+
+set(elements_headers
     "include/elements/element_factory.h"
     "include/elements/element.h"
     "include/elements/field_coupling.h"
-    "include/elements/neural_field.h" 
-    "include/elements/gauss_stimulus.h"  
+    "include/elements/neural_field.h"
+    "include/elements/gauss_stimulus.h"
     "include/elements/mexican_hat_kernel.h"
     "include/elements/gauss_kernel.h"
     "include/elements/normal_noise.h"
-    "include/elements/gauss_field_coupling.h" 
+    "include/elements/gauss_field_coupling.h"
     "include/elements/kernel.h"
-     
+)
+set(mathtools_headers
     "include/mathtools/mathtools.h"
-     
+)
+set(exceptions_headers
     "include/exceptions/exception.h"
-     
+)
+set(user_interface_headers
     "include/user_interface/user_interface.h"
     "include/user_interface/user_interface_window.h"
     "include/user_interface/plot_window.h"
     "include/user_interface/simulation_window.h"
-     
+)
+set(architecture_headers
     "include/architecture/architecture-builder.h"
     "include/architecture/architecture-file-handler.h"
+)
+set(header 
+    ${simulation_headers}
+    ${application_headers}
+    ${elements_headers}
+    ${mathtools_headers}
+    ${exceptions_headers}
+    ${user_interface_headers}
+    ${user_interface_headers}
 )
 
 # Set source files
@@ -104,9 +122,12 @@ set(src
 )
 
 # Define library target
-add_library(${CMAKE_PROJECT_NAME} ${header} ${src})
+add_library(${CMAKE_PROJECT_NAME} 
+    ${header}
+    ${src}
+)
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> 
     $<INSTALL_INTERFACE:${DNF_COMPOSER_INC_INSTALL_DIR}> 
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
@@ -121,34 +142,41 @@ find_package(implot CONFIG REQUIRED)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE implot::implot)
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
-                            DNF_COMPOSER=1
-                            DNF_COMPOSER_VERSION_MAJOR=${DNF_COMPOSER_VERSION_MAJOR}
-                            DNF_COMPOSER_VERSION_MINOR=${DNF_COMPOSER_VERSION_MINOR}
+    DNF_COMPOSER=1
+    DNF_COMPOSER_VERSION_MAJOR=${DNF_COMPOSER_VERSION_MAJOR}
+    DNF_COMPOSER_VERSION_MINOR=${DNF_COMPOSER_VERSION_MINOR}
 )
 
 set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
-                                       OUTPUT_NAME "${CMAKE_PROJECT_NAME}-${DNF_COMPOSER_VERSION}"
-                                       POSITION_INDEPENDENT_CODE ON
+    OUTPUT_NAME "${CMAKE_PROJECT_NAME}-${DNF_COMPOSER_VERSION}"
+    POSITION_INDEPENDENT_CODE ON
 )
 
 install(TARGETS ${CMAKE_PROJECT_NAME} EXPORT ${CMAKE_PROJECT_NAME}Targets
-        RUNTIME       DESTINATION ${DNF_COMPOSER_RUNTIME_INSTALL_DIR}
-        LIBRARY       DESTINATION ${DNF_COMPOSER_LIBRARY_INSTALL_DIR}
-        ARCHIVE       DESTINATION ${DNF_COMPOSER_ARCHIVE_INSTALL_DIR}
-        FRAMEWORK     DESTINATION ${DNF_COMPOSER_FRAMEWORK_INSTALL_DIR}
+    RUNTIME       DESTINATION ${DNF_COMPOSER_RUNTIME_INSTALL_DIR}
+    LIBRARY       DESTINATION ${DNF_COMPOSER_LIBRARY_INSTALL_DIR}
+    ARCHIVE       DESTINATION ${DNF_COMPOSER_ARCHIVE_INSTALL_DIR}
+    FRAMEWORK     DESTINATION ${DNF_COMPOSER_FRAMEWORK_INSTALL_DIR}
 )
 
 include(CMakePackageConfigHelpers)
 set(version_file "${CMAKE_CURRENT_BINARY_DIR}/cmake/${CMAKE_PROJECT_NAME}-config-version.cmake")
 write_basic_package_version_file(${version_file}
-                                 VERSION ${DNF_COMPOSER_VERSION}
-                                 COMPATIBILITY AnyNewerVersion
+    VERSION ${DNF_COMPOSER_VERSION}
+    COMPATIBILITY AnyNewerVersion
 )
 
-install(FILES ${header} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR})
+# Install configuration-specific headers (debug/release)
+install(FILES ${simulation_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/simulation)
+install(FILES ${application_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/application)
+install(FILES ${elements_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/elements)
+install(FILES ${mathtools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/mathtools)
+install(FILES ${exceptions_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/exceptions)
+install(FILES ${user_interface_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/user_interface)
+install(FILES ${architecture_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/architecture)
 
 install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CONFIG_INSTALL_DIR}
-                                       FILE ${CMAKE_PROJECT_NAME}-config.cmake
+    FILE ${CMAKE_PROJECT_NAME}-config.cmake
 )
 
 # Add executable project
