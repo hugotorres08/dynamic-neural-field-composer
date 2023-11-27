@@ -22,13 +22,13 @@ class NormalNoise : public Element
 private:
 	NormalNoiseParameters parameters;
 public:
-	NormalNoise(const std::string& id, const int& size, const NormalNoiseParameters& parameters);
+	NormalNoise(const std::string& id, int size, NormalNoiseParameters parameters);
 
 	void init() override;
-	void step(const double& t, const double& deltaT) override;
+	void step(double t, double deltaT) override;
 	void close() override {}
 
-	void setParameters(const NormalNoiseParameters& parameters);
+	void setParameters(NormalNoiseParameters parameters);
 	NormalNoiseParameters getParameters() const;
 
 	~NormalNoise() override = default;

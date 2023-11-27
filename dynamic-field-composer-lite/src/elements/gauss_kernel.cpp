@@ -1,6 +1,10 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "elements/gauss_kernel.h"
 
-GaussKernel::GaussKernel(const std::string& id, const int& size,
+GaussKernel::GaussKernel(const std::string& id, int size,
 	const GaussKernelParameters& parameters)
 	: parameters(parameters)
 {
@@ -44,7 +48,7 @@ void GaussKernel::init()
 	std::ranges::fill(components["input"], 0.0);
 }
 
-void GaussKernel::step(const double& t, const double& deltaT)
+void GaussKernel::step(double t, double deltaT)
 {
 
 	updateInput();

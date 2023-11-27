@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
+#include <deque>
 
 class ArchitectureFileHandler
 {
@@ -11,8 +12,8 @@ private:
 	std::string architectureFileLocation;
 	std::string fieldCouplingFileLocation;
 
-	std::vector<std::string> unparsedDynamicNeuralFieldParameters;
-	std::vector<std::string> unparsedDynamicNeuralFieldCouplingsParameters;
+	std::deque<std::string> unparsedDynamicNeuralFieldParameters;
+	std::deque<std::string> unparsedDynamicNeuralFieldCouplingsParameters;
 
 	std::string dynamicNeuralFieldParametersToSave;
 	std::string dynamicNeuralFieldCouplingsParametersToSave;
@@ -28,8 +29,8 @@ public:
 	void readArchitectureFile();
 	void saveArchitectureFile();
 
-	std::vector<std::string> getUnparsedDynamicNeuralFieldParameters();
-	std::vector<std::string> getUnparsedDynamicNeuralFieldCouplingsParameters();
+	std::deque<std::string> getUnparsedDynamicNeuralFieldParameters();
+	std::deque<std::string> getUnparsedDynamicNeuralFieldCouplingsParameters();
 
 	void setDynamicNeuralFieldParametersToSave(const std::string& parameters);
 	void setDynamicNeuralFieldCouplingsParametersToSave(const std::string& parameters);

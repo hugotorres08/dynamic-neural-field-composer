@@ -1,6 +1,10 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "elements/normal_noise.h"
 
-NormalNoise::NormalNoise(const std::string& id, const int& size, const NormalNoiseParameters& parameters)
+NormalNoise::NormalNoise(const std::string& id, int size, NormalNoiseParameters parameters)
 	: parameters(parameters)
 {
 	// Assert that the size is positive
@@ -17,7 +21,7 @@ void NormalNoise::init()
 	std::ranges::fill(components["output"], 0.0);
 }
 
-void NormalNoise::step(const double& t, const double& deltaT)
+void NormalNoise::step(double t, double deltaT)
 {
 	const std::vector<double> rand = mathtools::generateNormalVector(size);
 
@@ -25,7 +29,7 @@ void NormalNoise::step(const double& t, const double& deltaT)
 		components["output"][i] = parameters.amplitude / sqrt(deltaT) * rand[i];
 }
 
-void NormalNoise::setParameters(const NormalNoiseParameters& parameters)
+void NormalNoise::setParameters(NormalNoiseParameters parameters)
 {
 	this->parameters = parameters;
 }

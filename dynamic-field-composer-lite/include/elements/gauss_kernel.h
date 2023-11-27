@@ -7,10 +7,10 @@
 
 struct GaussKernelParameters
 {
-	double sigma;
-	double amplitude;
-	double amplitudeGlobal;
-	double fullSum;
+	double sigma = 5.0;
+	double amplitude = 10.0;
+	double amplitudeGlobal = 0.0;
+	double fullSum = 0.0;
 	int cutOfFactor = 5;
 	
 	bool operator==(const GaussKernelParameters& other) const {
@@ -21,7 +21,7 @@ struct GaussKernelParameters
 			std::abs(amplitude - other.amplitude) < epsilon &&
 			std::abs(amplitudeGlobal - other.amplitudeGlobal) < epsilon &&
 			std::abs(fullSum - other.fullSum) < epsilon &&
-			std::abs(cutOfFactor - other.cutOfFactor) < epsilon;
+			cutOfFactor == other.cutOfFactor;
 	}
 };
 
@@ -30,11 +30,11 @@ class GaussKernel : public Kernel
 private:
 	GaussKernelParameters parameters;
 public:
-	GaussKernel(const std::string& id, const int& size,
+	GaussKernel(const std::string& id, int size,
 		const GaussKernelParameters& parameters);
 
 	void init() override;
-	void step(const double& t, const double& deltaT) override;
+	void step( double t,  double deltaT) override;
 	void close() override;
 
 	void setParameters(const GaussKernelParameters& parameters);

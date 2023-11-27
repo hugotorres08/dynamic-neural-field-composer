@@ -23,14 +23,14 @@ private:
 	std::string errorComponent;
 	int errorIndex;
 public:
-	Exception(const std::string& message);
+	Exception(std::string message);
 	Exception(const ErrorCode errorCode);
-	Exception(const ErrorCode errorCode, const std::string& errorElement);
+	Exception(const ErrorCode errorCode, std::string errorElement);
 	Exception(const ErrorCode errorCode, int errorIndex);
-	Exception(const ErrorCode errorCode, const std::string& errorElement, const std::string& errorComponent);
+	Exception(const ErrorCode errorCode, std::string errorElement, std::string errorComponent);
 
 	const char* what() const noexcept override;
 
 	ErrorCode getErrorCode() const;
-	std::string getErrorMessage();
+	std::string getErrorMessage() const;
 };

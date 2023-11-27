@@ -29,10 +29,10 @@ protected:
 	LearningRule learningRule;
 	std::string weightsFilePath;
 public:
-	FieldCoupling(const std::string& id, const int& outputSize, const int& inputSize, const FieldCouplingParameters& parameters, const LearningRule& learningRule);
+	FieldCoupling(const std::string& id, int outputSize, int inputSize, FieldCouplingParameters parameters, LearningRule learningRule);
 
 	void init() override;
-	void step(const double& t, const double& deltaT) override;
+	void step(double t, double deltaT) override;
 	void close() override;
 
 	void setWeightsFilePath(const std::string& filePath);
@@ -41,8 +41,8 @@ public:
 	void saveWeights() const;
 	virtual void updateWeights(const std::vector<double>& input, const std::vector<double>& output);
 
-	void setLearningRate(const double& learningRate);
-	void setUpdateAllWeights(const bool& updateAllWeights);
+	void setLearningRate(double learningRate);
+	void setUpdateAllWeights(bool updateAllWeights);
 
 	const std::vector<std::vector<double>>& getWeights() const;
 

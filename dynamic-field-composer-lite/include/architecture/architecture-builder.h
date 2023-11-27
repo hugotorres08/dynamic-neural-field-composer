@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <deque>
 
 #include "../elements/element_factory.h"
 #include "simulation/simulation.h"

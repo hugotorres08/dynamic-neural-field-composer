@@ -1,6 +1,10 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "elements/gauss_stimulus.h"
 
-GaussStimulus::GaussStimulus(const std::string& id, const int& size, const GaussStimulusParameters& parameters)
+GaussStimulus::GaussStimulus(const std::string& id, int size, const GaussStimulusParameters& parameters)
 	: parameters(parameters)
 {
 	// Assert that the size is positive
@@ -16,6 +20,8 @@ GaussStimulus::GaussStimulus(const std::string& id, const int& size, const Gauss
 	this->parameters.circular = true;
 	this->parameters.normalized = false;
 }
+
+
 
 void GaussStimulus::init()
 {
@@ -39,7 +45,7 @@ void GaussStimulus::init()
 		components["output"][i] += components["input"][i];
 }
 
-void GaussStimulus::step(const double& t, const double& deltaT)
+void GaussStimulus::step(double t, double deltaT)
 {
 }
 

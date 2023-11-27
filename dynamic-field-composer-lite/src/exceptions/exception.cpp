@@ -1,20 +1,23 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "exceptions/exception.h"
 
 
-Exception::Exception(const std::string& message)
-	: errorCode(ErrorCode::OK), errorMessage(message), errorElement(), errorIndex(0), errorComponent()
+Exception::Exception(std::string message)
+	: errorCode(ErrorCode::OK), errorMessage(std::move(message)), errorElement(), errorComponent(), errorIndex(0)
 {}
 
 Exception::Exception(const ErrorCode errorCode)
-	: errorCode(errorCode), errorIndex(0), errorComponent()
+	: errorCode(errorCode), errorComponent(), errorIndex(0)
 {
 	errorMessage = getErrorMessage();
 }
 
-Exception::Exception(const ErrorCode errorCode, const std::string& errorElement)
-	: errorCode(errorCode), errorIndex(0), errorComponent()
+Exception::Exception(const ErrorCode errorCode, std::string errorElement)
+	: errorCode(errorCode), errorElement(std::move(errorElement)), errorComponent(), errorIndex(0)
 {
-	this->errorElement = errorElement;
 	errorMessage = getErrorMessage();
 }
 
@@ -25,11 +28,9 @@ Exception::Exception(const ErrorCode errorCode, int errorIndex)
 	errorMessage = getErrorMessage();
 }
 
-Exception::Exception(const ErrorCode errorCode, const std::string& errorElement, const std::string& errorComponent)
-	: errorCode(errorCode), errorIndex(0)
+Exception::Exception(const ErrorCode errorCode, std::string errorElement, std::string errorComponent)
+	: errorCode(errorCode), errorElement(std::move(errorElement)), errorComponent(std::move(errorComponent)), errorIndex(0)
 {
-	this->errorElement = errorElement;
-	this->errorComponent = errorComponent;
 	errorMessage = getErrorMessage();
 }
 
@@ -43,7 +44,7 @@ ErrorCode Exception::getErrorCode() const
 	return errorCode;
 }
 
-std::string Exception::getErrorMessage()
+std::string Exception::getErrorMessage() const
 {
 	switch (errorCode)
 	{
@@ -76,9 +77,9 @@ std::string Exception::getErrorMessage()
 	case ErrorCode::ELEM_INPUT_SIZE_MISMATCH:
 		return "Input element with name " + errorElement + " has a size mismatch.";
 	case ErrorCode::ELEM_SIZE_NOT_ALLOWED:
-		return "For now element (" + errorElement + ") cannot be resized as it can be pottentially damaging for the simulation.";
+		return "For now element (" + errorElement + ") cannot be resized as it can be potentially damaging for the simulation.";
 	case ErrorCode::ELEM_RENAME_NOT_ALLOWED:
-		return "For now element (" + errorElement + ") cannot be renamed as it can be pottentially damaging for the simulation.";
+		return "For now element (" + errorElement + ") cannot be renamed as it can be potentially damaging for the simulation.";
 	case ErrorCode::GAUSS_STIMULUS_POSITION_OUT_OF_RANGE:
 		return "Gaussian stimulus (" + errorElement + ") position is out of range, must be between 0 and size.";
 	case ErrorCode::GAUSS_STIMULUS_SUM_MISMATCH:

@@ -25,7 +25,7 @@ enum ElementLabel
 	FIELD_COUPLING
 };
 
-const std::map<ElementLabel, std::string> ElementLabelToString = {
+inline const std::map<ElementLabel, std::string> ElementLabelToString = {
 	{ NEURAL_FIELD, "neural field" },
 	{ GAUSS_STIMULUS, "gauss stimulus" },
 	{ FIELD_COUPLING, "field coupling" },
@@ -47,7 +47,7 @@ protected:
 public:
 	Element();
 	virtual void init() = 0;
-	virtual void step(const double& t, const double& deltaT) = 0;
+	virtual void step(double t, double deltaT) = 0;
 	virtual void close() = 0;
 
 	void addInput(const std::shared_ptr<Element>& inputElement, const std::string& inputComponent = "output");

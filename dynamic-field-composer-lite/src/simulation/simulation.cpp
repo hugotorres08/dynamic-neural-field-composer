@@ -1,7 +1,11 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "simulation/simulation.h"
 
 
-Simulation::Simulation(const double& deltaT, const double& tZero, const double& t)
+Simulation::Simulation(double deltaT, double tZero, double t)
 	: deltaT(deltaT), tZero(tZero), t(t)
 {
 	initialized = false;
@@ -29,7 +33,7 @@ void Simulation::close() {
 	initialized = false;
 }
 
-void Simulation::run(const double& runTime)
+void Simulation::run(double runTime)
 {
 	if (runTime <= 0)
 		throw Exception(ErrorCode::SIM_RUNTIME_LESS_THAN_ZERO, static_cast<int>(runTime));

@@ -7,9 +7,9 @@
 
 struct GaussStimulusParameters
 {
-	double sigma;
-	double amplitude;
-	double position;
+	double sigma = 5.0;
+	double amplitude = 15.0;
+	double position = 0.0;
 	bool circular = true;
 	bool normalized = false;
 
@@ -21,8 +21,8 @@ struct GaussStimulusParameters
 		return std::abs(sigma - other.sigma) < epsilon &&
 			std::abs(position - other.position) < epsilon &&
 			std::abs(amplitude - other.amplitude) < epsilon &&
-			std::abs(circular - other.circular) < epsilon &&
-			std::abs(normalized - other.normalized) < epsilon;
+			circular == other.circular &&
+			normalized == other.normalized;
 	}
 };
 
@@ -31,10 +31,10 @@ class GaussStimulus : public Element
 private:
 	GaussStimulusParameters parameters;
 public:
-	GaussStimulus(const std::string& id, const int& size,
+	GaussStimulus(const std::string& id, int size,
 		const GaussStimulusParameters& parameters);
 	void init() override;
-	void step(const double& t, const double& deltaT) override;
+	void step(double t, double deltaT) override;
 	void close() override;
 	void setParameters(const GaussStimulusParameters& parameters);
 	GaussStimulusParameters getParameters() const;

@@ -16,7 +16,7 @@ class MockElement : public Element
 {
 public:
     void init() override {}
-    void step(const double& t, const double& deltaT) override {}
+    void step(double t, double deltaT) override {}
     void close() override {}
 };
 

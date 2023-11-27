@@ -1,7 +1,11 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "elements/neural_field.h"
 
 
-NeuralField::NeuralField(const std::string& id, const int& size,
+NeuralField::NeuralField(const std::string& id, int size,
 	const NeuralFieldParameters& parameters)
 	: parameters(parameters)
 {
@@ -29,7 +33,7 @@ void NeuralField::init()
 	calculateOutput();
 }
 
-void NeuralField::step(const double& t, const double& deltaT)
+void NeuralField::step(double t, double deltaT)
 {
 	updateInput();
 	calculateActivation(t, deltaT);
@@ -57,7 +61,7 @@ double NeuralField::getCentroid() const
 	return centroid;
 }
 
-void NeuralField::calculateActivation(const double& t, const double& deltaT)
+void NeuralField::calculateActivation(double t, double deltaT)
 {
 	for (int i = 0; i < size; i++)
 	{
@@ -107,7 +111,8 @@ void NeuralField::calculateCentroid()
 			sumWeightedPositions += distance * activation;
 		}
 
-		if (sumActivation != 0.0)
+		static constexpr double epsilon = 1e-6;
+		if (std::fabs(sumActivation) > epsilon)
 		{
 			// Shift the centroid back to the circular field
 			centroid = fmod(static_cast<double>(size) * 0.5 + sumWeightedPositions / sumActivation, static_cast<double>(size));

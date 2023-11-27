@@ -20,9 +20,9 @@ private:
 	 bool renderPlotSelector;
 public:
 	PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderPlotSelector = true);
-	PlotWindow(const std::shared_ptr<Simulation>& simulation, const PlotDimensions& dimensions, bool renderPlotSelector = true);
+	PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, bool renderPlotSelector = true);
 	PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector = true);
-	PlotWindow(const std::shared_ptr<Visualization>& visualization, const PlotDimensions& dimensions, bool renderPlotSelector = true);
+	PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector = true);
 	void render() override;
 	~PlotWindow() override = default;
 private:

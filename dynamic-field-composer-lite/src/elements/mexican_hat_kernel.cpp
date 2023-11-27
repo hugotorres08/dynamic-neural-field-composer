@@ -1,6 +1,10 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "elements/mexican_hat_kernel.h"
 
-MexicanHatKernel::MexicanHatKernel(const std::string& id, const int& size,
+MexicanHatKernel::MexicanHatKernel(const std::string& id, int size,
 	const MexicanHatKernelParameters& parameters) 
 	: parameters(parameters)
 {
@@ -52,7 +56,7 @@ void MexicanHatKernel::init()
 	std::ranges::fill(components["input"], 0.0);
 }
 
-void MexicanHatKernel::step(const double& t, const double& deltaT)
+void MexicanHatKernel::step(double t, double deltaT)
 {
 	updateInput();
 

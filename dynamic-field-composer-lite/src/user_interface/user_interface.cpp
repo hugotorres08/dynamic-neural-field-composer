@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "user_interface/user_interface.h"
 
 UserInterface::UserInterface(const std::shared_ptr<Simulation>& simulation, const std::vector<std::shared_ptr<Visualization>>& visualizations)

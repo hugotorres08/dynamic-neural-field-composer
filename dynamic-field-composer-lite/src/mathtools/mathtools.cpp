@@ -1,38 +1,41 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "mathtools/mathtools.h"
 
-std::array<uint32_t, 2> mathtools::computeKernelRange(const double& sigma, int cutOfFactor, const uint32_t& fieldSize, bool circular)
+std::array<int, 2> mathtools::computeKernelRange(double sigma, int cutOfFactor, int fieldSize, bool circular)
 {
-	uint32_t par1 = std::ceil(sigma * cutOfFactor);
-	uint32_t fieldSizeMinus1 = (fieldSize - 1);
+	int par1 = std::ceil(sigma * cutOfFactor);
+	int fieldSizeMinus1 = (fieldSize - 1);
 	if (circular)
 	{
 
 		double aux = ((double)fieldSize - 1) / 2;
-		uint32_t par2 = std::floor(aux);
-		uint32_t par3 = std::ceil(aux);
-		return std::min(std::array<uint32_t, 2>{par1, par1}, std::array<uint32_t, 2>{par2, par3});
+		int par2 = std::floor(aux);
+		int par3 = std::ceil(aux);
+		return std::min(std::array<int, 2>{par1, par1}, std::array<int, 2>{par2, par3});
 	}
 	else {
-		return std::min(std::array<uint32_t, 2>{par1, par1}, std::array<uint32_t, 2>{fieldSizeMinus1, fieldSizeMinus1});
+		return std::min(std::array<int, 2>{par1, par1}, std::array<int, 2>{fieldSizeMinus1, fieldSizeMinus1});
 	}
 }
 
-std::vector<uint32_t> mathtools::createExtendedIndex(int fieldSize, const std::array<uint32_t, 2>& kernelRange)
+std::vector<int> mathtools::createExtendedIndex(int fieldSize, const std::array<int, 2>& kernelRange)
 {
 
-	uint32_t startingValue = fieldSize - kernelRange[1] + 1;
-	uint32_t initialVectorSize = fieldSize - startingValue + 1;
-	std::vector<uint32_t> initialVector(initialVectorSize);
+	const int startingValue = fieldSize - kernelRange[1] + 1;
+	const int initialVectorSize = fieldSize - startingValue + 1;
+	std::vector<int> initialVector(initialVectorSize);
 	std::iota(initialVector.begin(), initialVector.end(), startingValue);
-	std::vector<uint32_t> secondVector(fieldSize);
+	std::vector<int> secondVector(fieldSize);
 	std::iota(secondVector.begin(), secondVector.end(), 1);
-	std::vector<uint32_t> thirdVector(kernelRange[0]);
+	std::vector<int> thirdVector(kernelRange[0]);
 	std::iota(thirdVector.begin(), thirdVector.end(), 1);
 
-	std::vector<uint32_t> extendedVector;
-	std::vector<uint32_t>::iterator it;
+	std::vector<int> extendedVector;
+	std::vector<int>::iterator it = extendedVector.begin();
 
-	it = extendedVector.begin();
 	extendedVector.insert(it, initialVector.begin(), initialVector.end());
 	it = extendedVector.begin() + initialVector.size();
 	extendedVector.insert(it, secondVector.begin(), secondVector.end());

@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "./user_interface/plot_window.h"
 
 
@@ -17,14 +21,14 @@ PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, bool
 	plotDimensions = { 0, 100, -30, 40 };
 }
 
-PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, const PlotDimensions& dimensions, bool renderPlotSelector)
+PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, bool renderPlotSelector)
 	:plotDimensions(dimensions), renderPlotSelector(renderPlotSelector)
 {
 	this->visualization = std::make_shared<Visualization>(simulation);
 	id = ++current_id;
 }
 
-PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, const PlotDimensions& dimensions, bool renderPlotSelector)
+PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector)
 	:plotDimensions(dimensions), renderPlotSelector(renderPlotSelector)
 {
 	this->visualization = visualization;

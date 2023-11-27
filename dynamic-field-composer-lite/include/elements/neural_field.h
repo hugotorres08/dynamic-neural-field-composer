@@ -48,10 +48,10 @@ protected:
 	NeuralFieldParameters parameters;
     double centroid;
 public:
-	NeuralField(const std::string& id, const int& size,
+	NeuralField(const std::string& id, int size,
 		const NeuralFieldParameters& parameters);
 	void init() override;
-	void step(const double& t, const double& deltaT) override;
+	void step(double t, double deltaT) override;
 	void close() override;
 
 
@@ -62,7 +62,7 @@ public:
 	~NeuralField() override = default;
 
 protected:
-	void calculateActivation(const double& t, const double& deltaT);
+	void calculateActivation(double t, double deltaT);
 	void calculateOutput();
 	void calculateCentroid();
 };

@@ -29,6 +29,7 @@ private:
 	void renderElementProperties(const std::pair<int, std::string>& elementId);
 
 	// these functions need to die
+	// these need to be refactored - may lead to ODR violations
 	void addElementNeuralField()
 	{
 		static char id[CHAR_SIZE] = "neural field u";

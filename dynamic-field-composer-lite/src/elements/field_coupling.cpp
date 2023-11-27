@@ -1,6 +1,10 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "elements/field_coupling.h"
 
-FieldCoupling::FieldCoupling(const std::string& id, const int& outputSize, const int& inputSize, const FieldCouplingParameters& parameters, const LearningRule& learningRule)
+FieldCoupling::FieldCoupling(const std::string& id, int outputSize, int inputSize, FieldCouplingParameters parameters, LearningRule learningRule)
 	: parameters(parameters), learningRule(learningRule)
 {
 	// Assert that the sizes are positive
@@ -17,6 +21,9 @@ FieldCoupling::FieldCoupling(const std::string& id, const int& outputSize, const
 	mathtools::fillMatrixWithRandomValues(weights, -1, 1);
 
 	weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/" + uniqueName + "_weights.txt";
+
+	updateAllWeights = true;
+	trained = false;
 }
 
 
@@ -36,7 +43,7 @@ void FieldCoupling::init()
 	}
 }
 
-void FieldCoupling::step(const double& t, const double& deltaT)
+void FieldCoupling::step(double t, double deltaT)
 {
 	getInputFunction();
 	computeOutput();
@@ -86,7 +93,7 @@ void FieldCoupling::resetWeights()
 	mathtools::fillMatrixWithRandomValues(weights, 0, 0);
 }
 
-void FieldCoupling::setUpdateAllWeights(const bool& updateAllWeights)
+void FieldCoupling::setUpdateAllWeights(bool updateAllWeights)
 {
 	this->updateAllWeights = updateAllWeights;
 }
@@ -110,7 +117,7 @@ void FieldCoupling::updateWeights(const std::vector<double>& input, const std::v
 	writeWeights();
 }
 
-void FieldCoupling::setLearningRate(const double& learningRate)
+void FieldCoupling::setLearningRate(double learningRate)
 {
 	parameters.learningRate = learningRate;
 }

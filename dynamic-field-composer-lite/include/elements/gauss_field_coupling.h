@@ -27,11 +27,11 @@ class GaussFieldCoupling : public Element
 private:
 	GaussFieldCouplingParameters gfcp;
 public:
-	GaussFieldCoupling(const std::string& id, const int& size, const GaussFieldCouplingParameters& gfcp);
+	GaussFieldCoupling(const std::string& id, int size, const GaussFieldCouplingParameters& gfcp);
 
 	void addCoupling(const WeightedCoupling& coupling);
 	void init() override;
-	void step(const double& t, const double& deltaT) override;
+	void step(double t, double deltaT) override;
 	void close() override;
 
 	GaussFieldCouplingParameters getParameters() const;

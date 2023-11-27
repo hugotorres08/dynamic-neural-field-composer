@@ -1,4 +1,9 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "architecture/architecture-file-handler.h"
+
 
 ArchitectureFileHandler::ArchitectureFileHandler(const std::string& identifier)
 {
@@ -29,12 +34,12 @@ void ArchitectureFileHandler::saveArchitectureFile()
     saveDynamicNeuralFieldCouplingsParameters();
 }
 
-std::vector<std::string> ArchitectureFileHandler::getUnparsedDynamicNeuralFieldParameters()
+std::deque<std::string> ArchitectureFileHandler::getUnparsedDynamicNeuralFieldParameters()
 {
     return unparsedDynamicNeuralFieldParameters;
 }
 
-std::vector<std::string> ArchitectureFileHandler::getUnparsedDynamicNeuralFieldCouplingsParameters()
+std::deque<std::string> ArchitectureFileHandler::getUnparsedDynamicNeuralFieldCouplingsParameters()
 {
     return unparsedDynamicNeuralFieldCouplingsParameters;
 }

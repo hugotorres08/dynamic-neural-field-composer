@@ -1,3 +1,7 @@
+// This is a personal academic project. Dear PVS-Studio, please check it.
+
+// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+
 #include "architecture/architecture-builder.h"
 
 ArchitectureBuilder::ArchitectureBuilder(std::string identifier, const std::shared_ptr<Simulation>& simulation)
@@ -12,20 +16,20 @@ void ArchitectureBuilder::readArchitecture()
 {
     fileHandler.readArchitectureFile();
 
-    std::vector<std::string> unparsedDynamicNeuralFieldParameters = fileHandler.getUnparsedDynamicNeuralFieldParameters();
-    std::vector<std::string> unparsedDynamicNeuralFieldCouplingsParameters = fileHandler.getUnparsedDynamicNeuralFieldCouplingsParameters();
+    std::deque<std::string> unparsedDynamicNeuralFieldParameters = fileHandler.getUnparsedDynamicNeuralFieldParameters();
+    std::deque<std::string> unparsedDynamicNeuralFieldCouplingsParameters = fileHandler.getUnparsedDynamicNeuralFieldCouplingsParameters();
 
     const int numberOfFields = static_cast<int>(unparsedDynamicNeuralFieldParameters.size());
-    
-    for(int i = 0; i < numberOfFields; i++)
+
+    for (int i = 0; i < numberOfFields; i++)
     {
         const std::string line = unparsedDynamicNeuralFieldParameters.front();
-        unparsedDynamicNeuralFieldParameters.erase(unparsedDynamicNeuralFieldParameters.begin());
+        unparsedDynamicNeuralFieldParameters.pop_front();  // Use pop_front to remove the front element
 
-		parseDynamicNeuralFieldParameters(line);
-		createDynamicNeuralFieldElements();
-		addElementsToSimulation();
-		setupInteractionsBetweenElements();
+        parseDynamicNeuralFieldParameters(line);
+        createDynamicNeuralFieldElements();
+        addElementsToSimulation();
+        setupInteractionsBetweenElements();
         clearDynamicNeuralFieldParametersAndDynamicNeuralField();
     }
 
@@ -34,7 +38,7 @@ void ArchitectureBuilder::readArchitecture()
     for (int i = 0; i < numberOfCouplings; i++)
     {
         const std::string line = unparsedDynamicNeuralFieldCouplingsParameters.front();
-        unparsedDynamicNeuralFieldCouplingsParameters.erase(unparsedDynamicNeuralFieldCouplingsParameters.begin());
+        unparsedDynamicNeuralFieldCouplingsParameters.pop_front();  // Use pop_front to remove the front element
 
         parseDynamicNeuralFieldCouplingsParameters(line);
         createDynamicNeuralFieldCouplings();
@@ -256,7 +260,6 @@ void ArchitectureBuilder::createDynamicNeuralFieldElements()
     GaussKernelParameters gkp;
     gkp.amplitude = 0.2;
     gkp.sigma = 0.25;
-    gkp.cutOfFactor = 5;
     gkp.amplitudeGlobal = 0.0;
     dynamicNeuralField.normalNoiseKernel = std::make_shared<GaussKernel>("noise kernel " + std::to_string(elementCount++),
         dynamicNeuralField.size, gkp);
@@ -316,7 +319,7 @@ void ArchitectureBuilder::createDynamicNeuralFieldCouplings()
 
     dynamicNeuralFieldCoupling.gaussianFieldCoupling = std::make_shared<GaussFieldCoupling>("coupling " + std::to_string(elementCount++), size, architectureParameters.gfcp);
     
-    for(const auto coupling : dynamicNeuralFieldCoupling.couplings)
+    for(const auto& coupling : dynamicNeuralFieldCoupling.couplings)
         dynamicNeuralFieldCoupling.gaussianFieldCoupling->addCoupling(coupling);
 
 }

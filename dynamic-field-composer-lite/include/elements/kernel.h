@@ -8,8 +8,8 @@ class Kernel : public Element
 protected:
 	bool circular;
 	bool normalized;
-	std::array<uint32_t, 2> kernelRange;
-	std::vector<uint32_t> extIndex;
+	std::array<int, 2> kernelRange;
+	std::vector<int> extIndex;
 public:
 	Kernel();
     virtual ~Kernel() override = default;

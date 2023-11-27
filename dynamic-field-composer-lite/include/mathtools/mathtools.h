@@ -105,7 +105,7 @@ namespace mathtools {
 	}
 
 	template<typename T>
-	std::vector<T> circularGauss(const uint32_t& size, const T& sigma, const T& position)
+	std::vector<T> circularGauss(uint32_t size, const T& sigma, const T& position)
 	{
 		uint32_t l = size - 2 * 1 + 2;
 		uint32_t m = 1;
@@ -136,7 +136,7 @@ namespace mathtools {
 	}
 
 	template<typename T>
-	std::vector<T> obtainCircularVector(const std::vector<uint32_t>& indices, const std::vector<T>& contents)
+	std::vector<T> obtainCircularVector(const std::vector<int>& indices, const std::vector<T>& contents)
 	{
 		std::vector<T> newContents(indices.size());
 		for (int i = 0; i < indices.size(); i++)
@@ -173,7 +173,7 @@ namespace mathtools {
 	}
 
 	template <typename T>
-	void fillMatrixWithRandomValues(std::vector<std::vector<T>>& matrix, const double& minRange = -1.0, const double& maxRange = 1.0) {
+	void fillMatrixWithRandomValues(std::vector<std::vector<T>>& matrix, double minRange = -1.0, double maxRange = 1.0) {
 		std::random_device rd;
 		std::mt19937 gen(rd());
 		std::uniform_real_distribution<> dis(minRange, maxRange);
@@ -190,15 +190,15 @@ namespace mathtools {
 			matrix[i].resize(newColSize);
 	}
 
-	std::array<uint32_t, 2> computeKernelRange(const double& sigma, int cutOfFactor, const uint32_t& fieldSize, bool circular);
-	std::vector<uint32_t> createExtendedIndex(int fieldSize, const std::array<uint32_t, 2>& kernelRange);
+	std::array<int, 2> computeKernelRange(double sigma, int cutOfFactor, int fieldSize, bool circular);
+	std::vector<int> createExtendedIndex(int fieldSize, const std::array<int, 2>& kernelRange);
 
 	// generates a vector of random numbers with a normal distribution
 	std::vector<double> generateNormalVector(int size);
 
 	// this function needs a look...
 	template <typename T>
-	std::vector<std::vector<T>> hebbLearningRule(const std::vector<T>& input, const std::vector<T>& targetOutput, const double& learningRate)
+	std::vector<std::vector<T>> hebbLearningRule(const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
 	{
 		int inputSize = input.size();
 		int outputSize = targetOutput.size();
@@ -216,7 +216,7 @@ namespace mathtools {
 
 	// this function needs a look...
 	template <typename T>
-	std::vector<std::vector<T>> ojaLearningRule(const std::vector<T>& input, const std::vector<T>& targetOutput, const double& learningRate)
+	std::vector<std::vector<T>> ojaLearningRule(const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
 	{
 		int inputSize = input.size();
 		int outputSize = targetOutput.size();
@@ -233,7 +233,7 @@ namespace mathtools {
 	}
 
 	template <typename T>
-	std::vector<std::vector<T>> deltaLearningRuleWidrowHoff(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, const double& learningRate)
+	std::vector<std::vector<T>> deltaLearningRuleWidrowHoff(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
 	{
 		int inputSize = input.size();
 		int outputSize = targetOutput.size();
@@ -265,7 +265,7 @@ namespace mathtools {
 	}
 
 	template <typename T>
-	std::vector<std::vector<T>> deltaLearningRuleKroghHertz(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, const double& learningRate)
+	std::vector<std::vector<T>> deltaLearningRuleKroghHertz(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
 	{
 
 		 double deltaT = 1.0;

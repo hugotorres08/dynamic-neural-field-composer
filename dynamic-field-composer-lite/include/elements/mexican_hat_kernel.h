@@ -19,12 +19,14 @@ struct MexicanHatKernelParameters
 
 	bool operator==(const MexicanHatKernelParameters& other) const
 	{
-		return sigmaExc == other.sigmaExc &&
-			amplitudeExc == other.amplitudeExc &&
-			sigmaInh == other.sigmaInh && 
-			amplitudeInh == other.amplitudeInh &&
-			amplitudeGlobal == other.amplitudeGlobal &&
-			fullSum == other.fullSum &&
+		constexpr double epsilon = 1e-6; 
+
+		return std::abs(sigmaExc - other.sigmaExc) < epsilon &&
+			std::abs(amplitudeExc - other.amplitudeExc) < epsilon &&
+			std::abs(sigmaInh - other.sigmaInh) < epsilon &&
+			std::abs(amplitudeInh - other.amplitudeInh) < epsilon &&
+			std::abs(amplitudeGlobal - other.amplitudeGlobal) < epsilon &&
+			std::abs(fullSum - other.fullSum) < epsilon &&
 			cutOfFactor == other.cutOfFactor;
 	}
 };
@@ -34,11 +36,11 @@ class MexicanHatKernel : public Kernel
 private:
 	MexicanHatKernelParameters parameters;
 public:
-	MexicanHatKernel(const std::string& id, const int& size,
+	MexicanHatKernel(const std::string& id, int size,
 		const MexicanHatKernelParameters& parameters);
 
 	void init() override;
-	void step(const double& t, const double& deltaT) override;
+	void step(double t, double deltaT) override;
 	void close() override;
 
 	void setParameters(const MexicanHatKernelParameters& parameters);

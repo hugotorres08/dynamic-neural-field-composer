@@ -20,11 +20,11 @@ public:
 	double tZero;
 	double t;
 public:
-	Simulation(const double& deltaT = 1, const double& tZero = 0, const double& t = 0);
+	Simulation(double deltaT = 1, double tZero = 0, double t = 0);
 
 	void init();
 	void step();
-	void run(const double& runTime);
+	void run(double runTime);
 	void close();
 
 	void addElement(const std::shared_ptr<Element>& element);
