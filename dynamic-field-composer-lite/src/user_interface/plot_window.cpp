@@ -4,129 +4,135 @@
 
 #include "./user_interface/plot_window.h"
 
-
-PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderPlotSelector)
-	:renderPlotSelector(renderPlotSelector)
+namespace dnf_composer
 {
-	this->visualization = std::make_shared<Visualization>(simulation);
-	id = ++current_id;
-	plotDimensions = { 0, 100, -30, 40 };
-}
-
-PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector)
-	:renderPlotSelector(renderPlotSelector)
-{
-	this->visualization = visualization;
-	id = ++current_id;
-	plotDimensions = { 0, 100, -30, 40 };
-}
-
-PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, bool renderPlotSelector)
-	:plotDimensions(dimensions), renderPlotSelector(renderPlotSelector)
-{
-	this->visualization = std::make_shared<Visualization>(simulation);
-	id = ++current_id;
-}
-
-PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector)
-	:plotDimensions(dimensions), renderPlotSelector(renderPlotSelector)
-{
-	this->visualization = visualization;
-	id = ++current_id;
-}
-
-void PlotWindow::render()
-{
-	if(renderPlotSelector)
-		renderElementSelector();
-	renderPlots();
-}
- 
-void PlotWindow::renderPlots() const
-{
-	configure();
-
-	const std::string plotTitle = "Plot window " + std::to_string(id);
-	if (ImGui::Begin(plotTitle.c_str()))
+	namespace user_interface
 	{
-		if (ImPlot::BeginPlot(plotTitle.c_str()))
+
+		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderPlotSelector)
+			:renderPlotSelector(renderPlotSelector)
 		{
-			ImPlot::SetupAxes("Field position", "Amplitude");
-			ImPlot::SetupLegend(ImPlotLocation_NorthEast, ImPlotLegendFlags_Outside);
-
-			const int numOfPlots = visualization->getNumberOfPlots();
-			for (int j = 0; j < numOfPlots; j++)
-			{
-				std::string label = visualization->getPlottingLabel(j);
-				std::vector<double> data = *visualization->getPlottingData(j);
-				ImPlot::PlotLine(label.c_str(), &data[0], data.size());
-			}
-
+			this->visualization = std::make_shared<Visualization>(simulation);
+			id = ++current_id;
+			plotDimensions = { 0, 100, -30, 40 };
 		}
-		ImPlot::EndPlot();
-	}
-	ImGui::End();
-}
 
-void PlotWindow::renderElementSelector() const
-{
-	const auto simulation = visualization->getAssociatedSimulationPtr();
-	const int numberOfElementsInSimulation = simulation->getNumberOfElements();
-
-	static std::string selectedElementId{};
-	static int currentElementIdx = 0;
-
-	const std::string selectorTitle = "Plot selector " + std::to_string(id);
-
-	if (ImGui::Begin(selectorTitle.c_str()))
-	{
-		if (ImGui::BeginListBox("Select element", { 200.0f, 100.0f }))
+		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector)
+			:renderPlotSelector(renderPlotSelector)
 		{
-			for (int n = 0; n < numberOfElementsInSimulation; n++)
+			this->visualization = visualization;
+			id = ++current_id;
+			plotDimensions = { 0, 100, -30, 40 };
+		}
+
+		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, bool renderPlotSelector)
+			:plotDimensions(dimensions), renderPlotSelector(renderPlotSelector)
+		{
+			this->visualization = std::make_shared<Visualization>(simulation);
+			id = ++current_id;
+		}
+
+		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector)
+			:plotDimensions(dimensions), renderPlotSelector(renderPlotSelector)
+		{
+			this->visualization = visualization;
+			id = ++current_id;
+		}
+
+		void PlotWindow::render()
+		{
+			if (renderPlotSelector)
+				renderElementSelector();
+			renderPlots();
+		}
+
+		void PlotWindow::renderPlots() const
+		{
+			configure();
+
+			const std::string plotTitle = "Plot window " + std::to_string(id);
+			if (ImGui::Begin(plotTitle.c_str()))
 			{
-				const auto element = simulation->getElement(n);
-				std::string elementId = element->getUniqueName();
-				const bool isSelected = (currentElementIdx == n);
-				if (ImGui::Selectable(elementId.c_str(), isSelected))
+				if (ImPlot::BeginPlot(plotTitle.c_str()))
 				{
-					selectedElementId = elementId;
-					currentElementIdx = n;
+					ImPlot::SetupAxes("Field position", "Amplitude");
+					ImPlot::SetupLegend(ImPlotLocation_NorthEast, ImPlotLegendFlags_Outside);
+
+					const int numOfPlots = visualization->getNumberOfPlots();
+					for (int j = 0; j < numOfPlots; j++)
+					{
+						std::string label = visualization->getPlottingLabel(j);
+						std::vector<double> data = *visualization->getPlottingData(j);
+						ImPlot::PlotLine(label.c_str(), &data[0], data.size());
+					}
+
+				}
+				ImPlot::EndPlot();
+			}
+			ImGui::End();
+		}
+
+		void PlotWindow::renderElementSelector() const
+		{
+			const auto simulation = visualization->getAssociatedSimulationPtr();
+			const int numberOfElementsInSimulation = simulation->getNumberOfElements();
+
+			static std::string selectedElementId{};
+			static int currentElementIdx = 0;
+
+			const std::string selectorTitle = "Plot selector " + std::to_string(id);
+
+			if (ImGui::Begin(selectorTitle.c_str()))
+			{
+				if (ImGui::BeginListBox("Select element", { 200.0f, 100.0f }))
+				{
+					for (int n = 0; n < numberOfElementsInSimulation; n++)
+					{
+						const auto element = simulation->getElement(n);
+						std::string elementId = element->getUniqueName();
+						const bool isSelected = (currentElementIdx == n);
+						if (ImGui::Selectable(elementId.c_str(), isSelected))
+						{
+							selectedElementId = elementId;
+							currentElementIdx = n;
+						}
+
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndListBox();
 				}
 
-				if (isSelected)
-					ImGui::SetItemDefaultFocus();
+				const char* components[] = { "output", "activation", "input", "kernel" };
+				static int currentComponentIdx = 0;
+
+				if (ImGui::BeginListBox("Select component", { 200.0f, 100.0f }))
+				{
+					for (int n = 0; n < IM_ARRAYSIZE(components); n++)
+					{
+						const bool isSelected = (currentComponentIdx == n);
+						if (ImGui::Selectable(components[n], isSelected))
+							currentComponentIdx = n;
+
+						if (isSelected)
+							ImGui::SetItemDefaultFocus();
+					}
+					ImGui::EndListBox();
+				}
+
+				if (ImGui::Button("Add", { 100.0f, 30.0f }))
+				{
+					visualization->addPlottingData(selectedElementId, components[currentComponentIdx]);
+				}
 			}
-			ImGui::EndListBox();
+			ImGui::End();
 		}
 
-		const char* components[] = { "output", "activation", "input", "kernel" };
-		static int currentComponentIdx = 0;
-
-		if (ImGui::BeginListBox("Select component", { 200.0f, 100.0f }))
+		void PlotWindow::configure() const
 		{
-			for (int n = 0; n < IM_ARRAYSIZE(components); n++)
-			{
-				const bool isSelected = (currentComponentIdx == n);
-				if (ImGui::Selectable(components[n], isSelected))
-					currentComponentIdx = n;
-
-				if (isSelected)
-					ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndListBox();
-		}
-
-		if (ImGui::Button("Add", { 100.0f, 30.0f }))
-		{
-			visualization->addPlottingData(selectedElementId, components[currentComponentIdx]);
+			ImPlot::SetNextAxesLimits(plotDimensions.xMin, plotDimensions.xMax, plotDimensions.yMin, plotDimensions.yMax);
+			ImPlotStyle& style = ImPlot::GetStyle();
+			style.LineWeight = 3.0f;
 		}
 	}
-	ImGui::End();
-}
-
-void PlotWindow::configure() const
-{
-	ImPlot::SetNextAxesLimits(plotDimensions.xMin, plotDimensions.xMax, plotDimensions.yMin, plotDimensions.yMax);
-	ImPlotStyle& style = ImPlot::GetStyle();
-	style.LineWeight = 3.0f;
 }

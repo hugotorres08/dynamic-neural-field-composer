@@ -6,21 +6,20 @@
 
 // This .cpp file is an example of how you can use the library to create your own DNF simulation.
 
-
 int main(int argc, char* argv[])
 {
     // After defining the simulation, we can create the application.
-    std::shared_ptr<Simulation> simulation = std::make_shared<Simulation>(5, 0, 0);
+    auto simulation = std::make_shared<dnf_composer::Simulation>(5, 0, 0);
     // You can run the application without the user interface by setting the second parameter to false.
     constexpr bool activateUserInterface = true;
-    Application app{ simulation, activateUserInterface };
+    const dnf_composer::Application app{ simulation, activateUserInterface };
     
     // After creating the application, we can add the windows we want to display.
-    app.activateUserInterfaceWindow(std::make_shared<SimulationWindow>(simulation));
-    PlotDimensions pd = { 0, 100, -30, 40 };
-    app.activateUserInterfaceWindow(std::make_shared<PlotWindow>(simulation, pd));
+    app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::SimulationWindow>(simulation));
+    dnf_composer::user_interface::PlotDimensions pd = { 0, 100, -30, 40 };
+    app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, pd));
 
-    ArchitectureBuilder architecture{"example-1", simulation};
+    dnf_composer::ArchitectureBuilder architecture{"example-1", simulation};
 
     architecture.readArchitecture();
     architecture.saveArchitecture();
@@ -37,7 +36,7 @@ int main(int argc, char* argv[])
         app.close();
         return 0;
     }
-    catch (const Exception& ex) {
+    catch (const dnf_composer::Exception& ex) {
         std::cerr << "Exception: " << ex.what() << " ErrorCode: " << static_cast<int>(ex.getErrorCode()) << std::endl;
         return static_cast<int>(ex.getErrorCode());
     }

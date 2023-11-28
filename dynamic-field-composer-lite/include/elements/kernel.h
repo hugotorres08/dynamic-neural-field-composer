@@ -3,14 +3,22 @@
 #include "element.h"
 #include <array>
 
-class Kernel : public Element
+namespace dnf_composer
 {
-protected:
-	bool circular;
-	bool normalized;
-	std::array<int, 2> kernelRange;
-	std::vector<int> extIndex;
-public:
-	Kernel();
-    virtual ~Kernel() override = default;
-};
+	namespace element
+	{
+		class Kernel : public Element
+		{
+		protected:
+			bool circular;
+			bool normalized;
+			std::array<int, 2> kernelRange;
+			std::vector<int> extIndex;
+		public:
+			Kernel();
+		    virtual ~Kernel() override = default;
+		};
+	}
+
+}
+

@@ -4,9 +4,15 @@
 
 #include "elements/kernel.h"
 
-Kernel::Kernel()
+namespace dnf_composer
 {
-	circular = true;
-	normalized = true;
-	kernelRange = { 0, 0 };
+	namespace element
+	{
+		Kernel::Kernel()
+		{
+			circular = true;
+			normalized = true;
+			kernelRange = { 0, 0 };
+		}
+	}
 }

@@ -63,32 +63,37 @@ FrameContext* WaitForNextFrameResources();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 
-
-class UserInterface
+namespace dnf_composer
 {
-private:
-	std::shared_ptr<Simulation> simulation;
-	std::vector<std::shared_ptr<Visualization>> visualizations;
-	std::vector<std::shared_ptr<UserInterfaceWindow>> windows;
+	namespace user_interface
+	{
+		class UserInterface
+		{
+		private:
+			std::shared_ptr<Simulation> simulation;
+			std::vector<std::shared_ptr<Visualization>> visualizations;
+			std::vector<std::shared_ptr<UserInterfaceWindow>> windows;
 
-	HWND windowHandle;
-	WNDCLASSEXW windowClass;
-	bool closeUI;
+			HWND windowHandle;
+			WNDCLASSEXW windowClass;
+			bool closeUI;
 
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-public:
-	UserInterface(const std::shared_ptr<Simulation>& simulation, 
-		const std::vector<std::shared_ptr<Visualization>>& visualizations);
+			ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+		public:
+			UserInterface(const std::shared_ptr<Simulation>& simulation,
+				const std::vector<std::shared_ptr<Visualization>>& visualizations);
 
-	void init();
-	void step();
-	void close() const;
+			void init();
+			void step();
+			void close() const;
 
-	void activateWindow(const std::shared_ptr<UserInterfaceWindow>& window);
+			void activateWindow(const std::shared_ptr<UserInterfaceWindow>& window);
 
-	bool getCloseUI() const;
-	~UserInterface() = default;
+			bool getCloseUI() const;
+			~UserInterface() = default;
 
-private:
-	void render() const;
-};
+		private:
+			void render() const;
+		};
+	}
+}

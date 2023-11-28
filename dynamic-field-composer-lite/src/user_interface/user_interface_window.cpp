@@ -4,8 +4,13 @@
 
 #include "./user_interface/user_interface_window.h"
 
+namespace dnf_composer
+{
+    namespace user_interface
+    {
 
-UserInterfaceWindow::UserInterfaceWindow()
-{}
-
+        UserInterfaceWindow::UserInterfaceWindow()
+        {}
+    }
+}
 

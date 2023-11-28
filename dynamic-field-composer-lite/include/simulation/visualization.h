@@ -5,26 +5,30 @@
 #include "simulation.h"
 #include "exceptions/exception.h"
 
-class Visualization
+namespace dnf_composer
 {
-private:
-	std::shared_ptr<Simulation> simulation;
-	std::vector<std::pair<std::string, std::vector<double>*>> plottingLabelAndData;
-public:
-	Visualization(std::shared_ptr<Simulation> sim);
+	class Visualization
+	{
+	private:
+		std::shared_ptr<Simulation> simulation;
+		std::vector<std::pair<std::string, std::vector<double>*>> plottingLabelAndData;
+	public:
+		Visualization(std::shared_ptr<Simulation> sim);
 
-	Visualization(const Visualization&) = delete;
-	Visualization& operator=(const Visualization&) = delete;
-	Visualization(Visualization&&) = delete;
-	Visualization& operator=(Visualization&&) = delete;
+		Visualization(const Visualization&) = delete;
+		Visualization& operator=(const Visualization&) = delete;
+		Visualization(Visualization&&) = delete;
+		Visualization& operator=(Visualization&&) = delete;
 
-	void setSimulation(const std::shared_ptr<Simulation>& sim);
-	void addPlottingData(const std::string& elementId, const std::string& componentId);
+		void setSimulation(const std::shared_ptr<Simulation>& sim);
+		void addPlottingData(const std::string& elementId, const std::string& componentId);
 
-	std::shared_ptr<const Simulation> getAssociatedSimulationPtr() const;
-	std::string getPlottingLabel(const int& index) const;
-	std::vector<double>* getPlottingData(const int& index) const;
-	int getNumberOfPlots() const;
+		std::shared_ptr<const Simulation> getAssociatedSimulationPtr() const;
+		std::string getPlottingLabel(const int& index) const;
+		std::vector<double>* getPlottingData(const int& index) const;
+		int getNumberOfPlots() const;
 
-	~Visualization() = default;
-};
+		~Visualization() = default;
+	};
+}
+

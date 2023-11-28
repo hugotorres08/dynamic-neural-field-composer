@@ -7,44 +7,50 @@
 
 #include "kernel.h"
 
-struct MexicanHatKernelParameters
+namespace dnf_composer
 {
-	double sigmaExc;
-	double amplitudeExc;
-	double sigmaInh;
-	double amplitudeInh;
-	double amplitudeGlobal;
-	double fullSum;
-	int cutOfFactor;
-
-	bool operator==(const MexicanHatKernelParameters& other) const
+	namespace element
 	{
-		constexpr double epsilon = 1e-6; 
+		struct MexicanHatKernelParameters
+		{
+			double sigmaExc;
+			double amplitudeExc;
+			double sigmaInh;
+			double amplitudeInh;
+			double amplitudeGlobal;
+			double fullSum;
+			int cutOfFactor;
 
-		return std::abs(sigmaExc - other.sigmaExc) < epsilon &&
-			std::abs(amplitudeExc - other.amplitudeExc) < epsilon &&
-			std::abs(sigmaInh - other.sigmaInh) < epsilon &&
-			std::abs(amplitudeInh - other.amplitudeInh) < epsilon &&
-			std::abs(amplitudeGlobal - other.amplitudeGlobal) < epsilon &&
-			std::abs(fullSum - other.fullSum) < epsilon &&
-			cutOfFactor == other.cutOfFactor;
+			bool operator==(const MexicanHatKernelParameters& other) const
+			{
+				constexpr double epsilon = 1e-6; 
+
+				return std::abs(sigmaExc - other.sigmaExc) < epsilon &&
+					std::abs(amplitudeExc - other.amplitudeExc) < epsilon &&
+					std::abs(sigmaInh - other.sigmaInh) < epsilon &&
+					std::abs(amplitudeInh - other.amplitudeInh) < epsilon &&
+					std::abs(amplitudeGlobal - other.amplitudeGlobal) < epsilon &&
+					std::abs(fullSum - other.fullSum) < epsilon &&
+					cutOfFactor == other.cutOfFactor;
+			}
+		};
+
+		class MexicanHatKernel : public Kernel
+		{
+		private:
+			MexicanHatKernelParameters parameters;
+		public:
+			MexicanHatKernel(const std::string& id, int size,
+				const MexicanHatKernelParameters& parameters);
+
+			void init() override;
+			void step(double t, double deltaT) override;
+			void close() override;
+
+			void setParameters(const MexicanHatKernelParameters& parameters);
+			MexicanHatKernelParameters getParameters() const;
+
+			~MexicanHatKernel() override = default;
+		};
 	}
-};
-
-class MexicanHatKernel : public Kernel
-{
-private:
-	MexicanHatKernelParameters parameters;
-public:
-	MexicanHatKernel(const std::string& id, int size,
-		const MexicanHatKernelParameters& parameters);
-
-	void init() override;
-	void step(double t, double deltaT) override;
-	void close() override;
-
-	void setParameters(const MexicanHatKernelParameters& parameters);
-	MexicanHatKernelParameters getParameters() const;
-
-	~MexicanHatKernel() override = default;
-};
+}

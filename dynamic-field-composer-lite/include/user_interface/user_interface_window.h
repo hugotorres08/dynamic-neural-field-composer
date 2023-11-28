@@ -15,11 +15,18 @@
 
 #define CHAR_SIZE 50
 
-class UserInterfaceWindow
+namespace dnf_composer
 {
-public:
-	UserInterfaceWindow();
-	virtual void render() = 0;
-	virtual ~UserInterfaceWindow() = default;
-};
+	namespace user_interface
+	{
+
+		class UserInterfaceWindow
+		{
+		public:
+			UserInterfaceWindow();
+			virtual void render() = 0;
+			virtual ~UserInterfaceWindow() = default;
+		};
+	}
+}
 

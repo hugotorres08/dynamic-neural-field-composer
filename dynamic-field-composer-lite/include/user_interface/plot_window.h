@@ -3,31 +3,39 @@
 
 #include "user_interface_window.h"
 
-static int current_id = 0;
 
-struct PlotDimensions
+namespace dnf_composer
 {
-	int xMin, xMax, yMin, yMax;
-};
+	namespace user_interface
+	{
+		static int current_id = 0;
+
+		struct PlotDimensions
+		{
+			int xMin, xMax, yMin, yMax;
+		};
 
 
-class PlotWindow : public UserInterfaceWindow
-{
-private:
-	std::shared_ptr<Visualization> visualization;
-	 int id;
-	 PlotDimensions plotDimensions;
-	 bool renderPlotSelector;
-public:
-	PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderPlotSelector = true);
-	PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, bool renderPlotSelector = true);
-	PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector = true);
-	PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector = true);
-	void render() override;
-	~PlotWindow() override = default;
-private:
-	void renderPlots() const;
-	void renderElementSelector() const;
-	void configure() const;
-};
+		class PlotWindow : public UserInterfaceWindow
+		{
+		private:
+			std::shared_ptr<Visualization> visualization;
+			 int id;
+			 PlotDimensions plotDimensions;
+			 bool renderPlotSelector;
+		public:
+			PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderPlotSelector = true);
+			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, bool renderPlotSelector = true);
+			PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector = true);
+			PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector = true);
+			void render() override;
+			~PlotWindow() override = default;
+		private:
+			void renderPlots() const;
+			void renderElementSelector() const;
+			void configure() const;
+		};
+	}
+}
+
 
