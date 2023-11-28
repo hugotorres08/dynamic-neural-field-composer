@@ -21,6 +21,10 @@ public:
 	double t;
 public:
 	Simulation(double deltaT = 1, double tZero = 0, double t = 0);
+	Simulation(const Simulation&) = delete;
+	Simulation& operator=(const Simulation&) = delete;
+	Simulation(Simulation&&) = delete;
+	Simulation& operator=(Simulation&&) = delete;
 
 	void init();
 	void step();

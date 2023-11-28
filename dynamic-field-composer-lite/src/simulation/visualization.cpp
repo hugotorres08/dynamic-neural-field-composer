@@ -5,31 +5,31 @@
 #include "simulation/visualization.h"
 
 
-Visualization::Visualization(std::shared_ptr<Simulation> sim)
+Visualization::Visualization(std::shared_ptr<Simulation> targetSimulation)
 {
-	if (sim == nullptr)
+	if (targetSimulation == nullptr)
 		throw Exception(ErrorCode::VIS_INVALID_SIM);
 
-	this->sim = std::move(sim);
+	simulation = std::move(targetSimulation);
 	plottingLabelAndData = {};
 }
 
-void Visualization::setSimulation(const std::shared_ptr<Simulation>& sim)
+void Visualization::setSimulation(const std::shared_ptr<Simulation>& targetSimulation)
 {
-	if (sim == nullptr)
+	if (targetSimulation == nullptr)
 		throw Exception(ErrorCode::VIS_INVALID_SIM);
 
-	this->sim = sim;
+	simulation = targetSimulation;
 }
 
 void Visualization::addPlottingData(const std::string& elementId, const std::string& componentId)
 {
-	std::vector<double>* data = sim->getComponentPtr(elementId, componentId);
+	std::vector<double>* data = simulation->getComponentPtr(elementId, componentId);
 
 	if (!data)
 		throw Exception(ErrorCode::VIS_DATA_NOT_FOUND, elementId, componentId);
 
-	for (const auto& [label, data] : plottingLabelAndData)
+	for (const auto& [label, plotData] : plottingLabelAndData)
 		if (label == elementId + " " + componentId)
 		{
 			std::cout << "Data already exists in the plotting vector.\n";
@@ -41,7 +41,7 @@ void Visualization::addPlottingData(const std::string& elementId, const std::str
 
 std::shared_ptr<const Simulation> Visualization::getAssociatedSimulationPtr() const
 {
-	return this->sim;
+	return simulation;
 }
 
 std::string Visualization::getPlottingLabel(const int& index) const 

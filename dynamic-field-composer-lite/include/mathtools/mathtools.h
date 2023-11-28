@@ -38,7 +38,6 @@ namespace mathtools {
 				out[i] += (f[j] * g[i - j]);
 			}
 		}
-		//out.erase(std::remove(out.begin(), out.end(), 0), out.end());
 		return out;
 	}
 
@@ -65,17 +64,9 @@ namespace mathtools {
 	std::vector<T> gaussNorm(const std::vector<int>& rangeX, const T& position, const T& sigma)
 	{
 		std::vector<T> g(rangeX.size());
-		if (sigma)
-		{
-			for (int i = 0; i < g.size(); i++)
-				g[i] = exp(-0.5 * pow((rangeX[i] - position), 2) / pow(sigma, 2));
-		}
-		else
-		{
-			// to do!
-			//for (int i = 0; i < g.size(); i++)
-				//g[i] = exp(-0.5 * pow((rangeX[i] - position), 2) / pow(sigma, 2));
-		}
+		for (int i = 0; i < g.size(); i++)
+			g[i] = exp(-0.5 * pow((rangeX[i] - position), 2) / pow(sigma, 2));
+
 		if (!g.empty())
 		{
 			double sumOfG = std::reduce(g.begin(), g.end());
@@ -90,17 +81,10 @@ namespace mathtools {
 	std::vector<T> gauss(const std::vector<int>& rangeX, const T& position, const T& sigma)
 	{
 		std::vector<T> g(rangeX.size());
-		if (sigma)
-		{
-			for (int i = 0; i < g.size(); i++)
-				g[i] = exp(-0.5 * pow((rangeX[i] - position), 2) / pow(sigma, 2));
-		}
-		else
-		{
-			// to do!
-			//for (int i = 0; i < g.size(); i++)
-				//g[i] = exp(-0.5 * pow((rangeX[i] - position), 2) / pow(sigma, 2));
-		}
+
+		for (int i = 0; i < g.size(); i++)
+			g[i] = exp(-0.5 * pow((rangeX[i] - position), 2) / pow(sigma, 2));
+
 		return g;
 	}
 
@@ -117,21 +101,15 @@ namespace mathtools {
 		std::vector<T> xRange(size);
 		std::iota(xRange.begin(), xRange.end(), static_cast<T>(1));
 
-		if (sigma)
+		std::vector<T> d(size);
+		std::vector<T> lMinusd(size);
+		std::transform(xRange.begin(), xRange.end(), d.begin(), [&positionShifted, &l](T element) { return std::abs(element - positionShifted); });
+		std::transform(d.begin(), d.end(), lMinusd.begin(), [&l](T element) { return -1 * (element - l); });
+		for (int i = 0; i < size; i++)
 		{
-			std::vector<T> d(size);
-			std::vector<T> lMinusd(size);
-			std::transform(xRange.begin(), xRange.end(), d.begin(), [&positionShifted, &l](T element) { return std::abs(element - positionShifted); });
-			std::transform(d.begin(), d.end(), lMinusd.begin(), [&l](T element) { return -1 * (element - l); });
-			for (int i = 0; i < size; i++)
-			{
-				g[i] = std::exp(-0.5 * std::pow(std::min(d[i], lMinusd[i]), 2) / std::pow(sigma, 2));
-			}
+			g[i] = std::exp(-0.5 * std::pow(std::min(d[i], lMinusd[i]), 2) / std::pow(sigma, 2));
 		}
-		//else
-		//{
-		//    // if sigma not zero what to do?
-		//}
+
 		return g;
 	}
 
@@ -145,10 +123,10 @@ namespace mathtools {
 	}
 
 	template<typename T>
-	std::vector<T> sigmoid(const std::vector<T>& x, T beta, uint32_t x0)
+	std::vector<T> sigmoid(const std::vector<T>& x, T beta, int x0)
 	{
 		std::vector<T> s(x.size());
-		for (int i = 0; i < (uint32_t)s.size(); i++)
+		for (int i = 0; i < static_cast<int>(s.size()); i++)
 			s[i] = 1 / (1 + exp(-beta * (x[i] - x0)));
 		return s;
 	}
@@ -157,7 +135,7 @@ namespace mathtools {
 	std::vector<T> heaviside(const std::vector<T>& x, T threshold)
 	{
 		std::vector<T> h(x.size());
-		for (int i = 0; i < (uint32_t)h.size(); i++)
+		for (int i = 0; i < static_cast<int>(h.size()); i++)
 			h[i] = (x[i] >= threshold) ? 1 : 0;
 		return h;
 	}
@@ -165,7 +143,6 @@ namespace mathtools {
 	template<typename T>
 	std::vector<T> sumGauss(const std::vector<T>& gauss1, const std::vector<T>& gauss2)
 	{
-		// to do VERIFY IF GAUSSIANS ARE SAME SIZE
 		std::vector<T> gaussResult(gauss1.size());
 		for (int i = 0; i < gauss1.size(); i++)
 			gaussResult[i] = gauss1[i] + gauss2[i];
@@ -235,7 +212,7 @@ namespace mathtools {
 	template <typename T>
 	std::vector<std::vector<T>> deltaLearningRuleWidrowHoff(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
 	{
-		int inputSize = input.size();
+		const int inputSize = input.size();
 		int outputSize = targetOutput.size();
 		if (inputSize != outputSize)
 			throw std::invalid_argument("Input and targetOutput must have the same size.");
@@ -272,7 +249,7 @@ namespace mathtools {
 		 double tau_w = 5.0;
 		 double eta = 0.5;
 
-		int inputSize = input.size();
+		const int inputSize = input.size();
 		int outputSize = targetOutput.size();
 
 		// Calculate the activation levels of the fields based on the input values and current weights
@@ -313,6 +290,4 @@ namespace mathtools {
 		return randomNum;
 	}
 
-	// Function to count the number of lines in a file
-	int countNumOfLinesInFile(const std::string& filename);
 }

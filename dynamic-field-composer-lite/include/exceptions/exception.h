@@ -24,10 +24,10 @@ private:
 	int errorIndex;
 public:
 	Exception(std::string message);
-	Exception(const ErrorCode errorCode);
-	Exception(const ErrorCode errorCode, std::string errorElement);
-	Exception(const ErrorCode errorCode, int errorIndex);
-	Exception(const ErrorCode errorCode, std::string errorElement, std::string errorComponent);
+	Exception(ErrorCode errorCode);
+	Exception(ErrorCode errorCode, std::string errorElement);
+	Exception(ErrorCode errorCode, int errorIndex);
+	Exception(ErrorCode errorCode, std::string errorElement, std::string errorComponent);
 
 	const char* what() const noexcept override;
 

@@ -63,8 +63,8 @@ void Simulation::addElement(const std::shared_ptr<Element>& element)
 	//		// ...
 	//	}
 	//}
-	for (const auto& element : elements) {
-		if (element->getUniqueIdentifier() == newElementId) {
+	for (const auto& existingElement : elements) {
+		if (existingElement->getUniqueIdentifier() == newElementId) {
 			throw Exception(ErrorCode::SIM_ELEM_ALREADY_EXISTS, newElementId);
 			// Handle the error here, such as logging an error message, returning an error code, etc.
 			// ...
@@ -78,11 +78,6 @@ void Simulation::addElement(const std::shared_ptr<Element>& element)
 
 void Simulation::removeElement(const std::string& elementId)
 {
-	//for (int i = 0; i < elements.size(); i++)
-	//{
-	//	// Remove the element from the inputs of all other elements
-	//	elements[i]->removeInput(elementId);
-	//}
 	for (const auto& element : elements)
 		element->removeInput(elementId);
 
@@ -101,16 +96,7 @@ void Simulation::removeElement(const std::string& elementId)
 void Simulation::resetElement(const std::string& idOfElementToReset, const std::shared_ptr<Element>& newElement)
 {
 	bool elementFound = false;
-	//for (int i = 0; i < elements.size(); i++)
-	//{
-	//	if (elements[i]->getUniqueIdentifier() == idOfElementToReset)
-	//	{
-	//		elements[i] = newElement;
-	//		elements[i]->init();
-	//		elementFound = true;
-	//		break;
-	//	}
-	//}
+
 	for (auto& element : elements) 
 	{
 		if (element->getUniqueName() == idOfElementToReset) 
@@ -137,10 +123,6 @@ void Simulation::createInteraction(const std::string& stimulusElementId,
 
 std::shared_ptr<Element> Simulation::getElement(const std::string& id) const
 {
-	//for (int i = 0; i < elements.size(); i++)
-	//	if (elements[i]->getUniqueIdentifier() == id)
-	//		return std::shared_ptr<Element>(elements[i]);
-
 	for (const auto& element : elements)
 		if (element->getUniqueName() == id)
 			return element;
@@ -177,16 +159,11 @@ int Simulation::getNumberOfElements() const
 std::vector<std::shared_ptr<Element>> Simulation::getElementsThatHaveSpecifiedElementAsInput(const std::string& specifiedElement, const std::string& inputComponent) const
 {
 	std::vector<std::shared_ptr<Element>> elementsThatHaveSpecifiedElementAsInput;
-	for (int i = 0; i < elements.size(); i++)
-	{
-		if (elements[i]->hasInput(specifiedElement, inputComponent))
-			elementsThatHaveSpecifiedElementAsInput.push_back(elements[i]);
+	for (const auto& element : elements) {
+		if (element->hasInput(specifiedElement, inputComponent)) {
+			elementsThatHaveSpecifiedElementAsInput.push_back(element);
+		}
 	}
-	//for (const auto& element : elements) {
-	//	if (element->hasInput(specifiedElement, inputComponent)) {
-	//		elementsThatHaveSpecifiedElementAsInput.push_back(element);
-	//	}
-	//}
 	return elementsThatHaveSpecifiedElementAsInput;
 }
 

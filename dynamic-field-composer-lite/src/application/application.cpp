@@ -37,9 +37,9 @@ void Application::close() const
 		userInterface->close();
 }
 
-void Application::setActivateUserInterfaceAs(bool activateUserInterface)
+void Application::setActivateUserInterfaceAs(bool activateUI)
 {
-	this->activateUserInterface = activateUserInterface;
+	activateUserInterface = activateUI;
 }
 
 void Application::activateUserInterfaceWindow(const std::shared_ptr<UserInterfaceWindow>& window) const
