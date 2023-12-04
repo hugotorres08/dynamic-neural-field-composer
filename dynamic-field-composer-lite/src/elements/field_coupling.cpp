@@ -20,7 +20,7 @@ namespace dnf_composer
 			this->size = outputSize;
 			components["input"] = std::vector<double>(inputSize);
 			components["output"] = std::vector<double>(outputSize);
-			mathtools::resizeMatrix(weights, components["input"].size(), components["output"].size());
+			mathtools::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
 
 			// Initialize the weight matrix with random values
 			mathtools::fillMatrixWithRandomValues(weights, -1, 1);
@@ -31,17 +31,16 @@ namespace dnf_composer
 			trained = false;
 		}
 
-
 		void FieldCoupling::init()
 		{
-			std::fill(components["input"].begin(), components["input"].end(), 0);
-			std::fill(components["output"].begin(), components["output"].end(), 0);
+			std::ranges::fill(components["input"], 0);
+			std::ranges::fill(components["output"], 0);
 
 			if (readWeights())
 				trained = true;
 			else
 			{
-				mathtools::resizeMatrix(weights, components["input"].size(), components["output"].size());
+				mathtools::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
 				mathtools::fillMatrixWithRandomValues(weights, 0.0, 0.0);
 				trained = false;
 				writeWeights();
@@ -57,9 +56,9 @@ namespace dnf_composer
 
 		void FieldCoupling::close()
 		{
-			std::fill(components["input"].begin(), components["input"].end(), 0);
-			std::fill(components["output"].begin(), components["output"].end(), 0);
-			// empty weight matrix
+			std::ranges::fill(components["input"], 0);
+			std::ranges::fill(components["output"], 0);
+			resetWeights();
 		}
 
 		void FieldCoupling::getInputFunction()
@@ -140,15 +139,16 @@ namespace dnf_composer
 				mathtools::resizeMatrix(weights, 0, 0);
 				double element;
 				std::vector<double> row;
-				while (file >> element) {  // Read each element from file
-					row.push_back(element);  // Add element to the current row
+				while (file >> element) 
+				{  
+					row.push_back(element);  
 					if (row.size() == components["output"].size())
 					{
-						weights.push_back(row);  // Add row to the vector of weights
-						row.clear();  // Clear the row for the next iteration
+						weights.push_back(row);  
+						row.clear(); 
 					}
 				}
-				file.close();  // Close the file
+				file.close();
 				return true;
 			}
 			else
@@ -163,15 +163,13 @@ namespace dnf_composer
 			std::ofstream file(weightsFilePath); // Open file for writing
 
 			if (file.is_open()) {
-				// Loop through each row of weights
 				for (const auto& row : weights) {
-					// Loop through each element in the row
 					for (const auto& element : row) {
-						file << element << " ";  // Write element to file separated by a space
+						file << element << " ";  
 					}
-					file << '\n';  // Write new line after each row
+					file << '\n'; 
 				}
-				file.close();  // Close the file
+				file.close(); 
 				std::cout << "Saved weights to: " << weightsFilePath << std::endl;
 			}
 			else

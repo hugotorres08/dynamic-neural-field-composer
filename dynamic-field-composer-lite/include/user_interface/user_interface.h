@@ -83,6 +83,11 @@ namespace dnf_composer
 			UserInterface(const std::shared_ptr<Simulation>& simulation,
 				const std::vector<std::shared_ptr<Visualization>>& visualizations);
 
+			UserInterface(const UserInterface&) = delete;
+			UserInterface& operator=(const UserInterface&) = delete;
+			UserInterface(UserInterface&&) = delete;
+			UserInterface& operator=(UserInterface&&) = delete;
+
 			void init();
 			void step();
 			void close() const;

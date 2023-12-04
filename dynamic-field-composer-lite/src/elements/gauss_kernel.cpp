@@ -33,7 +33,7 @@ namespace dnf_composer
 			else
 				extIndex = {};
 
-			uint32_t rangeXsize = kernelRange[0] + kernelRange[1] + 1;
+			int rangeXsize = kernelRange[0] + kernelRange[1] + 1;
 			std::vector<int> rangeX(rangeXsize);
 			const int startingValue = static_cast<int>(kernelRange[0]);
 			std::iota(rangeX.begin(), rangeX.end(), -startingValue);

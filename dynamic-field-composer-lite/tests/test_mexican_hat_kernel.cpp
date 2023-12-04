@@ -5,7 +5,7 @@
 TEST_CASE("MexicanHatKernel class tests", "[MexicanHatKernel]")
 {
     uint8_t size = 10;
-    MexicanHatKernelParameters params;
+    dnf_composer::element::MexicanHatKernelParameters params;
     params.sigmaExc = 1.0;
     params.amplitudeExc = 2.0;
     params.sigmaInh = 0.5;
@@ -16,9 +16,9 @@ TEST_CASE("MexicanHatKernel class tests", "[MexicanHatKernel]")
 
     SECTION("MexicanHatKernel constructor and getParameters method")
     {
-        MexicanHatKernel kernel("test", size, params);
+	    dnf_composer::element::MexicanHatKernel kernel("test", size, params);
 
-        REQUIRE(kernel.getLabel() == ElementLabel::MEXICAN_HAT_KERNEL);
+        REQUIRE(kernel.getLabel() == dnf_composer::element::ElementLabel::MEXICAN_HAT_KERNEL);
         REQUIRE(kernel.getUniqueName() == "test");
         REQUIRE(kernel.getSize() == size);
         REQUIRE(kernel.getParameters() == params);
@@ -40,7 +40,7 @@ TEST_CASE("MexicanHatKernel class tests", "[MexicanHatKernel]")
 
     SECTION("setParameters() method")
     {
-        MexicanHatKernel kernel("test", size, params);
+	    dnf_composer::element::MexicanHatKernel kernel("test", size, params);
 		params.sigmaExc = 2.0;
 		kernel.setParameters(params);
 		REQUIRE(kernel.getParameters() == params);

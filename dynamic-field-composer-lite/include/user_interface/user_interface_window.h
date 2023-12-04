@@ -13,7 +13,10 @@
 
 #include "./simulation/visualization.h"
 
-#define CHAR_SIZE 50
+enum CharSize : size_t
+{
+	CHAR_SIZE = 50
+};
 
 namespace dnf_composer
 {
@@ -23,9 +26,14 @@ namespace dnf_composer
 		class UserInterfaceWindow
 		{
 		public:
-			UserInterfaceWindow();
+			UserInterfaceWindow() = default;
 			virtual void render() = 0;
 			virtual ~UserInterfaceWindow() = default;
+
+			UserInterfaceWindow(const UserInterfaceWindow&) = delete;
+			UserInterfaceWindow& operator=(const UserInterfaceWindow&) = delete;
+			UserInterfaceWindow(UserInterfaceWindow&&) = delete;
+			UserInterfaceWindow& operator=(UserInterfaceWindow&&) = delete;
 		};
 	}
 }

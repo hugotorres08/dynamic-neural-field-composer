@@ -25,8 +25,6 @@ namespace dnf_composer
 			this->parameters.normalized = false;
 		}
 
-
-
 		void GaussStimulus::init()
 		{
 			std::vector<double> g(size);

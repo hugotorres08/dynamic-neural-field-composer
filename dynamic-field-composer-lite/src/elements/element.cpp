@@ -44,15 +44,6 @@ namespace dnf_composer
 
 		void Element::removeInput(const std::string& inputElementId)
 		{
-			//for (auto& [key, value] : inputs)
-			//{
-			//	if (key->uniqueIdentifier == inputElementId)
-			//	{
-			//		inputs.erase(key);
-			//		return;
-			//	}
-			//}
-
 			for (auto& key : inputs | std::views::keys)
 			{
 				if (key->uniqueName == inputElementId) {
@@ -65,15 +56,6 @@ namespace dnf_composer
 
 		void Element::removeInput(int uniqueId)
 		{
-			//for (auto& [key, value] : inputs)
-			//{
-			//	if (key->uniqueIdentifier == inputElementId)
-			//	{
-			//		inputs.erase(key);
-			//		return;
-			//	}
-			//}
-
 			for (auto& key : inputs | std::views::keys)
 			{
 				if (key->uniqueIdentifier == uniqueId) {
@@ -86,13 +68,7 @@ namespace dnf_composer
 
 		bool Element::hasInput(const std::string& inputElementName, const std::string& inputComponent)
 		{
-			//for (auto& [key, value] : inputs)
-			//{
-			//	if (key->uniqueIdentifier == inputElementId && value == inputComponent)
-			//		return true;
-			//}
-			//return false;
-			bool found = std::ranges::any_of(inputs, [&](const auto& pair) {
+			const bool found = std::ranges::any_of(inputs, [&](const auto& pair) {
 				const auto& [key, value] = pair;
 				return key->uniqueName == inputElementName && value == inputComponent;
 				});
@@ -104,13 +80,7 @@ namespace dnf_composer
 
 		bool Element::hasInput(int inputElementId, const std::string& inputComponent)
 		{
-			//for (auto& [key, value] : inputs)
-			//{
-			//	if (key->uniqueIdentifier == inputElementId && value == inputComponent)
-			//		return true;
-			//}
-			//return false;
-			bool found = std::ranges::any_of(inputs, [&](const auto& pair) {
+			const bool found = std::ranges::any_of(inputs, [&](const auto& pair) {
 				const auto& [key, value] = pair;
 				return key->uniqueIdentifier == inputElementId && value == inputComponent;
 				});
@@ -177,9 +147,6 @@ namespace dnf_composer
 
 		std::vector<double> Element::getComponent(const std::string& componentName)
 		{
-			/*for (int i = 0; i < components.size(); i++)
-				if (components.find(componentName) != components.end())
-					return components.at(componentName);*/
 			if (components.contains(componentName))
 				return components.at(componentName);
 			throw Exception(ErrorCode::ELEM_COMP_NOT_FOUND, uniqueName, componentName);
@@ -196,9 +163,6 @@ namespace dnf_composer
 		{
 			std::vector<std::shared_ptr<Element>> inputVec;
 			inputVec.reserve(inputs.size());
-
-			//for (const auto& [key, value] : inputs)
-			//	inputVec.push_back(key);
 
 			for (const auto& key : inputs | std::views::keys)
 				inputVec.push_back(key);

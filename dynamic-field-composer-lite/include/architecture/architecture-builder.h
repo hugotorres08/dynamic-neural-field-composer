@@ -50,8 +50,6 @@ namespace dnf_composer
 		void readArchitecture();
 		void saveArchitecture();
 
-		void createArchitecture();
-
 		void setArchitectureParameters(const element::ElementParameters& elementParameters);
 		void setDynamicNeuralField(const DynamicNeuralField& dynamicNeuralField);
 		void setDynamicNeuralFieldCoupling(const DynamicNeuralFieldCoupling& coupling);

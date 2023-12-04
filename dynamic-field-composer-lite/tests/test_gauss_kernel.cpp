@@ -5,15 +5,15 @@
 TEST_CASE("GaussKernel class tests", "[GaussKernel]")
 {
 	uint8_t size = 10;
-	GaussKernelParameters params;
+	dnf_composer::element::GaussKernelParameters params;
 	params.sigma = 1.0;
 	params.amplitude = 2.0;
 	params.cutOfFactor = 3;
 
 	SECTION("GaussKernel constructor and getParameters method")
 	{
-		GaussKernel kernel("test", size, params);
-		REQUIRE(kernel.getLabel() == ElementLabel::GAUSS_KERNEL);
+		dnf_composer::element::GaussKernel kernel("test", size, params);
+		REQUIRE(kernel.getLabel() == dnf_composer::element::ElementLabel::GAUSS_KERNEL);
 		REQUIRE(kernel.getUniqueName() == "test");
 		REQUIRE(kernel.getSize() == size);
 		REQUIRE(kernel.getParameters() == params);
@@ -31,7 +31,7 @@ TEST_CASE("GaussKernel class tests", "[GaussKernel]")
 	}
 	SECTION("setParameters() method")
 	{
-		GaussKernel kernel("test", size, params);
+		dnf_composer::element::GaussKernel kernel("test", size, params);
 		params.sigma = 2.0;
 		kernel.setParameters(params);
 		REQUIRE(kernel.getParameters() == params);

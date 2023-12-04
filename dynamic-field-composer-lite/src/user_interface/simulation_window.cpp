@@ -53,22 +53,22 @@ namespace dnf_composer
 				for (int i = 0; i < numberOfElementsInSimulation; i++)
 				{
 					const auto simulationElement = simulation->getElement(i);
-					std::string elementId = simulationElement->getUniqueName();
+					std::string targetElementId = simulationElement->getUniqueName();
 
-					if (ImGui::TreeNode(elementId.c_str()))
+					if (ImGui::TreeNode(targetElementId.c_str()))
 					{
 						static std::string selectedElementId{};
 						static int currentElementIdx = 0;
-						if (ImGui::BeginListBox("Active simulation elements"))
+						if (ImGui::BeginListBox("Select input element"))
 						{
 							for (int n = 0; n < numberOfElementsInSimulation; n++)
 							{
-								auto element = simulation->getElement(n);
-								std::string elementId = element->getUniqueName();
+								const auto element = simulation->getElement(n);
+								std::string inputElementId = element->getUniqueName();
 								const bool isSelected = (currentElementIdx == n);
-								if (ImGui::Selectable(elementId.c_str(), isSelected))
+								if (ImGui::Selectable(inputElementId.c_str(), isSelected))
 								{
-									selectedElementId = elementId;
+									selectedElementId = inputElementId;
 									currentElementIdx = n;
 								}
 
@@ -117,24 +117,22 @@ namespace dnf_composer
 		{
 			if (ImGui::TreeNode(elementId.second.c_str()))
 			{
-				// for now this is going to have to be a switch case
-				// i do not have an idea to make this less copy pasty code
 				switch (elementId.first)
 				{
 				case element::ElementLabel::NEURAL_FIELD:
-					addElementNeuralField();
+					//addElementNeuralField();
 					break;
 				case element::ElementLabel::GAUSS_STIMULUS:
-					addElementGaussStimulus();
+					//addElementGaussStimulus();
 					break;
 				case element::ElementLabel::FIELD_COUPLING:
-					addElementFieldCoupling();
+					//addElementFieldCoupling();
 					break;
 				case element::ElementLabel::GAUSS_KERNEL:
-					addElementGaussKernel();
+					//addElementGaussKernel();
 					break;
 				case element::ElementLabel::MEXICAN_HAT_KERNEL:
-					addElementMexicanHatKernel();
+					//addElementMexicanHatKernel();
 					break;
 				case element::ElementLabel::NORMAL_NOISE:
 					// normal noise to do

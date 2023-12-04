@@ -147,11 +147,6 @@ namespace dnf_composer
 
     }
 
-    void ArchitectureBuilder::createArchitecture()
-    {
-
-    }
-
     void ArchitectureBuilder::setArchitectureParameters(const element::ElementParameters& elementParameters)
     {
         architectureParameters = elementParameters;
@@ -344,5 +339,4 @@ namespace dnf_composer
     {
         dynamicNeuralFieldCoupling = DynamicNeuralFieldCoupling{};
     }
-
 }

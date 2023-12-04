@@ -4,15 +4,15 @@
 #include "elements/neural_field.h"
 
 // Helper function to create a sample Element object for testing
-std::shared_ptr<NeuralField> createSampleNeuralField(const std::string& elementId, uint8_t size = 1)
+std::shared_ptr<dnf_composer::element::NeuralField> createSampleNeuralField(const std::string& elementId, uint8_t size = 1)
 {
-    NeuralFieldParameters nfp{ 1, -5};
-    ActivationFunctionParameters afp{ ActivationFunctionType::Sigmoid, 1, 0 };
-    return std::make_shared<NeuralField>(elementId, size, nfp);
+	dnf_composer::element::NeuralFieldParameters nfp{ 1, -5};
+	dnf_composer::element::ActivationFunctionParameters afp{dnf_composer::element::ActivationFunctionType::Sigmoid, 1, 0 };
+    return std::make_shared<dnf_composer::element::NeuralField>(elementId, size, nfp);
 }
 
 // Mock class for testing Element
-class MockElement : public Element
+class MockElement : public dnf_composer::element::Element
 {
 public:
     void init() override {}
@@ -32,7 +32,7 @@ TEST_CASE("Element class tests", "[element]")
         element->addInput(inputElement, "output");
 
         // Add nullptr element, should throw exception
-        REQUIRE_THROWS_AS(element->addInput(nullptr, "component"), Exception);
+        REQUIRE_THROWS_AS(element->addInput(nullptr, "component"), dnf_composer::Exception);
 
         // Check if input was added
         REQUIRE(element->hasInput("inputElement", "output") == true);
@@ -40,11 +40,11 @@ TEST_CASE("Element class tests", "[element]")
         REQUIRE(element->hasInput("nonexistentElement", "output") == false);
 
         // Add input with same unique identifier, should throw exception
-        REQUIRE_THROWS_AS(element->addInput(inputElement, "output"), Exception);
+        REQUIRE_THROWS_AS(element->addInput(inputElement, "output"), dnf_composer::Exception);
 
         // Add input with different sizes, should throw exception
         auto inputElement2 = createSampleNeuralField("inputElement2", 2);
-        REQUIRE_THROWS_AS(element->addInput(inputElement, "output"), Exception);
+        REQUIRE_THROWS_AS(element->addInput(inputElement, "output"), dnf_composer::Exception);
     }
     SECTION("removeInput() method")
     {
@@ -93,28 +93,28 @@ TEST_CASE("Element class tests", "[element]")
         // Create a mock Element object for testing
         auto element = std::make_shared<MockElement>();
         // Check unique identifier
-        REQUIRE(element->getUniqueName() == "");
+        REQUIRE(element->getUniqueName().empty());
     }
     SECTION("getLabel() method")
     {
         // Create a mock Element object for testing
         auto element = std::make_shared<MockElement>();
         // Check element label
-        REQUIRE(element->getLabel() == ElementLabel::UNINITIALIZED);
+        REQUIRE(element->getLabel() == dnf_composer::element::ElementLabel::UNINITIALIZED);
     }
     SECTION("setUniqueIdentifier() method")
     {
         // Create a mock Element object for testing
         auto element = std::make_shared<MockElement>();
         // Set unique identifier
-        REQUIRE_THROWS_AS(element->setUniqueIdentifier(5), Exception);
+        REQUIRE_THROWS_AS(element->setUniqueIdentifier(5), dnf_composer::Exception);
     }
     SECTION("setSize() method")
     {
         // Create a mock Element object for testing
         auto element = std::make_shared<MockElement>();
         // Set size
-        REQUIRE_THROWS_AS(element->setSize(10), Exception);
+        REQUIRE_THROWS_AS(element->setSize(10), dnf_composer::Exception);
     }
     SECTION("getSize() method")
     {

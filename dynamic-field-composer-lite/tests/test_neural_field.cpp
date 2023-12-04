@@ -10,14 +10,14 @@ TEST_CASE("NeuralField class tests", "[neural_field]")
     double tau = 1.0;
     double sigmoidSteepness = 2.0;
     double startingRestingLevel = -1.5;
-    NeuralFieldParameters nfp{ tau, startingRestingLevel};
-    ActivationFunctionParameters afp{ ActivationFunctionType::Sigmoid, sigmoidSteepness, 0 };
+    dnf_composer::element::NeuralFieldParameters nfp{ tau, startingRestingLevel};
+    dnf_composer::element::ActivationFunctionParameters afp{dnf_composer::element::ActivationFunctionType::Sigmoid, sigmoidSteepness, 0 };
 
 	SECTION("NeuralField constructor and getParameters() method")
 	{
-        NeuralField nf(id, size, nfp);
+		dnf_composer::element::NeuralField nf(id, size, nfp);
 
-        REQUIRE(nf.getLabel() == ElementLabel::NEURAL_FIELD);
+        REQUIRE(nf.getLabel() == dnf_composer::element::ElementLabel::NEURAL_FIELD);
         REQUIRE(nf.getUniqueName() == id);
         REQUIRE(nf.getSize() == size);
         REQUIRE(nf.getParameters() == nfp);
@@ -30,7 +30,7 @@ TEST_CASE("NeuralField class tests", "[neural_field]")
 
     SECTION("init() method")
     {
-        NeuralField nf(id, size, nfp);
+	    dnf_composer::element::NeuralField nf(id, size, nfp);
 
         nf.init();
 
@@ -52,7 +52,7 @@ TEST_CASE("NeuralField class tests", "[neural_field]")
     }
 
     SECTION("step() method") {
-        NeuralField nf(id, size, nfp);
+	    dnf_composer::element::NeuralField nf(id, size, nfp);
 
         // Run a single step
         nf.step(0, 1);
@@ -62,12 +62,12 @@ TEST_CASE("NeuralField class tests", "[neural_field]")
 
     SECTION("setParameters() method")
     {
-        NeuralField nf(id, size, nfp);
+	    dnf_composer::element::NeuralField nf(id, size, nfp);
         double newtau = 1.5;
         double newsigmoidSteepness = 2.5;
         double newstartingRestingLevel = -1;
 
-        NeuralFieldParameters newnfp{ newtau, newstartingRestingLevel };
+	    dnf_composer::element::NeuralFieldParameters newnfp{ newtau, newstartingRestingLevel };
 
         nf.setParameters(newnfp);
 

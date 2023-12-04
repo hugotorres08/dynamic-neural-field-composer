@@ -8,9 +8,6 @@ namespace dnf_composer
 {
     namespace user_interface
     {
-
-        UserInterfaceWindow::UserInterfaceWindow()
-        {}
     }
 }
 
