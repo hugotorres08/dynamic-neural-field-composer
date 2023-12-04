@@ -3,6 +3,7 @@
 
 #include "./user_interface/user_interface_window.h"
 
+#include "./user_interface/logger_window.h"
 
 #include "./elements/element_factory.h"
 
@@ -34,27 +35,29 @@ namespace dnf_composer
 
 			// these functions need to die
 			// these need to be refactored - may lead to ODR violations
-			//void addElementNeuralField()
-			//{
-			//	static char id[CHAR_SIZE] = "neural field u";
-			//	ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
-			//	static double size = 100;
-			//	ImGui::InputDouble("size", &size, 1.0f, 10.0f, "%.2f");
-			//	static double tau = 20;
-			//	ImGui::InputDouble("tau", &tau, 1.0f, 10.0f, "%.2f");
-			//	static double sigmoidSteepness = 1;
-			//	ImGui::InputDouble("sigmoid steepness", &sigmoidSteepness, 1.0f, 10.0f, "%.2f");
-			//	static double restingLevel = -5.0f;
-			//	ImGui::InputDouble("resting level", &restingLevel, 1.0f, 10.0f, "%.2f");
+			void addElementNeuralField()
+			{
+				static char id[CHAR_SIZE] = "neural field u";
+				ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
+				static double size = 100;
+				ImGui::InputDouble("size", &size, 1.0f, 10.0f, "%.2f");
+				static double tau = 20;
+				ImGui::InputDouble("tau", &tau, 1.0f, 10.0f, "%.2f");
+				static double sigmoidSteepness = 1;
+				ImGui::InputDouble("sigmoid steepness", &sigmoidSteepness, 1.0f, 10.0f, "%.2f");
+				static double restingLevel = -5.0f;
+				ImGui::InputDouble("resting level", &restingLevel, 1.0f, 10.0f, "%.2f");
 
-			//	/*if (ImGui::Button("Add", { 100.0f, 30.0f }))
-			//	{
-			//		NeuralFieldParameters nfp = { tau, restingLevel };
-			//		ActivationFunctionParameters afp = { ActivationFunctionType::Sigmoid, sigmoidSteepness, 0};
-			//		std::shared_ptr<NeuralField> neuralField = std::make_shared<NeuralField>(id, size, nfp);
-			//		simulation->addElement(neuralField);
-			//	}*/
-			//}
+				if (ImGui::Button("Add", { 100.0f, 30.0f }))
+				{
+					user_interface::LoggerWindow::addLog(LogLevel::_ERROR, "added element wa");
+
+					element::NeuralFieldParameters nfp = { tau, restingLevel };
+					element::ActivationFunctionParameters afp = {element::ActivationFunctionType::Sigmoid, sigmoidSteepness, 0};
+					std::shared_ptr<element::NeuralField> neuralField = std::make_shared<element::NeuralField>(id, size, nfp);
+					simulation->addElement(neuralField);
+				}
+			}
 			void addElementGaussStimulus()
 			{
 				static char id[CHAR_SIZE] = "gauss stimulus a";
@@ -68,8 +71,13 @@ namespace dnf_composer
 				static double position = 50;
 				ImGui::InputDouble("position", &position, 1.0f, 10.0f, "%.2f");
 
+
 				if (ImGui::Button("Add", { 100.0f, 30.0f }))
 				{
+					//user_interface::LoggerWindow::addLog(LogLevel::_INFO, "added element inf");
+					user_interface::LoggerWindow::addLog(LogLevel::_WARNING, "added element wa");
+					//user_interface::LoggerWindow::addLog(LogLevel::_ERROR, "added element er");
+
 					element::GaussStimulusParameters gsp = { sigma, amplitude, position };
 					std::shared_ptr<element::GaussStimulus> gaussStimulus = std::make_shared<element::GaussStimulus>(id, size, gsp);
 					simulation->addElement(gaussStimulus);

@@ -25,6 +25,8 @@
 #include "./user_interface_window.h"
 #include "./plot_window.h"
 #include "./simulation_window.h"
+#include "./logger_window.h"
+
 
 
 // Dear ImGui stuff

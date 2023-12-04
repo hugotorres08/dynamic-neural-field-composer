@@ -19,10 +19,12 @@ int main(int argc, char* argv[])
     dnf_composer::user_interface::PlotDimensions pd = { 0, 100, -30, 40 };
     app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, pd));
 
-    dnf_composer::ArchitectureBuilder architecture{"example-1", simulation};
+    app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
 
-    architecture.readArchitecture();
-    architecture.saveArchitecture();
+    //dnf_composer::ArchitectureBuilder architecture{"example-1", simulation};
+
+    //architecture.readArchitecture();
+    //architecture.saveArchitecture();
 
     try {
         app.init();

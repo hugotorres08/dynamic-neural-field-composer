@@ -74,6 +74,7 @@ set(user_interface_headers
     "include/user_interface/user_interface_window.h"
     "include/user_interface/plot_window.h"
     "include/user_interface/simulation_window.h"
+    "include/user_interface/logger_window.h"
 )
 set(architecture_headers
     "include/architecture/architecture-builder.h"
@@ -120,6 +121,7 @@ set(src
     "src/user_interface/user_interface_window.cpp"
     "src/user_interface/plot_window.cpp"
     "src/user_interface/simulation_window.cpp"
+    "src/user_interface/logger_window.cpp"
 
     "src/architecture/architecture-builder.cpp"
     "src/architecture/architecture-file-handler.cpp"

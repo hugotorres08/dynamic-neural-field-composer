@@ -120,7 +120,7 @@ namespace dnf_composer
 				switch (elementId.first)
 				{
 				case element::ElementLabel::NEURAL_FIELD:
-					//addElementNeuralField();
+					addElementNeuralField();
 					break;
 				case element::ElementLabel::GAUSS_STIMULUS:
 					addElementGaussStimulus();
