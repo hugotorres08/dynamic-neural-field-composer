@@ -55,26 +55,26 @@ namespace dnf_composer
 			//		simulation->addElement(neuralField);
 			//	}*/
 			//}
-			//void addElementGaussStimulus()
-			//{
-			//	static char id[CHAR_SIZE] = "gauss stimulus a";
-			//	ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
-			//	static double size = 100;
-			//	ImGui::InputDouble("size", &size, 1.0f, 10.0f, "%.2f");
-			//	static double sigma = 5;
-			//	ImGui::InputDouble("sigma", &sigma, 1.0f, 10.0f, "%.2f");
-			//	static double amplitude = 20;
-			//	ImGui::InputDouble("amplitude", &amplitude, 1.0f, 10.0f, "%.2f");
-			//	static double position = 50;
-			//	ImGui::InputDouble("position", &position, 1.0f, 10.0f, "%.2f");
+			void addElementGaussStimulus()
+			{
+				static char id[CHAR_SIZE] = "gauss stimulus a";
+				ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
+				static double size = 100;
+				ImGui::InputDouble("size", &size, 1.0f, 10.0f, "%.2f");
+				static double sigma = 5;
+				ImGui::InputDouble("sigma", &sigma, 1.0f, 10.0f, "%.2f");
+				static double amplitude = 20;
+				ImGui::InputDouble("amplitude", &amplitude, 1.0f, 10.0f, "%.2f");
+				static double position = 50;
+				ImGui::InputDouble("position", &position, 1.0f, 10.0f, "%.2f");
 
-			//	if (ImGui::Button("Add", { 100.0f, 30.0f }))
-			//	{
-			//		element::GaussStimulusParameters gsp = { sigma, amplitude, position };
-			//		std::shared_ptr<element::GaussStimulus> gaussStimulus = std::make_shared<element::GaussStimulus>(id, size, gsp);
-			//		simulation->addElement(gaussStimulus);
-			//	}
-			//}
+				if (ImGui::Button("Add", { 100.0f, 30.0f }))
+				{
+					element::GaussStimulusParameters gsp = { sigma, amplitude, position };
+					std::shared_ptr<element::GaussStimulus> gaussStimulus = std::make_shared<element::GaussStimulus>(id, size, gsp);
+					simulation->addElement(gaussStimulus);
+				}
+			}
 			//void addElementFieldCoupling()
 			//{
 			//	static char id[CHAR_SIZE] = "coupling u - v";

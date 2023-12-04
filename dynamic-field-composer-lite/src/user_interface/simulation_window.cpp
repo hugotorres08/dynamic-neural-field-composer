@@ -123,7 +123,7 @@ namespace dnf_composer
 					//addElementNeuralField();
 					break;
 				case element::ElementLabel::GAUSS_STIMULUS:
-					//addElementGaussStimulus();
+					addElementGaussStimulus();
 					break;
 				case element::ElementLabel::FIELD_COUPLING:
 					//addElementFieldCoupling();

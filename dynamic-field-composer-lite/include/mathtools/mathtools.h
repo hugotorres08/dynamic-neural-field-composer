@@ -24,7 +24,6 @@
 
 namespace dnf_composer
 {
-
 	namespace mathtools {
 		// https://stackoverflow.com/questions/24518989/how-to-perform-1-dimensional-valid-convolution
 		template<typename T>
@@ -173,10 +172,8 @@ namespace dnf_composer
 		std::array<int, 2> computeKernelRange(double sigma, int cutOfFactor, int fieldSize, bool circular);
 		std::vector<int> createExtendedIndex(int fieldSize, const std::array<int, 2>& kernelRange);
 
-		// generates a vector of random numbers with a normal distribution
 		std::vector<double> generateNormalVector(int size);
 
-		// this function needs a look...
 		template <typename T>
 		std::vector<std::vector<T>> hebbLearningRule(const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
 		{
@@ -194,7 +191,6 @@ namespace dnf_composer
 			return weights;
 		}
 
-		// this function needs a look...
 		template <typename T>
 		std::vector<std::vector<T>> ojaLearningRule(const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
 		{
@@ -279,7 +275,6 @@ namespace dnf_composer
 			return weights;
 		}
 
-
 		template <typename T>
 		T generateRandomNumber(const T& min, const T& max)
 		{
@@ -292,6 +287,8 @@ namespace dnf_composer
 			T randomNum = dis(gen);
 			return randomNum;
 		}
+
+		int countNumOfLinesInFile(const std::string& filename);
 
 	}
 }

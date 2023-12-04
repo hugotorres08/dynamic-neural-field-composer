@@ -6,59 +6,80 @@
 
 namespace dnf_composer
 {
-	std::array<int, 2> mathtools::computeKernelRange(double sigma, int cutOfFactor, int fieldSize, bool circular)
+	namespace mathtools
 	{
-		const int ceilSigmaCutOfFactor = static_cast<int>(std::ceil(sigma * cutOfFactor));
-		const int fieldSizeMinus1 = (fieldSize - 1);
-
-		if (circular)
+		std::array<int, 2> computeKernelRange(double sigma, int cutOfFactor, int fieldSize, bool circular)
 		{
-			const double halfFieldSizeMinus1 = (static_cast<double>(fieldSize) - 1) / 2;
-			const int floorHalfFieldSizeMinus1 = static_cast<int>(std::floor(halfFieldSizeMinus1));
-			const int ceilHalfFieldSizeMinus1 = static_cast<int>(std::ceil(halfFieldSizeMinus1));
+			const int ceilSigmaCutOfFactor = static_cast<int>(std::ceil(sigma * cutOfFactor));
+			const int fieldSizeMinus1 = (fieldSize - 1);
+
+			if (circular)
+			{
+				const double halfFieldSizeMinus1 = (static_cast<double>(fieldSize) - 1) / 2;
+				const int floorHalfFieldSizeMinus1 = static_cast<int>(std::floor(halfFieldSizeMinus1));
+				const int ceilHalfFieldSizeMinus1 = static_cast<int>(std::ceil(halfFieldSizeMinus1));
+
+				return std::min(std::array<int, 2>{ceilSigmaCutOfFactor, ceilSigmaCutOfFactor},
+					std::array<int, 2>{floorHalfFieldSizeMinus1, ceilHalfFieldSizeMinus1});
+			}
 
 			return std::min(std::array<int, 2>{ceilSigmaCutOfFactor, ceilSigmaCutOfFactor},
-				std::array<int, 2>{floorHalfFieldSizeMinus1, ceilHalfFieldSizeMinus1});
+					std::array<int, 2>{fieldSizeMinus1, fieldSizeMinus1});
 		}
 
-		return std::min(std::array<int, 2>{ceilSigmaCutOfFactor, ceilSigmaCutOfFactor},
-				std::array<int, 2>{fieldSizeMinus1, fieldSizeMinus1});
-	}
+		std::vector<int> createExtendedIndex(int fieldSize, const std::array<int, 2>& kernelRange)
+		{
+			const int startingValue = fieldSize - kernelRange[1] + 1;
+			const int initialVectorSize = fieldSize - startingValue + 1;
 
-	std::vector<int> mathtools::createExtendedIndex(int fieldSize, const std::array<int, 2>& kernelRange)
-	{
-		const int startingValue = fieldSize - kernelRange[1] + 1;
-		const int initialVectorSize = fieldSize - startingValue + 1;
+			std::vector<int> initialVector(initialVectorSize);
+			std::iota(initialVector.begin(), initialVector.end(), startingValue);
 
-		std::vector<int> initialVector(initialVectorSize);
-		std::iota(initialVector.begin(), initialVector.end(), startingValue);
+			std::vector<int> secondVector(fieldSize);
+			std::iota(secondVector.begin(), secondVector.end(), 1);
 
-		std::vector<int> secondVector(fieldSize);
-		std::iota(secondVector.begin(), secondVector.end(), 1);
+			std::vector<int> thirdVector(kernelRange[0]);
+			std::iota(thirdVector.begin(), thirdVector.end(), 1);
 
-		std::vector<int> thirdVector(kernelRange[0]);
-		std::iota(thirdVector.begin(), thirdVector.end(), 1);
+			std::vector<int> extendedVector;
+			extendedVector.reserve(initialVector.size() + secondVector.size() + thirdVector.size());
 
-		std::vector<int> extendedVector;
-		extendedVector.reserve(initialVector.size() + secondVector.size() + thirdVector.size());
+			extendedVector.insert(extendedVector.end(), initialVector.begin(), initialVector.end());
+			extendedVector.insert(extendedVector.end(), secondVector.begin(), secondVector.end());
+			extendedVector.insert(extendedVector.end(), thirdVector.begin(), thirdVector.end());
 
-		extendedVector.insert(extendedVector.end(), initialVector.begin(), initialVector.end());
-		extendedVector.insert(extendedVector.end(), secondVector.begin(), secondVector.end());
-		extendedVector.insert(extendedVector.end(), thirdVector.begin(), thirdVector.end());
+			return extendedVector;
+		}
 
-		return extendedVector;
-	}
+		std::vector<double> generateNormalVector(int size)
+		{
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::normal_distribution<> dist(0, 1);
 
-	std::vector<double> mathtools::generateNormalVector(int size)
-	{
-		std::random_device rd;
-		std::mt19937 gen(rd());
-		std::normal_distribution<> dist(0, 1);
+			std::vector<double> vec(size);
+			for (int i = 0; i < size; ++i)
+				vec[i] = dist(gen);
 
-		std::vector<double> vec(size);
-		for (int i = 0; i < size; ++i)
-			vec[i] = dist(gen);
+			return vec;
+		}
 
-		return vec;
+		int countNumOfLinesInFile(const std::string& filename)
+		{
+			std::ifstream file(filename);
+			if (file.is_open()) {
+				int lineCount = 0;
+				std::string line;
+				while (std::getline(file, line)) {
+					lineCount++;
+				}
+				file.close();
+				return lineCount;
+			}
+			else {
+				std::cerr << "Failed to open the file " << filename << std::endl;
+				return -1; // Return -1 to indicate an error
+			}
+		}
 	}
 }

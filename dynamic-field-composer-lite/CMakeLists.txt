@@ -51,7 +51,6 @@ set(simulation_headers
 set(application_headers
     "include/application/application.h"
 )
-
 set(elements_headers
     "include/elements/element_factory.h"
     "include/elements/element.h"
@@ -80,6 +79,10 @@ set(architecture_headers
     "include/architecture/architecture-builder.h"
     "include/architecture/architecture-file-handler.h"
 )
+set(wizards_headers
+    "include/wizards/learning_wizard.h"
+)
+
 set(header 
     ${simulation_headers}
     ${application_headers}
@@ -88,6 +91,7 @@ set(header
     ${exceptions_headers}
     ${user_interface_headers}
     ${user_interface_headers}
+    ${wizards_headers}
 )
 
 # Set source files
@@ -119,6 +123,8 @@ set(src
 
     "src/architecture/architecture-builder.cpp"
     "src/architecture/architecture-file-handler.cpp"
+
+    "src/wizards/learning_wizard.cpp"
 )
 
 # Define library target
@@ -184,6 +190,30 @@ set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
 add_executable(${EXE_PROJECT} "src/dynamic-field-composer-lite.cpp")
 target_include_directories(${EXE_PROJECT} PRIVATE include)
 target_link_libraries(${EXE_PROJECT} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project run_sim
+set(EXE_PROJECT_EXAMPLE_RUN_SIM ${CMAKE_PROJECT_NAME}-example-run_sim)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM} "examples/run_sim.cpp")
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project run_sim_headless
+set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_headless)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headless.cpp")
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project run_sim_read_architecture_from_file
+set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_read_architecture_from_file)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_read_architecture_from_file.cpp")
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project run_learning_wizard
+set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_learning_wizard.cpp")
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 # Setup Catch2
 enable_testing()
