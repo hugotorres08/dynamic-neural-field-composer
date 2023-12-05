@@ -2,6 +2,7 @@
 
 
 #include "user_interface_window.h"
+#include "simulation/visualization.h"
 
 
 namespace dnf_composer

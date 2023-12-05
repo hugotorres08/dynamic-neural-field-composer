@@ -20,13 +20,9 @@
 #pragma comment(lib, "dxguid.lib")
 #endif
 
-#include "./simulation/simulation.h"
-#include "./simulation/visualization.h"
-#include "./user_interface_window.h"
-#include "./plot_window.h"
-#include "./simulation_window.h"
-#include "./logger_window.h"
-
+#include "user_interface_window.h"
+#include "simulation/simulation.h"
+#include "simulation/visualization.h"
 
 
 // Dear ImGui stuff
@@ -80,7 +76,7 @@ namespace dnf_composer
 			WNDCLASSEXW windowClass;
 			bool closeUI;
 
-			ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+			ImVec4 clear_color = ImVec4(0.2f, 0.2f, 0.2f, 1.00f); // Darkish gray
 		public:
 			UserInterface(const std::shared_ptr<Simulation>& simulation,
 				const std::vector<std::shared_ptr<Visualization>>& visualizations);

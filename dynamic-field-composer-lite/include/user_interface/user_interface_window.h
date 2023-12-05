@@ -10,9 +10,6 @@
 #include "implot.h"
 #include "implot_internal.h"
 
-
-#include "./simulation/visualization.h"
-
 enum CharSize : size_t
 {
 	CHAR_SIZE = 50

@@ -6,7 +6,7 @@
 
 namespace dnf_composer
 {
-	Application::Application(const std::shared_ptr<dnf_composer::Simulation>& simulation, bool activateUserInterface)
+	Application::Application(const std::shared_ptr<Simulation>& simulation, bool activateUserInterface)
 	:simulation(simulation), activateUserInterface(activateUserInterface)
 	{
 		if(activateUserInterface)

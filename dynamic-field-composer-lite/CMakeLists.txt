@@ -39,12 +39,12 @@ set(VCPKG_ROOT $ENV{VCPKG_ROOT})
 include(${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake)
 
 
-# Set the desired output directory relative to the project
+# Set the project directory
 set(PROJECT_DIR "${CMAKE_SOURCE_DIR}")
-# Pass the OUTPUT_DIRECTORY as a preprocessor definition
+# Pass the PROJECT_DIR as a preprocessor definition
 add_compile_definitions(PROJECT_DIR="${PROJECT_DIR}")
 
-# Set the desired output directory relative to the project
+# Set the desired data output directory
 set(OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/data")
 # Pass the OUTPUT_DIRECTORY as a preprocessor definition
 add_compile_definitions(OUTPUT_DIRECTORY="${OUTPUT_DIRECTORY}")

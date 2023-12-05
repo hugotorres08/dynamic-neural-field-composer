@@ -4,22 +4,26 @@
 
 #include "simulation/simulation.h"
 
-
 namespace dnf_composer
 {
-		Simulation::Simulation(double deltaT, double tZero, double t)
+	Simulation::Simulation(double deltaT, double tZero, double t)
 		: deltaT(deltaT), tZero(tZero), t(t)
 	{
+		if (deltaT <= 0 || tZero > t)
+			throw Exception(ErrorCode::SIM_INVALID_PARAMETER, "Invalid parameters for Simulation constructor");
+
 		initialized = false;
 		elements = {};
 	}
 
-	void Simulation::init() {
+	void Simulation::init()
+	{
 		t = tZero;
 		for (const auto& element : elements)
 			element->init();
 
 		initialized = true;
+		user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, "Started the simulation.");
 	}
 
 	void Simulation::step() {
@@ -54,26 +58,18 @@ namespace dnf_composer
 	void Simulation::addElement(const std::shared_ptr<element::Element>& element)
 	{
 		// Check if an element with the same id already exists
-		const int newElementId = element->getUniqueIdentifier();
-		//for (int i = 0; i < elements.size(); i++) {
-		//	if (elements[i]->getUniqueIdentifier() == newElementId) {
-		//		throw Exception(ErrorCode::SIM_ELEM_ALREADY_EXISTS, newElementId);
-		//		// Element with the same id already exists, throw an exception or handle the error
-		//		//throw Exception(ErrorCode::SIM_ELEM_ALREADY_EXISTS, newElementId);
-		//		// Alternatively, you can handle the error in any other way that makes sense for your application
-		//		// such as logging an error message, returning an error code, etc.
-		//		// ...
-		//	}
-		//}
+		const std::string newElementName = element->getUniqueName();
 		for (const auto& existingElement : elements) {
-			if (existingElement->getUniqueIdentifier() == newElementId) {
-				throw Exception(ErrorCode::SIM_ELEM_ALREADY_EXISTS, newElementId);
-				// Handle the error here, such as logging an error message, returning an error code, etc.
-				// ...
+			if (existingElement->getUniqueName() == newElementName) 
+			{
+				const std::string logMessage = "An element with the same unique name already exists '" + newElementName + "'! New element was not added.";
+				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_WARNING, logMessage.c_str());
+				return;
 			}
 		}
 
-
+		const std::string logMessage = "Element '" + newElementName + "' was added to the simulation.";
+		user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
 		elements.push_back(element);
 		element->init(); 
 	}
@@ -85,10 +81,11 @@ namespace dnf_composer
 
 		for (int i = 0; i < static_cast<int>(elements.size()); i++)
 		{
-			// Remove the element from the simulation
 			if (elements[i]->getUniqueName() == elementId)
 			{
 				elements.erase(elements.begin() + i);
+				const std::string logMessage = "Element '" + elementId + "' was removed from the simulation.";
+				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
 				return;
 			}
 		}
@@ -105,6 +102,8 @@ namespace dnf_composer
 			{
 				element = newElement;
 				element->init();
+				const std::string logMessage = "Element '" + idOfElementToReset + "' was reset in the simulation.";
+				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
 				elementFound = true;
 				break;
 			}
@@ -120,6 +119,16 @@ namespace dnf_composer
 	{
 		const std::shared_ptr<element::Element> stimulusElement = getElement(stimulusElementId);
 		const std::shared_ptr<element::Element> receivingElement = getElement(receivingElementId);
+
+		if (!stimulusElement)
+			throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, stimulusElementId);
+
+		if (!receivingElement)
+			throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, receivingElementId);
+
+		const std::string logMessage = "Interaction created: " + stimulusElementId + " -> " + receivingElementId;
+		user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
+
 		receivingElement->addInput(stimulusElement, stimulusComponent);
 	}
 
@@ -142,7 +151,6 @@ namespace dnf_composer
 
 	std::vector<double> Simulation::getComponent(const std::string& id, const std::string& componentName) const
 	{
-
 		const std::shared_ptr<element::Element> foundElement = getElement(id);
 		return foundElement->getComponent(componentName);
 	}
@@ -161,7 +169,8 @@ namespace dnf_composer
 	std::vector<std::shared_ptr<element::Element>> Simulation::getElementsThatHaveSpecifiedElementAsInput(const std::string& specifiedElement, const std::string& inputComponent) const
 	{
 		std::vector<std::shared_ptr<element::Element>> elementsThatHaveSpecifiedElementAsInput;
-		for (const auto& element : elements) {
+		for (const auto& element : elements) 
+		{
 			if (element->hasInput(specifiedElement, inputComponent)) {
 				elementsThatHaveSpecifiedElementAsInput.push_back(element);
 			}

@@ -4,6 +4,8 @@
 
 #include "user_interface/user_interface.h"
 
+#include "user_interface/plot_window.h"
+
 namespace dnf_composer
 {
     namespace user_interface
@@ -176,8 +178,7 @@ namespace dnf_composer
             g_pd3dCommandList->ResourceBarrier(1, &barrier);
 
             // Render Dear ImGui graphics
-            constexpr ImVec4 clear_color = ImVec4(0.2f, 0.2f, 0.2f, 1.00f); // Darkish gray
-        	constexpr const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
+        	const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
         	g_pd3dCommandList->ClearRenderTargetView(g_mainRenderTargetDescriptor[backBufferIdx], clear_color_with_alpha, 0, nullptr);
             g_pd3dCommandList->OMSetRenderTargets(1, &g_mainRenderTargetDescriptor[backBufferIdx], FALSE, nullptr);
             g_pd3dCommandList->SetDescriptorHeaps(1, &g_pd3dSrvDescHeap);

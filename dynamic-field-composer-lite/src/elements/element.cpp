@@ -4,7 +4,6 @@
 
 #include "elements/element.h"
 
-#include <iostream>
 
 
 namespace dnf_composer
@@ -14,11 +13,9 @@ namespace dnf_composer
 
 		Element::Element()
 		{
-			label = ElementLabel::UNINITIALIZED;
-
 			uniqueIdentifier = uniqueIdentifierCounter++;
+			label = ElementLabel::UNINITIALIZED;
 			uniqueName.clear();
-
 			size = 0;
 			components["output"] = {};
 			components["input"] = {};
@@ -28,18 +25,20 @@ namespace dnf_composer
 		void Element::addInput(const std::shared_ptr<Element>& inputElement, const std::string& inputComponent)
 		{
 			if (!inputElement)
-				throw Exception(ErrorCode::ELEM_INPUT_IS_NULL);
+				throw Exception(ErrorCode::ELEM_INPUT_IS_NULL, this->getUniqueIdentifier());
 
 			const auto existingInput = inputs.find(inputElement);
 			if (existingInput != inputs.end())
-				throw Exception(ErrorCode::ELEM_INPUT_ALREADY_EXISTS);
+				throw Exception(ErrorCode::ELEM_INPUT_ALREADY_EXISTS, existingInput->first->getUniqueIdentifier());
 
-			// check if input element has the same size as the element
 			if (inputElement->getComponentPtr("output")->size() != this->getComponentPtr("input")->size())
 				if (inputElement->getComponentPtr("output")->size() != this->getSize())
 					throw Exception(ErrorCode::ELEM_INPUT_SIZE_MISMATCH, inputElement->getUniqueIdentifier());
 
 			inputs[inputElement] = inputComponent;
+
+			const std::string logMessage = "Input '" + inputElement->getUniqueName() +"' added successfully to '" +  this->getUniqueName() + "." ;
+			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
 		}
 
 		void Element::removeInput(const std::string& inputElementId)
@@ -51,6 +50,7 @@ namespace dnf_composer
 					return;
 				}
 			}
+			// TRIED TO REMOVE AN INPUT THAT DOES NOT EXIST
 			//throw Exception(ErrorCode::ELEM_INPUT_NOT_FOUND, inputElementId);
 		}
 
@@ -63,7 +63,7 @@ namespace dnf_composer
 					return;
 				}
 			}
-			//throw Exception(ErrorCode::ELEM_INPUT_NOT_FOUND, inputElementId);
+			//throw Exception(ErrorCode::ELEM_INPUT_NOT_FOUND);
 		}
 
 		bool Element::hasInput(const std::string& inputElementName, const std::string& inputComponent)
@@ -75,7 +75,6 @@ namespace dnf_composer
 			if (found)
 				return true;
 			return false;
-
 		}
 
 		bool Element::hasInput(int inputElementId, const std::string& inputComponent)
@@ -87,7 +86,6 @@ namespace dnf_composer
 			if (found)
 				return true;
 			return false;
-
 		}
 
 		void Element::updateInput()
@@ -172,34 +170,35 @@ namespace dnf_composer
 
 		void Element::printParameters() const
 		{
-			std::cout << "Unique Identifier: " << uniqueIdentifier << std::endl;
-			std::cout << "Unique Name: " << uniqueName << std::endl;
-			std::cout << "Label: " << ElementLabelToString.at(label) << std::endl;
-			std::cout << "Size: " << size << std::endl;
+			std::ostringstream logStream; // Use an ostringstream to build the log message
 
-			std::cout << "Components:" << std::endl;
+			logStream << std::left; // Left-align the output
+
+			logStream << "Logging element parameters" << std::endl;
+			logStream << "Unique Identifier: " << uniqueIdentifier << std::endl;
+			logStream << "Unique Name: " << uniqueName << std::endl;
+			logStream << "Label: " << ElementLabelToString.at(label) << std::endl;
+			logStream << "Size: " << size << std::endl;
+
+			logStream << "Components: ";
 			for (const auto& pair : components)
 			{
 				const std::string& componentName = pair.first;
 				const std::vector<double>& componentValues = pair.second;
 
-				std::cout << componentName << ": ";
-				for (const auto& value : componentValues)
-				{
-					std::cout << value << " ";
-				}
-				std::cout << std::endl;
+				logStream << componentName << " | ";
 			}
 
-			std::cout << "Inputs:" << std::endl;
+			logStream << std::endl << "Inputs: ";
 			for (const auto& inputPair : inputs)
 			{
 				const std::shared_ptr<Element>& inputElement = inputPair.first;
 				const std::string& inputComponent = inputPair.second;
 
-				std::cout << "Input Element Unique Identifier: " << inputElement->getUniqueName()
-					<< ", Input Component: " << inputComponent << std::endl;
+				logStream <<  inputElement->getUniqueName() << "->" << inputComponent << " | ";
 			}
+
+			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
 		}
 	}
 }

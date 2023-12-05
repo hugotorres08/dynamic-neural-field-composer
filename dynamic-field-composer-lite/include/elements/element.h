@@ -7,20 +7,24 @@
 #include <memory>
 #include <ranges>
 #include <algorithm>
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 
 #include <cassert>
 #include <cmath>
 
 #include "../exceptions/exception.h"
+#include "../user_interface/logger_window.h"
 
 namespace dnf_composer
 {
 
 	namespace element
 	{
-		enum ElementLabel
+		enum ElementLabel : int
 		{
-			UNINITIALIZED = 0,
+			UNINITIALIZED,
 			NEURAL_FIELD,
 			GAUSS_STIMULUS,
 			GAUSS_KERNEL,
@@ -31,12 +35,12 @@ namespace dnf_composer
 		};
 
 		inline const std::map<ElementLabel, std::string> ElementLabelToString = {
-			{ NEURAL_FIELD, "neural field" },
-			{ GAUSS_STIMULUS, "gauss stimulus" },
-			{ FIELD_COUPLING, "field coupling" },
-			{ GAUSS_KERNEL, "gauss kernel" },
-			{ MEXICAN_HAT_KERNEL, "mexican hat kernel" },
-			{ NORMAL_NOISE, "normal noise" },
+			{NEURAL_FIELD, "neural field" },
+			{GAUSS_STIMULUS, "gauss stimulus" },
+			{FIELD_COUPLING, "field coupling" },
+			{GAUSS_KERNEL, "gauss kernel" },
+			{MEXICAN_HAT_KERNEL, "mexican hat kernel" },
+			{NORMAL_NOISE, "normal noise" },
 		};
 
 		class Element

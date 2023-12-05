@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "./user_interface/user_interface_window.h"
 
 namespace dnf_composer

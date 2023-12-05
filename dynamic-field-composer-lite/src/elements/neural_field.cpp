@@ -13,8 +13,8 @@ namespace dnf_composer
 			const NeuralFieldParameters& parameters)
 			: parameters(parameters)
 		{
-			// Assert that the size is positive
-			assert(size > 0);
+			if (size <= 0) 
+				throw Exception(ErrorCode::ELEM_INVALID_SIZE, size);
 
 			this->label = ElementLabel::NEURAL_FIELD;
 			this->uniqueName = id;
