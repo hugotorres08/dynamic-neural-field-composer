@@ -32,7 +32,7 @@ namespace dnf_composer
                 GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"dnfcomposerc++", nullptr };
             ::RegisterClassExW(&windowClass);
             windowHandle = ::CreateWindowW(windowClass.lpszClassName, L"Dynamic Neural Field Composer C++",
-                WS_OVERLAPPEDWINDOW, 100, 100, 1280, 800, nullptr, nullptr, windowClass.hInstance, nullptr);
+                WS_OVERLAPPEDWINDOW, 500, 500, 1920, 1080, nullptr, nullptr, windowClass.hInstance, nullptr);
 
             // Initialize Direct3D
             if (!CreateDeviceD3D(windowHandle))
@@ -125,7 +125,13 @@ namespace dnf_composer
                 g_pd3dSrvDescHeap->GetGPUDescriptorHandleForHeapStart());
 
             // Load Fonts
-            ImFont* font = io_ref.Fonts->AddFontDefault();
+
+            std::string convertedPath = std::string(OUTPUT_DIRECTORY) + "/fonts/Lexend-Light.ttf";
+            size_t pos = 0;
+            while ((pos = convertedPath.find('/')) != std::string::npos)
+                convertedPath.replace(pos, 1, "\\");
+
+            const ImFont* font = io_ref.Fonts->AddFontFromFileTTF(convertedPath.c_str(), 24.0f);
             IM_ASSERT(font != NULL);
         }
 
@@ -150,7 +156,6 @@ namespace dnf_composer
             ImGui_ImplWin32_NewFrame();
             ImGui::NewFrame();
 
-
             // My render() function.
             this->render();
 
@@ -171,9 +176,8 @@ namespace dnf_composer
             g_pd3dCommandList->ResourceBarrier(1, &barrier);
 
             // Render Dear ImGui graphics
-            ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
-        	const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
+            constexpr ImVec4 clear_color = ImVec4(0.2f, 0.2f, 0.2f, 1.00f); // Darkish gray
+        	constexpr const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
         	g_pd3dCommandList->ClearRenderTargetView(g_mainRenderTargetDescriptor[backBufferIdx], clear_color_with_alpha, 0, nullptr);
             g_pd3dCommandList->OMSetRenderTargets(1, &g_mainRenderTargetDescriptor[backBufferIdx], FALSE, nullptr);
             g_pd3dCommandList->SetDescriptorHeaps(1, &g_pd3dSrvDescHeap);
@@ -186,6 +190,10 @@ namespace dnf_composer
             g_pd3dCommandQueue->ExecuteCommandLists(1, (ID3D12CommandList* const*)&g_pd3dCommandList);
 
             ImGuiIO& io_ref = ImGui::GetIO(); (void)io_ref;
+            //io_ref.FontGlobalScale = 1.2f; // Adjust the scale factor as needed
+            //ImFont* font = io_ref.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\Arial.ttf", 16.0f);
+            //IM_ASSERT(font != NULL);
+
             // Update and Render additional Platform Windows
             if (io_ref.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
             {
