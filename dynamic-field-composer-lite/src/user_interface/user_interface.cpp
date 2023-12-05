@@ -31,6 +31,7 @@ namespace dnf_composer
             windowClass = { sizeof(windowClass), CS_CLASSDC, WndProc, 0L, 0L,
                 GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"dnfcomposerc++", nullptr };
             ::RegisterClassExW(&windowClass);
+
             windowHandle = ::CreateWindowW(windowClass.lpszClassName, L"Dynamic Neural Field Composer C++",
                 WS_OVERLAPPEDWINDOW, 500, 500, 1920, 1080, nullptr, nullptr, windowClass.hInstance, nullptr);
 
@@ -126,11 +127,10 @@ namespace dnf_composer
 
             // Load Fonts
 
-            std::string convertedPath = std::string(OUTPUT_DIRECTORY) + "/fonts/Lexend-Light.ttf";
+            std::string convertedPath = std::string(PROJECT_DIR) + "/resources/fonts/Lexend-Light.ttf";
             size_t pos = 0;
             while ((pos = convertedPath.find('/')) != std::string::npos)
                 convertedPath.replace(pos, 1, "\\");
-
             const ImFont* font = io_ref.Fonts->AddFontFromFileTTF(convertedPath.c_str(), 24.0f);
             IM_ASSERT(font != NULL);
         }
