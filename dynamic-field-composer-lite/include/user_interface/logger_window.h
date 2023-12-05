@@ -28,13 +28,15 @@ namespace dnf_composer
 			std::string windowTitle;
 		public:
 			LoggerWindow();
-			static void addLog(LogLevel level, const std::string& message, ...) IM_FMTARGS(3);
+			static void addLog(LogLevel level, const char* message, ...) IM_FMTARGS(3);
 
 			void render() override;
 			~LoggerWindow() override = default;
 		private:
             static void clean();
 			static void draw();
+			static LogLevel getLogLevelFromLine(const char* line_start);
+			static void drawLog();
 		};
 	}
 }

@@ -21,12 +21,9 @@ int main(int argc, char* argv[])
 
     app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
 
-    //dnf_composer::ArchitectureBuilder architecture{"example-1", simulation};
 
-    //architecture.readArchitecture();
-    //architecture.saveArchitecture();
-
-    try {
+    try 
+    {
         app.init();
 
         bool userRequestClose = false;
