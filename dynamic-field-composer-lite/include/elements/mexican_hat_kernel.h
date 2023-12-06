@@ -17,9 +17,9 @@ namespace dnf_composer
 			double amplitudeExc;
 			double sigmaInh;
 			double amplitudeInh;
-			double amplitudeGlobal;
-			double fullSum;
-			int cutOfFactor;
+			double amplitudeGlobal = 0.0;
+			double fullSum = 0.0;
+			int cutOfFactor = 5;
 
 			bool operator==(const MexicanHatKernelParameters& other) const
 			{

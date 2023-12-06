@@ -30,13 +30,14 @@ namespace dnf_composer
 			GAUSS_KERNEL,
 			MEXICAN_HAT_KERNEL,
 			NORMAL_NOISE,
-			SUM_DIMENSION,
-			FIELD_COUPLING
+			FIELD_COUPLING,
+			GAUSS_FIELD_COUPLING
 		};
 
 		inline const std::map<ElementLabel, std::string> ElementLabelToString = {
 			{NEURAL_FIELD, "neural field" },
 			{GAUSS_STIMULUS, "gauss stimulus" },
+			{GAUSS_FIELD_COUPLING, "gauss field coupling" },
 			{FIELD_COUPLING, "field coupling" },
 			{GAUSS_KERNEL, "gauss kernel" },
 			{MEXICAN_HAT_KERNEL, "mexican hat kernel" },

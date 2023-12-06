@@ -92,6 +92,12 @@ namespace dnf_composer
 			return "Invalid simulation pointer.";
 		case ErrorCode::VIS_INVALID_PLOTTING_INDEX:
 			return "Invalid plotting index.";
+		case ErrorCode::ELEM_INVALID_PARAMETER:
+			return "Invalid parameter for element (" + errorElement + ").";
+		case ErrorCode::ELEM_INVALID_SIZE:
+			return "Invalid size for element (" + errorElement + ").";
+		case ErrorCode::SIM_INVALID_PARAMETER:
+			return "Invalid parameter for simulation.";
 		default:
 			return "An error was detected but no suitable response was found!";
 		}

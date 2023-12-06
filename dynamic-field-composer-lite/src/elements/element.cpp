@@ -50,8 +50,6 @@ namespace dnf_composer
 					return;
 				}
 			}
-			// TRIED TO REMOVE AN INPUT THAT DOES NOT EXIST
-			//throw Exception(ErrorCode::ELEM_INPUT_NOT_FOUND, inputElementId);
 		}
 
 		void Element::removeInput(int uniqueId)
@@ -63,7 +61,6 @@ namespace dnf_composer
 					return;
 				}
 			}
-			//throw Exception(ErrorCode::ELEM_INPUT_NOT_FOUND);
 		}
 
 		bool Element::hasInput(const std::string& inputElementName, const std::string& inputComponent)

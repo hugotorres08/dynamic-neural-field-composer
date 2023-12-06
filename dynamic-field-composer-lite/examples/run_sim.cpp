@@ -19,6 +19,7 @@ int main(int argc, char* argv[])
     app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::SimulationWindow>(simulation));
     dnf_composer::user_interface::PlotDimensions pd = { 0, 100, -30, 40 };
     app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, pd));
+    app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
 
     try {
         app.init();

@@ -15,6 +15,7 @@ namespace dnf_composer
 			this->visualization = std::make_shared<Visualization>(simulation);
 			id = ++current_id;
 			plotDimensions = { 0, 100, -30, 40 };
+			plotTitle = "Plot window " + std::to_string(id);
 		}
 
 		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector)
@@ -23,6 +24,7 @@ namespace dnf_composer
 			this->visualization = visualization;
 			id = ++current_id;
 			plotDimensions = { 0, 100, -30, 40 };
+			plotTitle = "Plot window " + std::to_string(id);
 		}
 
 		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, bool renderPlotSelector)
@@ -30,12 +32,21 @@ namespace dnf_composer
 		{
 			this->visualization = std::make_shared<Visualization>(simulation);
 			id = ++current_id;
+			plotTitle = "Plot window " + std::to_string(id);
 		}
 
 		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector)
 			:plotDimensions(dimensions), renderPlotSelector(renderPlotSelector)
 		{
 			this->visualization = visualization;
+			id = ++current_id;
+			plotTitle = "Plot window " + std::to_string(id);
+		}
+
+		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, std::string title, bool renderPlotSelector)
+			:plotDimensions(dimensions), plotTitle(std::move(title)), renderPlotSelector(renderPlotSelector)
+		{
+			this->visualization = std::make_shared<Visualization>(simulation);
 			id = ++current_id;
 		}
 
@@ -50,12 +61,17 @@ namespace dnf_composer
 		{
 			configure();
 
-			const std::string plotTitle = "Plot window " + std::to_string(id);
-			if (ImGui::Begin(plotTitle.c_str()))
+			static const std::string plotWindowTitle = plotTitle + " window";
+
+			if (ImGui::Begin(plotWindowTitle.c_str()))
 			{
-				if (ImPlot::BeginPlot(plotTitle.c_str()))
+				ImVec2 plotSize = ImGui::GetContentRegionAvail();  // Get available size in the ImGui window
+				plotSize.x -= 5.0f; // Subtract some padding
+				plotSize.y -= 5.00f; // Subtract some padding
+
+				if (ImPlot::BeginPlot(plotTitle.c_str(), plotSize))
 				{
-					ImPlot::SetupAxes("Field position", "Amplitude");
+					ImPlot::SetupAxes("Spatial dimension", "Amplitude");
 					ImPlot::SetupLegend(ImPlotLocation_NorthEast, ImPlotLegendFlags_Outside);
 
 					const int numOfPlots = visualization->getNumberOfPlots();
@@ -63,7 +79,7 @@ namespace dnf_composer
 					{
 						std::string label = visualization->getPlottingLabel(j);
 						std::vector<double> data = *visualization->getPlottingData(j);
-						ImPlot::PlotLine(label.c_str(), &data[0], data.size());
+						ImPlot::PlotLine(label.c_str(), data.data(), static_cast<int>(data.size()));
 					}
 
 				}
@@ -80,11 +96,15 @@ namespace dnf_composer
 			static std::string selectedElementId{};
 			static int currentElementIdx = 0;
 
-			const std::string selectorTitle = "Plot selector " + std::to_string(id);
+			const std::string selectorTitle = plotTitle + " plot selector";
 
 			if (ImGui::Begin(selectorTitle.c_str()))
 			{
-				if (ImGui::BeginListBox("Select element", { 200.0f, 100.0f }))
+				//ImGui::Columns(2, nullptr, false); // Use 2 columns
+
+				// First column: List box for selecting an element
+				ImGui::Text("Select element");
+				if (ImGui::BeginListBox("##Element list", { 300.00f, 200.0f }))
 				{
 					for (int n = 0; n < numberOfElementsInSimulation; n++)
 					{
@@ -103,10 +123,13 @@ namespace dnf_composer
 					ImGui::EndListBox();
 				}
 
+				// Next column: List box for selecting a component
+				//ImGui::NextColumn();
 				const char* components[] = { "output", "activation", "input", "kernel" };
 				static int currentComponentIdx = 0;
 
-				if (ImGui::BeginListBox("Select component", { 200.0f, 100.0f }))
+				ImGui::Text("Select component");
+				if (ImGui::BeginListBox("##Component list", { 250.0f, 200.0f }))
 				{
 					for (int n = 0; n < IM_ARRAYSIZE(components); n++)
 					{
@@ -120,6 +143,9 @@ namespace dnf_composer
 					ImGui::EndListBox();
 				}
 
+				// Reset columns
+				ImGui::Columns(1);
+
 				if (ImGui::Button("Add", { 100.0f, 30.0f }))
 				{
 					visualization->addPlottingData(selectedElementId, components[currentComponentIdx]);
@@ -130,7 +156,9 @@ namespace dnf_composer
 
 		void PlotWindow::configure() const
 		{
-			ImPlot::SetNextAxesLimits(plotDimensions.xMin, plotDimensions.xMax, plotDimensions.yMin, plotDimensions.yMax);
+			constexpr static int safeMargin = 1;
+			ImPlot::SetNextAxesLimits(plotDimensions.xMin - safeMargin, plotDimensions.xMax + safeMargin,
+				plotDimensions.yMin - safeMargin, plotDimensions.yMax + safeMargin);
 			ImPlotStyle& style = ImPlot::GetStyle();
 			style.LineWeight = 3.0f;
 		}

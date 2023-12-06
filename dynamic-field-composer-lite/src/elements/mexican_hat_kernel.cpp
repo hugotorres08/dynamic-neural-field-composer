@@ -12,8 +12,8 @@ namespace dnf_composer
 			const MexicanHatKernelParameters& parameters)
 			: parameters(parameters)
 		{
-			// Assert that the size is positive
-			assert(size > 0);
+			if (size <= 0)
+				throw Exception(ErrorCode::ELEM_INVALID_SIZE, id);
 
 			this->label = ElementLabel::MEXICAN_HAT_KERNEL;
 			this->uniqueName = id;
@@ -32,7 +32,10 @@ namespace dnf_composer
 			if (circular)
 				extIndex = mathtools::createExtendedIndex(size, kernelRange);
 			else
-				extIndex = {};
+			{
+				const std::string message = "Tried to initialize a non-circular Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.";
+				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+			}
 
 			uint32_t rangeXsize = kernelRange[0] + kernelRange[1] + 1;
 			std::vector<int> rangeX(rangeXsize);
@@ -40,21 +43,22 @@ namespace dnf_composer
 			std::iota(rangeX.begin(), rangeX.end(), -startingValue);
 			std::vector<double> gaussExc(size);
 			std::vector<double> gaussInh(size);
-			if (normalized)
+			if (!normalized)
 			{
 				gaussExc = mathtools::gaussNorm(rangeX, 0.0, parameters.sigmaExc);
 				gaussInh = mathtools::gaussNorm(rangeX, 0.0, parameters.sigmaInh);
 			}
 			else
 			{
-				gaussExc = mathtools::gauss(rangeX, 0.0, parameters.sigmaExc);
-				gaussInh = mathtools::gauss(rangeX, 0.0, parameters.sigmaInh);
+				const std::string message = "Tried to initialize a normalized Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.";
+				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
 			}
+
 			for (int i = 0; i < components["kernel"].size(); i++)
 				components["kernel"][i] = parameters.amplitudeExc * gaussExc[i] - parameters.amplitudeInh * gaussInh[i];
 
-			for (int i = 0; i < components["kernel"].size(); i++)
-				components["kernel"][i] += parameters.amplitudeGlobal;
+			/*for (int i = 0; i < components["kernel"].size(); i++)
+				components["kernel"][i] += parameters.amplitudeGlobal;*/
 
 			parameters.fullSum = 0;
 			std::ranges::fill(components["input"], 0.0);
@@ -75,7 +79,7 @@ namespace dnf_composer
 				convolution = mathtools::conv(subDataInput, components["kernel"]);
 
 			for (int i = 0; i < components["output"].size(); i++)
-				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * parameters.fullSum;
+				components["output"][i] = convolution[i] + parameters.amplitudeGlobal;
 		}
 
 		void MexicanHatKernel::close()

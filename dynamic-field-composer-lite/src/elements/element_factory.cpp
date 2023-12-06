@@ -37,10 +37,15 @@ namespace dnf_composer
 					return std::make_shared<NormalNoise>(id, size, params.nnp);
 				};
 
-			elementCreators[ElementLabel::FIELD_COUPLING] = [](const std::string& id, int size, const ElementParameters& params)
+			elementCreators[ElementLabel::GAUSS_FIELD_COUPLING] = [](const std::string& id, int size, const ElementParameters& params)
 				{
 					return std::make_shared<GaussFieldCoupling>(id, size, params.gfcp);
 				};
+
+			elementCreators[ElementLabel::FIELD_COUPLING] = [](const std::string& id, int size, const ElementParameters& params)
+			{
+				return std::make_shared<FieldCoupling>(id, size, params.fcp);
+			};
 		}
 
 		std::shared_ptr<Element> ElementFactory::create(ElementLabel type, const std::string& id, int size, const ElementParameters& params)

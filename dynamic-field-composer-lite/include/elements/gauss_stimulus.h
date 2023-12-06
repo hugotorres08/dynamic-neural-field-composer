@@ -18,11 +18,10 @@ namespace dnf_composer
 			bool circular = true;
 			bool normalized = false;
 
-			// Overload the == operator
-			bool operator==(const GaussStimulusParameters& other) const {
-				constexpr double epsilon = 1e-6; // Set an appropriate epsilon value
+			bool operator==(const GaussStimulusParameters& other) const
+			{
+				constexpr double epsilon = 1e-6;
 
-				// Compare floating-point values with tolerance (epsilon)
 				return std::abs(sigma - other.sigma) < epsilon &&
 					std::abs(position - other.position) < epsilon &&
 					std::abs(amplitude - other.amplitude) < epsilon &&

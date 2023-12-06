@@ -11,8 +11,8 @@ namespace dnf_composer
 		GaussStimulus::GaussStimulus(const std::string& id, int size, const GaussStimulusParameters& parameters)
 			: parameters(parameters)
 		{
-			// Assert that the size is positive
-			assert(size > 0);
+			if (size <= 0)
+				throw Exception(ErrorCode::ELEM_INVALID_SIZE, id);
 
 			if (parameters.position < 0 || parameters.position >= size)
 				throw Exception(ErrorCode::GAUSS_STIMULUS_POSITION_OUT_OF_RANGE, id);
@@ -32,15 +32,20 @@ namespace dnf_composer
 			if (parameters.circular)
 				g = mathtools::circularGauss(size, parameters.sigma, parameters.position);
 			else
-				std::cout << "Not implemented yet" << std::endl;
+			{
+				const std::string message = "Tried to initialize a non-circular Gaussian stimulus '" + this->getUniqueName() + "'. That is not supported yet.";
+				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+			}
 
 			if (!parameters.normalized)
 				for (int i = 0; i < size; i++)
 					components["output"][i] = parameters.amplitude * g[i];
 			else
-				std::cout << "Not implemented yet" << std::endl;
+			{
+				const std::string message = "Tried to initialize a normalized Gaussian stimulus '" + this->getUniqueName() + "'. That is not supported yet.";
+				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+			}
 
-			// if stimulus is being used as a sum of stimulus
 			components["input"] = std::vector<double>(size);
 			updateInput();
 			for (int i = 0; i < size; i++)

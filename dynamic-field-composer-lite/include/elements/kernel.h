@@ -16,7 +16,7 @@ namespace dnf_composer
 			std::vector<int> extIndex;
 		public:
 			Kernel();
-		    virtual ~Kernel() override = default;
+			~Kernel() override = default;
 		};
 	}
 

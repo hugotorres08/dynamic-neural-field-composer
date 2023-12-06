@@ -37,6 +37,7 @@ namespace dnf_composer
 			element->close();
 		
 		initialized = false;
+		user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, "Stopped the simulation.");
 	}
 
 	void Simulation::run(double runTime)

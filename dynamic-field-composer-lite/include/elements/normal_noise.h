@@ -15,8 +15,6 @@ namespace dnf_composer
 			double amplitude;
 			bool operator==(const NormalNoiseParameters& other) const
 			{
-				//comparing floating-point numbers using the equality
-				//(==) operator can be problematic due to precision issues
 				constexpr double epsilon = 1e-6; // Set an appropriate epsilon value
 				return std::abs(amplitude - other.amplitude) < epsilon;
 			}

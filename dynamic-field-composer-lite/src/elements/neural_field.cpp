@@ -14,7 +14,7 @@ namespace dnf_composer
 			: parameters(parameters)
 		{
 			if (size <= 0) 
-				throw Exception(ErrorCode::ELEM_INVALID_SIZE, size);
+				throw Exception(ErrorCode::ELEM_INVALID_SIZE, id);
 
 			this->label = ElementLabel::NEURAL_FIELD;
 			this->uniqueName = id;
@@ -92,7 +92,6 @@ namespace dnf_composer
 		{
 			const std::vector<double> f_output = mathtools::heaviside(components["activation"], 0.1);
 
-			//if (*std::max_element(f_output.begin(), f_output.end()) > 0)
 			if (*std::ranges::max_element(f_output) > 0)
 			{
 				const bool isAtLimits = (f_output[0] > 0) || (f_output[size - 1] > 0);

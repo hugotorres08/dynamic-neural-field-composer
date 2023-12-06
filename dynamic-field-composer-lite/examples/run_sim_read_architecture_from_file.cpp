@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
     // After creating the application, we can add the windows we want to display.
     app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::SimulationWindow>(simulation));
     dnf_composer::user_interface::PlotDimensions pd = { 0, 100, -30, 40 };
-    app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, pd));
+    app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, pd, "Example of a plot title", true));
     app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
 
     dnf_composer::ArchitectureBuilder architecture{ "example-1", simulation };

@@ -19,8 +19,10 @@ namespace dnf_composer
 	{
 		struct FieldCouplingParameters
 		{
+			int inputFieldSize;
 			double scalar;
 			double learningRate;
+			LearningRule learningRule;
 		};
 
 		class FieldCoupling : public Element
@@ -30,10 +32,9 @@ namespace dnf_composer
 			std::vector<std::vector<double>> weights;
 			bool trained;
 			bool updateAllWeights;
-			LearningRule learningRule;
 			std::string weightsFilePath;
 		public:
-			FieldCoupling(const std::string& id, int outputSize, int inputSize, FieldCouplingParameters parameters, LearningRule learningRule);
+			FieldCoupling(const std::string& id, int outputSize, const FieldCouplingParameters& parameters);
 
 			void init() override;
 			void step(double t, double deltaT) override;
@@ -50,7 +51,7 @@ namespace dnf_composer
 
 			const std::vector<std::vector<double>>& getWeights() const;
 
-			~FieldCoupling() = default;
+			~FieldCoupling() override = default;
 
 		protected:
 			void getInputFunction();
@@ -58,9 +59,6 @@ namespace dnf_composer
 			void scaleOutput();
 
 			void writeWeights() const;
-
-			std::vector<std::vector<double>> degeneratedLearningRule(std::vector<std::vector<double>>& weights,
-				const std::vector<double>& input, const std::vector<double>& targetOutput, const double& learningRate);
 		};
 	}
 }

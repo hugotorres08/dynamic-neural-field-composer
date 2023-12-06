@@ -112,8 +112,8 @@ namespace dnf_composer
                 dynamicNeuralFieldCoupling.gaussianFieldCoupling = std::dynamic_pointer_cast<element::GaussFieldCoupling>(element);
                 architectureParameters.gfcp = dynamicNeuralFieldCoupling.gaussianFieldCoupling->getParameters();
 
-                const auto inputField = dynamicNeuralFieldCoupling.gaussianFieldCoupling->getInputs()[0];
-                const auto outputField = simulation->getElementsThatHaveSpecifiedElementAsInput(element->getUniqueName())[0];
+                const std::shared_ptr<element::Element> inputField = dynamicNeuralFieldCoupling.gaussianFieldCoupling->getInputs()[0];
+                const std::shared_ptr<element::Element> outputField = simulation->getElementsThatHaveSpecifiedElementAsInput(element->getUniqueName())[0];
 
                 dynamicNeuralFieldCouplingParameters << inputField->getUniqueIdentifier() << " "
                     << outputField->getUniqueIdentifier() << " "
@@ -123,7 +123,7 @@ namespace dnf_composer
 
                 dynamicNeuralFieldCouplingParameters << numberOfCouplings << " ";
 
-                for (const auto coupling : dynamicNeuralFieldCoupling.gaussianFieldCoupling->getParameters().couplings)
+                for (const auto& coupling : dynamicNeuralFieldCoupling.gaussianFieldCoupling->getParameters().couplings)
                     dynamicNeuralFieldCouplingParameters << coupling.x_i << " "
                     << coupling.x_j << " "
                     << coupling.w_i_j << " ";
@@ -132,7 +132,6 @@ namespace dnf_composer
             }
             break;
             case element::ElementLabel::GAUSS_STIMULUS:
-            case element::ElementLabel::SUM_DIMENSION:
             case element::ElementLabel::UNINITIALIZED:
                 // do nothing
                 break;
@@ -299,7 +298,7 @@ namespace dnf_composer
 
         for (int i = 0; i < numberOfCouplings; i++)
         {
-            WeightedCoupling coupling;
+            WeightedCoupling coupling = {};
             iss >> coupling.x_i
                 >> coupling.x_j
                 >> coupling.w_i_j;

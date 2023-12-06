@@ -11,9 +11,12 @@ namespace dnf_composer
 		GaussFieldCoupling::GaussFieldCoupling(const std::string& id, int size, const GaussFieldCouplingParameters& gfcp)
 			: gfcp(gfcp)
 		{
-			assert(size > 0);
-			assert(gfcp.inputFieldSize > 0);
-			assert(gfcp.sigma > 0.0);
+			if (size <= 0)
+				throw Exception(ErrorCode::ELEM_INVALID_SIZE, id);
+			if (gfcp.inputFieldSize <= 0)
+				throw Exception(ErrorCode::ELEM_SIZE_NOT_ALLOWED, id);
+			if (gfcp.sigma <= 0)
+				throw Exception(ErrorCode::ELEM_INVALID_PARAMETER, id);
 
 			this->label = ElementLabel::FIELD_COUPLING;
 			this->uniqueName = id;

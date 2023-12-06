@@ -9,7 +9,7 @@
 #include "neural_field.h" 
 #include "normal_noise.h"
 #include "gauss_field_coupling.h"
-
+#include "field_coupling.h"
 
 namespace dnf_composer
 {
@@ -17,12 +17,13 @@ namespace dnf_composer
     {
 	    struct ElementParameters
 	    {
-	        NeuralFieldParameters nfp;
-	        GaussStimulusParameters gsp;
-	        GaussKernelParameters gkp;
-	        MexicanHatKernelParameters mhkp;
-	        NormalNoiseParameters nnp;
-	        GaussFieldCouplingParameters gfcp;
+	        NeuralFieldParameters nfp = {};
+	        GaussStimulusParameters gsp = {};
+	        GaussKernelParameters gkp = {};
+	        MexicanHatKernelParameters mhkp = {};
+	        NormalNoiseParameters nnp = {};
+	        GaussFieldCouplingParameters gfcp = {};
+			FieldCouplingParameters fcp = {};
 	    };
 
 	    class ElementFactory
@@ -32,7 +33,6 @@ namespace dnf_composer
 
 	    public:
 			ElementFactory();
-
 			std::shared_ptr<Element> create(ElementLabel type, const std::string& id, int size, const ElementParameters& params);
 	    };
     }

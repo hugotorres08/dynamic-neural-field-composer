@@ -21,14 +21,17 @@ namespace dnf_composer
 		{
 		private:
 			std::shared_ptr<Visualization> visualization;
-			 int id;
-			 PlotDimensions plotDimensions;
-			 bool renderPlotSelector;
+			int id;
+			PlotDimensions plotDimensions;
+			std::string plotTitle;
+			bool renderPlotSelector;
 		public:
 			PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderPlotSelector = true);
 			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, bool renderPlotSelector = true);
 			PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector = true);
 			PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector = true);
+			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, std::string title, bool renderPlotSelector = true);
+
 			void render() override;
 			~PlotWindow() override = default;
 		private:

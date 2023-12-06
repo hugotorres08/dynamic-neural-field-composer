@@ -16,15 +16,15 @@ namespace dnf_composer
 	std::shared_ptr<element::Kernel> kernel;
 	std::shared_ptr<element::NormalNoise> normalNoise;
 	std::shared_ptr<element::GaussKernel> normalNoiseKernel;
-	int size;
-	int kernelType;
+	int size = 0;
+	int kernelType = 0;
 };
 
 	struct DynamicNeuralFieldCoupling
 	{
 		std::shared_ptr<element::GaussFieldCoupling> gaussianFieldCoupling;
 		std::vector<WeightedCoupling> couplings;
-		std::array<int, 2> idsOfCoupledDynamicNeuralFields;
+		std::array<int, 2> idsOfCoupledDynamicNeuralFields = {0, 0};
 	};
 
 
@@ -41,10 +41,10 @@ namespace dnf_composer
 		DynamicNeuralFieldCoupling dynamicNeuralFieldCoupling;
 	public:
 		ArchitectureBuilder(std::string identifier, const std::shared_ptr<Simulation>& simulation);
-		ArchitectureBuilder(const ArchitectureBuilder& other);
-		ArchitectureBuilder(ArchitectureBuilder&& other) noexcept;
-		ArchitectureBuilder& operator=(const ArchitectureBuilder& other);
-		ArchitectureBuilder& operator=(ArchitectureBuilder&& other) noexcept;
+		ArchitectureBuilder(const ArchitectureBuilder& other) = default;
+		ArchitectureBuilder(ArchitectureBuilder&& other) noexcept = default;
+		ArchitectureBuilder& operator=(const ArchitectureBuilder& other) = default;
+		ArchitectureBuilder& operator=(ArchitectureBuilder&& other) noexcept = default;
 		~ArchitectureBuilder() = default;
 
 		void readArchitecture();

@@ -3,8 +3,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "dynamic-neural-field-composer.h"
-#include "elements/field_coupling.h"
-#include "wizards/learning_wizard.h"
 
 // This .cpp file is an example of how you can use the library to create your own DNF simulation.
 // This setup runs the application with a GUI.
@@ -44,8 +42,13 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_dec_dec(new dnf_composer::element::GaussKernel("dec - dec", decisionFieldSize, gkp2)); // self-excitation v-v
 	simulation->addElement(k_dec_dec);
 
+	dnf_composer::element::FieldCouplingParameters fcp;
+	fcp.inputFieldSize = perceptualFieldSize;
+	fcp.learningRate = 0.01;
+	fcp.scalar = 0.5;
+	fcp.learningRule = dnf_composer::LearningRule::DELTA_KROGH_HERTZ;
 	const std::shared_ptr<dnf_composer::element::FieldCoupling> w_per_dec
-		(new dnf_composer::element::FieldCoupling("per - dec", decisionFieldSize, perceptualFieldSize, { 0.5, 0.01 }, dnf_composer::LearningRule::DELTA_KROGH_HERTZ));
+		(new dnf_composer::element::FieldCoupling("per - dec", decisionFieldSize, fcp));
 	simulation->addElement(w_per_dec);
 
 	// create noise stimulus and noise kernel
@@ -114,7 +117,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 
 	learning_wizard.simulateAssociation();
 
-	learning_wizard.trainWeights(100);
+	learning_wizard.trainWeights(10);
 
 	return simulation;
 

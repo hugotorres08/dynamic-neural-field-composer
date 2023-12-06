@@ -15,8 +15,8 @@ namespace dnf_composer
 	{
 		struct GaussFieldCouplingParameters
 		{
-			int inputFieldSize;
-			double sigma;
+			int inputFieldSize = 0;
+			double sigma = 0.0;
 			std::vector<WeightedCoupling> couplings;
 
 			void addCoupling(const WeightedCoupling& coupling)

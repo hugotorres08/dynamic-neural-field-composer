@@ -11,7 +11,7 @@ namespace dnf_composer
 		Kernel::Kernel()
 		{
 			circular = true;
-			normalized = true;
+			normalized = false;
 			kernelRange = { 0, 0 };
 		}
 	}

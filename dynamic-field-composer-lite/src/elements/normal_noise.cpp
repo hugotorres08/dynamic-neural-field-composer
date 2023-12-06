@@ -11,8 +11,8 @@ namespace dnf_composer
 		NormalNoise::NormalNoise(const std::string& id, int size, NormalNoiseParameters parameters)
 			: parameters(parameters)
 		{
-			// Assert that the size is positive
-			assert(size > 0);
+			if (size <= 0)
+				throw Exception(ErrorCode::ELEM_INVALID_SIZE, id);
 
 			this->label = ElementLabel::NORMAL_NOISE;
 			this->uniqueName = id;
