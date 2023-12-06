@@ -13,9 +13,8 @@ namespace dnf_composer
 
 		struct PlotDimensions
 		{
-			int xMin, xMax, yMin, yMax;
+			int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
 		};
-
 
 		class PlotWindow : public UserInterfaceWindow
 		{
@@ -23,7 +22,7 @@ namespace dnf_composer
 			std::shared_ptr<Visualization> visualization;
 			int id;
 			PlotDimensions plotDimensions;
-			std::string plotTitle;
+			std::string title{}, x_label{}, y_label{};
 			bool renderPlotSelector;
 		public:
 			PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderPlotSelector = true);
@@ -31,6 +30,7 @@ namespace dnf_composer
 			PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector = true);
 			PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector = true);
 			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, std::string title, bool renderPlotSelector = true);
+			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, std::string title, std::string x_label, std::string y_label,bool renderPlotSelector = true);
 
 			void render() override;
 			~PlotWindow() override = default;

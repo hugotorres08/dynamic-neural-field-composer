@@ -15,7 +15,9 @@ namespace dnf_composer
 			this->visualization = std::make_shared<Visualization>(simulation);
 			id = ++current_id;
 			plotDimensions = { 0, 100, -30, 40 };
-			plotTitle = "Plot window " + std::to_string(id);
+			title = "Plot window " + std::to_string(id);
+			x_label = "Spatial dimension";
+			y_label = "Amplitude";
 		}
 
 		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector)
@@ -24,7 +26,9 @@ namespace dnf_composer
 			this->visualization = visualization;
 			id = ++current_id;
 			plotDimensions = { 0, 100, -30, 40 };
-			plotTitle = "Plot window " + std::to_string(id);
+			title = "Plot window " + std::to_string(id);
+			x_label = "Spatial dimension";
+			y_label = "Amplitude";
 		}
 
 		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, bool renderPlotSelector)
@@ -32,7 +36,9 @@ namespace dnf_composer
 		{
 			this->visualization = std::make_shared<Visualization>(simulation);
 			id = ++current_id;
-			plotTitle = "Plot window " + std::to_string(id);
+			title = "Plot window " + std::to_string(id);
+			x_label = "Spatial dimension";
+			y_label = "Amplitude";
 		}
 
 		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector)
@@ -40,11 +46,22 @@ namespace dnf_composer
 		{
 			this->visualization = visualization;
 			id = ++current_id;
-			plotTitle = "Plot window " + std::to_string(id);
+			title = "Plot window " + std::to_string(id);
+			x_label = "Spatial dimension";
+			y_label = "Amplitude";
 		}
 
 		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, std::string title, bool renderPlotSelector)
-			:plotDimensions(dimensions), plotTitle(std::move(title)), renderPlotSelector(renderPlotSelector)
+			:plotDimensions(dimensions), title(std::move(title)), renderPlotSelector(renderPlotSelector)
+		{
+			this->visualization = std::make_shared<Visualization>(simulation);
+			id = ++current_id;
+			x_label = "Spatial dimension";
+			y_label = "Amplitude";
+		}
+
+		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, std::string title, std::string x_label, std::string y_label, bool renderPlotSelector)
+			:plotDimensions(dimensions), title(std::move(title)), x_label(std::move(x_label)), y_label(std::move(y_label)), renderPlotSelector(renderPlotSelector)
 		{
 			this->visualization = std::make_shared<Visualization>(simulation);
 			id = ++current_id;
@@ -61,7 +78,7 @@ namespace dnf_composer
 		{
 			configure();
 
-			static const std::string plotWindowTitle = plotTitle + " window";
+			static const std::string plotWindowTitle = title + " window";
 
 			if (ImGui::Begin(plotWindowTitle.c_str()))
 			{
@@ -69,9 +86,9 @@ namespace dnf_composer
 				plotSize.x -= 5.0f; // Subtract some padding
 				plotSize.y -= 5.00f; // Subtract some padding
 
-				if (ImPlot::BeginPlot(plotTitle.c_str(), plotSize))
+				if (ImPlot::BeginPlot(title.c_str(), plotSize))
 				{
-					ImPlot::SetupAxes("Spatial dimension", "Amplitude");
+					ImPlot::SetupAxes(x_label.c_str(), y_label.c_str());
 					ImPlot::SetupLegend(ImPlotLocation_NorthEast, ImPlotLegendFlags_Outside);
 
 					const int numOfPlots = visualization->getNumberOfPlots();
@@ -96,7 +113,7 @@ namespace dnf_composer
 			static std::string selectedElementId{};
 			static int currentElementIdx = 0;
 
-			const std::string selectorTitle = plotTitle + " plot selector";
+			const std::string selectorTitle = title + " plot selector";
 
 			if (ImGui::Begin(selectorTitle.c_str()))
 			{

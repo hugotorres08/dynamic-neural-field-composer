@@ -80,7 +80,7 @@ int main(int argc, char* argv[])
 	// After creating the application, we can add the windows we want to display.
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::SimulationWindow>(simulation));
 	dnf_composer::user_interface::PlotDimensions pd = { 0, 100, -30, 40 };
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, pd, "Using the ElementFactory", true));
+	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, pd, "Using the ElementFactory", "X label", "Y label"));
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
 
 	try {
