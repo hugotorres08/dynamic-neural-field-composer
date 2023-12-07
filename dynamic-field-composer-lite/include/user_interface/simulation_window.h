@@ -32,6 +32,7 @@ namespace dnf_composer
 			void renderSetInteraction() const;
 			void renderRemoveElement() const;
 			void renderElementProperties(const std::pair<int, std::string>& elementId) const;
+			void renderLogElementProperties() const;
 
 			// unfortunately, these functions need to be here like this
 			void addElementNeuralField() const;

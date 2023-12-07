@@ -42,6 +42,8 @@ namespace dnf_composer
 			void step( double t,  double deltaT) override;
 			void close() override;
 
+			void printParameters() override;
+
 			void setParameters(const GaussKernelParameters& parameters);
 			GaussKernelParameters getParameters() const;
 

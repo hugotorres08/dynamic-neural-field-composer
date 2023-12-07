@@ -78,7 +78,7 @@ namespace dnf_composer
 			std::vector<double>* getComponentPtr(const std::string& componentName);
 			std::vector < std::shared_ptr<Element>> getInputs();
 
-			void printParameters() const;
+			virtual void printParameters() = 0;
 
 			virtual ~Element() = default;
 		};

@@ -33,6 +33,40 @@ namespace dnf_composer
 				components["output"][i] = parameters.amplitude / sqrt(deltaT) * rand[i];
 		}
 
+		void NormalNoise::printParameters()
+		{
+			std::ostringstream logStream;
+
+			logStream << std::left;
+
+			logStream << "Logging element parameters" << std::endl;
+			logStream << "Unique Identifier: " << uniqueIdentifier << std::endl;
+			logStream << "Unique Name: " << uniqueName << std::endl;
+			logStream << "Label: " << ElementLabelToString.at(label) << std::endl;
+			logStream << "Size: " << size << std::endl;
+
+			logStream << "Components: ";
+			for (const auto& pair : components)
+			{
+				const std::string& componentName = pair.first;
+				logStream << componentName << " | ";
+			}
+
+			logStream << std::endl << "Inputs: ";
+			for (const auto& inputPair : inputs)
+			{
+				const std::shared_ptr<Element>& inputElement = inputPair.first;
+				const std::string& inputComponent = inputPair.second;
+
+				logStream << inputElement->getUniqueName() << "->" << inputComponent << " | ";
+			}
+
+			logStream << std::endl << "NormalNoiseParameters: ";
+			logStream << "Amplitude: " << parameters.amplitude << std::endl;
+
+			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
+		}
+
 		void NormalNoise::setParameters(NormalNoiseParameters parameters)
 		{
 			this->parameters = parameters;

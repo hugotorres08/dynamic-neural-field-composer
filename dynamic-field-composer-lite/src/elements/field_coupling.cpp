@@ -63,6 +63,57 @@ namespace dnf_composer
 			resetWeights();
 		}
 
+		void FieldCoupling::printParameters()
+		{
+			std::ostringstream logStream;
+
+			logStream << std::left;
+
+			logStream << "Logging element parameters" << std::endl;
+			logStream << "Unique Identifier: " << uniqueIdentifier << std::endl;
+			logStream << "Unique Name: " << uniqueName << std::endl;
+			logStream << "Label: " << ElementLabelToString.at(label) << std::endl;
+			logStream << "Size: " << size << std::endl;
+
+			logStream << "Components: ";
+			for (const auto& pair : components)
+			{
+				const std::string& componentName = pair.first;
+				const std::vector<double>& componentValues = pair.second;
+
+				logStream << componentName << " | ";
+			}
+
+			logStream << std::endl << "Inputs: ";
+			for (const auto& inputPair : inputs)
+			{
+				const std::shared_ptr<Element>& inputElement = inputPair.first;
+				const std::string& inputComponent = inputPair.second;
+
+				logStream << inputElement->getUniqueName() << "->" << inputComponent << " | ";
+			}
+
+			logStream << std::endl << "FieldCouplingParameters: ";
+			logStream << "Input Field Size: " << parameters.inputFieldSize << " | ";
+			logStream << "Scalar: " << parameters.scalar << " | ";
+			logStream << "Learning Rate: " << parameters.learningRate << " | ";
+			logStream << "Learning Rule: ";
+			switch (parameters.learningRule)
+			{
+			case LearningRule::HEBBIAN:
+				logStream << "hebbian rule";
+				break;
+			case LearningRule::DELTA_WIDROW_HOFF:
+				logStream << "delta rule Widrow Hoff variation";
+				break;
+			case LearningRule::DELTA_KROGH_HERTZ:
+				logStream << "delta rule Krogh and Hertz variation";
+				break;
+			}
+
+			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
+		}
+
 		void FieldCoupling::getInputFunction()
 		{
 			// get input

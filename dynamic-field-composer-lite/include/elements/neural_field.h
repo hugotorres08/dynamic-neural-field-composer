@@ -54,10 +54,12 @@ namespace dnf_composer
 		public:
 			NeuralField(const std::string& id, int size,
 				const NeuralFieldParameters& parameters);
+
 			void init() override;
 			void step(double t, double deltaT) override;
 			void close() override;
 
+			void printParameters() override;
 
 			void setParameters(const NeuralFieldParameters& parameters);
 			NeuralFieldParameters getParameters() const;

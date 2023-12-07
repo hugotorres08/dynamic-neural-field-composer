@@ -21,6 +21,7 @@ namespace dnf_composer
 				renderAddElement();
 				renderSetInteraction();
 				renderRemoveElement();
+				renderLogElementProperties();
 			}
 			ImGui::End();
 		}
@@ -146,6 +147,29 @@ namespace dnf_composer
 					break;
 				}
 				ImGui::TreePop();
+			}
+		}
+
+		void SimulationWindow::renderLogElementProperties() const
+		{
+			if (ImGui::CollapsingHeader("Log element parameters"))
+			{
+				const int numberOfElementsInSimulation = simulation->getNumberOfElements();
+
+				for (int i = 0; i < numberOfElementsInSimulation; i++)
+				{
+					const auto simulationElement = simulation->getElement(i);
+					std::string elementId = simulationElement->getUniqueName();
+
+					if (ImGui::TreeNode(elementId.c_str()))
+					{
+						if (ImGui::Button("Log", { 100.0f, 30.0f }))
+						{
+							simulationElement->printParameters();
+						}
+						ImGui::TreePop();
+					}
+				}
 			}
 		}
 

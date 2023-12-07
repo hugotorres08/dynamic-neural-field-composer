@@ -65,6 +65,48 @@ namespace dnf_composer
 			return centroid;
 		}
 
+		void NeuralField::printParameters()
+		{
+			std::ostringstream logStream;
+
+			logStream << std::left;
+
+			logStream << "Logging element parameters" << std::endl;
+			logStream << "Unique Identifier: " << uniqueIdentifier << std::endl;
+			logStream << "Unique Name: " << uniqueName << std::endl;
+			logStream << "Label: " << ElementLabelToString.at(label) << std::endl;
+			logStream << "Size: " << size << std::endl;
+
+			logStream << "Components: ";
+			for (const auto& pair : components)
+			{
+				const std::string& componentName = pair.first;
+				logStream << componentName << " | ";
+			}
+
+			logStream << std::endl << "Inputs: ";
+			for (const auto& inputPair : inputs)
+			{
+				const std::shared_ptr<Element>& inputElement = inputPair.first;
+				const std::string& inputComponent = inputPair.second;
+
+				logStream << inputElement->getUniqueName() << "->" << inputComponent << " | ";
+			}
+
+			logStream << std::endl << "NeuralFieldParameters: ";
+			logStream << "StartingRestingLevel: " << parameters.startingRestingLevel << " | ";
+			logStream << "Tau: " << parameters.tau << " | ";
+
+			logStream << "ActivationFunctionParameters: ";
+			//logStream << "Type: " << ActivationFunctionTypeToString.at(parameters.activationFunctionParameters.type) << " | ";
+			logStream << "Steepness: " << parameters.activationFunctionParameters.steepness << " | ";
+			logStream << "XShift: " << parameters.activationFunctionParameters.xShift << " | ";
+
+			logStream << std::endl << "Current centroid value: " << getCentroid() << std::endl;
+
+			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
+		}
+
 		void NeuralField::calculateActivation(double t, double deltaT)
 		{
 			for (int i = 0; i < size; i++)

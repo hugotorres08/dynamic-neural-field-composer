@@ -40,6 +40,8 @@ namespace dnf_composer
 			void step(double t, double deltaT) override;
 			void close() override;
 
+			void printParameters() override;
+
 			void setWeightsFilePath(const std::string& filePath);
 			bool readWeights();
 			void resetWeights();
