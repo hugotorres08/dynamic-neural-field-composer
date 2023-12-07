@@ -16,28 +16,36 @@ namespace dnf_composer
 			int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
 		};
 
+		struct PlotAnnotations
+		{
+			std::string title{}, x_label{}, y_label{};
+		};
+
+		struct PlotParameters
+		{
+			int id;
+			std::shared_ptr<Visualization> visualization;
+			PlotDimensions dimensions;
+			PlotAnnotations annotations;
+		};
+
 		class PlotWindow : public UserInterfaceWindow
 		{
 		private:
-			std::shared_ptr<Visualization> visualization;
-			int id;
-			PlotDimensions plotDimensions;
-			std::string title{}, x_label{}, y_label{};
-			bool renderPlotSelector;
+			std::shared_ptr<Simulation> simulation;
+			std::vector<PlotParameters> plots;
 		public:
-			PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderPlotSelector = true);
-			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, bool renderPlotSelector = true);
-			PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector = true);
-			PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector = true);
-			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, std::string title, bool renderPlotSelector = true);
-			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, std::string title, std::string x_label, std::string y_label,bool renderPlotSelector = true);
+			PlotWindow(const std::shared_ptr<Simulation>& simulation);
+			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters);
 
 			void render() override;
 			~PlotWindow() override = default;
 		private:
-			void renderPlots() const;
-			void renderElementSelector() const;
-			void configure() const;
+			void createPlot(PlotParameters& parameters);
+			void renderPlotControl();
+			static void renderPlot(const PlotParameters& parameters);
+			static void renderElementSelector(const PlotParameters& parameters);
+			static void configure(const PlotDimensions& dimensions);
 		};
 	}
 }

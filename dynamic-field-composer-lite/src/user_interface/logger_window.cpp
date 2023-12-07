@@ -2,6 +2,7 @@
 
 #include "user_interface/logger_window.h"
 
+
 namespace dnf_composer
 {
 	namespace user_interface
@@ -183,21 +184,44 @@ namespace dnf_composer
 		}
 
         void LoggerWindow::addLog(LogLevel level, const char* message, ...)
-		{
+        {
             int old_size = logger.buffer.size();
             va_list args;
             va_start(args, message);
 
-            // Append log level prefix based on the provided LogLevel
+            // Get the current time
+            const auto now = std::chrono::system_clock::now();
+            auto time_t_now = std::chrono::system_clock::to_time_t(now);
+
+            std::tm timeinfo;
+#if defined(_WIN32)
+            if (localtime_s(&timeinfo, &time_t_now) != 0)
+            {
+                throw std::runtime_error("Failed to get local time");
+            }
+#else
+            if (localtime_r(&time_t_now, &timeinfo) == nullptr)
+            {
+                throw std::runtime_error("Failed to get local time");
+            }
+#endif
+            // Convert the time to a string
+            char time_str[20];  // Adjust the buffer size as needed
+            if (strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", &timeinfo) == 0)
+            {
+                throw std::runtime_error("Failed to format time as string");
+            }
+
+            // Append log level and message
             switch (level)
-			{
+            {
             case LogLevel::_INFO:
                 logger.buffer.appendf("[INFO] ");
                 break;
             case LogLevel::_WARNING:
                 logger.buffer.appendf("[WARNING] ");
                 break;
-           case LogLevel::_ERROR:
+            case LogLevel::_ERROR:
                 logger.buffer.appendf("[ERROR] ");
                 break;
                 // Add more cases as needed
@@ -205,6 +229,10 @@ namespace dnf_composer
 
             // Append the log message
             logger.buffer.appendfv(message, args);
+
+            // Append the timestamp at the end
+            logger.buffer.appendf(" - [%s]", time_str);
+
             logger.buffer.append("\n");
             va_end(args);
 

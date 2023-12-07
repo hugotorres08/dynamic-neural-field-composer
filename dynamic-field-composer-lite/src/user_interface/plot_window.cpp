@@ -8,94 +8,107 @@ namespace dnf_composer
 {
 	namespace user_interface
 	{
-
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderPlotSelector)
-			:renderPlotSelector(renderPlotSelector)
+		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation)
+			:simulation(simulation)
 		{
-			this->visualization = std::make_shared<Visualization>(simulation);
-			id = ++current_id;
-			plotDimensions = { 0, 100, -30, 40 };
-			title = "Plot window " + std::to_string(id);
-			x_label = "Spatial dimension";
-			y_label = "Amplitude";
+			PlotParameters parameters;
+			parameters.id = ++current_id;
+			parameters.dimensions = { 0, 100, -30, 40 };
+			parameters.annotations.title = "Plot window ";
+			parameters.annotations.x_label = "Spatial dimension";
+			parameters.annotations.y_label = "Amplitude";
+			createPlot(parameters);
 		}
 
-		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderPlotSelector)
-			:renderPlotSelector(renderPlotSelector)
+		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters)
+			:simulation(simulation)
 		{
-			this->visualization = visualization;
-			id = ++current_id;
-			plotDimensions = { 0, 100, -30, 40 };
-			title = "Plot window " + std::to_string(id);
-			x_label = "Spatial dimension";
-			y_label = "Amplitude";
-		}
-
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, bool renderPlotSelector)
-			:plotDimensions(dimensions), renderPlotSelector(renderPlotSelector)
-		{
-			this->visualization = std::make_shared<Visualization>(simulation);
-			id = ++current_id;
-			title = "Plot window " + std::to_string(id);
-			x_label = "Spatial dimension";
-			y_label = "Amplitude";
-		}
-
-		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotDimensions dimensions, bool renderPlotSelector)
-			:plotDimensions(dimensions), renderPlotSelector(renderPlotSelector)
-		{
-			this->visualization = visualization;
-			id = ++current_id;
-			title = "Plot window " + std::to_string(id);
-			x_label = "Spatial dimension";
-			y_label = "Amplitude";
-		}
-
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, std::string title, bool renderPlotSelector)
-			:plotDimensions(dimensions), title(std::move(title)), renderPlotSelector(renderPlotSelector)
-		{
-			this->visualization = std::make_shared<Visualization>(simulation);
-			id = ++current_id;
-			x_label = "Spatial dimension";
-			y_label = "Amplitude";
-		}
-
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotDimensions dimensions, std::string title, std::string x_label, std::string y_label, bool renderPlotSelector)
-			:plotDimensions(dimensions), title(std::move(title)), x_label(std::move(x_label)), y_label(std::move(y_label)), renderPlotSelector(renderPlotSelector)
-		{
-			this->visualization = std::make_shared<Visualization>(simulation);
-			id = ++current_id;
+			createPlot(parameters);
 		}
 
 		void PlotWindow::render()
 		{
-			if (renderPlotSelector)
-				renderElementSelector();
-			renderPlots();
+			renderPlotControl();
+			for(const auto& plot : plots)
+			{
+				renderElementSelector(plot);
+				renderPlot(plot);
+			}
 		}
 
-		void PlotWindow::renderPlots() const
+		void PlotWindow::renderPlotControl()
 		{
-			configure();
+			if (ImGui::Begin("Plot control"))
+			{
+				if (ImGui::CollapsingHeader("Create new plot"))
+				{
+					static char title[CHAR_SIZE] = "This is a plot title";
+					ImGui::InputTextWithHint("title", "enter text here", title, IM_ARRAYSIZE(title));
 
-			static const std::string plotWindowTitle = title + " window";
+					static char x_label[CHAR_SIZE] = "x label";
+					ImGui::InputTextWithHint("x_label", "enter text here", x_label, IM_ARRAYSIZE(x_label));
+
+					static char y_label[CHAR_SIZE] = "y label";
+					ImGui::InputTextWithHint("y_label", "enter text here", y_label, IM_ARRAYSIZE(y_label));
+
+					static int x_min = 0;
+					ImGui::InputInt("x_min", &x_min, 1.0, 10.0);
+
+					static int x_max = 100;
+					ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
+
+					static int y_min = -10;
+					ImGui::InputInt("y_min", &y_min, 1.0, 10.0);
+
+					static int y_max = 20;
+					ImGui::InputInt("y_max", &y_max, 1.0, 10.0);
+
+
+					if (ImGui::Button("Add", { 100.0f, 30.0f }))
+					{
+						PlotParameters parameters;
+						parameters.annotations = {title, x_label, y_label};
+						parameters.dimensions = {x_min, x_max, y_min, y_max};
+						createPlot(parameters);
+					}
+				}
+			}
+			ImGui::End();
+		}
+
+		void PlotWindow::createPlot( PlotParameters& parameters)
+		{
+			parameters.visualization = std::make_shared<Visualization>(simulation);
+			parameters.id = ++current_id;
+			parameters.annotations.title += " " + std::to_string(parameters.id);
+			plots.emplace_back(parameters);
+
+			const std::string message = "Added a new plot to the application with id: " + parameters.annotations.title;
+			LoggerWindow::addLog(LogLevel::_INFO, message.c_str());
+		}
+
+		void PlotWindow::renderPlot(const PlotParameters& parameters)
+		{
+			configure(parameters.dimensions);
+
+			const std::string plotWindowTitle = parameters.annotations.title + " window";
 
 			if (ImGui::Begin(plotWindowTitle.c_str()))
 			{
 				ImVec2 plotSize = ImGui::GetContentRegionAvail();  // Get available size in the ImGui window
 				plotSize.x -= 5.0f; // Subtract some padding
-				plotSize.y -= 5.00f; // Subtract some padding
+				plotSize.y -= 5.0f; // Subtract some padding
 
-				if (ImPlot::BeginPlot(title.c_str(), plotSize))
+				if (ImPlot::BeginPlot(parameters.annotations.title.c_str(), plotSize))
 				{
-					ImPlot::SetupAxes(x_label.c_str(), y_label.c_str());
+					ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str());
 					ImPlot::SetupLegend(ImPlotLocation_NorthEast, ImPlotLegendFlags_Outside);
 
-					const int numOfPlots = visualization->getNumberOfPlots();
+					const int numOfPlots = parameters.visualization->getNumberOfPlots();
 					for (int j = 0; j < numOfPlots; j++)
 					{
-						std::string label = visualization->getPlottingLabel(j);
-						std::vector<double> data = *visualization->getPlottingData(j);
+						std::string label = parameters.visualization->getPlottingLabel(j);
+						std::vector<double> data = *parameters.visualization->getPlottingData(j);
 						ImPlot::PlotLine(label.c_str(), data.data(), static_cast<int>(data.size()));
 					}
 
@@ -105,15 +118,15 @@ namespace dnf_composer
 			ImGui::End();
 		}
 
-		void PlotWindow::renderElementSelector() const
+		void PlotWindow::renderElementSelector(const PlotParameters& parameters)
 		{
-			const auto simulation = visualization->getAssociatedSimulationPtr();
+			const auto simulation = parameters.visualization->getAssociatedSimulationPtr();
 			const int numberOfElementsInSimulation = simulation->getNumberOfElements();
 
 			static std::string selectedElementId{};
 			static int currentElementIdx = 0;
 
-			const std::string selectorTitle = title + " plot selector";
+			const std::string selectorTitle = parameters.annotations.title + " plot selector";
 
 			if (ImGui::Begin(selectorTitle.c_str()))
 			{
@@ -165,17 +178,17 @@ namespace dnf_composer
 
 				if (ImGui::Button("Add", { 100.0f, 30.0f }))
 				{
-					visualization->addPlottingData(selectedElementId, components[currentComponentIdx]);
+					parameters.visualization->addPlottingData(selectedElementId, components[currentComponentIdx]);
 				}
 			}
 			ImGui::End();
 		}
 
-		void PlotWindow::configure() const
+		void PlotWindow::configure(const PlotDimensions& dimensions)
 		{
 			constexpr static int safeMargin = 1;
-			ImPlot::SetNextAxesLimits(plotDimensions.xMin - safeMargin, plotDimensions.xMax + safeMargin,
-				plotDimensions.yMin - safeMargin, plotDimensions.yMax + safeMargin);
+			ImPlot::SetNextAxesLimits(dimensions.xMin - safeMargin, dimensions.xMax + safeMargin,
+				dimensions.yMin - safeMargin, dimensions.yMax + safeMargin);
 			ImPlotStyle& style = ImPlot::GetStyle();
 			style.LineWeight = 3.0f;
 		}

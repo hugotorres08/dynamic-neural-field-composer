@@ -10,19 +10,11 @@ namespace dnf_composer
 {
     namespace user_interface
     {
-        UserInterface::UserInterface(const std::shared_ptr<Simulation>& simulation, const std::vector<std::shared_ptr<Visualization>>& visualizations)
-            : simulation(simulation), visualizations(visualizations)
+        UserInterface::UserInterface()
         {
             closeUI = false;
             windowHandle = nullptr;
             windowClass = {};
-
-            for (auto& visualization : visualizations)
-            {
-                visualization->setSimulation(simulation);
-                windows.push_back(std::make_shared<PlotWindow>(visualization));
-
-            }
         }
 
         void UserInterface::init()

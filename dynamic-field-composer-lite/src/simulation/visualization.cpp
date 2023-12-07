@@ -26,15 +26,26 @@ namespace dnf_composer
 
 	void Visualization::addPlottingData(const std::string& elementId, const std::string& componentId)
 	{
+		if (elementId.empty())
+		{
+			const std::string message = "Tried to add an invalid element component '" + elementId + "' - '" + componentId + "' to the plot";
+			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_WARNING, message.c_str());
+			return;
+		}
+
 		std::vector<double>* data = simulation->getComponentPtr(elementId, componentId);
 
 		if (!data)
-			throw Exception(ErrorCode::VIS_DATA_NOT_FOUND, elementId, componentId);
+		{
+			const std::string message = "Tried to add an invalid element component '" + elementId + "' - '" + componentId + "' to the plot";
+			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_WARNING, message.c_str());
+			return;
+		}
 
 		for (const auto& [label, plotData] : plottingLabelAndData)
 			if (label == elementId + " " + componentId)
 			{
-				std::cout << "Data already exists in the plotting vector.\n";
+				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, "Data already exists in the plotting vector.");
 				return;
 			}
 

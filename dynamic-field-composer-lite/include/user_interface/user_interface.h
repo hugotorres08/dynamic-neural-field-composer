@@ -20,9 +20,9 @@
 #pragma comment(lib, "dxguid.lib")
 #endif
 
+
+#include <vector>
 #include "user_interface_window.h"
-#include "simulation/simulation.h"
-#include "simulation/visualization.h"
 
 
 // Dear ImGui stuff
@@ -68,8 +68,6 @@ namespace dnf_composer
 		class UserInterface
 		{
 		private:
-			std::shared_ptr<Simulation> simulation;
-			std::vector<std::shared_ptr<Visualization>> visualizations;
 			std::vector<std::shared_ptr<UserInterfaceWindow>> windows;
 
 			HWND windowHandle;
@@ -78,9 +76,7 @@ namespace dnf_composer
 
 			ImVec4 clear_color = ImVec4(0.2f, 0.2f, 0.2f, 1.00f); // Darkish gray
 		public:
-			UserInterface(const std::shared_ptr<Simulation>& simulation,
-				const std::vector<std::shared_ptr<Visualization>>& visualizations);
-
+			UserInterface();
 			UserInterface(const UserInterface&) = delete;
 			UserInterface& operator=(const UserInterface&) = delete;
 			UserInterface(UserInterface&&) = delete;
