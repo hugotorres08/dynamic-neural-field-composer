@@ -4,7 +4,8 @@
 
 #include "user_interface/user_interface.h"
 
-#include "user_interface/plot_window.h"
+#include <iostream>
+
 
 namespace dnf_composer
 {
@@ -29,8 +30,29 @@ namespace dnf_composer
                 GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"dnfcomposerc++", nullptr };
             ::RegisterClassExW(&windowClass);
 
-        	windowHandle = ::CreateWindowW(windowClass.lpszClassName, L"Dynamic Neural Field Composer C++",
+            windowHandle = ::CreateWindowW(windowClass.lpszClassName, L"Dynamic Neural Field Composer C++",
                 WS_OVERLAPPEDWINDOW, 0, 0, windowWidth, windowHeight, nullptr, nullptr, windowClass.hInstance, nullptr);
+
+            const HICON hIcon = static_cast<HICON>(LoadImage(
+                GetModuleHandle(nullptr),
+                MAKEINTRESOURCE(MYICON1),
+                IMAGE_ICON,
+                0, 0,
+                LR_DEFAULTSIZE | LR_LOADTRANSPARENT
+            ));
+
+            if (hIcon != nullptr)
+            {
+                SendMessage(windowHandle, WM_SETICON, ICON_BIG, reinterpret_cast<LPARAM>(hIcon));
+                SendMessage(windowHandle, WM_SETICON, ICON_SMALL, reinterpret_cast<LPARAM>(hIcon));
+            }
+            else
+            {
+                // Failed to load the icon
+                const DWORD error = GetLastError();
+                // Handle or log the error
+                std::cout << "Error load icon: " + std::to_string(error) << std::endl;
+            }
 
             // Initialize Direct3D
             if (!CreateDeviceD3D(windowHandle))

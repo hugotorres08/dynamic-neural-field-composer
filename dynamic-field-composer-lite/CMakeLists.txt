@@ -38,7 +38,6 @@ set(VCPKG_ROOT $ENV{VCPKG_ROOT})
 # Include VCPKG toolchain
 include(${VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake)
 
-
 # Set the project directory
 set(PROJECT_DIR "${CMAKE_SOURCE_DIR}")
 # Pass the PROJECT_DIR as a preprocessor definition
@@ -135,10 +134,14 @@ set(src
     "src/wizards/learning_wizard.cpp"
 )
 
+configure_file(./resources/resources.rc.in ./resources/resources.rc)
+
+
 # Define library target
 add_library(${CMAKE_PROJECT_NAME} 
     ${header}
     ${src}
+    ./resources/resources.rc
 )
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC 
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -193,39 +196,40 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
     FILE ${CMAKE_PROJECT_NAME}-config.cmake
 )
 
+
 # Add executable project
 set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
-add_executable(${EXE_PROJECT} "src/dynamic-field-composer-lite.cpp")
+add_executable(${EXE_PROJECT} "src/dynamic-field-composer-lite.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT} PRIVATE include)
-target_link_libraries(${EXE_PROJECT} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+target_link_libraries(${EXE_PROJECT} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME} )
 
 # Add executable example project run_sim
 set(EXE_PROJECT_EXAMPLE_RUN_SIM ${CMAKE_PROJECT_NAME}-example-run_sim)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM} "examples/run_sim.cpp")
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM} "examples/run_sim.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 # Add executable example project run_sim_headless
 set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_headless)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headless.cpp")
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headless.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 # Add executable example project run_sim_read_architecture_from_file
 set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_read_architecture_from_file)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_read_architecture_from_file.cpp")
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_read_architecture_from_file.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 # Add executable example project run_learning_wizard
 set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_learning_wizard.cpp")
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_learning_wizard.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 # Add executable example project run_sim_element_factory
 set(EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_sim_element_factory)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} "examples/run_sim_element_factory.cpp")
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} "examples/run_sim_element_factory.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
