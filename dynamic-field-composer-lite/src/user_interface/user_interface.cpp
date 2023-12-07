@@ -19,6 +19,9 @@ namespace dnf_composer
 
         void UserInterface::init()
         {
+        	// Calculate the position to center the window
+            constexpr int windowWidth = 2560; // Set your window width
+            constexpr int windowHeight = 1440; // Set your window height
 
             // Create application window
             ImGui_ImplWin32_EnableDpiAwareness();
@@ -26,8 +29,8 @@ namespace dnf_composer
                 GetModuleHandle(nullptr), nullptr, nullptr, nullptr, nullptr, L"dnfcomposerc++", nullptr };
             ::RegisterClassExW(&windowClass);
 
-            windowHandle = ::CreateWindowW(windowClass.lpszClassName, L"Dynamic Neural Field Composer C++",
-                WS_OVERLAPPEDWINDOW, 500, 500, 1920, 1080, nullptr, nullptr, windowClass.hInstance, nullptr);
+        	windowHandle = ::CreateWindowW(windowClass.lpszClassName, L"Dynamic Neural Field Composer C++",
+                WS_OVERLAPPEDWINDOW, 0, 0, windowWidth, windowHeight, nullptr, nullptr, windowClass.hInstance, nullptr);
 
             // Initialize Direct3D
             if (!CreateDeviceD3D(windowHandle))

@@ -2,6 +2,7 @@
 #pragma once
 
 #include "./user_interface/user_interface_window.h"
+#include "wizards/learning_wizard.h"
 
 #include "./user_interface/logger_window.h"
 

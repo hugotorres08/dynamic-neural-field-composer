@@ -4,6 +4,7 @@
 
 #include "./user_interface/simulation_window.h"
 
+
 namespace dnf_composer
 {
 	namespace user_interface
@@ -61,7 +62,8 @@ namespace dnf_composer
 					{
 						static std::string selectedElementId{};
 						static int currentElementIdx = 0;
-						if (ImGui::BeginListBox("Select input element"))
+						ImGui::Text("Select the element you want to define as input");
+						if (ImGui::BeginListBox("##Element list available as inputs"))
 						{
 							for (int n = 0; n < numberOfElementsInSimulation; n++)
 							{
@@ -179,17 +181,18 @@ namespace dnf_composer
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int size = 100;
 			ImGui::InputInt("size", &size, 1.0, 10.0);
-			static double tau = 20;
+			static double tau = 25;
 			ImGui::InputDouble("tau", &tau, 1.0f, 10.0f, "%.2f");
-			static double sigmoidSteepness = 1;
+			static double sigmoidSteepness = 5.0f;
 			ImGui::InputDouble("sigmoid steepness", &sigmoidSteepness, 1.0f, 10.0f, "%.2f");
-			static double restingLevel = -5.0f;
+			static double restingLevel = -10.0f;
 			ImGui::InputDouble("resting level", &restingLevel, 1.0f, 10.0f, "%.2f");
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
 				element::NeuralFieldParameters nfp = { tau, restingLevel };
-				element::ActivationFunctionParameters afp = {element::ActivationFunctionType::Sigmoid, sigmoidSteepness, 0};
+				const element::ActivationFunctionParameters afp = {element::ActivationFunctionType::Sigmoid, sigmoidSteepness, 0};
+				nfp.activationFunctionParameters = afp;
 				const std::shared_ptr<element::NeuralField> neuralField = std::make_shared<element::NeuralField>(id, size, nfp);
 				simulation->addElement(neuralField);
 			}
@@ -219,7 +222,23 @@ namespace dnf_composer
 
 		void SimulationWindow::addElementNormalNoise() const
 		{
-			
+			static char id[CHAR_SIZE] = "normal noise a";
+			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
+			static int size = 100;
+			ImGui::InputInt("size", &size, 1.0, 10.0);
+			static double amplitude = 20;
+			ImGui::InputDouble("amplitude", &amplitude, 1.0f, 10.0f, "%.2f");
+
+			if (ImGui::Button("Add", { 100.0f, 30.0f }))
+			{
+				element::NormalNoiseParameters nnp = { amplitude };
+				const std::shared_ptr<element::NormalNoise> normalNoise = std::make_shared<element::NormalNoise>(id, size, nnp);
+				element::GaussKernelParameters gkp = { 0.25, 0.2 };
+				const std::shared_ptr<element::GaussKernel> gaussKernelNormalNoise = 
+					std::make_shared<element::GaussKernel>(std::string(id) + " gauss kernel", size, gkp);
+				simulation->addElement(normalNoise);
+				simulation->addElement(gaussKernelNormalNoise);
+			}
 		}
 
 		void SimulationWindow::addElementFieldCoupling() const
@@ -252,7 +271,7 @@ namespace dnf_composer
 
 		void SimulationWindow::addElementMexicanHatKernel() const
 		{
-			static char id[30] = "mexican hat kernel u -> u";
+			static char id[CHAR_SIZE] = "mexican hat kernel u -> u";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int size = 100;
 			ImGui::InputInt("size", &size, 1.0, 10.0);
