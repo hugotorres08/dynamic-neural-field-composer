@@ -2,7 +2,8 @@
 
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
-#include "architecture/architecture-builder.h"
+#include "architecture/architecture_builder.h"
+
 
 namespace dnf_composer
 {
@@ -48,6 +49,8 @@ namespace dnf_composer
             setupInteractionBetweenFields();
             clearDynamicNeuralFieldCouplingsParameters();
         }
+
+        user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, "Finished reading architecture parameters.");
     }
 
     void ArchitectureBuilder::saveArchitecture()
@@ -144,6 +147,7 @@ namespace dnf_composer
 
         fileHandler.saveArchitectureFile();
 
+        user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, "Finished saving architecture parameters.");
     }
 
     void ArchitectureBuilder::setArchitectureParameters(const element::ElementParameters& elementParameters)

@@ -6,6 +6,8 @@
 #include <fstream>
 #include <deque>
 
+#include "user_interface/logger_window.h"
+
 namespace dnf_composer
 {
 	class ArchitectureFileHandler
@@ -22,10 +24,10 @@ namespace dnf_composer
 
 	public:
 		ArchitectureFileHandler(const std::string& identifier);
-		ArchitectureFileHandler(const ArchitectureFileHandler& other);
-		ArchitectureFileHandler(ArchitectureFileHandler&& other) noexcept;
-		ArchitectureFileHandler& operator=(const ArchitectureFileHandler& other);
-		ArchitectureFileHandler& operator=(ArchitectureFileHandler&& other) noexcept;
+		ArchitectureFileHandler(const ArchitectureFileHandler& other) = default;
+		ArchitectureFileHandler(ArchitectureFileHandler&& other) noexcept = default;
+		ArchitectureFileHandler& operator=(const ArchitectureFileHandler& other) = default;
+		ArchitectureFileHandler& operator=(ArchitectureFileHandler&& other) noexcept = default;
 		~ArchitectureFileHandler() = default;
 
 		void readArchitectureFile();

@@ -82,8 +82,8 @@ set(user_interface_headers
     "include/user_interface/logger_window.h"
 )
 set(architecture_headers
-    "include/architecture/architecture-builder.h"
-    "include/architecture/architecture-file-handler.h"
+    "include/architecture/architecture_builder.h"
+    "include/architecture/architecture_file_handler.h"
 )
 set(wizards_headers
     "include/wizards/learning_wizard.h"
@@ -128,8 +128,8 @@ set(src
     "src/user_interface/simulation_window.cpp"
     "src/user_interface/logger_window.cpp"
 
-    "src/architecture/architecture-builder.cpp"
-    "src/architecture/architecture-file-handler.cpp"
+    "src/architecture/architecture_builder.cpp"
+    "src/architecture/architecture_file_handler.cpp"
 
     "src/wizards/learning_wizard.cpp"
 )
@@ -253,6 +253,13 @@ add_executable(${TEST_PROJECT}
     tests/test_simulation.cpp 
     tests/test_user_interface.cpp 
     tests/test_visualization.cpp 
+    tests/test_architecture_builder.cpp
+    tests/test_architecture_file_handler.cpp
+    tests/test_learning_wizard.cpp
+    tests/test_element_factory.cpp
+    tests/test_kernel.cpp
+    tests/test_field_coupling.cpp
+    tests/test_gauss_field_coupling.cpp
 )
 target_include_directories(${TEST_PROJECT} PRIVATE include)
 target_link_libraries(${TEST_PROJECT} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain ${CMAKE_PROJECT_NAME})

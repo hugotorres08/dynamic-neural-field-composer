@@ -6,7 +6,7 @@
 #include "../elements/element_factory.h"
 #include "simulation/simulation.h"
 
-#include "architecture-file-handler.h"
+#include "architecture_file_handler.h"
 
 namespace dnf_composer
 {
