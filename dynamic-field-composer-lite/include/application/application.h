@@ -11,7 +11,6 @@ namespace dnf_composer
 	{
 	private:
 		std::shared_ptr<Simulation> simulation;
-		std::vector<std::shared_ptr<Visualization>> visualizations;
 		std::shared_ptr<user_interface::UserInterface> userInterface;
 		bool activateUserInterface;
 	public:
@@ -27,11 +26,11 @@ namespace dnf_composer
 
 		void activateUserInterfaceWindow(const std::shared_ptr<user_interface::UserInterfaceWindow>& window) const;
 		void setActivateUserInterfaceAs(bool activateUI);
+
 		bool getCloseUI() const;
+		bool getActivateUserInterface() const;
 
 		~Application() = default;
-	private:
-		void addVisualization();
 	};
 }
 

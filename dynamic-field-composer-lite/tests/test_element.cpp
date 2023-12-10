@@ -18,10 +18,21 @@ public:
     void init() override {}
     void step(double t, double deltaT) override {}
     void close() override {}
+
+    void printParameters() override {};
 };
 
 TEST_CASE("Element class tests", "[element]")
 {
+    SECTION("Initialization and Basic Information")
+    {
+        auto element = std::make_shared<MockElement>();
+
+        // Check initial state
+        REQUIRE(element->getUniqueName().empty());
+        REQUIRE(element->getLabel() == dnf_composer::element::ElementLabel::UNINITIALIZED);
+        REQUIRE(element->getSize() == 0);
+    }
     SECTION("addInput() hasInput() methods")
     {
         // Create a mock Element object for testing

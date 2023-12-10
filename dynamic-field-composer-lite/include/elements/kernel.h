@@ -17,6 +17,11 @@ namespace dnf_composer
 		public:
 			Kernel();
 			~Kernel() override = default;
+
+			std::array<int, 2> getKernelRange() const;
+			std::vector<int> getExtIndex() const;
+			bool getCircular() const;
+			bool getNormalized() const;
 		};
 	}
 

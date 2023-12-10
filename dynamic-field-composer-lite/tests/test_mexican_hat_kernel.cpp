@@ -4,7 +4,7 @@
 
 TEST_CASE("MexicanHatKernel class tests", "[MexicanHatKernel]")
 {
-    uint8_t size = 10;
+    int size = 10;
     dnf_composer::element::MexicanHatKernelParameters params;
     params.sigmaExc = 1.0;
     params.amplitudeExc = 2.0;
@@ -28,15 +28,19 @@ TEST_CASE("MexicanHatKernel class tests", "[MexicanHatKernel]")
         REQUIRE(kernel.getComponent("output").size() == size);
     }
 
-    SECTION("init() method")
+    SECTION("MexicanHatKernel constructor with invalid size")
     {
-        // to do
+        int invalidSize = 0;  // Choose a size that triggers the exception
+        REQUIRE_THROWS_AS(dnf_composer::element::MexicanHatKernel::MexicanHatKernel("test", invalidSize, params), dnf_composer::Exception);
     }
 
-    SECTION("step() method")
+    SECTION("init() step() close() method")
     {
-        // to do
-	}
+        dnf_composer::element::MexicanHatKernel kernel("test", size, params);
+        kernel.init();
+        kernel.step(1, 1);
+        kernel.close();
+    }
 
     SECTION("setParameters() method")
     {

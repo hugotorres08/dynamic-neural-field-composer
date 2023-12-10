@@ -54,7 +54,7 @@ std::shared_ptr<dnf_composer::Simulation> getExampleSimulation()
 	mexicanHatKernelParameters.amplitudeGlobal = -2.0;
 	elementFactoryParameters.mhkp = mexicanHatKernelParameters;
 	const auto mexican_hat_kernel = elementFactory.create(dnf_composer::element::ElementLabel::MEXICAN_HAT_KERNEL, "MexicanHatKernel", size, elementFactoryParameters);
-
+	
 
 	simulation->addElement(gauss_stimulus);
 	simulation->addElement(neural_field);

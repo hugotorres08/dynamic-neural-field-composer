@@ -6,7 +6,7 @@
 TEST_CASE("NeuralField class tests", "[neural_field]")
 {
     std::string id = "nf";
-    uint8_t size = 10;
+    int size = 10;
     double tau = 1.0;
     double sigmoidSteepness = 2.0;
     double startingRestingLevel = -1.5;
@@ -22,10 +22,10 @@ TEST_CASE("NeuralField class tests", "[neural_field]")
         REQUIRE(nf.getSize() == size);
         REQUIRE(nf.getParameters() == nfp);
 
-        REQUIRE(nf.getComponent("input").size() == size);
-        REQUIRE(nf.getComponent("activation").size() == size);
-        REQUIRE(nf.getComponent("output").size() == size);
-        REQUIRE(nf.getComponent("resting level").size() == size);
+        REQUIRE(static_cast<int>(nf.getComponent("input").size()) == size);
+        REQUIRE(static_cast<int>(nf.getComponent("activation").size()) == size);
+        REQUIRE(static_cast<int>(nf.getComponent("output").size()) == size);
+        REQUIRE(static_cast<int>(nf.getComponent("resting level").size()) == size);
 	}
 
     SECTION("init() method")
@@ -44,35 +44,33 @@ TEST_CASE("NeuralField class tests", "[neural_field]")
             REQUIRE(Catch::Approx(value) == startingRestingLevel);
 
         REQUIRE(nf.getComponent("output").size() == size);
-        //REQUIRE(nf.getComponent("output") == mathtools::sigmoid(nf.getComponent("activation"), nfp.sigmoidSteepness, 0));
 
         REQUIRE(nf.getComponent("resting level").size() == size);
         for (const auto& value : nf.getComponent("resting level"))
             REQUIRE(Catch::Approx(value) == startingRestingLevel);
     }
 
-    SECTION("step() method") {
+    SECTION("step() close() methods") {
 	    dnf_composer::element::NeuralField nf(id, size, nfp);
 
         // Run a single step
         nf.step(0, 1);
-
+        nf.close();
         //invoked without exceptions
     }
 
     SECTION("setParameters() method")
     {
 	    dnf_composer::element::NeuralField nf(id, size, nfp);
-        double newtau = 1.5;
-        double newsigmoidSteepness = 2.5;
-        double newstartingRestingLevel = -1;
+        double newTau = 1.5;
+        double newStartingRestingLevel = -1;
 
-	    dnf_composer::element::NeuralFieldParameters newnfp{ newtau, newstartingRestingLevel };
+	    dnf_composer::element::NeuralFieldParameters new_nf{ newTau, newStartingRestingLevel };
 
-        nf.setParameters(newnfp);
+        nf.setParameters(new_nf);
 
         // Check if parameters were updated
-        REQUIRE(nf.getParameters() == newnfp);
+        REQUIRE(nf.getParameters() == new_nf);
 
     }
 

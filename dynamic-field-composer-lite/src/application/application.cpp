@@ -13,10 +13,6 @@ namespace dnf_composer
 			userInterface = std::make_shared<user_interface::UserInterface>();
 	}
 
-	void Application::addVisualization()
-	{
-		visualizations.push_back(std::make_shared<Visualization>(simulation));
-	}
 
 	void Application::init() const
 	{
@@ -42,6 +38,8 @@ namespace dnf_composer
 	void Application::setActivateUserInterfaceAs(bool activateUI)
 	{
 		activateUserInterface = activateUI;
+		if (activateUserInterface)
+			userInterface = std::make_shared<user_interface::UserInterface>();
 	}
 
 	void Application::activateUserInterfaceWindow(const std::shared_ptr<user_interface::UserInterfaceWindow>& window) const
@@ -55,6 +53,11 @@ namespace dnf_composer
 		if (activateUserInterface)
 			return userInterface->getCloseUI();
 		return false;
+	}
+
+	bool Application::getActivateUserInterface() const
+	{
+		return activateUserInterface;
 	}
 	
 }

@@ -4,7 +4,7 @@
 
 TEST_CASE("GaussKernel class tests", "[GaussKernel]")
 {
-	uint8_t size = 10;
+	int size = 10;
 	dnf_composer::element::GaussKernelParameters params;
 	params.sigma = 1.0;
 	params.amplitude = 2.0;
@@ -21,13 +21,21 @@ TEST_CASE("GaussKernel class tests", "[GaussKernel]")
 		REQUIRE(kernel.getComponent("kernel").size() == size);
 		REQUIRE(kernel.getComponent("output").size() == size);
 	}
-	SECTION("init() method")
+
+	SECTION("GaussKernel constructor with invalid size")
 	{
-		// to do
+		uint8_t invalidSize = 0;  // Choose a size that triggers the exception
+		REQUIRE_THROWS_AS(
+			dnf_composer::element::GaussKernel("invalidKernel", invalidSize, params),
+			dnf_composer::Exception);
 	}
-	SECTION("step() method")
+
+	SECTION("init() step() close() methods")
 	{
-		// to do
+		dnf_composer::element::GaussKernel kernel("test", size, params);
+		kernel.init();
+		kernel.step(1, 1);
+		kernel.close();
 	}
 	SECTION("setParameters() method")
 	{

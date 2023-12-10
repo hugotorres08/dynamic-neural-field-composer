@@ -14,5 +14,25 @@ namespace dnf_composer
 			normalized = false;
 			kernelRange = { 0, 0 };
 		}
+
+		bool Kernel::getCircular() const
+		{
+			return circular;
+		}
+
+		bool Kernel::getNormalized() const
+		{
+			return normalized;
+		}
+
+		std::array<int, 2> Kernel::getKernelRange() const
+		{
+			return kernelRange;
+		}
+
+		std::vector<int> Kernel::getExtIndex() const
+		{
+			return extIndex;
+		}
 	}
 }

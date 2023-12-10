@@ -7,7 +7,7 @@ TEST_CASE("GaussStimulus class tests", "[GaussStimulus]")
 {
     // Create a GaussStimulus object for testing
     std::string id = "testGaussStimulus";
-    uint8_t size = 3;
+    int size = 3;
     double sigma = 1.0;
     double amplitude = 2.0;
     double position = 0.5;
@@ -27,6 +27,12 @@ TEST_CASE("GaussStimulus class tests", "[GaussStimulus]")
         // invalid position
         gsp.position = position + size;
         REQUIRE_THROWS_AS(dnf_composer::element::GaussStimulus::GaussStimulus(id, size, gsp), dnf_composer::Exception);
+    }
+
+    SECTION("GaussStimulus constructor with invalid size")
+    {
+        int invalidSize = 0;  // Choose a size that triggers the exception
+        REQUIRE_THROWS_AS(dnf_composer::element::GaussStimulus::GaussStimulus(id, invalidSize, gsp), dnf_composer::Exception);
     }
 
     SECTION("init() method")
@@ -57,5 +63,13 @@ TEST_CASE("GaussStimulus class tests", "[GaussStimulus]")
         REQUIRE(gaussStimulus.getComponent("output")[0] == Catch::Approx(newAmplitude * dnf_composer::mathtools::circularGauss(size, newSigma, newPosition)[0]));
         REQUIRE(gaussStimulus.getComponent("output")[1] == Catch::Approx(newAmplitude * dnf_composer::mathtools::circularGauss(size, newSigma, newPosition)[1]));
         REQUIRE(gaussStimulus.getComponent("output")[2] == Catch::Approx(newAmplitude * dnf_composer::mathtools::circularGauss(size, newSigma, newPosition)[2]));
+    }
+
+    SECTION("init() step() close() methods")
+    {
+        dnf_composer::element::GaussStimulus gaussStimulus(id, size, gsp);
+        gaussStimulus.init();
+        gaussStimulus.step(1, 1);
+        gaussStimulus.close();
     }
 }

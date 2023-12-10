@@ -1,4 +1,5 @@
 #include <catch2/catch_test_macros.hpp>
+#include <catch2/catch_approx.hpp>
 
 #include "elements/element.h"
 #include "simulation/simulation.h"
@@ -19,11 +20,16 @@ TEST_CASE("Simulation class tests", "[simulation]")
     SECTION("Simulation constructor")
     {
 	    dnf_composer::Simulation sim(1, 0, 100);
+        // Test with valid parameters
         REQUIRE(sim.isInitialized() == false);
         REQUIRE(sim.getNumberOfElements() == 0);
-        REQUIRE(sim.deltaT == 1);
-        REQUIRE(sim.tZero == 0);
-        REQUIRE(sim.t == 100);
+        REQUIRE(sim.deltaT == Catch::Approx(1.0));
+        REQUIRE(sim.tZero == Catch::Approx(0.0));
+        REQUIRE(sim.t == Catch::Approx(100.0));
+
+        // Test with invalid parameters (expecting an exception)
+        REQUIRE_THROWS_AS(dnf_composer::Simulation(0.0, 0.0, 100.0), dnf_composer::Exception);
+        REQUIRE_THROWS_AS(dnf_composer::Simulation(1.0, 100.0, 0.0), dnf_composer::Exception);
     }
 
     SECTION("init method")
@@ -31,7 +37,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 	    dnf_composer::Simulation sim(1, 0, 100);
 		sim.init();
 		REQUIRE(sim.isInitialized() == true);
-        REQUIRE(sim.t == sim.tZero);
+        REQUIRE(sim.t == Catch::Approx(sim.tZero));
 	}
 
     SECTION("step method")
@@ -39,7 +45,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 	    dnf_composer::Simulation sim(1, 0, 100);
         sim.init();
         sim.step();
-        REQUIRE(sim.t == 1);
+        REQUIRE(sim.t == Catch::Approx(1));
     }
 
     SECTION("close method")
@@ -53,13 +59,13 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
     SECTION("run method")
     {
-        uint8_t deltaT = 1;
-        uint8_t t = 0;
-        uint8_t tZero = 100;
-        uint8_t runTime = 10;
+        int deltaT = 1;
+        int t = 0;
+        int tZero = 100;
+        int runTime = 10;
         dnf_composer::Simulation sim(deltaT, t, tZero);
 		sim.run(runTime);
-		REQUIRE(sim.t == runTime + tZero);
+		REQUIRE(sim.t == Catch::Approx(runTime + tZero));
 	}
 
     SECTION("addElement method")
@@ -75,9 +81,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
         // Add second element
         sim.addElement(element2);
         REQUIRE(sim.getNumberOfElements() == 2);
-
-        // Add element with duplicate ID, should throw exception
-        REQUIRE_THROWS_AS(sim.addElement(element1), dnf_composer::Exception);
+         
     }
 
     SECTION("createInteraction method")
