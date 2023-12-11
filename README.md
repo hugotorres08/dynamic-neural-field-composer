@@ -7,7 +7,7 @@ Dynamic Neural Field Composer is a C++ application designed for developing Dynam
 The uses the following dependencies, which are installed for you when running the `build.bat` file. However, you must have defined the `VCPKG_ROOT` directory.
 
 - [CMake](https://cmake.org/)
-- [VCPKG](https://github.com/microsoft/vcpkg) (installed automatically via `build.bat`)
+- [VCPKG](https://github.com/microsoft/vcpkg)
 - [Catch2](https://github.com/catchorg/Catch2) (installed automatically via `build.bat`)
 - [Imgui](https://github.com/ocornut/imgui) (installed automatically via `build.bat`)
 - [Implot](https://github.com/epezent/implot) (installed automatically via `build.bat`)
