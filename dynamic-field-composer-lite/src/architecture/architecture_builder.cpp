@@ -110,7 +110,7 @@ namespace dnf_composer
                 architectureParameters.nnp = dynamicNeuralField.normalNoise->getParameters();
                 dynamicNeuralFieldParameters << architectureParameters.nnp.amplitude << '\n';
                 break;
-            case element::ElementLabel::FIELD_COUPLING:
+            case element::ElementLabel::GAUSS_FIELD_COUPLING:
             {
                 dynamicNeuralFieldCoupling.gaussianFieldCoupling = std::dynamic_pointer_cast<element::GaussFieldCoupling>(element);
                 architectureParameters.gfcp = dynamicNeuralFieldCoupling.gaussianFieldCoupling->getParameters();
@@ -135,6 +135,7 @@ namespace dnf_composer
             }
             break;
             case element::ElementLabel::GAUSS_STIMULUS:
+            case element::ElementLabel::FIELD_COUPLING:
             case element::ElementLabel::UNINITIALIZED:
                 // do nothing
                 break;

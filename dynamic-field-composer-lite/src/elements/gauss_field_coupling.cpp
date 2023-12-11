@@ -18,7 +18,7 @@ namespace dnf_composer
 			if (gfcp.sigma <= 0)
 				throw Exception(ErrorCode::ELEM_INVALID_PARAMETER, id);
 
-			this->label = ElementLabel::FIELD_COUPLING;
+			this->label = ElementLabel::GAUSS_FIELD_COUPLING;
 			this->uniqueName = id;
 			this->size = size;
 

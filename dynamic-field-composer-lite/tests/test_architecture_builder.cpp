@@ -6,7 +6,7 @@ TEST_CASE("ArchitectureBuilder - Reading and Saving Architecture")
 {
     // Create a mock simulation for testing
     const auto mockSimulation = std::make_shared<dnf_composer::Simulation>(1, 0, 100);
-    dnf_composer::ArchitectureBuilder architectureBuilder("test", mockSimulation);
+    dnf_composer::ArchitectureBuilder architectureBuilder("tests", mockSimulation);
 
     SECTION("Reading and Saving Architecture")
     {

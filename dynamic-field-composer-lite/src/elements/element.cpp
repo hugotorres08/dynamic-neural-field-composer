@@ -10,7 +10,6 @@ namespace dnf_composer
 {
 	namespace element
 	{
-
 		Element::Element()
 		{
 			uniqueIdentifier = uniqueIdentifierCounter++;

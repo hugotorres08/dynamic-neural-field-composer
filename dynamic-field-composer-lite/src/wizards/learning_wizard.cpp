@@ -156,10 +156,9 @@ namespace dnf_composer
         }
         else
         {
-            std::cout << "Failed to save data to " << filename << std::endl;
-            return;
+            const std::string message = "Failed to save data to " + filename;
+            user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
         }
-        //std::cout << "Data saved to " << filename << std::endl;
     }
 
     std::vector<double> LearningWizard::readFieldActivation(const std::string& filename, int line)
@@ -184,11 +183,18 @@ namespace dnf_composer
                     data.push_back(value);
             }
             else
-                std::cout << "Line " << static_cast<int>(line) << " not found in " << filename << std::endl;
+            {
+                const std::string message = "Error training the field coupling weights. "
+											"Line " + std::to_string(static_cast<int>(line)) + " not found in " + filename;
+                user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+            }
             file.close();
         }
         else
-            std::cout << "Failed to open file " << filename << std::endl;
+        {
+            const std::string message = "Failed to open file " + filename;
+            user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+        }
 
         return data;
     }
@@ -200,7 +206,10 @@ namespace dnf_composer
         const int numLinesOutput = mathtools::countNumOfLinesInFile(pathToFieldActivationPost);
 
         if (numLinesInput != numLinesOutput)
-            std::cerr << "The files " << pathToFieldActivationPre << " and " << pathToFieldActivationPost << " have a different number of lines.\n";
+        {
+	        const std::string message = "Error training the field coupling weights. The files " + pathToFieldActivationPre + " and " + pathToFieldActivationPost + " have a different number of lines.";
+            user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+        }
 
         // read data and update weights
         int lineCount = 0;
