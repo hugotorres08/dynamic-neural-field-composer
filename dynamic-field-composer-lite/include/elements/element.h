@@ -3,71 +3,16 @@
 #include <vector>
 #include <string>
 #include <unordered_map>
-#include <map>
 #include <memory>
 #include <ranges>
-#include <algorithm>
-#include <iomanip>
-#include <iostream>
-#include <sstream>
 
-#include <cassert>
-#include <cmath>
-
-#include "../exceptions/exception.h"
-#include "../user_interface/logger_window.h"
+#include "element_parameters.h"
 
 namespace dnf_composer
 {
 
 	namespace element
 	{
-		enum ElementLabel : int
-		{
-			UNINITIALIZED,
-			NEURAL_FIELD,
-			GAUSS_STIMULUS,
-			GAUSS_KERNEL,
-			MEXICAN_HAT_KERNEL,
-			NORMAL_NOISE,
-			FIELD_COUPLING,
-			GAUSS_FIELD_COUPLING
-		};
-
-		inline const std::map<ElementLabel, std::string> ElementLabelToString = {
-			{NEURAL_FIELD, "neural field" },
-			{GAUSS_STIMULUS, "gauss stimulus" },
-			{GAUSS_FIELD_COUPLING, "gauss field coupling" },
-			{FIELD_COUPLING, "field coupling" },
-			{GAUSS_KERNEL, "gauss kernel" },
-			{MEXICAN_HAT_KERNEL, "mexican hat kernel" },
-			{NORMAL_NOISE, "normal noise" },
-		};
-
-		struct ElementSpatialDimensionParameters
-		{
-			int x_max, size;
-			double d_x;
-
-			ElementSpatialDimensionParameters(int x_max, double d_x) : x_max(x_max), size(static_cast<int>(std::round(x_max / d_x)) + 1), d_x(d_x) {}
-		};
-
-		struct ElementIdentifiers
-		{
-			static inline int uniqueIdentifierCounter = 0;
-			int uniqueIdentifier;
-			std::string uniqueName;
-			ElementLabel label;
-
-			ElementIdentifiers() : uniqueIdentifier(uniqueIdentifierCounter++), uniqueName(""), label(ElementLabel::UNINITIALIZED) {}
-		};
-
-		struct ElementCommonParameters
-		{
-			ElementIdentifiers identifiers;
-			ElementSpatialDimensionParameters dimensionParameters;
-		};
-
 		class Element
 		{
 		protected:

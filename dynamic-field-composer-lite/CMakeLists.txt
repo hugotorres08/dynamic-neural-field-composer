@@ -68,6 +68,7 @@ set(elements_headers
     "include/elements/gauss_field_coupling.h"
     "include/elements/kernel.h"
     "include/elements/activation_function.h"
+    "include/elements/element_parameters.h"
 )
 set(mathtools_headers
     "include/mathtools/mathtools.h"
@@ -119,6 +120,7 @@ set(src
     "src/elements/gauss_field_coupling.cpp" 
     "src/elements/kernel.cpp"
     "src/elements/activation_function.cpp"
+    "src/elements/element_parameters.cpp"
     
     "src/mathtools/mathtools.cpp"
 
