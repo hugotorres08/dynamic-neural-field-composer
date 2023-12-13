@@ -35,8 +35,7 @@ namespace dnf_composer
 		private:
 			GaussKernelParameters parameters;
 		public:
-			GaussKernel(const std::string& id, int size,
-				const GaussKernelParameters& parameters);
+			GaussKernel(const ElementCommonParameters& elementCommonParameters, const GaussKernelParameters& parameters);
 
 			void init() override;
 			void step( double t,  double deltaT) override;
@@ -44,7 +43,7 @@ namespace dnf_composer
 
 			void printParameters() override;
 
-			void setParameters(const GaussKernelParameters& parameters);
+			void setParameters(const GaussKernelParameters& gk_parameters);
 			GaussKernelParameters getParameters() const;
 
 			~GaussKernel() override = default;

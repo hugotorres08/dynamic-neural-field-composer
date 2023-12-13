@@ -34,7 +34,7 @@ namespace dnf_composer
 			bool updateAllWeights;
 			std::string weightsFilePath;
 		public:
-			FieldCoupling(const std::string& id, int outputSize, const FieldCouplingParameters& parameters);
+			FieldCoupling(const ElementCommonParameters& elementCommonParameters, const FieldCouplingParameters& fc_parameters);
 
 			void init() override;
 			void step(double t, double deltaT) override;

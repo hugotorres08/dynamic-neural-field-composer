@@ -40,8 +40,7 @@ namespace dnf_composer
 		private:
 			MexicanHatKernelParameters parameters;
 		public:
-			MexicanHatKernel(const std::string& id, int size,
-				const MexicanHatKernelParameters& parameters);
+			MexicanHatKernel(const ElementCommonParameters& elementCommonParameters, const MexicanHatKernelParameters& mhk_parameters);
 
 			void init() override;
 			void step(double t, double deltaT) override;
@@ -49,7 +48,7 @@ namespace dnf_composer
 
 			void printParameters() override;
 
-			void setParameters(const MexicanHatKernelParameters& parameters);
+			void setParameters(const MexicanHatKernelParameters& mhk_parameters);
 			MexicanHatKernelParameters getParameters() const;
 
 			~MexicanHatKernel() override = default;

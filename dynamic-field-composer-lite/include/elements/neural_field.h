@@ -13,6 +13,22 @@ namespace dnf_composer
 		    double startingRestingLevel;
 			std::unique_ptr<ActivationFunction> activationFunction;
 
+			NeuralFieldParameters& operator=(const NeuralFieldParameters& other)
+			{
+				if (this != &other) // Check for self-assignment
+				{
+					tau = other.tau;
+					startingRestingLevel = other.startingRestingLevel;
+
+					// Ensure that activationFunction is properly cloned
+					if (other.activationFunction)
+						activationFunction = other.activationFunction->clone();
+					else
+						activationFunction.reset(); // Reset to nullptr if other has a nullptr
+				}
+				return *this;
+			}
+
 			NeuralFieldParameters(const NeuralFieldParameters& other)
 			{
 				tau = other.tau;
@@ -27,7 +43,7 @@ namespace dnf_composer
 			NeuralFieldParameters parameters;
 		    double centroid;
 		public:
-			NeuralField(const ElementCommonParameters& commonParameters, const NeuralFieldParameters& parameters);
+			NeuralField(const ElementCommonParameters& elementCommonParameters, const NeuralFieldParameters& parameters);
 
 			void init() override;
 			void step(double t, double deltaT) override;

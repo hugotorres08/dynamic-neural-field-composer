@@ -8,16 +8,10 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		NormalNoise::NormalNoise(const std::string& id, int size, NormalNoiseParameters parameters)
-			: parameters(parameters)
+		NormalNoise::NormalNoise(const ElementCommonParameters& elementCommonParameters, NormalNoiseParameters parameters)
+			: Element(elementCommonParameters), parameters(parameters)
 		{
-			if (size <= 0)
-				throw Exception(ErrorCode::ELEM_INVALID_SIZE, id);
-
-			this->label = ElementLabel::NORMAL_NOISE;
-			this->uniqueName = id;
-			this->size = size;
-			components["output"] = std::vector<double>(size);
+			 commonParameters.identifiers.label = ElementLabel::NORMAL_NOISE;
 		}
 
 		void NormalNoise::init()
@@ -27,9 +21,9 @@ namespace dnf_composer
 
 		void NormalNoise::step(double t, double deltaT)
 		{
-			const std::vector<double> rand = mathtools::generateNormalVector(size);
+			const std::vector<double> rand = mathtools::generateNormalVector(commonParameters.dimensionParameters.size);
 
-			for (int i = 0; i < size; i++)
+			for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
 				components["output"][i] = parameters.amplitude / sqrt(deltaT) * rand[i];
 		}
 
@@ -40,10 +34,13 @@ namespace dnf_composer
 			logStream << std::left;
 
 			logStream << "Logging element parameters" << std::endl;
-			logStream << "Unique Identifier: " << uniqueIdentifier << std::endl;
-			logStream << "Unique Name: " << uniqueName << std::endl;
-			logStream << "Label: " << ElementLabelToString.at(label) << std::endl;
-			logStream << "Size: " << size << std::endl;
+			logStream << "Unique Identifier: " << commonParameters.identifiers.uniqueIdentifier << std::endl;
+			logStream << "Unique Name: " << commonParameters.identifiers.uniqueName << std::endl;
+			logStream << "Label: " << ElementLabelToString.at(commonParameters.identifiers.label) << std::endl;
+			logStream << "Maximum spatial dimension size: " << commonParameters.dimensionParameters.x_max << std::endl;
+			logStream << "Spatial dimension step size: " << commonParameters.dimensionParameters.d_x << std::endl;
+			logStream << "Number of samples in spatial dimension: " << commonParameters.dimensionParameters.size << std::endl;
+
 
 			logStream << "Components: ";
 			for (const auto& pair : components)
@@ -67,9 +64,9 @@ namespace dnf_composer
 			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
 		}
 
-		void NormalNoise::setParameters(NormalNoiseParameters parameters)
+		void NormalNoise::setParameters(NormalNoiseParameters normalNoiseParameters)
 		{
-			this->parameters = parameters;
+			parameters = normalNoiseParameters;
 		}
 
 		NormalNoiseParameters NormalNoise::getParameters() const

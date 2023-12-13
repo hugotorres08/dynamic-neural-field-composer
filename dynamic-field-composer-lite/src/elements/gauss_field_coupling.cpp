@@ -8,22 +8,15 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		GaussFieldCoupling::GaussFieldCoupling(const std::string& id, int size, const GaussFieldCouplingParameters& gfcp)
-			: gfcp(gfcp)
+		GaussFieldCoupling::GaussFieldCoupling(const ElementCommonParameters& elementCommonParameters, const GaussFieldCouplingParameters& gfc_parameters)
+			: Element(elementCommonParameters), parameters(gfc_parameters)
 		{
-			if (size <= 0)
-				throw Exception(ErrorCode::ELEM_INVALID_SIZE, id);
-			if (gfcp.inputFieldSize <= 0)
-				throw Exception(ErrorCode::ELEM_SIZE_NOT_ALLOWED, id);
-			if (gfcp.sigma <= 0)
-				throw Exception(ErrorCode::ELEM_INVALID_PARAMETER, id);
 
-			this->label = ElementLabel::GAUSS_FIELD_COUPLING;
-			this->uniqueName = id;
-			this->size = size;
+			if (gfc_parameters.inputFieldSize <= 0)
+				throw Exception(ErrorCode::ELEM_SIZE_NOT_ALLOWED, commonParameters.identifiers.uniqueName);
 
-			components["input"] = std::vector<double>(gfcp.inputFieldSize);
-			components["output"] = std::vector<double>(size);
+			commonParameters.identifiers.label = ElementLabel::GAUSS_FIELD_COUPLING;
+			components["input"] = std::vector<double>(gfc_parameters.inputFieldSize);
 		}
 
 		void GaussFieldCoupling::init()
@@ -48,10 +41,12 @@ namespace dnf_composer
 			logStream << std::left;
 
 			logStream << "Logging element parameters" << std::endl;
-			logStream << "Unique Identifier: " << uniqueIdentifier << std::endl;
-			logStream << "Unique Name: " << uniqueName << std::endl;
-			logStream << "Label: " << ElementLabelToString.at(label) << std::endl;
-			logStream << "Size: " << size << std::endl;
+			logStream << "Unique Identifier: " << commonParameters.identifiers.uniqueIdentifier << std::endl;
+			logStream << "Unique Name: " << commonParameters.identifiers.uniqueName << std::endl;
+			logStream << "Label: " << ElementLabelToString.at(commonParameters.identifiers.label) << std::endl;
+			logStream << "Maximum spatial dimension size: " << commonParameters.dimensionParameters.x_max << std::endl;
+			logStream << "Spatial dimension step size: " << commonParameters.dimensionParameters.d_x << std::endl;
+			logStream << "Number of samples in spatial dimension: " << commonParameters.dimensionParameters.size << std::endl;
 
 			logStream << "Components: ";
 			for (const auto& pair : components)
@@ -72,11 +67,11 @@ namespace dnf_composer
 			}
 
 			logStream << std::endl << "GaussFieldCouplingParameters: ";
-			logStream << "Input Field Size: " << gfcp.inputFieldSize << " | ";
-			logStream << "Sigma: " << gfcp.sigma << " | ";
+			logStream << "Input Field Size: " << parameters.inputFieldSize << " | ";
+			logStream << "Sigma: " << parameters.sigma << " | ";
 
 			logStream << "Couplings: ";
-			for (const auto& coupling : gfcp.couplings)
+			for (const auto& coupling : parameters.couplings)
 			{
 				logStream << "x_i: " << coupling.x_i << ", x_j: " << coupling.x_j << ", w_i_j: " << coupling.w_i_j << " | ";
 			}
@@ -87,19 +82,19 @@ namespace dnf_composer
 
 		void GaussFieldCoupling::updateOutput()
 		{
-			std::vector<double> summedGaussians(size);
+			std::vector<double> summedGaussians(commonParameters.dimensionParameters.size);
 			std::ranges::fill(summedGaussians, 0.0);
 
-			for (const auto& coupling : gfcp.couplings)
+			for (const auto& coupling : parameters.couplings)
 			{
 				const auto activationAtx_i = components["input"][static_cast<int>(coupling.x_i)];
 				if (activationAtx_i > 0.0)
 				{
-					std::vector<double> gauss = mathtools::circularGauss(size, gfcp.sigma, coupling.x_j);
+					std::vector<double> gauss = mathtools::circularGauss(commonParameters.dimensionParameters.size, parameters.sigma, coupling.x_j);
 					for (auto& element : gauss)
 						element *= coupling.w_i_j * activationAtx_i * element;
 
-					for (int i = 0; i < size; i++)
+					for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
 						summedGaussians[i] += gauss[i];
 				}
 			}
@@ -109,12 +104,12 @@ namespace dnf_composer
 
 		void GaussFieldCoupling::addCoupling(const WeightedCoupling& coupling)
 		{
-			gfcp.couplings.emplace_back(coupling);
+			parameters.couplings.emplace_back(coupling);
 		}
 
 		GaussFieldCouplingParameters GaussFieldCoupling::getParameters() const
 		{
-			return gfcp;
+			return parameters;
 		}
 	}
 }

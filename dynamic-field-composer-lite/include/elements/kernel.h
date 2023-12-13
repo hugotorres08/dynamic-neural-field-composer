@@ -15,7 +15,7 @@ namespace dnf_composer
 			std::array<int, 2> kernelRange;
 			std::vector<int> extIndex;
 		public:
-			Kernel();
+			Kernel(const ElementCommonParameters& elementCommonParameters);
 			~Kernel() override = default;
 
 			std::array<int, 2> getKernelRange() const;

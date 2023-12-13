@@ -5,8 +5,11 @@
 #include <unordered_map>
 #include <memory>
 #include <ranges>
+#include <algorithm>
 
+#include "exceptions/exception.h"
 #include "element_parameters.h"
+#include "user_interface/logger_window.h"
 
 namespace dnf_composer
 {

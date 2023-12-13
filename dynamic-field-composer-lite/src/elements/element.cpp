@@ -4,7 +4,6 @@
 
 #include "elements/element.h"
 
-
 namespace dnf_composer
 {
 	namespace element
