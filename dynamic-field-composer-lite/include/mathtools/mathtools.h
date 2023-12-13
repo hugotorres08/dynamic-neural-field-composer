@@ -125,7 +125,7 @@ namespace dnf_composer
 		}
 
 		template<typename T>
-		std::vector<T> sigmoid(const std::vector<T>& x, T beta, int x0)
+		std::vector<T> sigmoid(const std::vector<T>& x, T beta, T x0)
 		{
 			std::vector<T> s(x.size());
 			for (int i = 0; i < static_cast<int>(s.size()); i++)
@@ -138,7 +138,7 @@ namespace dnf_composer
 		{
 			std::vector<T> h(x.size());
 			for (int i = 0; i < static_cast<int>(h.size()); i++)
-				h[i] = (x[i] >= threshold) ? 1 : 0;
+				h[i] = (x[i] > threshold) ? 1 : 0;
 			return h;
 		}
 

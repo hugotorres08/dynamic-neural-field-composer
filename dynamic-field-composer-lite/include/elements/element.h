@@ -44,21 +44,48 @@ namespace dnf_composer
 			{NORMAL_NOISE, "normal noise" },
 		};
 
-		class Element
+		struct ElementSpatialDimensionParameters
 		{
-		protected:
+			int x_max, size;
+			double d_x;
+
+			ElementSpatialDimensionParameters(int x_max, double d_x) : x_max(x_max), size(static_cast<int>(std::round(x_max / d_x)) + 1), d_x(d_x) {}
+		};
+
+		struct ElementIdentifiers
+		{
 			static inline int uniqueIdentifierCounter = 0;
 			int uniqueIdentifier;
 			std::string uniqueName;
 			ElementLabel label;
-			int size;
+
+			ElementIdentifiers() : uniqueIdentifier(uniqueIdentifierCounter++), uniqueName(""), label(ElementLabel::UNINITIALIZED) {}
+		};
+
+		struct ElementCommonParameters
+		{
+			ElementIdentifiers identifiers;
+			ElementSpatialDimensionParameters dimensionParameters;
+		};
+
+		class Element
+		{
+		protected:
+			ElementCommonParameters commonParameters;
 			std::unordered_map<std::string, std::vector<double>> components;
 			std::unordered_map<std::shared_ptr<Element>, std::string> inputs;
 		public:
-			Element();
+			Element(const ElementCommonParameters& parameters);
+
+			Element(const Element&) = delete;
+			Element& operator=(const Element&) = delete;
+			Element(Element&&) = delete;
+			Element& operator=(Element&&) = delete;
+
 			virtual void init() = 0;
 			virtual void step(double t, double deltaT) = 0;
 			virtual void close() = 0;
+			virtual void printParameters() = 0;
 
 			void addInput(const std::shared_ptr<Element>& inputElement, const std::string& inputComponent = "output");
 			void removeInput(const std::string& inputElementId);
@@ -67,18 +94,19 @@ namespace dnf_composer
 			bool hasInput(int inputElementId, const std::string& inputComponent);
 			void updateInput();
 
-			static void setUniqueIdentifier(int uniqueIdentifier);
-			void setSize(int size) const;
-
+			int getMaxSpatialDimension() const;
 			int getSize() const;
+			double getStepSize() const;
+
 			int getUniqueIdentifier() const;
 			std::string getUniqueName() const;
 			ElementLabel getLabel() const;
+
 			std::vector<double> getComponent(const std::string& componentName);
 			std::vector<double>* getComponentPtr(const std::string& componentName);
-			std::vector < std::shared_ptr<Element>> getInputs();
+			std::vector<std::string> getComponentList() const;
 
-			virtual void printParameters() = 0;
+			std::vector < std::shared_ptr<Element>> getInputs();
 
 			virtual ~Element() = default;
 		};

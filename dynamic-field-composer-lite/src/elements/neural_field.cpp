@@ -9,23 +9,17 @@ namespace dnf_composer
 	namespace element
 	{
 
-		NeuralField::NeuralField(const std::string& id, int size,
-			const NeuralFieldParameters& parameters)
-			: parameters(parameters)
+		NeuralField::NeuralField(const ElementCommonParameters& commonParameters, const NeuralFieldParameters& parameters)
+		: parameters(parameters)
 		{
-			if (size <= 0) 
-				throw Exception(ErrorCode::ELEM_INVALID_SIZE, id);
 
-			this->label = ElementLabel::NEURAL_FIELD;
-			this->uniqueName = id;
-			this->size = size;
+			parameters.identifiers.label = ElementLabel::NEURAL_FIELD;
+			identifiers.uniqueName = id;
 
-			centroid = -1.0;
+			dimensionParameters = spatialDimension;
 
-			components["input"] = std::vector<double>(size);
-			components["activation"] = std::vector<double>(size);
-			components["output"] = std::vector<double>(size);
-			components["resting level"] = std::vector<double>(size);
+			components["activation"] = std::vector<double>(spatialDimension.size);
+			components["resting level"] = std::vector<double>(spatialDimension.size);
 		}
 
 		void NeuralField::init()
@@ -72,10 +66,12 @@ namespace dnf_composer
 			logStream << std::left;
 
 			logStream << "Logging element parameters" << std::endl;
-			logStream << "Unique Identifier: " << uniqueIdentifier << std::endl;
-			logStream << "Unique Name: " << uniqueName << std::endl;
-			logStream << "Label: " << ElementLabelToString.at(label) << std::endl;
-			logStream << "Size: " << size << std::endl;
+			logStream << "Unique Identifier: " << identifiers.uniqueIdentifier << std::endl;
+			logStream << "Unique Name: " << identifiers.uniqueName << std::endl;
+			logStream << "Label: " << ElementLabelToString.at(identifiers.label) << std::endl;
+			logStream << "Maximum spatial dimension size: " << dimensionParameters.x_max << std::endl;
+			logStream << "Spatial dimension step size: " << dimensionParameters.d_x << std::endl;
+			logStream << "Number of samples in spatial dimension: " << dimensionParameters.size << std::endl;
 
 			logStream << "Components: ";
 			for (const auto& pair : components)
@@ -109,7 +105,7 @@ namespace dnf_composer
 
 		void NeuralField::calculateActivation(double t, double deltaT)
 		{
-			for (int i = 0; i < size; i++)
+			for (int i = 0; i < dimensionParameters.size; i++)
 			{
 				components["activation"][i] = components["activation"][i] + deltaT / parameters.tau *
 					(-components["activation"][i] + components["resting level"][i] + components["input"][i]);
@@ -136,12 +132,12 @@ namespace dnf_composer
 
 			if (*std::ranges::max_element(f_output) > 0)
 			{
-				const bool isAtLimits = (f_output[0] > 0) || (f_output[size - 1] > 0);
+				const bool isAtLimits = (f_output[0] > 0) || (f_output[dimensionParameters.size - 1] > 0);
 
 				double sumActivation = 0.0;
 				double sumWeightedPositions = 0.0;
 
-				for (int i = 0; i < size; i++)
+				for (int i = 0; i < dimensionParameters.size; i++)
 				{
 					const double activation = f_output[i];
 
@@ -150,9 +146,9 @@ namespace dnf_composer
 					// Calculate the circular distance from the midpoint to the position
 					double distance = 0.0;
 					if (isAtLimits)
-						distance = fmod(static_cast<double>(i) - static_cast<double>(size) * 0.5 + static_cast<double>(size) * 10, static_cast<double>(size));
+						distance = fmod(static_cast<double>(i) - static_cast<double>(dimensionParameters.size) * 0.5 + static_cast<double>(dimensionParameters.size) * 10, static_cast<double>(dimensionParameters.size));
 					else
-						distance = fmod(static_cast<double>(i) - static_cast<double>(size) * 0.5, static_cast<double>(size));
+						distance = fmod(static_cast<double>(i) - static_cast<double>(dimensionParameters.size) * 0.5, static_cast<double>(dimensionParameters.size));
 					sumWeightedPositions += distance * activation;
 				}
 
@@ -160,9 +156,9 @@ namespace dnf_composer
 				if (std::fabs(sumActivation) > epsilon)
 				{
 					// Shift the centroid back to the circular field
-					centroid = fmod(static_cast<double>(size) * 0.5 + sumWeightedPositions / sumActivation, static_cast<double>(size));
+					centroid = fmod(static_cast<double>(dimensionParameters.size) * 0.5 + sumWeightedPositions / sumActivation, static_cast<double>(dimensionParameters.size));
 					if (isAtLimits)
-						centroid = (centroid >= 0 ? centroid : centroid + static_cast<double>(size));
+						centroid = (centroid >= 0 ? centroid : centroid + static_cast<double>(dimensionParameters.size));
 				}
 			}
 			else

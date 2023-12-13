@@ -9,7 +9,7 @@ namespace dnf_composer
 	namespace element
 	{
 
-		FieldCoupling::FieldCoupling(const std::string& id, int size, const FieldCouplingParameters& parameters)
+		FieldCoupling::FieldCoupling(const std::string& id, const ElementSpatialDimensionParameters& , const FieldCouplingParameters& parameters)
 			: parameters(parameters)
 		{
 			if (size <= 0)
@@ -17,9 +17,9 @@ namespace dnf_composer
 			if (parameters.inputFieldSize <= 0)
 				throw Exception(ErrorCode::ELEM_SIZE_NOT_ALLOWED, id);
 
-			this->label = ElementLabel::FIELD_COUPLING;
-			this->uniqueName = id;
-			this->size = size;
+			identifiers.label = ElementLabel::FIELD_COUPLING;
+			identifiers.uniqueName = id;
+			dimensionParameters.size = size;
 			components["input"] = std::vector<double>(parameters.inputFieldSize);
 			components["output"] = std::vector<double>(size);
 			mathtools::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
@@ -27,7 +27,7 @@ namespace dnf_composer
 			// Initialize the weight matrix with random values
 			mathtools::fillMatrixWithRandomValues(weights, -1, 1);
 
-			weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/" + uniqueName + "_weights.txt";
+			weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/" + identifiers.uniqueName + "_weights.txt";
 
 			updateAllWeights = true;
 			trained = false;
@@ -70,10 +70,10 @@ namespace dnf_composer
 			logStream << std::left;
 
 			logStream << "Logging element parameters" << std::endl;
-			logStream << "Unique Identifier: " << uniqueIdentifier << std::endl;
-			logStream << "Unique Name: " << uniqueName << std::endl;
-			logStream << "Label: " << ElementLabelToString.at(label) << std::endl;
-			logStream << "Size: " << size << std::endl;
+			logStream << "Unique Identifier: " << identifiers.uniqueIdentifier << std::endl;
+			logStream << "Unique Name: " << identifiers.uniqueName << std::endl;
+			logStream << "Label: " << ElementLabelToString.at(identifiers.label) << std::endl;
+			logStream << "Size: " << dimensionParameters.size << std::endl;
 
 			logStream << "Components: ";
 			for (const auto& pair : components)
@@ -242,7 +242,7 @@ namespace dnf_composer
 
 		void FieldCoupling::setWeightsFilePath(const std::string& filePath)
 		{
-			weightsFilePath = filePath + "/" + uniqueName + "_weights.txt";
+			weightsFilePath = filePath + "/" + identifiers.uniqueName + "_weights.txt";
 		}
 	}
 }

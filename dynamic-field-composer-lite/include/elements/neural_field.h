@@ -1,49 +1,24 @@
 #pragma once
 
-#include "../mathtools/mathtools.h"
 #include "element.h"
-#include <unordered_set>
-
+#include "activation_function.h"
 
 namespace dnf_composer
 {
 	namespace element
 	{
-		enum ActivationFunctionType
+		struct NeuralFieldParameters
 		{
-			Sigmoid,
-			Heaviside,
-		};
-
-		struct ActivationFunctionParameters {
-		    ActivationFunctionType type;
-		    double steepness;
-		    double xShift;
-
-		    bool operator==(const ActivationFunctionParameters& other) const {
-		        constexpr double epsilon = 1e-6; // Set an appropriate epsilon value
-
-		        // Compare floating-point values with tolerance (epsilon)
-		        return type == other.type &&
-		            std::abs(steepness - other.steepness) < epsilon &&
-		            std::abs(xShift - other.xShift) < epsilon;
-		    }
-		};
-
-		struct NeuralFieldParameters {
 		    double tau;
 		    double startingRestingLevel;
-		    ActivationFunctionParameters activationFunctionParameters;
+			std::unique_ptr<ActivationFunction> activationFunction;
 
-		    // Overload the == operator
-		    bool operator==(const NeuralFieldParameters& other) const {
-		        constexpr double epsilon = 1e-6; // Set an appropriate epsilon value
-
-		        // Compare floating-point values with tolerance (epsilon)
-		        return std::abs(tau - other.tau) < epsilon &&
-		            std::abs(startingRestingLevel - other.startingRestingLevel) < epsilon &&
-		            activationFunctionParameters == other.activationFunctionParameters;
-		    }
+			NeuralFieldParameters(const NeuralFieldParameters& other)
+			{
+				tau = other.tau;
+				startingRestingLevel = other.startingRestingLevel;
+				activationFunction = other.activationFunction->clone();
+			}
 		};
 
 		class NeuralField : public Element
@@ -52,8 +27,7 @@ namespace dnf_composer
 			NeuralFieldParameters parameters;
 		    double centroid;
 		public:
-			NeuralField(const std::string& id, int size,
-				const NeuralFieldParameters& parameters);
+			NeuralField(const ElementCommonParameters& commonParameters, const NeuralFieldParameters& parameters);
 
 			void init() override;
 			void step(double t, double deltaT) override;

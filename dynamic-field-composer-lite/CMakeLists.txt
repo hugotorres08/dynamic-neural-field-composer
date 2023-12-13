@@ -67,6 +67,7 @@ set(elements_headers
     "include/elements/normal_noise.h"
     "include/elements/gauss_field_coupling.h"
     "include/elements/kernel.h"
+    "include/elements/activation_function.h"
 )
 set(mathtools_headers
     "include/mathtools/mathtools.h"
@@ -117,6 +118,7 @@ set(src
     "src/elements/normal_noise.cpp"
     "src/elements/gauss_field_coupling.cpp" 
     "src/elements/kernel.cpp"
+    "src/elements/activation_function.cpp"
     
     "src/mathtools/mathtools.cpp"
 
