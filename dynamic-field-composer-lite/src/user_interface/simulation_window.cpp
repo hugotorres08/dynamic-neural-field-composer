@@ -179,8 +179,10 @@ namespace dnf_composer
 		{
 			static char id[CHAR_SIZE] = "neural field u";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
-			static int size = 100;
-			ImGui::InputInt("size", &size, 1.0, 10.0);
+			static int x_max = 100;
+			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
+			static double d_x = 0.1;
+			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5);
 			static double tau = 25;
 			ImGui::InputDouble("tau", &tau, 1.0f, 10.0f, "%.2f");
 			static double sigmoidSteepness = 5.0f;
@@ -190,10 +192,14 @@ namespace dnf_composer
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
-				element::NeuralFieldParameters nfp = { tau, restingLevel };
-				const element::ActivationFunctionParameters afp = {element::ActivationFunctionType::Sigmoid, sigmoidSteepness, 0};
-				nfp.activationFunctionParameters = afp;
-				const std::shared_ptr<element::NeuralField> neuralField = std::make_shared<element::NeuralField>(id, size, nfp);
+				const element::SigmoidFunction activationFunction{ 0, sigmoidSteepness };
+				element::NeuralFieldParameters nfp = { tau, restingLevel, activationFunction };
+
+				const element::ElementIdentifiers neuralFieldIdentifiers{id};
+				const element::ElementSpatialDimensionParameters neuralFieldDimensions{ x_max, d_x };
+				element::ElementCommonParameters commonParameters{ neuralFieldIdentifiers, neuralFieldDimensions };
+
+				const std::shared_ptr<element::NeuralField> neuralField = std::make_shared<element::NeuralField>(commonParameters, nfp);
 				simulation->addElement(neuralField);
 			}
 		}
@@ -214,9 +220,9 @@ namespace dnf_composer
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
-				element::GaussStimulusParameters gsp = { sigma, amplitude, position };
+				/*element::GaussStimulusParameters gsp = { sigma, amplitude, position };
 				const std::shared_ptr<element::GaussStimulus> gaussStimulus = std::make_shared<element::GaussStimulus>(id, size, gsp);
-				simulation->addElement(gaussStimulus);
+				simulation->addElement(gaussStimulus);*/
 			}
 		}
 
@@ -231,13 +237,13 @@ namespace dnf_composer
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
-				element::NormalNoiseParameters nnp = { amplitude };
+				/*element::NormalNoiseParameters nnp = { amplitude };
 				const std::shared_ptr<element::NormalNoise> normalNoise = std::make_shared<element::NormalNoise>(id, size, nnp);
 				element::GaussKernelParameters gkp = { 0.25, 0.2 };
 				const std::shared_ptr<element::GaussKernel> gaussKernelNormalNoise = 
 					std::make_shared<element::GaussKernel>(std::string(id) + " gauss kernel", size, gkp);
 				simulation->addElement(normalNoise);
-				simulation->addElement(gaussKernelNormalNoise);
+				simulation->addElement(gaussKernelNormalNoise);*/
 			}
 		}
 
@@ -263,9 +269,9 @@ namespace dnf_composer
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
-				element::GaussKernelParameters gkp = { sigma, amplitude };
+				/*element::GaussKernelParameters gkp = { sigma, amplitude };
 				const std::shared_ptr<element::GaussKernel> gaussKernel = std::make_shared<element::GaussKernel>(id, size, gkp);
-				simulation->addElement(gaussKernel);
+				simulation->addElement(gaussKernel);*/
 			}
 		}
 
@@ -288,9 +294,9 @@ namespace dnf_composer
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
-				element::MexicanHatKernelParameters mhkp = { sigmaExc, amplitudeExc, sigmaInh, amplitudeInh, amplitudeGlobal };
+				/*element::MexicanHatKernelParameters mhkp = { sigmaExc, amplitudeExc, sigmaInh, amplitudeInh, amplitudeGlobal };
 				const std::shared_ptr<element::MexicanHatKernel> mexicanHatKernel = std::make_shared<element::MexicanHatKernel>(id, size, mhkp);
-				simulation->addElement(mexicanHatKernel);
+				simulation->addElement(mexicanHatKernel);*/
 			}
 		}
 

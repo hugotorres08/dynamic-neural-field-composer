@@ -13,12 +13,12 @@ namespace dnf_composer
 		: x_shift(x_shift), steepness(steepness)
 		{}
 
-		std::vector<double> SigmoidFunction::operator()(const std::vector<double>& input) override
+		std::vector<double> SigmoidFunction::operator()(const std::vector<double>& input)
 		{
 			return mathtools::sigmoid(input, steepness, x_shift);
 		}
 
-		std::unique_ptr<ActivationFunction> SigmoidFunction::clone() const override
+		std::unique_ptr<ActivationFunction> SigmoidFunction::clone() const 
 		{
 			return std::make_unique<SigmoidFunction>(*this);
 		}
@@ -27,7 +27,12 @@ namespace dnf_composer
 		: x_shift(x_shift)
 		{}
 
-		std::unique_ptr<ActivationFunction> HeavisideFunction::clone() const override
+		std::vector<double> HeavisideFunction::operator()(const std::vector<double>& input)
+		{
+			return mathtools::heaviside(input, x_shift);
+		}
+
+		std::unique_ptr<ActivationFunction> HeavisideFunction::clone() const 
 		{
 			return std::make_unique<HeavisideFunction>(*this);
 		}

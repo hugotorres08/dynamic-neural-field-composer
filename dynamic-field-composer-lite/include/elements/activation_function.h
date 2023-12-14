@@ -38,6 +38,7 @@ namespace dnf_composer
 			HeavisideFunction(const HeavisideFunction&) = default;
 			HeavisideFunction(double x_shift);
 
+			std::vector<double> operator()(const std::vector<double>& input) override;
 			std::unique_ptr<ActivationFunction> clone() const override;
 
 			~HeavisideFunction() override = default;

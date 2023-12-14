@@ -29,6 +29,14 @@ namespace dnf_composer
 				return *this;
 			}
 
+			NeuralFieldParameters()
+				:tau(0), startingRestingLevel(0), activationFunction(nullptr)
+			{}
+
+			NeuralFieldParameters(double tau, double restingLevel, const ActivationFunction& activationFunction)
+				: tau(tau), startingRestingLevel(restingLevel)
+			{ }
+
 			NeuralFieldParameters(const NeuralFieldParameters& other)
 			{
 				tau = other.tau;

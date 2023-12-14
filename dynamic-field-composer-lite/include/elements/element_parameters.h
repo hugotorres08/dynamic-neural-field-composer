@@ -34,7 +34,8 @@ namespace dnf_composer
 		{
 			int x_max, size;
 			double d_x;
-			ElementSpatialDimensionParameters(int x_max, double d_x);
+
+			ElementSpatialDimensionParameters(int x_max = 100, double d_x = 0.1);
 		};
 
 		struct ElementIdentifiers
@@ -45,6 +46,7 @@ namespace dnf_composer
 			ElementLabel label;
 
 			ElementIdentifiers();
+			ElementIdentifiers(std::string elementName);
 		};
 
 		struct ElementCommonParameters
@@ -52,7 +54,8 @@ namespace dnf_composer
 			ElementIdentifiers identifiers;
 			ElementSpatialDimensionParameters dimensionParameters;
 
-			ElementCommonParameters(const ElementIdentifiers& identifiers, const ElementSpatialDimensionParameters& dimensionParameters);
+			ElementCommonParameters() : identifiers(), dimensionParameters() {}
+			ElementCommonParameters(ElementIdentifiers identifiers, const ElementSpatialDimensionParameters& dimensionParameters);
 		};
 	}
 }

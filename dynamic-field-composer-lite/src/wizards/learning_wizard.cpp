@@ -40,14 +40,20 @@ namespace dnf_composer
 
     void LearningWizard::simulateAssociation()
     {
-        for (int i = 0; i < targetPeakLocationsForNeuralFieldPre.size(); i++)
+        for (int i = 0; i < static_cast<int>(targetPeakLocationsForNeuralFieldPre.size()); i++)
         {
             // Create Gaussian stimuli in the input field
-            for (int j = 0; j < targetPeakLocationsForNeuralFieldPre[i].size(); j++)
+            for (int j = 0; j < static_cast<int>(targetPeakLocationsForNeuralFieldPre[i].size()); j++)
             {
                 const std::string stimulusName = "Input Gaussian Stimulus " + std::to_string(i + 1) + std::to_string(j + 1);
-                gaussStimulusParameters.position = targetPeakLocationsForNeuralFieldPre[i][j];
-                std::shared_ptr<dnf_composer::element::GaussStimulus> stimulus(new dnf_composer::element::GaussStimulus(stimulusName, neuralFieldPre->getSize(), gaussStimulusParameters));
+            	const element::ElementIdentifiers stimulusIdentifiers{ stimulusName };
+
+            	element::ElementSpatialDimensionParameters stimulusDimensions{ neuralFieldPre->getMaxSpatialDimension(), neuralFieldPre->getStepSize() };
+                element::ElementCommonParameters commonParameters{ stimulusIdentifiers, stimulusDimensions };
+
+            	gaussStimulusParameters.position = targetPeakLocationsForNeuralFieldPre[i][j];
+                std::shared_ptr<element::GaussStimulus> stimulus = std::make_shared<element::GaussStimulus>(commonParameters, gaussStimulusParameters);
+
                 simulation->addElement(stimulus);
                 neuralFieldPre->addInput(stimulus);
 
@@ -61,8 +67,14 @@ namespace dnf_composer
             for (int j = 0; j < targetPeakLocationsForNeuralFieldPost[i].size(); j++)
             {
                 const std::string stimulusName = "Output Gaussian Stimulus " + std::to_string(i + 1) + std::to_string(j + 1);
-                gaussStimulusParameters.position = targetPeakLocationsForNeuralFieldPost[i][j];
-                std::shared_ptr<dnf_composer::element::GaussStimulus> stimulus(new dnf_composer::element::GaussStimulus(stimulusName, neuralFieldPost->getSize(), gaussStimulusParameters));
+                const element::ElementIdentifiers stimulusIdentifiers{ stimulusName };
+
+                element::ElementSpatialDimensionParameters stimulusDimensions{ neuralFieldPost->getMaxSpatialDimension(), neuralFieldPost->getStepSize() };
+                element::ElementCommonParameters commonParameters{ stimulusIdentifiers, stimulusDimensions };
+
+            	gaussStimulusParameters.position = targetPeakLocationsForNeuralFieldPost[i][j];
+                std::shared_ptr<element::GaussStimulus> stimulus = std::make_shared<element::GaussStimulus>(commonParameters, gaussStimulusParameters);
+
                 simulation->addElement(stimulus);
                 neuralFieldPost->addInput(stimulus);
 

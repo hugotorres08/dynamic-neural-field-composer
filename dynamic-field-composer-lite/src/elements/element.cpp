@@ -60,7 +60,7 @@ namespace dnf_composer
 		{
 			const bool found = std::ranges::any_of(inputs, [&](const auto& pair) {
 				const auto& [key, value] = pair;
-				return key->identifiers.uniqueName == inputElementName && value == inputComponent;
+				return key->commonParameters.identifiers.uniqueName == inputElementName && value == inputComponent;
 				});
 			if (found)
 				return true;
