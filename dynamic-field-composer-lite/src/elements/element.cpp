@@ -13,6 +13,8 @@ namespace dnf_composer
 			if(parameters.dimensionParameters.size <= 0)
 				throw Exception(ErrorCode::ELEM_INVALID_SIZE, commonParameters.identifiers.uniqueName);
 			commonParameters = parameters;
+			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size);
+			components["input"] = std::vector<double>(commonParameters.dimensionParameters.size);
 		}
 
 		void Element::addInput(const std::shared_ptr<Element>& inputElement, const std::string& inputComponent)
@@ -25,8 +27,10 @@ namespace dnf_composer
 				throw Exception(ErrorCode::ELEM_INPUT_ALREADY_EXISTS, existingInput->first->getUniqueIdentifier());
 
 			if (inputElement->getComponentPtr("output")->size() != this->getComponentPtr("input")->size())
+			{
 				if (inputElement->getComponentPtr("output")->size() != this->getSize())
 					throw Exception(ErrorCode::ELEM_INPUT_SIZE_MISMATCH, inputElement->getUniqueIdentifier());
+			}
 
 			inputs[inputElement] = inputComponent;
 
@@ -97,7 +101,7 @@ namespace dnf_composer
 
 		int Element::getMaxSpatialDimension() const
 		{
-			return commonParameters.dimensionParameters.size;
+			return commonParameters.dimensionParameters.x_max;
 		}
 
 		double Element::getStepSize() const

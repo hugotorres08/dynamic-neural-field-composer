@@ -9,7 +9,7 @@ namespace dnf_composer
 	namespace element
 	{
 		GaussKernel::GaussKernel(const ElementCommonParameters& elementCommonParameters, const GaussKernelParameters& gk_parameters)
-			: Kernel(elementCommonParameters), parameters(parameters)
+			: Kernel(elementCommonParameters), parameters(gk_parameters)
 		{
 			commonParameters.identifiers.label = ElementLabel::GAUSS_KERNEL;
 			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size);
@@ -17,7 +17,7 @@ namespace dnf_composer
 
 		void GaussKernel::init()
 		{
-			kernelRange = mathtools::computeKernelRange(parameters.sigma, parameters.cutOfFactor, commonParameters.dimensionParameters.size, circular);
+			kernelRange = mathtools::computeKernelRange(parameters.sigma, cutOfFactor, commonParameters.dimensionParameters.size, circular);
 
 			if (circular)
 				extIndex = mathtools::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
@@ -45,7 +45,7 @@ namespace dnf_composer
 				components["kernel"][i] = parameters.amplitude * gauss[i];
 
 			components["input"].resize(extIndex.size());
-			parameters.fullSum = 0;
+			fullSum = 0;
 			std::ranges::fill(components["input"], 0.0);
 		}
 
@@ -54,7 +54,7 @@ namespace dnf_composer
 
 			updateInput();
 
-			parameters.fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
+			fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
 
 			std::vector<double> convolution(commonParameters.dimensionParameters.size);
 			const std::vector<double> subDataInput = mathtools::obtainCircularVector(extIndex, components["input"]);
@@ -112,7 +112,7 @@ namespace dnf_composer
 			logStream << "Amplitude: " << parameters.amplitude << " | ";
 			logStream << "Amplitude Global: " << parameters.amplitudeGlobal << " | ";
 			logStream << "Sigma: " << parameters.sigma << " | ";
-			logStream << "Cut-Off Factor: " << parameters.cutOfFactor << " | ";
+			logStream << "Cut-Off Factor: " << cutOfFactor << " | ";
 			logStream << "Circular: " << circular << " | ";
 			logStream << "Normalized: " << normalized << std::endl;
 

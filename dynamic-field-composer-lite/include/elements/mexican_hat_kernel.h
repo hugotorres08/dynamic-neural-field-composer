@@ -18,8 +18,6 @@ namespace dnf_composer
 			double sigmaInh;
 			double amplitudeInh;
 			double amplitudeGlobal = 0.0;
-			double fullSum = 0.0;
-			int cutOfFactor = 5;
 
 			bool operator==(const MexicanHatKernelParameters& other) const
 			{
@@ -29,9 +27,7 @@ namespace dnf_composer
 					std::abs(amplitudeExc - other.amplitudeExc) < epsilon &&
 					std::abs(sigmaInh - other.sigmaInh) < epsilon &&
 					std::abs(amplitudeInh - other.amplitudeInh) < epsilon &&
-					std::abs(amplitudeGlobal - other.amplitudeGlobal) < epsilon &&
-					std::abs(fullSum - other.fullSum) < epsilon &&
-					cutOfFactor == other.cutOfFactor;
+					std::abs(amplitudeGlobal - other.amplitudeGlobal) < epsilon;
 			}
 		};
 

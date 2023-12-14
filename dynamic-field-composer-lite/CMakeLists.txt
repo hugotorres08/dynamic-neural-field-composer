@@ -208,29 +208,29 @@ target_include_directories(${EXE_PROJECT} PRIVATE include)
 target_link_libraries(${EXE_PROJECT} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME} )
 
 # Add executable example project run_sim
-#set(EXE_PROJECT_EXAMPLE_RUN_SIM ${CMAKE_PROJECT_NAME}-example-run_sim)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM} "examples/run_sim.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
-#
-## Add executable example project run_sim_headless
-#set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_headless)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headless.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
-#
+set(EXE_PROJECT_EXAMPLE_RUN_SIM ${CMAKE_PROJECT_NAME}-example-run_sim)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM} "examples/run_sim.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project run_sim_headless
+set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_headless)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headless.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
 ## Add executable example project run_sim_read_architecture_from_file
 #set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_read_architecture_from_file)
 #add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_read_architecture_from_file.cpp" ./resources/resources.rc)
 #target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
 #target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
-#
-## Add executable example project run_learning_wizard
-#set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_learning_wizard.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
-#
+
+# Add executable example project run_learning_wizard
+set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_learning_wizard.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
 ## Add executable example project run_sim_element_factory
 #set(EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_sim_element_factory)
 #add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} "examples/run_sim_element_factory.cpp" ./resources/resources.rc)

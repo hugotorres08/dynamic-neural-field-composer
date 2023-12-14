@@ -17,7 +17,7 @@ namespace dnf_composer
 		void MexicanHatKernel::init()
 		{
 			const double maxSigma = std::max(parameters.amplitudeExc * parameters.sigmaExc, parameters.amplitudeInh * parameters.sigmaInh);
-			kernelRange = mathtools::computeKernelRange(maxSigma, parameters.cutOfFactor, commonParameters.dimensionParameters.size, circular);
+			kernelRange = mathtools::computeKernelRange(maxSigma, cutOfFactor, commonParameters.dimensionParameters.size, circular);
 
 			if (circular)
 				extIndex = mathtools::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
@@ -47,7 +47,7 @@ namespace dnf_composer
 			for (int i = 0; i < components["kernel"].size(); i++)
 				components["kernel"][i] = parameters.amplitudeExc * gaussExc[i] - parameters.amplitudeInh * gaussInh[i];
 
-			parameters.fullSum = 0;
+			fullSum = 0;
 			std::ranges::fill(components["input"], 0.0);
 		}
 
@@ -55,7 +55,7 @@ namespace dnf_composer
 		{
 			updateInput();
 
-			parameters.fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
+			fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
 
 			std::vector<double> convolution(commonParameters.dimensionParameters.size);
 			const std::vector<double> subDataInput = mathtools::obtainCircularVector(extIndex, components["input"]);
@@ -112,7 +112,7 @@ namespace dnf_composer
 			logStream << "AmplitudeInh: " << parameters.amplitudeInh << " | ";
 			logStream << "SigmaInh: " << parameters.sigmaInh << " | ";
 			logStream << "AmplitudeGlobal: " << parameters.amplitudeGlobal << " | ";
-			logStream << "CutOffFactor: " << parameters.cutOfFactor << " | ";
+			logStream << "CutOffFactor: " << cutOfFactor << " | ";
 			logStream << "Normalized: " << normalized << std::endl;
 
 			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());

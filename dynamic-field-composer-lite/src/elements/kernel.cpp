@@ -15,6 +15,8 @@ namespace dnf_composer
 			circular = true;
 			normalized = false;
 			kernelRange = { 0, 0 };
+			fullSum = 0.0;
+			cutOfFactor = 5;
 			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size);
 		}
 
