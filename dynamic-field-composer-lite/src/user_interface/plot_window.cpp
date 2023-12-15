@@ -9,10 +9,9 @@ namespace dnf_composer
 	namespace user_interface
 	{
 		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation)
-			:simulation(simulation)
 		{
 			PlotParameters parameters;
-			parameters.id = ++current_id;
+			parameters.visualization = std::make_shared<Visualization>(simulation);
 			parameters.dimensions = { 0, 100, -30, 40 };
 			parameters.annotations.title = "Plot window ";
 			parameters.annotations.x_label = "Spatial dimension";
@@ -21,8 +20,25 @@ namespace dnf_composer
 		}
 
 		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters)
-			:simulation(simulation)
 		{
+			parameters.visualization = std::make_shared<Visualization>(simulation);
+			createPlot(parameters);
+		}
+
+		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization)
+		{
+			PlotParameters parameters;
+			parameters.visualization = visualization;
+			parameters.dimensions = { 0, 100, -30, 40 };
+			parameters.annotations.title = "Plot window ";
+			parameters.annotations.x_label = "Spatial dimension";
+			parameters.annotations.y_label = "Amplitude";
+			createPlot(parameters);
+		}
+
+		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotParameters parameters)
+		{
+			parameters.visualization = visualization;
 			createPlot(parameters);
 		}
 
@@ -78,7 +94,6 @@ namespace dnf_composer
 
 		void PlotWindow::createPlot( PlotParameters& parameters)
 		{
-			parameters.visualization = std::make_shared<Visualization>(simulation);
 			parameters.id = ++current_id;
 			parameters.annotations.title += " " + std::to_string(parameters.id);
 			plots.emplace_back(parameters);

@@ -182,7 +182,7 @@ namespace dnf_composer
 			static int x_max = 100;
 			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
 			static double d_x = 0.1;
-			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5);
+			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
 			static double tau = 25;
 			ImGui::InputDouble("tau", &tau, 1.0f, 10.0f, "%.2f");
 			static double sigmoidSteepness = 5.0f;
@@ -211,7 +211,7 @@ namespace dnf_composer
 			static int x_max = 100;
 			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
 			static double d_x = 0.1;
-			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5);
+			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
 			static double sigma = 5;
 			ImGui::InputDouble("sigma", &sigma, 1.0f, 10.0f, "%.2f");
 			static double amplitude = 20;
@@ -236,7 +236,7 @@ namespace dnf_composer
 			static int x_max = 100;
 			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
 			static double d_x = 0.1;
-			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5);
+			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
 			static double amplitude = 20;
 			ImGui::InputDouble("amplitude", &amplitude, 1.0f, 10.0f, "%.2f");
 
@@ -268,7 +268,7 @@ namespace dnf_composer
 			static int x_max = 100;
 			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
 			static double d_x = 0.1;
-			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5);
+			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
 			static double sigma = 20;
 			ImGui::InputDouble("sigma", &sigma, 1.0f, 10.0f, "%.2f");
 			static double amplitude = 2;
@@ -290,7 +290,7 @@ namespace dnf_composer
 			static int x_max = 100;
 			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
 			static double d_x = 0.1;
-			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5);
+			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
 			static double sigmaExc = 5;
 			ImGui::InputDouble("sigmaExc", &sigmaExc, 1.0f, 10.0f, "%.2f");
 			static double amplitudeExc = 15;

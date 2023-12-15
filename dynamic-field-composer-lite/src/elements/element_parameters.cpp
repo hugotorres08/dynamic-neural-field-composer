@@ -10,7 +10,7 @@ namespace dnf_composer
 	namespace element
 	{
 		ElementSpatialDimensionParameters::ElementSpatialDimensionParameters(int x_max, double d_x)
-			: x_max(x_max), size(static_cast<int>(std::round(x_max / d_x)) + 1), d_x(d_x)
+			: x_max(x_max), size(static_cast<int>(std::round(x_max / d_x))), d_x(d_x)
 		{}
 
 		ElementIdentifiers::ElementIdentifiers()
@@ -19,6 +19,10 @@ namespace dnf_composer
 
 		ElementIdentifiers::ElementIdentifiers(std::string elementName)
 			: uniqueIdentifier(uniqueIdentifierCounter++), uniqueName(std::move(elementName)), label(ElementLabel::UNINITIALIZED)
+		{}
+
+		ElementCommonParameters::ElementCommonParameters(const std::string& elementName, const ElementSpatialDimensionParameters& dimensionParameters)
+			: identifiers(elementName), dimensionParameters(dimensionParameters)
 		{}
 
 		ElementCommonParameters::ElementCommonParameters(ElementIdentifiers identifiers, const ElementSpatialDimensionParameters& dimensionParameters)

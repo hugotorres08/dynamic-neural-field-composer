@@ -231,11 +231,11 @@ add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_learning_wi
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
-## Add executable example project run_sim_element_factory
-#set(EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_sim_element_factory)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} "examples/run_sim_element_factory.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+# Add executable example project run_sim_element_factory
+set(EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_sim_element_factory)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} "examples/run_sim_element_factory.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 # Setup Catch2
 enable_testing()

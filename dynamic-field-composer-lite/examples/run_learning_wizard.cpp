@@ -20,12 +20,10 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	// create neural fields
 	const dnf_composer::element::HeavisideFunction activationFunction{ 0 };
 	const dnf_composer::element::NeuralFieldParameters nfp1 = { 25, -10 , activationFunction };
-	//const std::shared_ptr < dnf_composer::element::NeuralField > perceptual_field = std::make_shared<dnf_composer::element::NeuralField>({ "perceptual field", perceptualFieldSpatialDimensionParameters }, nfp1);
 	const std::shared_ptr<dnf_composer::element::NeuralField> perceptual_field(new dnf_composer::element::NeuralField({ "perceptual field", perceptualFieldSpatialDimensionParameters }, nfp1));
 
 
 	const dnf_composer::element::NeuralFieldParameters nfp2 = { 20, -10 , activationFunction };
-	//const std::shared_ptr<dnf_composer::element::NeuralField> output_field = std::make_shared<dnf_composer::element::NeuralField>({ "output field", outputFieldSpatialDimensionParameters }, nfp2);
 	const std::shared_ptr<dnf_composer::element::NeuralField> output_field(new dnf_composer::element::NeuralField({ "output field", outputFieldSpatialDimensionParameters }, nfp2));
 
 	simulation->addElement(perceptual_field);
