@@ -1,8 +1,8 @@
-//// This is a personal academic project. Dear PVS-Studio, please check it.
-//
-//// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
-//
-#include "architecture/architecture_builder.h"
+////// This is a personal academic project. Dear PVS-Studio, please check it.
+////
+////// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
+////
+//#include "architecture/architecture_builder.h"
 //
 //
 //namespace dnf_composer
@@ -10,7 +10,7 @@
 //    ArchitectureBuilder::ArchitectureBuilder(std::string identifier, const std::shared_ptr<Simulation>& simulation)
 //        : identifier(std::move(identifier)), simulation(simulation), fileHandler(ArchitectureFileHandler(this->identifier))
 //    {
-//        architectureParameters = element::ElementParameters{};
+//        architectureParameters = element::CompoundElementParameters{};
 //        dynamicNeuralField = DynamicNeuralField{};
 //        dynamicNeuralFieldCoupling = DynamicNeuralFieldCoupling{};
 //    }
@@ -69,17 +69,17 @@
 //            switch (elementLabel)
 //            {
 //            case element::ElementLabel::NEURAL_FIELD:
-//                //dynamicNeuralField.neuralField = std::dynamic_pointer_cast<element::NeuralField>(element);
-//                //architectureParameters.nfp = dynamicNeuralField.neuralField->getParameters();
+//                dynamicNeuralField.neuralField = std::dynamic_pointer_cast<element::NeuralField>(element);
+//                architectureParameters.nfp = dynamicNeuralField.neuralField->getParameters();
 //
-//                //dynamicNeuralFieldParameters << dynamicNeuralField.neuralField->getSize() << " "
-//                //    << 1 << " " // dx
-//                //    << architectureParameters.nfp.tau << " "
-//                //    << -architectureParameters.nfp.startingRestingLevel << " "
-//                //    << static_cast<int>(architectureParameters.nfp.activationFunctionParameters.type) << " ";
-//                //if (architectureParameters.nfp.activationFunctionParameters.type == element::ActivationFunctionType::Sigmoid)
-//                //    dynamicNeuralFieldParameters << architectureParameters.nfp.activationFunctionParameters.steepness << " ";
-//                //dynamicNeuralFieldParameters << architectureParameters.nfp.activationFunctionParameters.xShift << " ";
+//                dynamicNeuralFieldParameters << dynamicNeuralField.neuralField->getMaxSpatialDimension() << " "
+//                    << dynamicNeuralField.neuralField->getStepSize() << " " 
+//                    << architectureParameters.nfp.tau << " "
+//                    << -architectureParameters.nfp.startingRestingLevel << " "
+//                    << dynamicNeuralField.activationFunctionType << " ";
+//                if (dynamicNeuralField.activationFunctionType == element::ActivationFunctionType::SIGMOID)
+//                    dynamicNeuralFieldParameters << architectureParameters.nfp.activationFunction..steepness << " ";
+//                dynamicNeuralFieldParameters << architectureParameters.nfp.activationFunctionParameters.xShift << " ";
 //
 //                break;
 //            case element::ElementLabel::GAUSS_KERNEL:
@@ -151,7 +151,7 @@
 //        user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, "Finished saving architecture parameters.");
 //    }
 //
-//    void ArchitectureBuilder::setArchitectureParameters(const element::ElementParameters& elementParameters)
+//    void ArchitectureBuilder::setArchitectureParameters(const element::CompoundElementParameters& elementParameters)
 //    {
 //        architectureParameters = elementParameters;
 //    }
@@ -166,7 +166,7 @@
 //        dynamicNeuralFieldCoupling = coupling;
 //    }
 //
-//    element::ElementParameters ArchitectureBuilder::getArchitectureParameters() const
+//    element::CompoundElementParameters ArchitectureBuilder::getArchitectureParameters() const
 //    {
 //        return architectureParameters;
 //    }
@@ -193,7 +193,7 @@
 //
 //        std::istringstream iss(line);
 //
-//        iss >> dynamicNeuralField.size;
+//        iss >> dynamicNeuralField.spatialDimensionParameters.x_max;
 //
 //        std::vector<double> parsedParameters;
 //        double value;
@@ -201,20 +201,20 @@
 //        for (int i = 0; i < 3 && iss >> value; ++i)
 //            parsedParameters.push_back(value);
 //
-//        //architectureParameters.nfp.dx = parsedParameters[0];
+//        dynamicNeuralField.spatialDimensionParameters.d_x = parsedParameters[0];
 //        architectureParameters.nfp.tau = parsedParameters[1];
 //        architectureParameters.nfp.startingRestingLevel = -parsedParameters[2];
 //
 //        // Parse the activation function type
 //        int tempAfpType;
 //        iss >> tempAfpType;
-//        //architectureParameters.nfp.activationFunctionParameters.type = static_cast<element::ActivationFunctionType>(tempAfpType);
-//        //// Depending on the activation function, parse additional parameters
-//        //if (architectureParameters.nfp.activationFunctionParameters.type == element::ActivationFunctionType::Sigmoid)
-//        //{
-//        //    iss >> architectureParameters.nfp.activationFunctionParameters.steepness;
-//        //}
-//        //iss >> architectureParameters.nfp.activationFunctionParameters.xShift;
+//        architectureParameters.nfp.activationFunctionParameters.type = static_cast<element::ActivationFunctionType>(tempAfpType);
+//        // Depending on the activation function, parse additional parameters
+//        if (architectureParameters.nfp.activationFunctionParameters.type == element::ActivationFunctionType::Sigmoid)
+//        {
+//            iss >> architectureParameters.nfp.activationFunctionParameters.steepness;
+//        }
+//        iss >> architectureParameters.nfp.activationFunctionParameters.xShift;
 //
 //        // Parse the kernel type
 //        iss >> dynamicNeuralField.kernelType;
@@ -225,7 +225,6 @@
 //                >> architectureParameters.gkp.sigma
 //                >> architectureParameters.gkp.amplitudeGlobal;
 //            architectureParameters.gkp.amplitudeGlobal = -architectureParameters.gkp.amplitudeGlobal;
-//            architectureParameters.gkp.cutOfFactor = 5;
 //        }
 //        else if (dynamicNeuralField.kernelType == element::ElementLabel::MEXICAN_HAT_KERNEL) // Mexican hat kernel
 //        {
@@ -235,8 +234,6 @@
 //                >> architectureParameters.mhkp.sigmaInh
 //                >> architectureParameters.mhkp.amplitudeGlobal;
 //            architectureParameters.mhkp.amplitudeGlobal = -architectureParameters.mhkp.amplitudeGlobal;
-//            architectureParameters.mhkp.cutOfFactor = 5;
-//
 //        }
 //
 //        // Parse the last value as the amplitude of the normal noise
@@ -245,25 +242,21 @@
 //
 //    void ArchitectureBuilder::createDynamicNeuralFieldElements()
 //    {
-//        //static int elementCount = 0;
-//        //dynamicNeuralField.neuralField = std::make_shared<element::NeuralField>("neural field " + std::to_string(elementCount++),
-//        //                                                                        dynamicNeuralField.size, architectureParameters.nfp);
+//        static int elementCount = 0;
+//        dynamicNeuralField.neuralField = std::make_shared<element::NeuralField>({ "neural field " + std::to_string(elementCount++), dynamicNeuralField.spatialDimensionParameters }, architectureParameters.nfp);
 //
-//        //if (dynamicNeuralField.kernelType == element::ElementLabel::GAUSS_KERNEL)
-//        //    dynamicNeuralField.kernel = std::make_shared<element::GaussKernel>("gauss kernel " + std::to_string(elementCount++),
-//        //                                                                       dynamicNeuralField.size, architectureParameters.gkp);
-//        //if (dynamicNeuralField.kernelType == element::ElementLabel::MEXICAN_HAT_KERNEL)
-//        //    dynamicNeuralField.kernel = std::make_shared<element::MexicanHatKernel>("mex-hat kernel " + std::to_string(elementCount++),
-//        //                                                                            dynamicNeuralField.size, architectureParameters.mhkp);
+//        if (dynamicNeuralField.kernelType == element::ElementLabel::GAUSS_KERNEL)
+//            dynamicNeuralField.kernel = std::make_shared<element::GaussKernel>({ "gauss kernel " + std::to_string(elementCount++), dynamicNeuralField.spatialDimensionParameters }, architectureParameters.gkp);
 //
-//        //dynamicNeuralField.normalNoise = std::make_shared<element::NormalNoise>("normal noise " + std::to_string(elementCount++),
-//        //                                                                        dynamicNeuralField.size, architectureParameters.nnp);
-//        //element::GaussKernelParameters gkp;
-//        //gkp.amplitude = 0.2;
-//        //gkp.sigma = 0.25;
-//        //gkp.amplitudeGlobal = 0.0;
-//        //dynamicNeuralField.normalNoiseKernel = std::make_shared<element::GaussKernel>("noise kernel " + std::to_string(elementCount++),
-//        //                                                                              dynamicNeuralField.size, gkp);
+//        if (dynamicNeuralField.kernelType == element::ElementLabel::MEXICAN_HAT_KERNEL)
+//            dynamicNeuralField.kernel = std::make_shared<element::MexicanHatKernel>({ "mex-hat kernel " + std::to_string(elementCount++), dynamicNeuralField.spatialDimensionParameters }, architectureParameters.mhkp);
+//
+//        dynamicNeuralField.normalNoise = std::make_shared<element::NormalNoise>({ "normal noise " + std::to_string(elementCount++), dynamicNeuralField.spatialDimensionParameters },  architectureParameters.nnp);
+//        element::GaussKernelParameters gkp;
+//        gkp.amplitude = 0.2;
+//        gkp.sigma = 0.25;
+//        gkp.amplitudeGlobal = 0.0;
+//        dynamicNeuralField.normalNoiseKernel = std::make_shared<element::GaussKernel>({"noise kernel " + std::to_string(elementCount++), dynamicNeuralField.spatialDimensionParameters}, gkp);
 //    }
 //
 //    void ArchitectureBuilder::addElementsToSimulation() const
@@ -313,15 +306,16 @@
 //
 //    void ArchitectureBuilder::createDynamicNeuralFieldCouplings()
 //    {
-//        //static int elementCount = 0;
+//        static int elementCount = 0;
 //
-//        //architectureParameters.gfcp.inputFieldSize = simulation->getElement(dynamicNeuralFieldCoupling.idsOfCoupledDynamicNeuralFields[0])->getSize();
-//        //const int size = simulation->getElement(dynamicNeuralFieldCoupling.idsOfCoupledDynamicNeuralFields[1])->getSize();
+//        architectureParameters.gfcp.inputFieldSize = simulation->getElement(dynamicNeuralFieldCoupling.idsOfCoupledDynamicNeuralFields[0])->getSize();
+//        const int x_max = simulation->getElement(dynamicNeuralFieldCoupling.idsOfCoupledDynamicNeuralFields[1])->getMaxSpatialDimension();
+//        const double d_x = simulation->getElement(dynamicNeuralFieldCoupling.idsOfCoupledDynamicNeuralFields[1])->getStepSize();
 //
-//        //dynamicNeuralFieldCoupling.gaussianFieldCoupling = std::make_shared<element::GaussFieldCoupling>("coupling " + std::to_string(elementCount++), size, architectureParameters.gfcp);
+//        dynamicNeuralFieldCoupling.gaussianFieldCoupling = std::make_shared<element::GaussFieldCoupling>({ "coupling " + std::to_string(elementCount++), {x_max, d_x} }, architectureParameters.gfcp);
 //
-//        //for (const auto& coupling : dynamicNeuralFieldCoupling.couplings)
-//        //    dynamicNeuralFieldCoupling.gaussianFieldCoupling->addCoupling(coupling);
+//        for (const auto& coupling : dynamicNeuralFieldCoupling.couplings)
+//            dynamicNeuralFieldCoupling.gaussianFieldCoupling->addCoupling(coupling);
 //
 //    }
 //

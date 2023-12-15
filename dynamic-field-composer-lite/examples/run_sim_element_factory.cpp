@@ -25,7 +25,7 @@ std::shared_ptr<dnf_composer::Simulation> getExampleSimulation()
 	// create input
 	dnf_composer::element::GaussStimulusParameters gaussStimulusParameters;
 	gaussStimulusParameters.amplitude = 20.0;
-	gaussStimulusParameters.position = 55.0;
+	gaussStimulusParameters.position = 50.0;
 	gaussStimulusParameters.sigma = 5.0;
 	elementFactoryParameters.gsp = gaussStimulusParameters;
 	const auto gauss_stimulus = elementFactory.create(dnf_composer::element::ElementLabel::GAUSS_STIMULUS, { "GaussStimulus", size }, elementFactoryParameters);

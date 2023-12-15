@@ -6,6 +6,12 @@ namespace dnf_composer
 {
 	namespace element
 	{
+		enum ActivationFunctionType : int
+		{
+			SIGMOID,
+			HEAVISIDE
+		};
+
 		struct ActivationFunction
 		{
 			ActivationFunction() = default;                                 
@@ -27,6 +33,9 @@ namespace dnf_composer
 			std::vector<double> operator()(const std::vector<double>& input) override;
 			std::unique_ptr<ActivationFunction> clone() const override;
 
+			double getSteepness() const;
+			double getXShift() const;
+
 			~SigmoidFunction() override = default;
 
 		};
@@ -40,6 +49,8 @@ namespace dnf_composer
 
 			std::vector<double> operator()(const std::vector<double>& input) override;
 			std::unique_ptr<ActivationFunction> clone() const override;
+
+			double getXShift() const;
 
 			~HeavisideFunction() override = default;
 		};
