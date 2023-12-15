@@ -55,7 +55,7 @@ TEST_CASE("Application", "[Application]")
         REQUIRE(application.getCloseUI() == false); // User interface is activated, but not yet closed
         REQUIRE(application.getActivateUserInterface() == true); 
 
-        application.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
+        //application.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
         // Additional checks for the activated state of the user interface window
 
         // Test deactivation

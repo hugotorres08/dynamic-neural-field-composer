@@ -23,7 +23,7 @@ namespace dnf_composer
 			element->init();
 
 		initialized = true;
-		user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, "Started the simulation.");
+		//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, "Started the simulation.");
 	}
 
 	void Simulation::step() {
@@ -37,7 +37,7 @@ namespace dnf_composer
 			element->close();
 		
 		initialized = false;
-		user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, "Stopped the simulation.");
+		//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, "Stopped the simulation.");
 	}
 
 	void Simulation::run(double runTime)
@@ -64,13 +64,13 @@ namespace dnf_composer
 			if (existingElement->getUniqueName() == newElementName) 
 			{
 				const std::string logMessage = "An element with the same unique name already exists '" + newElementName + "'! New element was not added.";
-				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_WARNING, logMessage.c_str());
+				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_WARNING, logMessage.c_str());
 				return;
 			}
 		}
 
 		const std::string logMessage = "Element '" + newElementName + "' was added to the simulation.";
-		user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
+		//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
 		elements.push_back(element);
 		element->init(); 
 	}
@@ -86,7 +86,7 @@ namespace dnf_composer
 			{
 				elements.erase(elements.begin() + i);
 				const std::string logMessage = "Element '" + elementId + "' was removed from the simulation.";
-				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
+				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
 				return;
 			}
 		}
@@ -104,7 +104,7 @@ namespace dnf_composer
 				element = newElement;
 				element->init();
 				const std::string logMessage = "Element '" + idOfElementToReset + "' was reset in the simulation.";
-				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
+				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
 				elementFound = true;
 				break;
 			}
@@ -128,7 +128,7 @@ namespace dnf_composer
 			throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, receivingElementId);
 
 		const std::string logMessage = "Interaction created: " + stimulusElementId + " -> " + receivingElementId;
-		user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
+		//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
 
 		receivingElement->addInput(stimulusElement, stimulusComponent);
 	}

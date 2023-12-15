@@ -24,7 +24,7 @@ namespace dnf_composer
 			else
 			{
 				const std::string message = "Tried to initialize a non-circular Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.";
-				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
 			}
 
 			int rangeXsize = kernelRange[0] + kernelRange[1] + 1;
@@ -37,7 +37,7 @@ namespace dnf_composer
 			else
 			{
 				const std::string message = "Tried to initialize a normalized Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.";
-				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
 			}
 
 			components["kernel"].resize(rangeX.size());
@@ -114,7 +114,7 @@ namespace dnf_composer
 			logStream << "Circular: " << circular << " | ";
 			logStream << "Normalized: " << normalized << std::endl;
 
-			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
+			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
 		}
 
 		void GaussKernel::setParameters(const GaussKernelParameters& gk_parameters)

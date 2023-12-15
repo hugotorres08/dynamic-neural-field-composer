@@ -61,7 +61,7 @@ namespace dnf_composer
 			logStream << std::endl << "NormalNoiseParameters: ";
 			logStream << "Amplitude: " << parameters.amplitude << std::endl;
 
-			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
+			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
 		}
 
 		void NormalNoise::setParameters(NormalNoiseParameters normalNoiseParameters)

@@ -69,7 +69,7 @@ namespace dnf_composer
 	    else
 	    {
 			const std::string message = "Unable to open file to read dynamic neural field parameters " + architectureFileLocation + "\n";
-			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
 	    }
 	}
 
@@ -87,7 +87,7 @@ namespace dnf_composer
 	    else
 	    {
 			const std::string message = "Unable to open file to read field coupling parameters " + architectureFileLocation + "\n";
-			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
 	    }
 	}
 
@@ -101,7 +101,7 @@ namespace dnf_composer
 	    else
 	    {
 			const std::string message = "Unable to open file to save dynamic neural field parameters " + architectureFileLocation + "\n";
-			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
 	    }
 
 	    architectureFile.close();
@@ -117,7 +117,7 @@ namespace dnf_composer
 		else
 		{
 			const std::string message = "Unable to open file to save field coupling parameters " + architectureFileLocation + "\n";
-			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
 		}
 
 		fieldCouplingFile.close();

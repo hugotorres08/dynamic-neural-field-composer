@@ -29,7 +29,7 @@ namespace dnf_composer
 		if (elementId.empty())
 		{
 			const std::string message = "Tried to add an invalid element component '" + elementId + "' - '" + componentId + "' to the plot";
-			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_WARNING, message.c_str());
+			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_WARNING, message.c_str());
 			return;
 		}
 
@@ -38,14 +38,14 @@ namespace dnf_composer
 		if (!data)
 		{
 			const std::string message = "Tried to add an invalid element component '" + elementId + "' - '" + componentId + "' to the plot";
-			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_WARNING, message.c_str());
+			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_WARNING, message.c_str());
 			return;
 		}
 
 		for (const auto& [label, plotData] : plottingLabelAndData)
 			if (label == elementId + " " + componentId)
 			{
-				user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, "Data already exists in the plotting vector.");
+				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, "Data already exists in the plotting vector.");
 				return;
 			}
 

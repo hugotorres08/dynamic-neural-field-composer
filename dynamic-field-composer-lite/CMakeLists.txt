@@ -90,6 +90,9 @@ set(architecture_headers
 set(wizards_headers
     "include/wizards/learning_wizard.h"
 )
+set(logging_headers
+    "include/logging/logger.h"
+)
 
 set(header 
     ${simulation_headers}
@@ -136,6 +139,8 @@ set(src
     "src/architecture/architecture_file_handler.cpp"
 
     "src/wizards/learning_wizard.cpp"
+
+    "src/logging/logger.cpp"
 )
 
 configure_file(./resources/resources.rc.in ./resources/resources.rc)

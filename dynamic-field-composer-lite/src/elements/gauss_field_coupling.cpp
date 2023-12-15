@@ -76,7 +76,7 @@ namespace dnf_composer
 				logStream << "x_i: " << coupling.x_i << ", x_j: " << coupling.x_j << ", w_i_j: " << coupling.w_i_j << " | ";
 			}
 
-			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
+			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
 
 		}
 

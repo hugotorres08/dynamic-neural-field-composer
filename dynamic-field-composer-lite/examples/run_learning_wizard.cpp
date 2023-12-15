@@ -140,7 +140,7 @@ int main(int argc, char* argv[])
 	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
 	plotParameters.dimensions = { 0, 100, -30, 40 };
     app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters));
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
+	//app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
 
     try {
         app.init();

@@ -35,7 +35,13 @@ namespace dnf_composer
 			inputs[inputElement] = inputComponent;
 
 			const std::string logMessage = "Input '" + inputElement->getUniqueName() +"' added successfully to '" +  this->getUniqueName() + "." ;
-			user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
+			log(LogLevel::INFO, logMessage);
+			log(LogLevel::DEBUG, logMessage);
+			log(LogLevel::WARNING, logMessage);
+			log(LogLevel::ERROR, logMessage);
+			log(LogLevel::FATAL, logMessage);
+
+			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
 		}
 
 		void Element::removeInput(const std::string& inputElementId)
