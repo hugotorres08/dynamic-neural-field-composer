@@ -26,7 +26,7 @@ namespace dnf_composer
 			else
 			{
 				const std::string message = "Tried to initialize a non-circular Gaussian stimulus '" + this->getUniqueName() + "'. That is not supported yet.";
-				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+				log(LogLevel::ERROR, message);
 			}
 
 			if (!parameters.normalized)
@@ -35,7 +35,7 @@ namespace dnf_composer
 			else
 			{
 				const std::string message = "Tried to initialize a normalized Gaussian stimulus '" + this->getUniqueName() + "'. That is not supported yet.";
-				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+				log(LogLevel::ERROR, message);
 			}
 
 			components["input"] = std::vector<double>(commonParameters.dimensionParameters.size);
@@ -91,7 +91,7 @@ namespace dnf_composer
 			logStream << "Circular: " << parameters.circular << " | ";
 			logStream << "Normalized: " << parameters.normalized << std::endl;
 
-			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
+			log(LogLevel::INFO, logStream.str());
 		}
 
 		void GaussStimulus::setParameters(const GaussStimulusParameters& gaussStimulusParameters)

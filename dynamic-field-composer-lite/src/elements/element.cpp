@@ -11,7 +11,12 @@ namespace dnf_composer
 		Element::Element(const ElementCommonParameters& parameters)
 		{
 			if(parameters.dimensionParameters.size <= 0)
-				throw Exception(ErrorCode::ELEM_INVALID_SIZE, commonParameters.identifiers.uniqueName);
+			{
+				const std::string logMessage = "Element '" + parameters.identifiers.uniqueName + "' has an invalid size. Thus, Element constructor halted.";
+				log(LogLevel::ERROR, logMessage);
+				return;
+				//throw Exception(ErrorCode::ELEM_INVALID_SIZE, commonParameters.identifiers.uniqueName);
+			}
 			commonParameters = parameters;
 			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size);
 			components["input"] = std::vector<double>(commonParameters.dimensionParameters.size);
@@ -20,28 +25,37 @@ namespace dnf_composer
 		void Element::addInput(const std::shared_ptr<Element>& inputElement, const std::string& inputComponent)
 		{
 			if (!inputElement)
-				throw Exception(ErrorCode::ELEM_INPUT_IS_NULL, this->getUniqueIdentifier());
+			{
+				const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' is null. Thus, addInput() method halted.";
+				log(LogLevel::ERROR, logMessage);
+				return;
+				//throw Exception(ErrorCode::ELEM_INPUT_IS_NULL, this->getUniqueIdentifier());
+			}
 
 			const auto existingInput = inputs.find(inputElement);
 			if (existingInput != inputs.end())
-				throw Exception(ErrorCode::ELEM_INPUT_ALREADY_EXISTS, existingInput->first->getUniqueIdentifier());
+			{
+				const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' already exists. Thus, addInput() method halted.";
+				log(LogLevel::ERROR, logMessage);
+				return;
+				//throw Exception(ErrorCode::ELEM_INPUT_ALREADY_EXISTS, existingInput->first->getUniqueIdentifier());
+			}
 
 			if (inputElement->getComponentPtr("output")->size() != this->getComponentPtr("input")->size())
 			{
 				if (inputElement->getComponentPtr("output")->size() != this->getSize())
-					throw Exception(ErrorCode::ELEM_INPUT_SIZE_MISMATCH, inputElement->getUniqueIdentifier());
+				{
+					const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' has a different size than '" + this->getUniqueName() + "'. Thus, addInput() method halted.";
+					log(LogLevel::ERROR, logMessage);
+					return;
+					//throw Exception(ErrorCode::ELEM_INPUT_SIZE_MISMATCH, inputElement->getUniqueIdentifier());
+				}
 			}
 
 			inputs[inputElement] = inputComponent;
 
 			const std::string logMessage = "Input '" + inputElement->getUniqueName() +"' added successfully to '" +  this->getUniqueName() + "." ;
 			log(LogLevel::INFO, logMessage);
-			log(LogLevel::DEBUG, logMessage);
-			log(LogLevel::WARNING, logMessage);
-			log(LogLevel::ERROR, logMessage);
-			log(LogLevel::FATAL, logMessage);
-
-			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
 		}
 
 		void Element::removeInput(const std::string& inputElementId)
@@ -50,6 +64,7 @@ namespace dnf_composer
 			{
 				if (key->commonParameters.identifiers.uniqueName == inputElementId) {
 					inputs.erase(key);
+					log(LogLevel::INFO, "Input '" + inputElementId + "' removed successfully from '" + this->getUniqueName() + ".");
 					return;
 				}
 			}
@@ -61,6 +76,7 @@ namespace dnf_composer
 			{
 				if (key->commonParameters.identifiers.uniqueIdentifier == uniqueId) {
 					inputs.erase(key);
+					log(LogLevel::INFO, "Input '" + std::to_string(uniqueId) + "' removed successfully from '" + this->getUniqueName() + ".");
 					return;
 				}
 			}

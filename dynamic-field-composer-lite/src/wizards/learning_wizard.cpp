@@ -169,7 +169,7 @@ namespace dnf_composer
         else
         {
             const std::string message = "Failed to save data to " + filename;
-            //user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+            log(LogLevel::ERROR, message);
         }
     }
 
@@ -198,14 +198,14 @@ namespace dnf_composer
             {
                 const std::string message = "Error training the field coupling weights. "
 											"Line " + std::to_string(static_cast<int>(line)) + " not found in " + filename;
-                //user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+                log(LogLevel::ERROR, message);
             }
             file.close();
         }
         else
         {
             const std::string message = "Failed to open file " + filename;
-            //user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+            log(LogLevel::ERROR, message);
         }
 
         return data;
@@ -220,7 +220,7 @@ namespace dnf_composer
         if (numLinesInput != numLinesOutput)
         {
 	        const std::string message = "Error training the field coupling weights. The files " + pathToFieldActivationPre + " and " + pathToFieldActivationPost + " have a different number of lines.";
-            //user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+            log(LogLevel::ERROR, message);
         }
 
         // read data and update weights

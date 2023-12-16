@@ -5,7 +5,6 @@
 #include <string>
 #include <filesystem>
 
-#include "user_interface/logger_window.h"
 #include "elements/element.h"
 #include "exceptions/exception.h"
 

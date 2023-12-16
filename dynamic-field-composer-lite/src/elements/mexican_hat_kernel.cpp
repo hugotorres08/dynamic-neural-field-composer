@@ -24,7 +24,7 @@ namespace dnf_composer
 			else
 			{
 				const std::string message = "Tried to initialize a non-circular Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.";
-				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+				log(LogLevel::ERROR, message);
 			}
 
 			uint32_t rangeXsize = kernelRange[0] + kernelRange[1] + 1;
@@ -41,7 +41,7 @@ namespace dnf_composer
 			else
 			{
 				const std::string message = "Tried to initialize a normalized Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.";
-				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+				log(LogLevel::ERROR, message);
 			}
 
 			for (int i = 0; i < components["kernel"].size(); i++)
@@ -115,7 +115,7 @@ namespace dnf_composer
 			logStream << "CutOffFactor: " << cutOfFactor << " | ";
 			logStream << "Normalized: " << normalized << std::endl;
 
-			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
+			log(LogLevel::INFO, logStream.str());
 		}
 
 		void MexicanHatKernel::setParameters(const MexicanHatKernelParameters& mhk_parameters)

@@ -94,7 +94,7 @@ namespace dnf_composer
 
 			logStream << std::endl << "Current centroid value: " << getCentroid() << std::endl;
 
-			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
+			log(LogLevel::INFO, logStream.str());
 		}
 
 		void NeuralField::calculateActivation(double t, double deltaT)
@@ -110,17 +110,6 @@ namespace dnf_composer
 		{
 
 			components["output"] = parameters.activationFunction->operator()(components["activation"]);
-
-			//switch (parameters.activationFunctionParameters.type)
-			//{
-			//case ActivationFunctionType::Sigmoid:
-			//	components["output"] = mathtools::sigmoid(components["activation"],
-			//		parameters.activationFunctionParameters.steepness, static_cast<double>(parameters.activationFunctionParameters.xShift));
-			//	break;
-			//case ActivationFunctionType::Heaviside:
-			//	components["output"] = mathtools::heaviside(components["activation"], parameters.activationFunctionParameters.xShift);
-			//	break;
-			//}
 		}
 
 		void NeuralField::calculateCentroid()

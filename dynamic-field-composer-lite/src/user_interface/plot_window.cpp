@@ -85,6 +85,8 @@ namespace dnf_composer
 						PlotParameters parameters;
 						parameters.annotations = {title, x_label, y_label};
 						parameters.dimensions = {x_min, x_max, y_min, y_max};
+						std::shared_ptr<Simulation> simulation = plots[0].visualization->getAssociatedSimulationPtr();
+						parameters.visualization = std::make_shared<Visualization>(simulation);
 						createPlot(parameters);
 					}
 				}
@@ -99,7 +101,7 @@ namespace dnf_composer
 			plots.emplace_back(parameters);
 
 			const std::string message = "Added a new plot to the application with id: " + parameters.annotations.title;
-			//LoggerWindow::addLog(LogLevel::_INFO, message.c_str());
+			log(LogLevel::INFO, message);
 		}
 
 		void PlotWindow::renderPlot(const PlotParameters& parameters)

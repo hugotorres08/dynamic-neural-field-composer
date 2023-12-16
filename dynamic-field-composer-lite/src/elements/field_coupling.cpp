@@ -110,7 +110,7 @@ namespace dnf_composer
 				break;
 			}
 
-			//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logStream.str().c_str());
+			log(LogLevel::INFO, logStream.str());
 		}
 
 		void FieldCoupling::getInputFunction()
@@ -201,14 +201,13 @@ namespace dnf_composer
 				}
 				file.close();
 				const std::string message = "Weights '" + this->getUniqueName() + "' read successfully from: " + weightsFilePath;
-				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, message.c_str());
+				log(LogLevel::INFO, message);
 				return true;
 			}
-			else
-			{
-				const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " + weightsFilePath;
-				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_WARNING, message.c_str());
-			}
+
+			const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " + weightsFilePath;
+			log(LogLevel::ERROR, message);
+			
 			return false;
 		}
 
@@ -225,12 +224,12 @@ namespace dnf_composer
 				}
 				file.close();
 				const std::string message = "Saved weights '" + this->getUniqueName() +"' to: " + weightsFilePath;
-				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, message.c_str());
+				log(LogLevel::INFO, message);
 			}
 			else
 			{
 				const std::string message = "Failed to saved weights '" + this->getUniqueName() + "' to: " + weightsFilePath;
-				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_ERROR, message.c_str());
+				log(LogLevel::ERROR, message);
 			}
 		}
 

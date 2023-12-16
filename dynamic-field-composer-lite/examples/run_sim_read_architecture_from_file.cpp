@@ -23,36 +23,40 @@ int main(int argc, char* argv[])
     plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
     plotParameters.dimensions = { 0, 100, -30, 40 };
     app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters));
-    //app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
+    app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
 
     dnf_composer::ArchitectureBuilder architecture{ "example-1", simulation };
 
     architecture.readArchitecture();
     architecture.saveArchitecture();
 
-    try {
-        app.init();
+	try
+	{
+		app.init();
 
-        bool userRequestClose = false;
-        while (!userRequestClose)
-        {
-            app.step();
-            userRequestClose = app.getCloseUI();
-        }
-        app.close();
-        return 0;
-    }
-    catch (const dnf_composer::Exception& ex) {
-        std::cerr << "Exception: " << ex.what() << " ErrorCode: " << static_cast<int>(ex.getErrorCode()) << std::endl;
-        return static_cast<int>(ex.getErrorCode());
-    }
-    catch (const std::exception& ex) {
-        std::cerr << "Exception caught: " << ex.what() << std::endl;
-        return 1;
-    }
-    catch (...)
-    {
-        std::cerr << "Unknown exception occurred." << std::endl;
-        return 1;
-    }
+		bool userRequestClose = false;
+		while (!userRequestClose)
+		{
+			app.step();
+			userRequestClose = app.getCloseUI();
+		}
+		app.close();
+		return 0;
+	}
+	catch (const dnf_composer::Exception& ex)
+	{
+		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode()));
+		log(dnf_composer::LogLevel::FATAL, errorMessage);
+		return static_cast<int>(ex.getErrorCode());
+	}
+	catch (const std::exception& ex)
+	{
+		log(dnf_composer::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()));
+		return 1;
+	}
+	catch (...)
+	{
+		log(dnf_composer::LogLevel::FATAL, "Unknown exception occurred.");
+		return 1;
+	}
 }

@@ -13,7 +13,13 @@ namespace dnf_composer
 		LoggerWindow::LoggerWindow()
 		{
 			autoScroll = true;
+            isWindowActive = true;
 			clean();
+		}
+
+        bool LoggerWindow::isActive()
+		{
+			return isWindowActive;
 		}
 
 		void LoggerWindow::render()
@@ -38,7 +44,7 @@ namespace dnf_composer
 
             // Check if the line contains the DEBUG tag
             if (std::strncmp(line_start, debugTag, std::strlen(debugTag)) == 0)
-                textColor = ImVec4(1.0f, 1.0f, 1.0f, 1.0f);  // White
+                textColor = ImVec4(0.0f, 1.0f, 0.0f, 1.0f);  // Green
 
             // Check if the line contains the INFO tag
             if (std::strncmp(line_start, infoTag, std::strlen(infoTag)) == 0)

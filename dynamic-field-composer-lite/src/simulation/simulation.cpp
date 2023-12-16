@@ -23,7 +23,7 @@ namespace dnf_composer
 			element->init();
 
 		initialized = true;
-		//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, "Started the simulation.");
+		log(LogLevel::INFO, "Simulation initialized.");
 	}
 
 	void Simulation::step() {
@@ -37,7 +37,7 @@ namespace dnf_composer
 			element->close();
 		
 		initialized = false;
-		//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, "Stopped the simulation.");
+		log(LogLevel::INFO, "Simulation closed.");
 	}
 
 	void Simulation::run(double runTime)
@@ -64,15 +64,16 @@ namespace dnf_composer
 			if (existingElement->getUniqueName() == newElementName) 
 			{
 				const std::string logMessage = "An element with the same unique name already exists '" + newElementName + "'! New element was not added.";
-				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_WARNING, logMessage.c_str());
+				log(LogLevel::WARNING, logMessage);
 				return;
 			}
 		}
 
-		const std::string logMessage = "Element '" + newElementName + "' was added to the simulation.";
-		//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
 		elements.push_back(element);
 		element->init(); 
+
+		const std::string logMessage = "Element '" + newElementName + "' was added to the simulation.";
+		log(LogLevel::INFO, logMessage);
 	}
 
 	void Simulation::removeElement(const std::string& elementId)
@@ -86,11 +87,12 @@ namespace dnf_composer
 			{
 				elements.erase(elements.begin() + i);
 				const std::string logMessage = "Element '" + elementId + "' was removed from the simulation.";
-				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
+				log(LogLevel::INFO, logMessage);
 				return;
 			}
 		}
-		throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, elementId);
+		const std::string logMessage = "Element '" + elementId + "' was not found and consequently not removed from the simulation.";
+		log(LogLevel::FATAL, logMessage);
 	}
 
 	void Simulation::resetElement(const std::string& idOfElementToReset, const std::shared_ptr<element::Element>& newElement)
@@ -104,15 +106,17 @@ namespace dnf_composer
 				element = newElement;
 				element->init();
 				const std::string logMessage = "Element '" + idOfElementToReset + "' was reset in the simulation.";
-				//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
+				log(LogLevel::INFO, logMessage);
 				elementFound = true;
 				break;
 			}
 		}
 
 		if (!elementFound)
-			throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, idOfElementToReset);
-
+		{
+			const std::string logMessage = "Element '" + idOfElementToReset + "' was not found and consequently not reset.";
+			log(LogLevel::FATAL, logMessage);
+		}
 	}
 
 	void Simulation::createInteraction(const std::string& stimulusElementId, 
@@ -122,15 +126,26 @@ namespace dnf_composer
 		const std::shared_ptr<element::Element> receivingElement = getElement(receivingElementId);
 
 		if (!stimulusElement)
-			throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, stimulusElementId);
+		{
+			const std::string logMessage = "Element '" + stimulusElementId + "' was not found and consequently no interaction was created.";
+			log(LogLevel::FATAL, logMessage);
+			return;
+			//throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, stimulusElementId);
+		}
 
 		if (!receivingElement)
-			throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, receivingElementId);
-
-		const std::string logMessage = "Interaction created: " + stimulusElementId + " -> " + receivingElementId;
-		//user_interface::LoggerWindow::addLog(user_interface::LogLevel::_INFO, logMessage.c_str());
+		{
+			const std::string logMessage = "Element '" + receivingElementId + "' was not found and consequently no interaction was created.";
+			log(LogLevel::FATAL, logMessage);
+			return;
+			//throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, receivingElementId);
+		}
 
 		receivingElement->addInput(stimulusElement, stimulusComponent);
+
+		const std::string logMessage = "Interaction created: " + stimulusElementId + " -> " + receivingElementId;
+		log(LogLevel::INFO, logMessage);
+
 	}
 
 	std::shared_ptr<element::Element> Simulation::getElement(const std::string& id) const
