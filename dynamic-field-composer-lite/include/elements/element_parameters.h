@@ -4,6 +4,8 @@
 #include <string>
 #include <format>
 
+#include "logging/logger.h"
+
 namespace dnf_composer
 {
 	namespace element
@@ -36,6 +38,7 @@ namespace dnf_composer
 			double d_x;
 
 			ElementSpatialDimensionParameters(int x_max = 100, double d_x = 1.0);
+			void print() const;
 		};
 
 		struct ElementIdentifiers
@@ -47,6 +50,7 @@ namespace dnf_composer
 
 			ElementIdentifiers();
 			ElementIdentifiers(std::string elementName);
+			void print() const;
 		};
 
 		struct ElementCommonParameters
@@ -57,6 +61,7 @@ namespace dnf_composer
 			ElementCommonParameters() : identifiers(), dimensionParameters() {}
 			ElementCommonParameters(const std::string& elementName, const ElementSpatialDimensionParameters& dimensionParameters);
 			ElementCommonParameters(ElementIdentifiers identifiers, const ElementSpatialDimensionParameters& dimensionParameters);
+			void print() const;
 		};
 	}
 }

@@ -184,9 +184,6 @@ namespace dnf_composer
             //buffer.append("\n");
             va_end(args);
 
-            buffer.append("\n");
-            va_end(args);
-
 			// Update lineOffsets
             for (const int new_size = buffer.size(); old_size < new_size; old_size++)
                 if (buffer[old_size] == '\n')

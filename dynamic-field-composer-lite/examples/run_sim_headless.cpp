@@ -30,18 +30,18 @@ int main(int argc, char* argv[])
 	}
 	catch (const dnf_composer::Exception& ex)
 	{
-		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode()));
-		log(dnf_composer::LogLevel::FATAL, errorMessage);
+		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode())) + ". \n";
+		log(dnf_composer::LogLevel::FATAL, errorMessage, dnf_composer::LogOutputMode::CONSOLE);
 		return static_cast<int>(ex.getErrorCode());
 	}
 	catch (const std::exception& ex)
 	{
-		log(dnf_composer::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()));
+		log(dnf_composer::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()) + ". \n", dnf_composer::LogOutputMode::CONSOLE);
 		return 1;
 	}
 	catch (...)
 	{
-		log(dnf_composer::LogLevel::FATAL, "Unknown exception occurred.");
+		log(dnf_composer::LogLevel::FATAL, "Unknown exception occurred. \n", dnf_composer::LogOutputMode::CONSOLE);
 		return 1;
 	}
 }

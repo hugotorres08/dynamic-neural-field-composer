@@ -66,11 +66,11 @@ namespace dnf_composer
 	            unparsedDynamicNeuralFieldParameters.push_back(line);
 
 	        architectureFile.close();
-			log(LogLevel::INFO, "Dynamic neural field parameters read successfully from " + architectureFileLocation);
+			log(LogLevel::INFO, "Dynamic neural field parameters read successfully from " + architectureFileLocation + ". \n");
 	    }
 	    else
 	    {
-			const std::string message = "Unable to open file to read dynamic neural field parameters " + architectureFileLocation;
+			const std::string message = "Unable to open file to read dynamic neural field parameters " + architectureFileLocation + ". \n";
 			log(LogLevel::ERROR, message);
 	    }
 	}
@@ -85,11 +85,11 @@ namespace dnf_composer
 	            unparsedDynamicNeuralFieldCouplingsParameters.push_back(line);
 
 	        fieldCouplingsFile.close();
-			log(LogLevel::INFO, "Field coupling parameters read successfully from " + architectureFileLocation);
+			log(LogLevel::INFO, "Field coupling parameters read successfully from " + architectureFileLocation + ". \n");
 	    }
 	    else
 	    {
-			const std::string message = "Unable to open file to read field coupling parameters " + architectureFileLocation;
+			const std::string message = "Unable to open file to read field coupling parameters " + architectureFileLocation + ". \n";
 			log(LogLevel::ERROR, message);
 	    }
 	}
@@ -100,7 +100,7 @@ namespace dnf_composer
 	    if (architectureFile.is_open())
 	    {
 	        architectureFile << dynamicNeuralFieldParametersToSave;
-			log(LogLevel::INFO, "Dynamic neural field parameters saved successfully to " + architectureFileLocation);
+			log(LogLevel::INFO, "Dynamic neural field parameters saved successfully to " + architectureFileLocation + ". \n");
 	    }
 	    else
 	    {
@@ -117,7 +117,7 @@ namespace dnf_composer
 	    if (fieldCouplingFile.is_open())
 	    {
 	        fieldCouplingFile << dynamicNeuralFieldCouplingsParametersToSave;
-			log(LogLevel::INFO, "Field coupling parameters saved successfully to " + architectureFileLocation);
+			log(LogLevel::INFO, "Field coupling parameters saved successfully to " + architectureFileLocation + ". \n");
 	    }
 		else
 		{

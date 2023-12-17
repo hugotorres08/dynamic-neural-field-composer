@@ -61,52 +61,25 @@ namespace dnf_composer
 
 		void FieldCoupling::printParameters()
 		{
+			printCommonParameters();
+
 			std::ostringstream logStream;
 
-			logStream << std::left;
-
-			logStream << "Logging element parameters" << std::endl;
-			logStream << "Unique Identifier: " << commonParameters.identifiers.uniqueIdentifier << std::endl;
-			logStream << "Unique Name: " << commonParameters.identifiers.uniqueName << std::endl;
-			logStream << "Label: " << ElementLabelToString.at(commonParameters.identifiers.label) << std::endl;
-			logStream << "Maximum spatial dimension size: " << commonParameters.dimensionParameters.x_max << std::endl;
-			logStream << "Spatial dimension step size: " << commonParameters.dimensionParameters.d_x << std::endl;
-			logStream << "Number of samples in spatial dimension: " << commonParameters.dimensionParameters.size << std::endl;
-
-
-			logStream << "Components: ";
-			for (const auto& pair : components)
-			{
-				const std::string& componentName = pair.first;
-				const std::vector<double>& componentValues = pair.second;
-
-				logStream << componentName << " | ";
-			}
-
-			logStream << std::endl << "Inputs: ";
-			for (const auto& inputPair : inputs)
-			{
-				const std::shared_ptr<Element>& inputElement = inputPair.first;
-				const std::string& inputComponent = inputPair.second;
-
-				logStream << inputElement->getUniqueName() << "->" << inputComponent << " | ";
-			}
-
-			logStream << std::endl << "FieldCouplingParameters: ";
-			logStream << "Input Field Size: " << parameters.inputFieldSize << " | ";
-			logStream << "Scalar: " << parameters.scalar << " | ";
-			logStream << "Learning Rate: " << parameters.learningRate << " | ";
+			logStream << "Logging specific element parameters" << std::endl;
+			logStream << "Input Field Size: " << parameters.inputFieldSize << std::endl;
+			logStream << "Scalar: " << parameters.scalar << std::endl;
+			logStream << "Learning Rate: " << parameters.learningRate << std::endl;
 			logStream << "Learning Rule: ";
 			switch (parameters.learningRule)
 			{
 			case LearningRule::HEBBIAN:
-				logStream << "hebbian rule";
+				logStream << "Hebbian learning rule" << std::endl;;
 				break;
 			case LearningRule::DELTA_WIDROW_HOFF:
-				logStream << "delta rule Widrow Hoff variation";
+				logStream << "Delta learning rule Widrow Hoff variation" << std::endl;;
 				break;
 			case LearningRule::DELTA_KROGH_HERTZ:
-				logStream << "delta rule Krogh and Hertz variation";
+				logStream << "Delta learning rule Krogh and Hertz variation" << std::endl;;
 				break;
 			}
 
@@ -200,12 +173,12 @@ namespace dnf_composer
 					}
 				}
 				file.close();
-				const std::string message = "Weights '" + this->getUniqueName() + "' read successfully from: " + weightsFilePath;
+				const std::string message = "Weights '" + this->getUniqueName() + "' read successfully from: " + weightsFilePath + ". \n";
 				log(LogLevel::INFO, message);
 				return true;
 			}
 
-			const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " + weightsFilePath;
+			const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " + weightsFilePath + ". \n";
 			log(LogLevel::ERROR, message);
 			
 			return false;
@@ -223,12 +196,12 @@ namespace dnf_composer
 					file << '\n'; 
 				}
 				file.close();
-				const std::string message = "Saved weights '" + this->getUniqueName() +"' to: " + weightsFilePath;
+				const std::string message = "Saved weights '" + this->getUniqueName() +"' to: " + weightsFilePath + ". \n";
 				log(LogLevel::INFO, message);
 			}
 			else
 			{
-				const std::string message = "Failed to saved weights '" + this->getUniqueName() + "' to: " + weightsFilePath;
+				const std::string message = "Failed to saved weights '" + this->getUniqueName() + "' to: " + weightsFilePath + ". \n";
 				log(LogLevel::ERROR, message);
 			}
 		}

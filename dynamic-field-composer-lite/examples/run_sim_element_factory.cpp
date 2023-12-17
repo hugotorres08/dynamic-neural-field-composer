@@ -90,7 +90,7 @@ int main(int argc, char* argv[])
 	visualization->addPlottingData("GaussKernel", "output");
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters));
 
-	try 
+	try
 	{
 		app.init();
 
@@ -103,20 +103,20 @@ int main(int argc, char* argv[])
 		app.close();
 		return 0;
 	}
-	catch (const dnf_composer::Exception& ex) 
+	catch (const dnf_composer::Exception& ex)
 	{
-		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode()));
+		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode())) + ". \n";
 		log(dnf_composer::LogLevel::FATAL, errorMessage, dnf_composer::LogOutputMode::CONSOLE);
 		return static_cast<int>(ex.getErrorCode());
 	}
-	catch (const std::exception& ex) 
+	catch (const std::exception& ex)
 	{
-		log(dnf_composer::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()), dnf_composer::LogOutputMode::CONSOLE);
+		log(dnf_composer::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()) + ". \n", dnf_composer::LogOutputMode::CONSOLE);
 		return 1;
 	}
 	catch (...)
 	{
-		log(dnf_composer::LogLevel::FATAL, "Unknown exception occurred.", dnf_composer::LogOutputMode::CONSOLE);
+		log(dnf_composer::LogLevel::FATAL, "Unknown exception occurred. \n", dnf_composer::LogOutputMode::CONSOLE);
 		return 1;
 	}
 }

@@ -28,7 +28,7 @@ namespace dnf_composer
 	{
 		if (elementId.empty())
 		{
-			const std::string message = "Tried to add an invalid element component '" + elementId + "' - '" + componentId + "' to the plot";
+			const std::string message = "Tried to add an invalid element component '" + elementId + "' - '" + componentId + "' to the plot.\n";
 			log(LogLevel::WARNING, message);
 			return;
 		}
@@ -37,7 +37,7 @@ namespace dnf_composer
 
 		if (!data)
 		{
-			const std::string message = "Tried to add an invalid element component '" + elementId + "' - '" + componentId + "' to the plot";
+			const std::string message = "Tried to add an invalid element component '" + elementId + "' - '" + componentId + "' to the plot.\n";
 			log(LogLevel::WARNING, message);
 			return;
 		}
@@ -50,6 +50,7 @@ namespace dnf_composer
 			}
 
 		plottingLabelAndData.emplace_back(elementId + " " + componentId, data);
+		log(LogLevel::INFO, "Added element component '" + elementId + "' - '" + componentId + "' to the plot.\n");
 	}
 
 	std::shared_ptr<Simulation> Visualization::getAssociatedSimulationPtr() const

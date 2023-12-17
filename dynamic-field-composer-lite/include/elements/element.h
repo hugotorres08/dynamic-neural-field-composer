@@ -57,6 +57,9 @@ namespace dnf_composer
 			std::vector < std::shared_ptr<Element>> getInputs();
 
 			virtual ~Element() = default;
+
+		protected:
+			void printCommonParameters() const;
 		};
 	}
 }

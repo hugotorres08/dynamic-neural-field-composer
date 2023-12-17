@@ -23,7 +23,7 @@ namespace dnf_composer
 			element->init();
 
 		initialized = true;
-		log(LogLevel::INFO, "Simulation initialized.");
+		log(LogLevel::INFO, "Simulation initialized.\n");
 	}
 
 	void Simulation::step() {
@@ -37,7 +37,7 @@ namespace dnf_composer
 			element->close();
 		
 		initialized = false;
-		log(LogLevel::INFO, "Simulation closed.");
+		log(LogLevel::INFO, "Simulation closed.\n");
 	}
 
 	void Simulation::run(double runTime)
@@ -63,7 +63,7 @@ namespace dnf_composer
 		for (const auto& existingElement : elements) {
 			if (existingElement->getUniqueName() == newElementName) 
 			{
-				const std::string logMessage = "An element with the same unique name already exists '" + newElementName + "'! New element was not added.";
+				const std::string logMessage = "An element with the same unique name already exists '" + newElementName + "'! New element was not added.\n";
 				log(LogLevel::WARNING, logMessage);
 				return;
 			}
@@ -72,7 +72,7 @@ namespace dnf_composer
 		elements.push_back(element);
 		element->init(); 
 
-		const std::string logMessage = "Element '" + newElementName + "' was added to the simulation.";
+		const std::string logMessage = "Element '" + newElementName + "' was added to the simulation.\n";
 		log(LogLevel::INFO, logMessage);
 	}
 
@@ -86,12 +86,12 @@ namespace dnf_composer
 			if (elements[i]->getUniqueName() == elementId)
 			{
 				elements.erase(elements.begin() + i);
-				const std::string logMessage = "Element '" + elementId + "' was removed from the simulation.";
+				const std::string logMessage = "Element '" + elementId + "' was removed from the simulation.\n";
 				log(LogLevel::INFO, logMessage);
 				return;
 			}
 		}
-		const std::string logMessage = "Element '" + elementId + "' was not found and consequently not removed from the simulation.";
+		const std::string logMessage = "Element '" + elementId + "' was not found and consequently not removed from the simulation.\n";
 		log(LogLevel::FATAL, logMessage);
 	}
 
@@ -105,7 +105,7 @@ namespace dnf_composer
 			{
 				element = newElement;
 				element->init();
-				const std::string logMessage = "Element '" + idOfElementToReset + "' was reset in the simulation.";
+				const std::string logMessage = "Element '" + idOfElementToReset + "' was reset in the simulation.\n";
 				log(LogLevel::INFO, logMessage);
 				elementFound = true;
 				break;
@@ -114,7 +114,7 @@ namespace dnf_composer
 
 		if (!elementFound)
 		{
-			const std::string logMessage = "Element '" + idOfElementToReset + "' was not found and consequently not reset.";
+			const std::string logMessage = "Element '" + idOfElementToReset + "' was not found and consequently not reset.\n";
 			log(LogLevel::FATAL, logMessage);
 		}
 	}
@@ -127,7 +127,7 @@ namespace dnf_composer
 
 		if (!stimulusElement)
 		{
-			const std::string logMessage = "Element '" + stimulusElementId + "' was not found and consequently no interaction was created.";
+			const std::string logMessage = "Element '" + stimulusElementId + "' was not found and consequently no interaction was created.\n";
 			log(LogLevel::FATAL, logMessage);
 			return;
 			//throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, stimulusElementId);
@@ -135,7 +135,7 @@ namespace dnf_composer
 
 		if (!receivingElement)
 		{
-			const std::string logMessage = "Element '" + receivingElementId + "' was not found and consequently no interaction was created.";
+			const std::string logMessage = "Element '" + receivingElementId + "' was not found and consequently no interaction was created.\n";
 			log(LogLevel::FATAL, logMessage);
 			return;
 			//throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, receivingElementId);
@@ -143,7 +143,7 @@ namespace dnf_composer
 
 		receivingElement->addInput(stimulusElement, stimulusComponent);
 
-		const std::string logMessage = "Interaction created: " + stimulusElementId + " -> " + receivingElementId;
+		const std::string logMessage = "Interaction created: " + stimulusElementId + " -> " + receivingElementId + '\n';
 		log(LogLevel::INFO, logMessage);
 
 	}

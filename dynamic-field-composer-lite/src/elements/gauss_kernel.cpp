@@ -23,7 +23,7 @@ namespace dnf_composer
 				extIndex = mathtools::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
 			else
 			{
-				const std::string message = "Tried to initialize a non-circular Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.";
+				const std::string message = "Tried to initialize a non-circular Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.\n";
 				log(LogLevel::ERROR, message);
 			}
 
@@ -36,7 +36,7 @@ namespace dnf_composer
 				gauss = mathtools::gaussNorm(rangeX, 0.0, parameters.sigma);
 			else
 			{
-				const std::string message = "Tried to initialize a normalized Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.";
+				const std::string message = "Tried to initialize a normalized Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.\n";
 				log(LogLevel::ERROR, message);
 			}
 
@@ -76,42 +76,16 @@ namespace dnf_composer
 
 		void GaussKernel::printParameters()
 		{
+			printCommonParameters();
+
 			std::ostringstream logStream;
 
-			logStream << std::left;
-
-			logStream << "Logging element parameters" << std::endl;
-			logStream << "Unique Identifier: " << commonParameters.identifiers.uniqueIdentifier << std::endl;
-			logStream << "Unique Name: " << commonParameters.identifiers.uniqueName << std::endl;
-			logStream << "Label: " << ElementLabelToString.at(commonParameters.identifiers.label) << std::endl;
-			logStream << "Maximum spatial dimension size: " << commonParameters.dimensionParameters.x_max << std::endl;
-			logStream << "Spatial dimension step size: " << commonParameters.dimensionParameters.d_x << std::endl;
-			logStream << "Number of samples in spatial dimension: " << commonParameters.dimensionParameters.size << std::endl;
-
-			logStream << "Components: ";
-			for (const auto& pair : components)
-			{
-				const std::string& componentName = pair.first;
-				const std::vector<double>& componentValues = pair.second;
-
-				logStream << componentName << " | ";
-			}
-
-			logStream << std::endl << "Inputs: ";
-			for (const auto& inputPair : inputs)
-			{
-				const std::shared_ptr<Element>& inputElement = inputPair.first;
-				const std::string& inputComponent = inputPair.second;
-
-				logStream << inputElement->getUniqueName() << "->" << inputComponent << " | ";
-			}
-
-			logStream << std::endl << "GaussKernelParameters: ";
-			logStream << "Amplitude: " << parameters.amplitude << " | ";
-			logStream << "Amplitude Global: " << parameters.amplitudeGlobal << " | ";
-			logStream << "Sigma: " << parameters.sigma << " | ";
-			logStream << "Cut-Off Factor: " << cutOfFactor << " | ";
-			logStream << "Circular: " << circular << " | ";
+			logStream << "Logging specific element parameters" << std::endl;
+			logStream << "Amplitude: " << parameters.amplitude << std::endl;
+			logStream << "Amplitude Global: " << parameters.amplitudeGlobal << std::endl;
+			logStream << "Sigma: " << parameters.sigma << std::endl;
+			logStream << "Cut-Off Factor: " << cutOfFactor << std::endl;
+			logStream << "Circular: " << circular << std::endl;
 			logStream << "Normalized: " << normalized << std::endl;
 
 			log(LogLevel::INFO, logStream.str());

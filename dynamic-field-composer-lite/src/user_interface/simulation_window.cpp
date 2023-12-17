@@ -145,7 +145,7 @@ namespace dnf_composer
 					addElementGaussFieldCoupling();
 					break;
 				default:
-					log(LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.");
+					log(LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.\n");
 					break;
 				}
 				ImGui::TreePop();

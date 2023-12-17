@@ -55,37 +55,13 @@ namespace dnf_composer
 
 		void NeuralField::printParameters()
 		{
+			printCommonParameters();
+
 			std::ostringstream logStream;
 
-			logStream << std::left;
-
-			logStream << "Logging element parameters" << std::endl;
-			logStream << "Unique Identifier: " << commonParameters.identifiers.uniqueIdentifier << std::endl;
-			logStream << "Unique Name: " << commonParameters.identifiers.uniqueName << std::endl;
-			logStream << "Label: " << ElementLabelToString.at(commonParameters.identifiers.label) << std::endl;
-			logStream << "Maximum spatial dimension size: " << commonParameters.dimensionParameters.x_max << std::endl;
-			logStream << "Spatial dimension step size: " << commonParameters.dimensionParameters.d_x << std::endl;
-			logStream << "Number of samples in spatial dimension: " << commonParameters.dimensionParameters.size << std::endl;
-
-			logStream << "Components: ";
-			for (const auto& pair : components)
-			{
-				const std::string& componentName = pair.first;
-				logStream << componentName << " | ";
-			}
-
-			logStream << std::endl << "Inputs: ";
-			for (const auto& inputPair : inputs)
-			{
-				const std::shared_ptr<Element>& inputElement = inputPair.first;
-				const std::string& inputComponent = inputPair.second;
-
-				logStream << inputElement->getUniqueName() << "->" << inputComponent << " | ";
-			}
-
-			logStream << std::endl << "NeuralFieldParameters: ";
-			logStream << "StartingRestingLevel: " << parameters.startingRestingLevel << " | ";
-			logStream << "Tau: " << parameters.tau << " | ";
+			logStream << "Logging specific element parameters" << std::endl;
+			logStream << "StartingRestingLevel: " << parameters.startingRestingLevel << std::endl;
+			logStream << "Tau: " << parameters.tau << std::endl;
 
 			//logStream << "ActivationFunctionParameters: ";
 			////logStream << "Type: " << ActivationFunctionTypeToString.at(parameters.activationFunctionParameters.type) << " | ";

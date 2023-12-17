@@ -51,7 +51,7 @@ namespace dnf_composer
 
     void Logger::log_cmd(const std::string& message)
     {
-        const std::string finalMessage_cmd = message + "\033[0m" + '\n'; // Reset color code
+        const std::string finalMessage_cmd = message + "\033[0m"; // Reset color code
     	std::cout << finalMessage_cmd;
     }
 
