@@ -90,6 +90,8 @@ int main(int argc, char* argv[])
 	visualization->addPlottingData("GaussKernel", "output");
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters));
 
+	simulation->exportComponentToFile("NeuralField", "activation");
+
 	try
 	{
 		app.init();

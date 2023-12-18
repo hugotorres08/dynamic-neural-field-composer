@@ -4,6 +4,7 @@
 
 #include "elements/field_coupling.h"
 
+
 namespace dnf_composer
 {
 	namespace element
@@ -18,10 +19,10 @@ namespace dnf_composer
 			commonParameters.identifiers.label = ElementLabel::FIELD_COUPLING;
 
 			components["input"] = std::vector<double>(parameters.inputFieldSize);
-			mathtools::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
+			utilities::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
 
 			// Initialize the weight matrix with random values
-			mathtools::fillMatrixWithRandomValues(weights, -1, 1);
+			utilities::fillMatrixWithRandomValues(weights, -1, 1);
 
 			weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/" + commonParameters.identifiers.uniqueName + "_weights.txt";
 
@@ -38,8 +39,8 @@ namespace dnf_composer
 				trained = true;
 			else
 			{
-				mathtools::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
-				mathtools::fillMatrixWithRandomValues(weights, 0.0, 0.0);
+				utilities::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
+				utilities::fillMatrixWithRandomValues(weights, 0.0, 0.0);
 				trained = false;
 				writeWeights();
 			}
@@ -119,7 +120,7 @@ namespace dnf_composer
 		void FieldCoupling::resetWeights()
 		{
 			// empty weight matrix
-			mathtools::fillMatrixWithRandomValues(weights, 0, 0);
+			utilities::fillMatrixWithRandomValues(weights, 0, 0);
 		}
 
 		void FieldCoupling::setUpdateAllWeights(bool updateAllWeights)
@@ -160,7 +161,7 @@ namespace dnf_composer
 			std::ifstream file(weightsFilePath); 
 
 			if (file.is_open()) {
-				mathtools::resizeMatrix(weights, 0, 0);
+				utilities::resizeMatrix(weights, 0, 0);
 				double element;
 				std::vector<double> row;
 				while (file >> element) 

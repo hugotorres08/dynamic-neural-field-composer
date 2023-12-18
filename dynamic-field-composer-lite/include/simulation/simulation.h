@@ -4,9 +4,12 @@
 #include <memory>
 #include <string>
 #include <filesystem>
+#include <chrono>
+
 
 #include "elements/element.h"
 #include "exceptions/exception.h"
+#include "utilities/utilities.h"
 
 namespace dnf_composer
 {
@@ -46,6 +49,8 @@ namespace dnf_composer
 		int getNumberOfElements() const;
 		std::vector < std::shared_ptr<element::Element>> getElementsThatHaveSpecifiedElementAsInput(const std::string& specifiedElement, 
 		                                                                                            const std::string& inputComponent = "output") const;
+
+		void exportComponentToFile(const std::string& id, const std::string& componentName) const;
 
 		bool isInitialized() const;
 

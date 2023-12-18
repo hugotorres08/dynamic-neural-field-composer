@@ -1,10 +1,11 @@
 #pragma once
 
-#include "mathtools/mathtools.h"
-
-#include "element.h"
-
 #include <set>
+
+#include "mathtools/mathtools.h"
+#include "element.h"
+#include "utilities/utilities.h"
+
 
 namespace dnf_composer
 {

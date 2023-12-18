@@ -4,6 +4,7 @@
 
 #include "simulation/simulation.h"
 
+
 namespace dnf_composer
 {
 	Simulation::Simulation(double deltaT, double tZero, double t)
@@ -198,5 +199,32 @@ namespace dnf_composer
 	{
 		return initialized;
 	}
+
+	void Simulation::exportComponentToFile(const std::string& id, const std::string& componentName) const
+	{
+
+		const std::shared_ptr<element::Element> foundElement = getElement(id);
+		const std::vector<double> component = foundElement->getComponent(componentName);
+
+		const std::chrono::zoned_time localTime{std::chrono::current_zone(), std::chrono::system_clock::now()};
+		const std::string timeSignature = std::format("{:%Y-%m-%d_%H-%M-%S}", localTime);
+
+		// Add the time signature to the filename
+		const std::string filename = std::string(OUTPUT_DIRECTORY) + "/exports/" + id + "_" + componentName + "_" + timeSignature + ".txt";
+
+		const bool success = utilities::saveVectorToFile(component, filename);
+		if (success)
+		{
+			const std::string logMessage = "Component '" + componentName + "' of element '" + id + "' was exported to file '" + filename + "'.\n";
+			log(LogLevel::INFO, logMessage);
+		}
+		else
+		{
+			const std::string logMessage = "Component '" + componentName + "' of element '" + id + "' was not exported to file '" + filename + "'.\n";
+			log(LogLevel::ERROR, logMessage);
+		}
+
+	}
+
 }
 

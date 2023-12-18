@@ -93,6 +93,9 @@ set(wizards_headers
 set(logging_headers
     "include/logging/logger.h"
 )
+set(utilities_headers
+    "include/utilities/utilities.h"
+)
 
 set(header 
     ${simulation_headers}
@@ -103,13 +106,15 @@ set(header
     ${user_interface_headers}
     ${user_interface_headers}
     ${wizards_headers}
+    ${logging_headers}
+    ${utilities_headers}
 )
 
 # Set source files
 set(src 
     "src/simulation/simulation.cpp"
-    "src/simulation/visualization.cpp" 
-    
+    "src/simulation/visualization.cpp"
+
     "src/application/application.cpp"
     
     "src/elements/element_factory.cpp"
@@ -141,6 +146,8 @@ set(src
     "src/wizards/learning_wizard.cpp"
 
     "src/logging/logger.cpp"
+
+    "src/utilities/utilities.cpp"
 )
 
 configure_file(./resources/resources.rc.in ./resources/resources.rc)

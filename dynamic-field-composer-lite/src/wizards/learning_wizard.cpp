@@ -1,5 +1,6 @@
 #include "./wizards/learning_wizard.h"
 
+
 namespace dnf_composer
 {
     LearningWizard::LearningWizard(const std::shared_ptr<Simulation>& simulation, const std::string& fieldCouplingUniqueId)
@@ -214,8 +215,8 @@ namespace dnf_composer
     void LearningWizard::trainWeights(const int iterations) const
     {
         // check how much lines "temp_input.txt", and "temp_output.txt" have
-        const int numLinesInput = mathtools::countNumOfLinesInFile(pathToFieldActivationPre);
-        const int numLinesOutput = mathtools::countNumOfLinesInFile(pathToFieldActivationPost);
+        const int numLinesInput = utilities::countNumOfLinesInFile(pathToFieldActivationPre);
+        const int numLinesOutput = utilities::countNumOfLinesInFile(pathToFieldActivationPost);
 
         if (numLinesInput != numLinesOutput)
         {
