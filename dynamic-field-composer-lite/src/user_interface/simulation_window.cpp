@@ -206,7 +206,6 @@ namespace dnf_composer
 			}
 		}
 
-
 		void SimulationWindow::addElementNeuralField() const
 		{
 			static char id[CHAR_SIZE] = "neural field u";

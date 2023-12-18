@@ -172,30 +172,43 @@ namespace dnf_composer
 
 				// Next column: List box for selecting a component
 				//ImGui::NextColumn();
-				const char* components[] = { "output", "activation", "input", "kernel" };
+
+				std::shared_ptr<element::Element> simulationElement;
 				static int currentComponentIdx = 0;
-
-				ImGui::Text("Select component");
-				if (ImGui::BeginListBox("##Component list", { 250.0f, 200.0f }))
+				if (selectedElementId.empty())
 				{
-					for (int n = 0; n < IM_ARRAYSIZE(components); n++)
+					ImGui::Text("Select component");
+					if (ImGui::BeginListBox("##Component list", { 250.0f, 200.0f }))
 					{
-						const bool isSelected = (currentComponentIdx == n);
-						if (ImGui::Selectable(components[n], isSelected))
-							currentComponentIdx = n;
-
-						if (isSelected)
-							ImGui::SetItemDefaultFocus();
+						ImGui::EndListBox();
 					}
-					ImGui::EndListBox();
+				}
+				else
+				{
+					simulationElement = simulation->getElement(selectedElementId);
+					const std::string elementId = simulationElement->getUniqueName();
+					ImGui::Text("Select component");
+					if (ImGui::BeginListBox("##Component list", { 250.0f, 200.0f }))
+					{
+						for (int n = 0; n < static_cast<int>(simulationElement->getComponentList().size()); n++)
+						{
+							const bool isSelected = (currentComponentIdx == n);
+							if (ImGui::Selectable(simulationElement->getComponentList()[n].c_str(), isSelected))
+								currentComponentIdx = n;
+
+							if (isSelected)
+								ImGui::SetItemDefaultFocus();
+						}
+						ImGui::EndListBox();
+					}
 				}
 
 				// Reset columns
-				ImGui::Columns(1);
+				//ImGui::Columns(1);
 
 				if (ImGui::Button("Add", { 100.0f, 30.0f }))
 				{
-					parameters.visualization->addPlottingData(selectedElementId, components[currentComponentIdx]);
+					parameters.visualization->addPlottingData(selectedElementId, simulationElement->getComponentList()[currentComponentIdx]);
 				}
 			}
 			ImGui::End();
