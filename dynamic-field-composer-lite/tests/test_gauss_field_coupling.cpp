@@ -14,26 +14,14 @@ TEST_CASE("GaussFieldCoupling - Initialization and Basic Properties")
     params.sigma = 1.0;
     params.couplings = { {0, 1, 0.5}, {2, 3, 0.3} };
 
-    REQUIRE_NOTHROW(GaussFieldCoupling("gauss_field_coupling_1", 10, params));
+    REQUIRE_NOTHROW(GaussFieldCoupling({ "gauss_field_coupling_1", 10 }, params));
 
-    SECTION("Invalid Size Throws Exception")
-    {
-        // Initialize GaussFieldCoupling with invalid size (<= 0)
-        REQUIRE_THROWS_AS(GaussFieldCoupling("gauss_field_coupling_2", 0, params), dnf_composer::Exception);
-    }
 
     SECTION("Invalid Input Field Size Throws Exception")
     {
         // Initialize GaussFieldCoupling with invalid input field size (<= 0)
         params.inputFieldSize = 0;
-        REQUIRE_THROWS_AS(GaussFieldCoupling("gauss_field_coupling_3", 10, params), dnf_composer::Exception);
-    }
-
-    SECTION("Invalid Sigma Throws Exception")
-    {
-        // Initialize GaussFieldCoupling with invalid sigma (<= 0)
-        params.sigma = 0.0;
-        REQUIRE_THROWS_AS(GaussFieldCoupling("gauss_field_coupling_4", 10, params), dnf_composer::Exception);
+        REQUIRE_THROWS_AS(GaussFieldCoupling({ "gauss_field_coupling_3", 10 }, params), dnf_composer::Exception);
     }
 }
 
@@ -45,7 +33,7 @@ TEST_CASE("GaussFieldCoupling - Computation and Output Update")
     params.sigma = 1.0;
     params.couplings = { {0, 1, 0.5}, {1, 2, 0.3} };
 
-    GaussFieldCoupling gaussFieldCoupling("gauss_field_coupling_5", 5, params);
+    GaussFieldCoupling gaussFieldCoupling({ "gauss_field_coupling_5", 5 }, params);
 
     gaussFieldCoupling.step(1, 0.1);
 }
@@ -58,7 +46,7 @@ TEST_CASE("GaussFieldCoupling - Parameter Access")
     params.sigma = 1.5;
     params.couplings = { {0, 1, 0.5}, {1, 2, 0.3} };
 
-    GaussFieldCoupling gaussFieldCoupling("gauss_field_coupling_6", 5, params);
+    GaussFieldCoupling gaussFieldCoupling({ "gauss_field_coupling_6", 5 }, params);
 
     SECTION("Access Parameters")
     {

@@ -45,7 +45,7 @@ namespace dnf_composer
 		for (const auto& [label, plotData] : plottingLabelAndData)
 			if (label == elementId + " " + componentId)
 			{
-				log(LogLevel::ERROR, "Data already exists in the plotting vector.");
+				log(LogLevel::ERROR, "Data already exists in the plotting vector.\n");
 				return;
 			}
 

@@ -43,5 +43,5 @@ namespace dnf_composer
 
 	void log(LogLevel level, const std::string& message, LogOutputMode mode = ALL);
 
-	static Logger logger(INFO);
+	static Logger logger(LogLevel::INFO);
 }

@@ -100,7 +100,7 @@ namespace dnf_composer
 			parameters.annotations.title += " " + std::to_string(parameters.id);
 			plots.emplace_back(parameters);
 
-			const std::string message = "Added a new plot to the application with id: " + parameters.annotations.title + ".\n";;
+			const std::string message = "Added a new plot to the application with id: " + parameters.annotations.title + ".\n";
 			log(LogLevel::INFO, message);
 		}
 

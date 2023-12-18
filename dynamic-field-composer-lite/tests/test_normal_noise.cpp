@@ -9,7 +9,7 @@ TEST_CASE("NormalNoise class tests", "[NormalNoise]")
 	params.amplitude = 1.0;
 	SECTION("NormalNoise constructor and getParameters method")
 	{
-		dnf_composer::element::NormalNoise noise("test", size, params);
+		dnf_composer::element::NormalNoise noise({ "test", size }, params);
 		REQUIRE(noise.getLabel() == dnf_composer::element::ElementLabel::NORMAL_NOISE);
 		REQUIRE(noise.getUniqueName() == "test");
 		REQUIRE(noise.getSize() == size);
@@ -18,7 +18,7 @@ TEST_CASE("NormalNoise class tests", "[NormalNoise]")
 	}
 	SECTION("init() step() close() methods")
 	{
-		dnf_composer::element::NormalNoise noise("test", size, params);
+		dnf_composer::element::NormalNoise noise({ "test", size }, params);
 		noise.init();
 		noise.step(1, 1);
 		noise.close();
@@ -27,7 +27,7 @@ TEST_CASE("NormalNoise class tests", "[NormalNoise]")
 
 	SECTION("setParameters() method")
 	{
-		dnf_composer::element::NormalNoise noise("test", size, params);
+		dnf_composer::element::NormalNoise noise({ "test", size }, params);
 		params.amplitude = 1.5;
 		noise.setParameters(params);
 		REQUIRE(noise.getParameters() == params);

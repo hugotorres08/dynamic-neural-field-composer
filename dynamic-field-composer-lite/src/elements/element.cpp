@@ -26,7 +26,7 @@ namespace dnf_composer
 		{
 			if (!inputElement)
 			{
-				const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' is null. Thus, addInput() method halted. \n";
+				const std::string logMessage = "Input is null. Thus, addInput() method halted. \n";
 				log(LogLevel::ERROR, logMessage);
 				return;
 				//throw Exception(ErrorCode::ELEM_INPUT_IS_NULL, this->getUniqueIdentifier());

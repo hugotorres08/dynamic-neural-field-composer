@@ -41,6 +41,18 @@ namespace dnf_composer
 			log(LogLevel::INFO, logStream.str());
 		}
 
+		ElementCommonParameters::ElementCommonParameters()
+			: identifiers(), dimensionParameters()
+		{}
+
+		ElementCommonParameters::ElementCommonParameters(const std::string& elementName)
+			: identifiers(elementName), dimensionParameters()
+		{}
+
+		ElementCommonParameters::ElementCommonParameters(const std::string& elementName, int x_max)
+			: identifiers(elementName), dimensionParameters(x_max)
+		{}
+
 		ElementCommonParameters::ElementCommonParameters(const std::string& elementName, const ElementSpatialDimensionParameters& dimensionParameters)
 			: identifiers(elementName), dimensionParameters(dimensionParameters)
 		{}

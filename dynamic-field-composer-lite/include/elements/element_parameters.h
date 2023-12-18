@@ -58,7 +58,9 @@ namespace dnf_composer
 			ElementIdentifiers identifiers;
 			ElementSpatialDimensionParameters dimensionParameters;
 
-			ElementCommonParameters() : identifiers(), dimensionParameters() {}
+			ElementCommonParameters();
+			ElementCommonParameters(const std::string& elementName);
+			ElementCommonParameters(const std::string& elementName, int x_max);
 			ElementCommonParameters(const std::string& elementName, const ElementSpatialDimensionParameters& dimensionParameters);
 			ElementCommonParameters(ElementIdentifiers identifiers, const ElementSpatialDimensionParameters& dimensionParameters);
 			void print() const;
