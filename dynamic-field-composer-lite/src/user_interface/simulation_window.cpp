@@ -23,6 +23,7 @@ namespace dnf_composer
 				renderSetInteraction();
 				renderRemoveElement();
 				renderLogElementProperties();
+				renderExportElementComponents();
 			}
 			ImGui::End();
 		}
@@ -174,6 +175,37 @@ namespace dnf_composer
 				}
 			}
 		}
+
+		void SimulationWindow::renderExportElementComponents() const
+		{
+			if (ImGui::CollapsingHeader("Export element components"))
+			{
+				const int numberOfElementsInSimulation = simulation->getNumberOfElements();
+
+				for (int i = 0; i < numberOfElementsInSimulation; i++)
+				{
+					const auto simulationElement = simulation->getElement(i);
+					std::string elementId = simulationElement->getUniqueName();
+
+					if (ImGui::TreeNode(elementId.c_str()))
+					{
+						for(const auto& componentName : simulationElement->getComponentList())
+						{
+							if (ImGui::TreeNode(componentName.c_str()))
+							{
+								if (ImGui::Button("Export", { 100.0f, 30.0f }))
+								{
+									simulation->exportComponentToFile(elementId, componentName);
+								}
+								ImGui::TreePop();
+							}
+						}
+						ImGui::TreePop();
+					}
+				}
+			}
+		}
+
 
 		void SimulationWindow::addElementNeuralField() const
 		{
