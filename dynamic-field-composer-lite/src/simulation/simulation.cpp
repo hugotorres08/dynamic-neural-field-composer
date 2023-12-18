@@ -14,11 +14,13 @@ namespace dnf_composer
 			throw Exception(ErrorCode::SIM_INVALID_PARAMETER, "Invalid parameters for Simulation constructor");
 
 		initialized = false;
+		paused = false;
 		elements = {};
 	}
 
 	void Simulation::init()
 	{
+		paused = false;
 		t = tZero;
 		for (const auto& element : elements)
 			element->init();
@@ -27,18 +29,34 @@ namespace dnf_composer
 		log(LogLevel::INFO, "Simulation initialized.\n");
 	}
 
-	void Simulation::step() {
+	void Simulation::step()
+	{
+		if (paused)
+			return;
 		t += deltaT;
 		for (const auto& element : elements)
 			element->step(t, deltaT);
 	}
 
-	void Simulation::close() {
+	void Simulation::close()
+	{
 		for (const auto& element : elements)
 			element->close();
 		
 		initialized = false;
 		log(LogLevel::INFO, "Simulation closed.\n");
+	}
+
+	void Simulation::pause()
+	{
+		paused = true;
+		log(LogLevel::INFO, "Simulation paused.\n");
+	}
+
+	void Simulation::resume()
+	{
+		paused = false;
+		log(LogLevel::INFO, "Simulation resumed.\n");
 	}
 
 	void Simulation::run(double runTime)

@@ -17,6 +17,7 @@ namespace dnf_composer
 	{
 	protected:
 		bool initialized;
+		bool paused;
 		std::vector<std::shared_ptr<element::Element>> elements;
 		std::string uniqueIdentifier;
 	public:
@@ -34,6 +35,8 @@ namespace dnf_composer
 		void step();
 		void run(double runTime);
 		void close();
+		void pause();
+		void resume();
 
 		void addElement(const std::shared_ptr<element::Element>& element);
 		void removeElement(const std::string& elementId);

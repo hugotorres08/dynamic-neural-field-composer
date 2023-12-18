@@ -35,8 +35,13 @@ namespace dnf_composer
 
 			ImGui::SameLine();
 
-			if (ImGui::Button("Restart simulation", { 200.00f, 35.00f }))
-				simulation->close();
+			if (ImGui::Button("Pause simulation", { 200.00f, 35.00f }))
+				simulation->pause();
+
+			ImGui::SameLine();
+
+			if (ImGui::Button("Resume simulation", { 200.00f, 35.00f }))
+				simulation->resume();
 		}
 
 		void SimulationWindow::renderAddElement() const
