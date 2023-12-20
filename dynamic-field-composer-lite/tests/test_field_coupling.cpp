@@ -13,19 +13,14 @@ TEST_CASE("FieldCoupling - Initialization and Basic Properties")
     params.learningRate = 0.1;
     params.learningRule = dnf_composer::LearningRule::HEBBIAN;
 
-    REQUIRE_NOTHROW(FieldCoupling("field_coupling_1", 10, params));
+    REQUIRE_NOTHROW(FieldCoupling({ "field_coupling_1", 10 }, params));
 
-    SECTION("Invalid Size Throws Exception")
-    {
-        // Initialize FieldCoupling with invalid size (<= 0)
-        REQUIRE_THROWS_AS(FieldCoupling("field_coupling_2", 0, params), dnf_composer::Exception);
-    }
 
     SECTION("Invalid Input Field Size Throws Exception")
     {
         // Initialize FieldCoupling with invalid input field size (<= 0)
         params.inputFieldSize = 0;
-        REQUIRE_THROWS_AS(FieldCoupling("field_coupling_3", 10, params), dnf_composer::Exception);
+        REQUIRE_THROWS_AS(FieldCoupling({ "field_coupling_3", 10 }, params), dnf_composer::Exception);
     }
 }
 
@@ -38,7 +33,7 @@ TEST_CASE("FieldCoupling - Computation and Output Scaling")
     params.learningRate = 0.2;
     params.learningRule = dnf_composer::LearningRule::DELTA_WIDROW_HOFF;
 
-    FieldCoupling fieldCoupling("field_coupling_4", 5, params);
+    FieldCoupling fieldCoupling({ "field_coupling_4", 5 }, params);
 
     fieldCoupling.step(1, 0.1);
 }
@@ -52,7 +47,7 @@ TEST_CASE("FieldCoupling - File I/O Operations")
     params.learningRate = 0.5;
     params.learningRule = dnf_composer::LearningRule::DELTA_KROGH_HERTZ;
 
-    FieldCoupling fieldCoupling("field_coupling_5", 3, params);
+    FieldCoupling fieldCoupling({ "field_coupling_5", 3 }, params);
 
     SECTION("Read and Write Weights to File")
     {

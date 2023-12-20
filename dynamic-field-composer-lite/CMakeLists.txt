@@ -67,6 +67,8 @@ set(elements_headers
     "include/elements/normal_noise.h"
     "include/elements/gauss_field_coupling.h"
     "include/elements/kernel.h"
+    "include/elements/activation_function.h"
+    "include/elements/element_parameters.h"
 )
 set(mathtools_headers
     "include/mathtools/mathtools.h"
@@ -88,6 +90,12 @@ set(architecture_headers
 set(wizards_headers
     "include/wizards/learning_wizard.h"
 )
+set(logging_headers
+    "include/logging/logger.h"
+)
+set(utilities_headers
+    "include/utilities/utilities.h"
+)
 
 set(header 
     ${simulation_headers}
@@ -98,13 +106,15 @@ set(header
     ${user_interface_headers}
     ${user_interface_headers}
     ${wizards_headers}
+    ${logging_headers}
+    ${utilities_headers}
 )
 
 # Set source files
 set(src 
     "src/simulation/simulation.cpp"
-    "src/simulation/visualization.cpp" 
-    
+    "src/simulation/visualization.cpp"
+
     "src/application/application.cpp"
     
     "src/elements/element_factory.cpp"
@@ -117,6 +127,8 @@ set(src
     "src/elements/normal_noise.cpp"
     "src/elements/gauss_field_coupling.cpp" 
     "src/elements/kernel.cpp"
+    "src/elements/activation_function.cpp"
+    "src/elements/element_parameters.cpp"
     
     "src/mathtools/mathtools.cpp"
 
@@ -132,6 +144,10 @@ set(src
     "src/architecture/architecture_file_handler.cpp"
 
     "src/wizards/learning_wizard.cpp"
+
+    "src/logging/logger.cpp"
+
+    "src/utilities/utilities.cpp"
 )
 
 configure_file(./resources/resources.rc.in ./resources/resources.rc)
@@ -215,11 +231,11 @@ add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headles
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
-# Add executable example project run_sim_read_architecture_from_file
-set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_read_architecture_from_file)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_read_architecture_from_file.cpp" ./resources/resources.rc)
-target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+## Add executable example project run_sim_read_architecture_from_file
+#set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_read_architecture_from_file)
+#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_read_architecture_from_file.cpp" ./resources/resources.rc)
+#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 # Add executable example project run_learning_wizard
 set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)

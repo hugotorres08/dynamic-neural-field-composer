@@ -9,9 +9,9 @@
 // Helper function to create a sample Element object for testing
 std::shared_ptr<dnf_composer::element::NeuralField> createSampleElement(const std::string& elementId)
 {
-	dnf_composer::element::NeuralFieldParameters nfp{ 1, -5 };
-	dnf_composer::element::ActivationFunctionParameters afp{dnf_composer::element::ActivationFunctionType::Sigmoid, 1, 0 };
-    return std::make_shared<dnf_composer::element::NeuralField>(elementId, 100, nfp);
+    const dnf_composer::element::SigmoidFunction sigmoidFunction { 1, 0 };
+	dnf_composer::element::NeuralFieldParameters nfp{ 1, -5, sigmoidFunction};
+    return std::make_shared<dnf_composer::element::NeuralField>(dnf_composer::element::ElementCommonParameters{ elementId, 100 }, nfp);
 }
 
 
@@ -123,8 +123,11 @@ TEST_CASE("Simulation class tests", "[simulation]")
         REQUIRE(element2->hasInput(element1->getUniqueName(), "output") == false);
 
 
-        // Try to remove non-existing element, should throw exception
-        REQUIRE_THROWS_AS(sim.removeElement("non_existing_element"), dnf_composer::Exception);
+        // Try to remove non-existing element, nothing should happen
+        const int numberOfElementsBeforeAttemptedRemoval = sim.getNumberOfElements();
+        sim.removeElement("non_existing_element");
+        const int numberOfElementsAfterAttemptedRemoval = sim.getNumberOfElements();
+        REQUIRE(numberOfElementsBeforeAttemptedRemoval == numberOfElementsAfterAttemptedRemoval);
     }
 
     SECTION("resetElement method")
@@ -144,8 +147,8 @@ TEST_CASE("Simulation class tests", "[simulation]")
         // Check if element is reset
         REQUIRE(sim.getComponent(element1->getUniqueName(), "output") == sim.getComponent("Element1", "output"));
 
-        // Try to reset non-existing element, should throw exception
-        REQUIRE_THROWS_AS(sim.resetElement("non_existing_element", newElement), dnf_composer::Exception);
+        // Try to reset non-existing element, nothing should happen
+        REQUIRE_NOTHROW(sim.resetElement("non_existing_element", newElement));;
     }
 
     SECTION("getElement method (with id)")

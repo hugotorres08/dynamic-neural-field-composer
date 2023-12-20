@@ -15,7 +15,7 @@ TEST_CASE("GaussStimulus class tests", "[GaussStimulus]")
 
     SECTION("GaussStimulus constructor getParameters() method")
     {
-	    dnf_composer::element::GaussStimulus gaussStimulus(id, size, gsp);
+        dnf_composer::element::GaussStimulus gaussStimulus({ id, size }, gsp);
 
         REQUIRE(gaussStimulus.getLabel() == dnf_composer::element::ElementLabel::GAUSS_STIMULUS);
         REQUIRE(gaussStimulus.getUniqueName() == id);
@@ -26,18 +26,18 @@ TEST_CASE("GaussStimulus class tests", "[GaussStimulus]")
 
         // invalid position
         gsp.position = position + size;
-        REQUIRE_THROWS_AS(dnf_composer::element::GaussStimulus::GaussStimulus(id, size, gsp), dnf_composer::Exception);
+        REQUIRE_THROWS_AS(dnf_composer::element::GaussStimulus::GaussStimulus({ id, size }, gsp), dnf_composer::Exception);
     }
 
     SECTION("GaussStimulus constructor with invalid size")
     {
         int invalidSize = 0;  // Choose a size that triggers the exception
-        REQUIRE_THROWS_AS(dnf_composer::element::GaussStimulus::GaussStimulus(id, invalidSize, gsp), dnf_composer::Exception);
+        REQUIRE_THROWS_AS(dnf_composer::element::GaussStimulus::GaussStimulus({ id, invalidSize }, gsp), dnf_composer::Exception);
     }
 
     SECTION("init() method")
     {
-	    dnf_composer::element::GaussStimulus gaussStimulus(id, size, gsp);
+        dnf_composer::element::GaussStimulus gaussStimulus({ id, size }, gsp);
 
         // Call init() method
         gaussStimulus.init();
@@ -50,7 +50,7 @@ TEST_CASE("GaussStimulus class tests", "[GaussStimulus]")
 
     SECTION("setParameters() method")
     {
-	    dnf_composer::element::GaussStimulus gaussStimulus(id, size, gsp);
+        dnf_composer::element::GaussStimulus gaussStimulus({ id, size }, gsp);
         double newSigma = 1.1;
         double newAmplitude = 3.0;
         double newPosition = 1.5;
@@ -67,7 +67,7 @@ TEST_CASE("GaussStimulus class tests", "[GaussStimulus]")
 
     SECTION("init() step() close() methods")
     {
-        dnf_composer::element::GaussStimulus gaussStimulus(id, size, gsp);
+        dnf_composer::element::GaussStimulus gaussStimulus({ id, size }, gsp);
         gaussStimulus.init();
         gaussStimulus.step(1, 1);
         gaussStimulus.close();

@@ -7,7 +7,7 @@
 std::shared_ptr<dnf_composer::element::GaussStimulus> createSampleElement(const std::string& elementId)
 {
 	dnf_composer::element::GaussStimulusParameters gsp { 1, 2, 3 };
-    return std::make_shared<dnf_composer::element::GaussStimulus>(elementId, 10, gsp);
+    return std::make_shared<dnf_composer::element::GaussStimulus>(dnf_composer::element::ElementCommonParameters{ elementId, 10 }, gsp);
 }
 
 TEST_CASE("Visualization class tests", "[visualization]")
