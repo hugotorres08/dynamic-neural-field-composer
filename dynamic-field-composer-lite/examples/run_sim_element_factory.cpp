@@ -36,32 +36,32 @@ std::shared_ptr<dnf_composer::Simulation> getExampleSimulation()
 	elementFactoryParameters.nfp = neuralFieldParameters;
 	const auto neural_field = elementFactory.create(dnf_composer::element::ElementLabel::NEURAL_FIELD, { "NeuralField", size }, elementFactoryParameters);
 
-	dnf_composer::element::GaussKernelParameters gaussKernelParameters;
-	gaussKernelParameters.amplitude = 20.0;
-	gaussKernelParameters.sigma = 5.0;
-	gaussKernelParameters.amplitudeGlobal = -5.0;
-	elementFactoryParameters.gkp = gaussKernelParameters;
-	auto gauss_kernel = elementFactory.create(dnf_composer::element::ElementLabel::GAUSS_KERNEL, {"GaussKernel", size}, elementFactoryParameters);
+	//dnf_composer::element::GaussKernelParameters gaussKernelParameters;
+	//gaussKernelParameters.amplitude = 20.0;
+	//gaussKernelParameters.sigma = 5.0;
+	//gaussKernelParameters.amplitudeGlobal = -5.0;
+	//elementFactoryParameters.gkp = gaussKernelParameters;
+	//auto gauss_kernel = elementFactory.create(dnf_composer::element::ElementLabel::GAUSS_KERNEL, {"GaussKernel", size}, elementFactoryParameters);
 
-	//dnf_composer::element::MexicanHatKernelParameters mexicanHatKernelParameters;
-	//mexicanHatKernelParameters.amplitudeExc = 32.0;
-	//mexicanHatKernelParameters.sigmaExc = 4.0;
-	//mexicanHatKernelParameters.amplitudeInh = 15.0;
-	//mexicanHatKernelParameters.sigmaInh = 10.0;
-	//mexicanHatKernelParameters.amplitudeGlobal = -2.0;
-	//elementFactoryParameters.mhkp = mexicanHatKernelParameters;
-	//const auto mexican_hat_kernel = elementFactory.create(dnf_composer::element::ElementLabel::MEXICAN_HAT_KERNEL, { "MexicanHatKernel", size }, elementFactoryParameters);
+	dnf_composer::element::MexicanHatKernelParameters mexicanHatKernelParameters;
+	mexicanHatKernelParameters.amplitudeExc = 32.0;
+	mexicanHatKernelParameters.sigmaExc = 4.0;
+	mexicanHatKernelParameters.amplitudeInh = 15.0;
+	mexicanHatKernelParameters.sigmaInh = 10.0;
+	mexicanHatKernelParameters.amplitudeGlobal = -2.0;
+	elementFactoryParameters.mhkp = mexicanHatKernelParameters;
+	const auto mexican_hat_kernel = elementFactory.create(dnf_composer::element::ElementLabel::MEXICAN_HAT_KERNEL, { "MexicanHatKernel", size }, elementFactoryParameters);
 
 	simulation->addElement(gauss_stimulus);
 	simulation->addElement(neural_field);
-	simulation->addElement(gauss_kernel);
-	//simulation->addElement(mexican_hat_kernel);
+	//simulation->addElement(gauss_kernel);
+	simulation->addElement(mexican_hat_kernel);
 
 	simulation->createInteraction("GaussStimulus", "output", "NeuralField");
-	simulation->createInteraction("NeuralField", "output", "GaussKernel");
-	simulation->createInteraction("GaussKernel", "output", "NeuralField");
-	//simulation->createInteraction("MexicanHatKernel", "output", "NeuralField");
-	//simulation->createInteraction("NeuralField", "output", "MexicanHatKernel");
+	//simulation->createInteraction("NeuralField", "output", "GaussKernel");
+	//simulation->createInteraction("GaussKernel", "output", "NeuralField");
+	simulation->createInteraction("MexicanHatKernel", "output", "NeuralField");
+	simulation->createInteraction("NeuralField", "output", "MexicanHatKernel");
 
 	return simulation;
 
@@ -72,6 +72,33 @@ int main(int argc, char* argv[])
 {
 	// After defining the simulation, we can create the application.
 	auto simulation = getExampleSimulation();
+
+	/*auto simulation = std::make_shared < dnf_composer::Simulation >(5, 0, 0);
+
+	dnf_composer::element::ElementSpatialDimensionParameters dimensionParameters{400};
+
+	const dnf_composer::element::SigmoidFunction sigmoid{ 100, 0 };
+	const dnf_composer::element::NeuralFieldParameters nfp{ 25, -10, sigmoid};
+	const std::shared_ptr<dnf_composer::element::NeuralField> neuralField (new dnf_composer::element::NeuralField({ "field", dimensionParameters }, nfp));
+
+	constexpr dnf_composer::element::MexicanHatKernelParameters mhkp{ 4, 32, 10, 15, 0 };
+	const std::shared_ptr<dnf_composer::element::MexicanHatKernel> kernel(new dnf_composer::element::MexicanHatKernel({"kernel", dimensionParameters}, mhkp));
+
+	constexpr dnf_composer::element::GaussStimulusParameters gsp{ 5,10, 50 };
+	const std::shared_ptr<dnf_composer::element::GaussStimulus> stimulus(new dnf_composer::element::GaussStimulus({ "stimulus", dimensionParameters }, gsp));
+
+	simulation->addElement(neuralField);
+	simulation->addElement(kernel);
+	simulation->addElement(stimulus);
+
+	neuralField->addInput(kernel);
+	kernel->addInput(neuralField);
+	neuralField->addInput(stimulus);*/
+
+	//simulation->createInteraction("kernel", "output", "field");
+	//simulation->createInteraction("field", "output", "kernel");
+
+
 	// You can run the application without the user interface by setting the second parameter to false.
 	constexpr bool activateUserInterface = true;
 	const dnf_composer::Application app{ simulation, activateUserInterface };
@@ -84,10 +111,6 @@ int main(int argc, char* argv[])
 	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
 	plotParameters.dimensions = { 0, 100, -30, 40 };
 	const std::shared_ptr<dnf_composer::Visualization> visualization = std::make_shared<dnf_composer::Visualization>(simulation);
-	visualization->addPlottingData("GaussStimulus", "output");
-	visualization->addPlottingData("NeuralField", "activation");
-	visualization->addPlottingData("NeuralField", "output");
-	visualization->addPlottingData("GaussKernel", "output");
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters));
 
 	try
