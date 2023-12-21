@@ -1,5 +1,5 @@
 % Load the data
-data = load('NeuralField_activation_2023-12-18_14-20-53.8109411.txt');
+data = load('NeuralField_activation_2023-12-20_14-19-29.2930895.txt');
 
 % Create a spatial vector (assuming a spatial step of 1 )
 space = 0:1:length(data)-1;
