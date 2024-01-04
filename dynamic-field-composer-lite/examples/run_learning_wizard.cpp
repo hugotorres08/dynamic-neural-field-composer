@@ -31,23 +31,23 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 
 	// create interactions and add them to the simulation
 	dnf_composer::element::GaussKernelParameters gkp1;
-	gkp1.amplitude = 10;  
-	gkp1.sigma = 3;
-	gkp1.amplitudeGlobal = -1;
+	gkp1.amplitude = 45;  
+	gkp1.sigma = 5;
+	gkp1.amplitudeGlobal = -0.5;
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_per_per(new dnf_composer::element::GaussKernel({ "per - per", perceptualFieldSpatialDimensionParameters}, gkp1));
 	simulation->addElement(k_per_per);
 
 	dnf_composer::element::GaussKernelParameters gkp2;
-	gkp2.amplitude = 15;  
-	gkp2.sigma = 2;
-	gkp1.amplitudeGlobal = -0.5;
+	gkp2.amplitude = 20;  
+	gkp2.sigma = 3;
+	gkp1.amplitudeGlobal = -0.3;
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_out_out(new dnf_composer::element::GaussKernel({ "out - out", outputFieldSpatialDimensionParameters }, gkp2)); // self-excitation v-v
 	simulation->addElement(k_out_out);
 
 	dnf_composer::element::FieldCouplingParameters fcp;
 	fcp.inputFieldSize = perceptualFieldSpatialDimensionParameters.size;
 	fcp.learningRate = 0.01;
-	fcp.scalar = 0.5;
+	fcp.scalar = 0.65;
 	fcp.learningRule = dnf_composer::LearningRule::DELTA_KROGH_HERTZ;
 	const std::shared_ptr<dnf_composer::element::FieldCoupling> w_per_out
 	(new dnf_composer::element::FieldCoupling({ "per - out", outputFieldSpatialDimensionParameters }, fcp));
@@ -80,49 +80,54 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	noise_kernel_per->addInput(noise_per);
 	noise_kernel_dec->addInput(noise_dec);
 
+	constexpr dnf_composer::element::GaussStimulusParameters gsp{ 5.0, 20.0, 0.0 };
+	const std::shared_ptr<dnf_composer::element::GaussStimulus> gaussStimulus(new dnf_composer::element::GaussStimulus({ "gauss stimulus", perceptualFieldSpatialDimensionParameters }, gsp));
+
+	simulation->addElement(gaussStimulus);
+	perceptual_field->addInput(gaussStimulus);
+
 	// set up the learning wizard
-	dnf_composer::LearningWizard learning_wizard{ simulation, "per - out" };
+	//dnf_composer::LearningWizard learning_wizard{ simulation, "per - out" };
 
-	// add gaussian inputs
-	// these inputs will be used to create the association between bumps of activation
-	double offset = 1.0;
-	dnf_composer::element::GaussStimulusParameters gsp = { 3, 15, 20 };
+	//// add gaussian inputs
+	//// these inputs will be used to create the association between bumps of activation
+	//double offset = 1.0;
+	//dnf_composer::element::GaussStimulusParameters gsp = { 3, 25, 20 };
 
-	std::vector<std::vector<double>> inputTargetPeaksForCoupling =
-	{
-		{ 00.00 + offset }, // red
-		{ 40.60 + offset }, // orange
-		{ 60.00 + offset }, // yellow
-		{ 120.00 + offset }, // green
-		{ 240.00 + offset }, // blue
-		{ 274.15 + offset }, // indigo
-		{ 281.79 + offset } // violet
-	};
-	std::vector<std::vector<double>> outputTargetPeaksForCoupling =
-	{
-		{ 15.00 + offset },
-		{ 40.00 + offset },
-		{ 65.00 + offset },
-		{ 90.00 + offset },
-		{ 115.00 + offset },
-		{ 140.00 + offset },
-		{ 165.00 + offset }
-	};
+	//std::vector<std::vector<double>> inputTargetPeaksForCoupling =
+	//{
+	//	{ 00.00 + offset }, // red
+	//	{ 40.60 + offset }, // orange
+	//	{ 60.00 + offset }, // yellow
+	//	{ 120.00 + offset }, // green
+	//	{ 240.00 + offset }, // blue
+	//	{ 274.15 + offset }, // indigo
+	//	{ 281.79 + offset } // violet
+	//};
+	//std::vector<std::vector<double>> outputTargetPeaksForCoupling =
+	//{
+	//	{ 15.00 + offset },
+	//	{ 40.00 + offset },
+	//	{ 65.00 + offset },
+	//	{ 90.00 + offset },
+	//	{ 115.00 + offset },
+	//	{ 140.00 + offset },
+	//	{ 165.00 + offset }
+	//};
 
-	learning_wizard.setTargetPeakLocationsForNeuralFieldPre(inputTargetPeaksForCoupling);
-	learning_wizard.setTargetPeakLocationsForNeuralFieldPost(outputTargetPeaksForCoupling);
+	//learning_wizard.setTargetPeakLocationsForNeuralFieldPre(inputTargetPeaksForCoupling);
+	//learning_wizard.setTargetPeakLocationsForNeuralFieldPost(outputTargetPeaksForCoupling);
 
-	gsp.amplitude = 15;
-	gsp.sigma = 3;
+	//gsp.amplitude = 25;
+	//gsp.sigma = 3;
 
-	learning_wizard.setGaussStimulusParameters(gsp);
+	//learning_wizard.setGaussStimulusParameters(gsp);
 
-	learning_wizard.simulateAssociation();
+	//learning_wizard.simulateAssociation();
 
-	learning_wizard.trainWeights(10);
+	//learning_wizard.trainWeights(10);
 
 	return simulation;
-
 }
 
 
@@ -139,7 +144,10 @@ int main(int argc, char* argv[])
 	dnf_composer::user_interface::PlotParameters plotParameters;
 	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
 	plotParameters.dimensions = { 0, 100, -30, 40 };
-    app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters));
+	const auto visualization = std::make_shared<dnf_composer::Visualization>(simulation);
+	visualization->addPlottingData("perceptual field", "activation");
+	visualization->addPlottingData("output field", "activation");
+    app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters));
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
 
 	try
