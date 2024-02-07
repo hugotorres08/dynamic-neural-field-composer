@@ -1,6 +1,7 @@
 #include "./wizards/learning_wizard.h"
 
 
+
 namespace dnf_composer
 {
     LearningWizard::LearningWizard(const std::shared_ptr<Simulation>& simulation, const std::string& fieldCouplingUniqueId)
@@ -23,12 +24,6 @@ namespace dnf_composer
         pathToFieldActivationPost = pathPrefix + neuralFieldPost->getUniqueName() + ".txt";
     }
 
-
-    void LearningWizard::setGaussStimulusParameters(const dnf_composer::element::GaussStimulusParameters& gaussStimulusParameters)
-    {
-        this->gaussStimulusParameters = gaussStimulusParameters;
-    }
-
     void LearningWizard::setTargetPeakLocationsForNeuralFieldPre(const std::vector<std::vector<double>>& targetPeakLocationsForNeuralFieldPre)
     {
         this->targetPeakLocationsForNeuralFieldPre = targetPeakLocationsForNeuralFieldPre;
@@ -41,18 +36,26 @@ namespace dnf_composer
 
     void LearningWizard::simulateAssociation()
     {
+        constexpr int timeSteps = 25; // this value is hardcoded and depends on the fields timescale...
+
         for (int i = 0; i < static_cast<int>(targetPeakLocationsForNeuralFieldPre.size()); i++)
         {
             // Create Gaussian stimuli in the input field
             for (int j = 0; j < static_cast<int>(targetPeakLocationsForNeuralFieldPre[i].size()); j++)
             {
-                const std::string stimulusName = "Input Gaussian Stimulus " + std::to_string(i + 1) + std::to_string(j + 1);
-            	const element::ElementIdentifiers stimulusIdentifiers{ stimulusName };
+                auto kernel = std::dynamic_pointer_cast<dnf_composer::element::GaussKernel>(simulation->getElement("per - per"));
+                auto kernel_width = kernel->getParameters().sigma;
+                auto kernel_amplitude = kernel->getParameters().amplitude;
+                gaussStimulusParameters.amplitude = kernel_amplitude;
+                gaussStimulusParameters.sigma = kernel_width;
 
-            	element::ElementSpatialDimensionParameters stimulusDimensions{ neuralFieldPre->getMaxSpatialDimension(), neuralFieldPre->getStepSize() };
+                const std::string stimulusName = "Input Gaussian Stimulus " + std::to_string(i + 1) + std::to_string(j + 1);
+                const element::ElementIdentifiers stimulusIdentifiers{ stimulusName };
+
+                element::ElementSpatialDimensionParameters stimulusDimensions{ neuralFieldPre->getMaxSpatialDimension(), neuralFieldPre->getStepSize() };
                 element::ElementCommonParameters commonParameters{ stimulusIdentifiers, stimulusDimensions };
 
-            	gaussStimulusParameters.position = targetPeakLocationsForNeuralFieldPre[i][j];
+                gaussStimulusParameters.position = targetPeakLocationsForNeuralFieldPre[i][j];
                 std::shared_ptr<element::GaussStimulus> stimulus = std::make_shared<element::GaussStimulus>(commonParameters, gaussStimulusParameters);
 
                 simulation->addElement(stimulus);
@@ -60,20 +63,26 @@ namespace dnf_composer
 
                 simulation->init();
                 fieldCoupling->resetWeights();
-                for (int k = 0; k < 100; k++)
+                for (int k = 0; k < timeSteps; k++)
                     simulation->step();
             }
 
             // Create Gaussian stimuli in the output field
             for (int j = 0; j < targetPeakLocationsForNeuralFieldPost[i].size(); j++)
             {
+                auto kernel = std::dynamic_pointer_cast<dnf_composer::element::GaussKernel>(simulation->getElement("out - out"));
+                auto kernel_width = kernel->getParameters().sigma;
+                auto kernel_amplitude = kernel->getParameters().amplitude;
+                gaussStimulusParameters.amplitude = kernel_amplitude;
+                gaussStimulusParameters.sigma = kernel_width;
+
                 const std::string stimulusName = "Output Gaussian Stimulus " + std::to_string(i + 1) + std::to_string(j + 1);
                 const element::ElementIdentifiers stimulusIdentifiers{ stimulusName };
 
                 element::ElementSpatialDimensionParameters stimulusDimensions{ neuralFieldPost->getMaxSpatialDimension(), neuralFieldPost->getStepSize() };
                 element::ElementCommonParameters commonParameters{ stimulusIdentifiers, stimulusDimensions };
 
-            	gaussStimulusParameters.position = targetPeakLocationsForNeuralFieldPost[i][j];
+                gaussStimulusParameters.position = targetPeakLocationsForNeuralFieldPost[i][j];
                 std::shared_ptr<element::GaussStimulus> stimulus = std::make_shared<element::GaussStimulus>(commonParameters, gaussStimulusParameters);
 
                 simulation->addElement(stimulus);
@@ -82,7 +91,7 @@ namespace dnf_composer
                 simulation->init();
                 fieldCoupling->resetWeights();
 
-                for (int k = 0; k < 100; k++)
+                for (int k = 0; k < timeSteps; k++)
                     simulation->step();
             }
 
@@ -94,20 +103,16 @@ namespace dnf_composer
             }
 
             // Wait for the input field to settle again
-            // simulation->init();
-            for (int k = 0; k < 100; k++)
+            for (int k = 0; k < timeSteps; k++)
                 simulation->step();
 
 
             std::vector<double>* input = simulation->getComponentPtr(neuralFieldPre->getUniqueName(), "activation");
             std::vector<double>* output = simulation->getComponentPtr(neuralFieldPost->getUniqueName(), "activation");
 
-            const auto inputRestingLevel = simulation->getComponentPtr(neuralFieldPre->getUniqueName(), "resting level");
-            const auto outputRestingLevel = simulation->getComponentPtr(neuralFieldPost->getUniqueName(), "resting level");
-
             // normalize data (remove resting level and normalize between -1 and 1))
-            *input = normalizeFieldActivation(*input, (*inputRestingLevel)[0]);
-            *output = normalizeFieldActivation(*output, (*outputRestingLevel)[0]);
+            *input = normalizeFieldActivation(*input);
+            *output = normalizeFieldActivation(*output);
 
             // save data
             saveFieldActivation(input, pathToFieldActivationPre);
@@ -125,18 +130,14 @@ namespace dnf_composer
         }
     }
 
-    std::vector<double> LearningWizard::normalizeFieldActivation(std::vector<double>& vec, const double& restingLevel)
+    // this generates a weighted matrix WITHOUT 0 value weights
+    std::vector<double> LearningWizard::normalizeFieldActivation(std::vector<double>& vec)
     {
-        // this removes the resting level
-        // the code works without this  
-        //for (double& val : vec)
-        //    val += restingLevel;
-
         for (double& val : vec)
-            if (val < 0.01)
+            if (val < 0.00001)
                 val = 0;
 
-        constexpr int safetyFactor = 0;
+        constexpr double safetyFactor = 0.000001;
         // Find the minimum and maximum values in the vector
         const double maxVal = *std::max_element(vec.begin(), vec.end()) + safetyFactor;
         const double minVal = *std::min_element(vec.begin(), vec.end()) - safetyFactor;
@@ -147,7 +148,7 @@ namespace dnf_composer
         {
             if (val != 0.0)
             {
-                //double normalized_val = (val - minVal) / (maxVal - minVal) * 2.0 - 1.0;
+                //val = (val - minVal) / (maxVal - minVal) * 2.0 - 1.0;
                 val = (val - minVal) / (maxVal - minVal);
             }
 
@@ -156,6 +157,40 @@ namespace dnf_composer
 
         return normalizedVec;
     }
+
+    // this generates a weighted matrix WITH 0 value weights
+    //std::vector<double> LearningWizard::normalizeFieldActivation(std::vector<double>& vec, const double& restingLevel)
+    //{
+    //    // this removes the resting level
+    //    // the code works without this  
+    //    //for (double& val : vec)
+    //    //    val += restingLevel;
+
+    //    for (double& val : vec)
+    //        if (val < 0.01)
+    //            val = 0;
+
+    //    constexpr int safetyFactor = 0;
+    //    // Find the minimum and maximum values in the vector
+    //    const double maxVal = *std::max_element(vec.begin(), vec.end()) + safetyFactor;
+    //    const double minVal = *std::min_element(vec.begin(), vec.end()) - safetyFactor;
+
+    //    // Normalize the vector
+    //    std::vector<double> normalizedVec;
+    //    for (double& val : vec)
+    //    {
+    //        if (val != 0.0)
+    //        {
+    //            //val = (val - minVal) / (maxVal - minVal) * 2.0 - 1.0;
+    //            val = (val - minVal) / (maxVal - minVal);
+    //        }
+
+    //        normalizedVec.push_back(val);
+    //    }
+
+    //    return normalizedVec;
+    //}
+
 
     void LearningWizard::saveFieldActivation(const std::vector<double>* fieldActivation, const std::string& filename)
     {
@@ -169,7 +204,7 @@ namespace dnf_composer
         }
         else
         {
-            const std::string message = "Failed to save data to " + filename + ".\n";;
+            const std::string message = "Failed to save data to " + filename + ".\n";
             log(LogLevel::ERROR, message);
         }
     }
@@ -198,14 +233,14 @@ namespace dnf_composer
             else
             {
                 const std::string message = "Error training the field coupling weights. "
-											"Line " + std::to_string(static_cast<int>(line)) + " not found in " + filename + ".\n";
+                    "Line " + std::to_string(static_cast<int>(line)) + " not found in " + filename + ".\n";
                 log(LogLevel::ERROR, message);
             }
             file.close();
         }
         else
         {
-            const std::string message = "Failed to open file " + filename + ".\n";;
+            const std::string message = "Failed to open file " + filename + ".\n";
             log(LogLevel::ERROR, message);
         }
 
@@ -220,7 +255,7 @@ namespace dnf_composer
 
         if (numLinesInput != numLinesOutput)
         {
-	        const std::string message = "Error training the field coupling weights. The files " + pathToFieldActivationPre + " and " + pathToFieldActivationPost + " have a different number of lines.\n";
+            const std::string message = "Error training the field coupling weights. The files " + pathToFieldActivationPre + " and " + pathToFieldActivationPost + " have a different number of lines.\n";
             log(LogLevel::ERROR, message);
         }
 

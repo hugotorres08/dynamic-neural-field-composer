@@ -39,7 +39,6 @@ std::shared_ptr<dnf_composer::Simulation> getExampleSimulation()
 	dnf_composer::element::GaussKernelParameters gaussKernelParameters;
 	gaussKernelParameters.amplitude = 20.0;
 	gaussKernelParameters.sigma = 5.0;
-	gaussKernelParameters.amplitudeGlobal = -5.0;
 	elementFactoryParameters.gkp = gaussKernelParameters;
 	auto gauss_kernel = elementFactory.create(dnf_composer::element::ElementLabel::GAUSS_KERNEL, {"GaussKernel", size}, elementFactoryParameters);
 

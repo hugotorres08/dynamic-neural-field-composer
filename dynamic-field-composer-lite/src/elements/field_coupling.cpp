@@ -142,8 +142,6 @@ namespace dnf_composer
 				weights = mathtools::deltaLearningRuleKroghHertz(weights, input, output, parameters.learningRate);
 				break;
 			}
-
-			writeWeights();
 		}
 
 		void FieldCoupling::setLearningRate(double learningRate)

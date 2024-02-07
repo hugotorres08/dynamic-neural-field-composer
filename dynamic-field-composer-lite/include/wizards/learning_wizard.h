@@ -4,7 +4,10 @@
 #include "./elements/neural_field.h"
 #include "./elements/field_coupling.h"
 #include "./elements/gauss_stimulus.h"
+#include "elements/gauss_kernel.h"
+
 #include "utilities/utilities.h"
+#include "logging/logger.h"
 
 
 namespace dnf_composer
@@ -21,7 +24,7 @@ namespace dnf_composer
 		std::vector<std::vector<double>> targetPeakLocationsForNeuralFieldPre;
 		std::vector<std::vector<double>> targetPeakLocationsForNeuralFieldPost;
 
-		element::GaussStimulusParameters gaussStimulusParameters = { 15, 3 };
+		element::GaussStimulusParameters gaussStimulusParameters;
 
 		std::string pathToFieldActivationPre;
 		std::string pathToFieldActivationPost;
@@ -33,7 +36,6 @@ namespace dnf_composer
 
 		void setDataFilePath(const std::string& filePath);
 
-		void setGaussStimulusParameters(const element::GaussStimulusParameters& gaussStimulusParameters);
 		void setTargetPeakLocationsForNeuralFieldPre(const std::vector<std::vector<double>>& targetPeakLocationsForNeuralFieldPre);
 		void setTargetPeakLocationsForNeuralFieldPost(const std::vector<std::vector<double>>& targetPeakLocationsForNeuralFieldPost);
 
@@ -49,6 +51,6 @@ namespace dnf_composer
 
 		static std::vector<double> readFieldActivation(const std::string& filename, int line);
 		static void saveFieldActivation(const std::vector<double>* fieldActivation, const std::string& filename);
-		static std::vector<double> normalizeFieldActivation(std::vector<double>& vec, const double& restingLevel);
+		static std::vector<double> normalizeFieldActivation(std::vector<double>& vec);
 	};
 }
