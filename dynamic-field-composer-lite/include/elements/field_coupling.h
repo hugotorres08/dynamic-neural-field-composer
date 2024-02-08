@@ -12,8 +12,9 @@ namespace dnf_composer
 	enum class LearningRule
 	{
 		HEBBIAN = 0,
+		OJA,
 		DELTA_WIDROW_HOFF,
-		DELTA_KROGH_HERTZ
+		DELTA_KROGH_HERTZ,
 	};
 
 	namespace element

@@ -51,7 +51,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	fcp.inputFieldSize = perceptualFieldSpatialDimensionParameters.size;
 	fcp.learningRate = 0.01;
 	fcp.scalar = 0.55;
-	fcp.learningRule = dnf_composer::LearningRule::DELTA_KROGH_HERTZ;
+	fcp.learningRule = dnf_composer::LearningRule::DELTA_WIDROW_HOFF;
 	const std::shared_ptr<dnf_composer::element::FieldCoupling> w_per_out
 	(new dnf_composer::element::FieldCoupling({ "per - out", outputFieldSpatialDimensionParameters }, fcp));
 	simulation->addElement(w_per_out);
@@ -106,7 +106,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 
 		learning_wizard.simulateAssociation();
 
-		learning_wizard.trainWeights(100);
+		learning_wizard.trainWeights(1000);
 		learning_wizard.saveWeights();
 	}
 
@@ -144,7 +144,7 @@ int main(int argc, char* argv[])
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters, false));
 
 	// test the training by adding a stimulus to the perceptual field
-	constexpr dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 90 };
+	constexpr dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 270 };
 	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus(new dnf_composer::element::GaussStimulus({ "gauss stimulus",{360, 0.5} }, gcp_a));
 	simulation->addElement(gauss_stimulus);
 	simulation->createInteraction("gauss stimulus", "output", "perceptual field");

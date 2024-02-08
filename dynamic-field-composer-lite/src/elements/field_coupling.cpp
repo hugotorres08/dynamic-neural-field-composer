@@ -128,13 +128,15 @@ namespace dnf_composer
 			switch (parameters.learningRule)
 			{
 			case LearningRule::HEBBIAN:
-				weights = mathtools::hebbLearningRule(input, output, parameters.learningRate);
+				weights = mathtools::hebbLearningRule(weights, input, output, parameters.learningRate);
 				break;
 			case LearningRule::DELTA_WIDROW_HOFF:
 				weights = mathtools::deltaLearningRuleWidrowHoff(weights, input, output, parameters.learningRate);
 				break;
 			case LearningRule::DELTA_KROGH_HERTZ:
 				weights = mathtools::deltaLearningRuleKroghHertz(weights, input, output, parameters.learningRate);
+			case LearningRule::OJA:
+				weights = mathtools::ojaLearningRule(weights, input, output, parameters.learningRate);
 				break;
 			}
 		}

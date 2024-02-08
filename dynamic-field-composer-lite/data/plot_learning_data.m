@@ -7,8 +7,8 @@ matrixFile = 'per - out_weights.txt';
 perceptualFieldFile = 'per - out_perceptual field.txt';
 outputFieldFile = 'per - out_output field.txt';
 
-fieldSize_perceptual = 360;
-fieldSize_decision = 28;
+fieldSize_perceptual = 360/0.5;
+fieldSize_decision = 180/0.5;
 
 % Read matrix and arrays
 matrix = load(matrixFile);
@@ -42,7 +42,7 @@ hold off;
 % Add labels and title
 xlabel('Neural position');
 ylabel('Activation');
-title('per-dec perceptual field Plot');
+title('per-out perceptual field Plot');
 
 % Read the file
 fid = fopen(outputFieldFile, 'r');

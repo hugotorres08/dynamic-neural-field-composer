@@ -155,15 +155,11 @@ namespace dnf_composer
 		std::vector<double> generateNormalVector(int size);
 
 		template <typename T>
-		std::vector<std::vector<T>> hebbLearningRule(const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
+		std::vector<std::vector<T>> hebbLearningRule(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
 		{
-			int inputSize = input.size();
-			int outputSize = targetOutput.size();
-			// Check if input, and targetOutput have the same size
-			if (inputSize != outputSize)
-				throw std::invalid_argument("Input and targetOutput must have the same size.");
+			const int inputSize = input.size();
+			const int outputSize = targetOutput.size();
 
-			std::vector<std::vector<T>> weights(inputSize, std::vector<T>(outputSize));
 			for (int i = 0; i < inputSize; i++)
 				for (int j = 0; j < outputSize; j++)
 					weights[i][j] += learningRate * input[i] * targetOutput[j];
@@ -172,19 +168,18 @@ namespace dnf_composer
 		}
 
 		template <typename T>
-		std::vector<std::vector<T>> ojaLearningRule(const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
+		std::vector<std::vector<T>> ojaLearningRule(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
 		{
-			int inputSize = input.size();
-			int outputSize = targetOutput.size();
-			// Check if input, and targetOutput have the same size
-			if (inputSize != outputSize)
-				throw std::invalid_argument("Input and targetOutput must have the same size.");
+ 			const int inputSize = input.size();
+			const int outputSize = targetOutput.size();
 
-			std::vector<std::vector<T>> weights(inputSize, std::vector<T>(outputSize));
 			for (int i = 0; i < inputSize; i++)
 				for (int j = 0; j < outputSize; j++)
-					weights[i][j] += learningRate * targetOutput[j] * (input[i] - targetOutput[j] * weights[i][j]);
-
+				{
+					weights[i][j] = weights[i][j] * (1 - learningRate * std::pow(targetOutput[j], 2)) + learningRate * input[i] * targetOutput[j];
+					//weights[i][j] += learningRate * targetOutput[j] * (input[i] - targetOutput[j] * weights[i][j]);
+					//weights[i][j] += learningRate * input[i] * (targetOutput[j] - alpha * std::pow(targetOutput[j], 2) * weights[i][j]);
+				}
 			return weights;
 		}
 
@@ -193,8 +188,6 @@ namespace dnf_composer
 		{
 			const int inputSize = input.size();
 			int outputSize = targetOutput.size();
-			if (inputSize != outputSize)
-				throw std::invalid_argument("Input and targetOutput must have the same size.");
 
 			// Calculate the activation levels of the fields based on the input values and current weights
 			std::vector<T> actualOutput(outputSize, 0.0);
@@ -223,11 +216,6 @@ namespace dnf_composer
 		template <typename T>
 		std::vector<std::vector<T>> deltaLearningRuleKroghHertz(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
 		{
-
-			double deltaT = 1.0;
-			double tau_w = 5.0;
-			double eta = 0.5;
-
 			const int inputSize = input.size();
 			int outputSize = targetOutput.size();
 
@@ -248,7 +236,7 @@ namespace dnf_composer
 			// Update the weights based on the error and current activation levels of the fields
 			for (size_t i = 0; i < inputSize; ++i) {
 				for (size_t j = 0; j < outputSize; ++j) {
-					weights[i][j] += learningRate * (error[j] - eta * weights[i][j]) * input[i];
+					weights[i][j] += learningRate * (error[j] - learningRate * weights[i][j]) * input[i];
 				}
 			}
 
