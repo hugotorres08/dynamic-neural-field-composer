@@ -14,6 +14,7 @@ namespace dnf_composer
 		struct PlotDimensions
 		{
 			int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
+			double dx = 0.0;
 		};
 
 		struct PlotAnnotations
@@ -33,11 +34,12 @@ namespace dnf_composer
 		{
 		private:
 			std::vector<PlotParameters> plots;
+			bool elementSelectorWindowSelected;
 		public:
-			PlotWindow(const std::shared_ptr<Simulation>& simulation);
-			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters);
-			PlotWindow(const std::shared_ptr<Visualization>& visualization);
-			PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotParameters parameters);
+			PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderElementSelector = true);
+			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters, bool renderElementSelector = true);
+			PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderElementSelector = true);
+			PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotParameters parameters, bool renderElementSelector = true);
 
 			void render() override;
 			~PlotWindow() override = default;

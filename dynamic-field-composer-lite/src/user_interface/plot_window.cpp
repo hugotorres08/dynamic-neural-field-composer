@@ -8,35 +8,39 @@ namespace dnf_composer
 {
 	namespace user_interface
 	{
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation)
+		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderElementSelector)
+			:elementSelectorWindowSelected(renderElementSelector)
 		{
 			PlotParameters parameters;
 			parameters.visualization = std::make_shared<Visualization>(simulation);
-			parameters.dimensions = { 0, 100, -30, 40 };
+			parameters.dimensions = { 0, 100, -30, 40 , 1.0};
 			parameters.annotations.title = "Plot window ";
 			parameters.annotations.x_label = "Spatial dimension";
 			parameters.annotations.y_label = "Amplitude";
 			createPlot(parameters);
 		}
 
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters)
+		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters, bool renderElementSelector)
+			:elementSelectorWindowSelected(renderElementSelector)
 		{
 			parameters.visualization = std::make_shared<Visualization>(simulation);
 			createPlot(parameters);
 		}
 
-		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization)
+		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderElementSelector)
+			:elementSelectorWindowSelected(renderElementSelector)
 		{
 			PlotParameters parameters;
 			parameters.visualization = visualization;
-			parameters.dimensions = { 0, 100, -30, 40 };
+			parameters.dimensions = { 0, 100, -30, 40, 1.0 };
 			parameters.annotations.title = "Plot window ";
 			parameters.annotations.x_label = "Spatial dimension";
 			parameters.annotations.y_label = "Amplitude";
 			createPlot(parameters);
 		}
 
-		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotParameters parameters)
+		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotParameters parameters, bool renderElementSelector)
+			:elementSelectorWindowSelected(renderElementSelector)
 		{
 			parameters.visualization = visualization;
 			createPlot(parameters);
@@ -44,10 +48,12 @@ namespace dnf_composer
 
 		void PlotWindow::render()
 		{
-			renderPlotControl();
+			if (elementSelectorWindowSelected)
+				renderPlotControl();
 			for(const auto& plot : plots)
 			{
-				renderElementSelector(plot);
+				if(elementSelectorWindowSelected)
+					renderElementSelector(plot);
 				renderPlot(plot);
 			}
 		}
@@ -79,12 +85,15 @@ namespace dnf_composer
 					static int y_max = 20;
 					ImGui::InputInt("y_max", &y_max, 1.0, 10.0);
 
+					static double d_x = 1.0;
+					ImGui::InputDouble("d_x", &d_x, 0.05, 0.1);
+
 
 					if (ImGui::Button("Add", { 100.0f, 30.0f }))
 					{
 						PlotParameters parameters;
 						parameters.annotations = {title, x_label, y_label};
-						parameters.dimensions = {x_min, x_max, y_min, y_max};
+						parameters.dimensions = {x_min, x_max, y_min, y_max, d_x};
 						std::shared_ptr<Simulation> simulation = plots[0].visualization->getAssociatedSimulationPtr();
 						parameters.visualization = std::make_shared<Visualization>(simulation);
 						createPlot(parameters);
@@ -126,7 +135,7 @@ namespace dnf_composer
 					{
 						std::string label = parameters.visualization->getPlottingLabel(j);
 						std::vector<double> data = *parameters.visualization->getPlottingData(j);
-						ImPlot::PlotLine(label.c_str(), data.data(), static_cast<int>(data.size()));
+						ImPlot::PlotLine(label.c_str(), data.data(), static_cast<int>(data.size()), parameters.dimensions.dx);
 					}
 
 				}

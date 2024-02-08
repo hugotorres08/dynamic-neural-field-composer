@@ -129,19 +129,19 @@ int main(int argc, char* argv[])
 	auto visualization = std::make_shared<dnf_composer::Visualization>(simulation);
 	dnf_composer::user_interface::PlotParameters plotParameters;
 	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
-	plotParameters.dimensions = { 0, 360, -30, 40 };
+	plotParameters.dimensions = { 0, 360, -30, 40, 1.0};
 	visualization->addPlottingData("perceptual field", "activation");
 	visualization->addPlottingData("perceptual field", "input");
 	visualization->addPlottingData("perceptual field", "output");
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters));
+	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters, false));
 
 	visualization = std::make_shared<dnf_composer::Visualization>(simulation);
 	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
-	plotParameters.dimensions = { 0, 180, -30, 40 };
+	plotParameters.dimensions = { 0, 180, -30, 40, 1.0};
 	visualization->addPlottingData("output field", "activation");
 	visualization->addPlottingData("output field", "input");
 	visualization->addPlottingData("output field", "output");
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters));
+	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters, false));
 
 	// test the training by adding a stimulus to the perceptual field
 	constexpr dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 90 };
