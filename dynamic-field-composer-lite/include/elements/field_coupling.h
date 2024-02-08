@@ -60,8 +60,8 @@ namespace dnf_composer
 			void getInputFunction();
 			void computeOutput();
 			void scaleOutput();
-
 			void writeWeights() const;
+			void fillWeightsRandomly();
 		};
 	}
 }

@@ -12,13 +12,13 @@
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
 	// define if you want to train the weights or not
-	constexpr bool train = false;
+	constexpr bool train = true;
 
 	// create simulation object
 	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>(5, 0, 0);
 
-	const dnf_composer::element::ElementSpatialDimensionParameters perceptualFieldSpatialDimensionParameters{360, 1.0};
-	const dnf_composer::element::ElementSpatialDimensionParameters outputFieldSpatialDimensionParameters{180, 1.0};
+	const dnf_composer::element::ElementSpatialDimensionParameters perceptualFieldSpatialDimensionParameters{360, 0.5};
+	const dnf_composer::element::ElementSpatialDimensionParameters outputFieldSpatialDimensionParameters{180, 0.5};
 
 	// create neural fields
 	const dnf_composer::element::HeavisideFunction activationFunction{ 0 };
@@ -129,7 +129,7 @@ int main(int argc, char* argv[])
 	auto visualization = std::make_shared<dnf_composer::Visualization>(simulation);
 	dnf_composer::user_interface::PlotParameters plotParameters;
 	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
-	plotParameters.dimensions = { 0, 360, -30, 40, 1.0};
+	plotParameters.dimensions = { 0, 360, -30, 40, 0.5};
 	visualization->addPlottingData("perceptual field", "activation");
 	visualization->addPlottingData("perceptual field", "input");
 	visualization->addPlottingData("perceptual field", "output");
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
 
 	visualization = std::make_shared<dnf_composer::Visualization>(simulation);
 	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
-	plotParameters.dimensions = { 0, 180, -30, 40, 1.0};
+	plotParameters.dimensions = { 0, 180, -30, 40, 0.5};
 	visualization->addPlottingData("output field", "activation");
 	visualization->addPlottingData("output field", "input");
 	visualization->addPlottingData("output field", "output");
@@ -145,7 +145,7 @@ int main(int argc, char* argv[])
 
 	// test the training by adding a stimulus to the perceptual field
 	constexpr dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 90 };
-	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus(new dnf_composer::element::GaussStimulus({ "gauss stimulus",{360, 1.0} }, gcp_a));
+	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus(new dnf_composer::element::GaussStimulus({ "gauss stimulus",{360, 0.5} }, gcp_a));
 	simulation->addElement(gauss_stimulus);
 	simulation->createInteraction("gauss stimulus", "output", "perceptual field");
 

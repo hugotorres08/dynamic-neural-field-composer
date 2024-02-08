@@ -38,12 +38,7 @@ namespace dnf_composer
 			if (readWeights())
 				trained = true;
 			else
-			{
-				utilities::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
-				utilities::fillMatrixWithRandomValues(weights, 0.0, 0.0);
-				trained = false;
-				writeWeights();
-			}
+				fillWeightsRandomly();
 		}
 
 		void FieldCoupling::step(double t, double deltaT)
@@ -156,7 +151,10 @@ namespace dnf_composer
 
 		bool FieldCoupling::readWeights()
 		{
-			std::ifstream file(weightsFilePath); 
+			std::ifstream file(weightsFilePath);
+
+			const std::tuple<int, int> initialWeightsSize = std::make_tuple( static_cast<int>(weights.size()), static_cast<int>(weights[0].size()) );
+			std::tuple<int, int> readWeightsSize = std::make_tuple(0, 0);
 
 			if (file.is_open()) {
 				utilities::resizeMatrix(weights, 0, 0);
@@ -174,7 +172,15 @@ namespace dnf_composer
 				file.close();
 				const std::string message = "Weights '" + this->getUniqueName() + "' read successfully from: " + weightsFilePath + ". \n";
 				log(LogLevel::INFO, message);
-				return true;
+
+				// Check if dimensions are correct.
+				readWeightsSize = std::make_tuple(static_cast<int>(weights.size()), static_cast<int>(weights[0].size()));
+				if(initialWeightsSize != readWeightsSize)
+				{
+					log(LogLevel::ERROR, "Weight matrix read from file has a different dimensionality compared to the actual matrix size! \n");
+					return false;
+				}
+				return true;	
 			}
 
 			const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " + weightsFilePath + ". \n";
@@ -203,6 +209,15 @@ namespace dnf_composer
 				const std::string message = "Failed to saved weights '" + this->getUniqueName() + "' to: " + weightsFilePath + ". \n";
 				log(LogLevel::ERROR, message);
 			}
+		}
+
+		void FieldCoupling::fillWeightsRandomly()
+		{
+			utilities::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
+			utilities::fillMatrixWithRandomValues(weights, 0.0, 0.0);
+			log(LogLevel::INFO, "Filling the weight matrix with random values. \n");
+			trained = false;
+			writeWeights();
 		}
 
 		void FieldCoupling::saveWeights() const
