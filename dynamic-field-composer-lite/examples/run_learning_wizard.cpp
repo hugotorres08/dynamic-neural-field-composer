@@ -3,6 +3,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "dynamic-neural-field-composer.h"
+#include "user_interface/centroid_monitoring_window.h"
 
 // This .cpp file is an example of how you can use the library to create your own DNF simulation.
 // This setup runs the application with a GUI.
@@ -12,7 +13,7 @@
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
 	// define if you want to train the weights or not
-	constexpr bool train = true;
+	constexpr bool train = false;
 
 	// create simulation object
 	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>(5, 0, 0);
@@ -125,26 +126,27 @@ int main(int argc, char* argv[])
     // After creating the application, we can add the windows we want to display.
     app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::SimulationWindow>(simulation));
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
+	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::CentroidMonitoringWindow>(simulation));
 
 	auto visualization = std::make_shared<dnf_composer::Visualization>(simulation);
 	dnf_composer::user_interface::PlotParameters plotParameters;
-	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
-	plotParameters.dimensions = { 0, 360, -30, 40, 0.5};
+	plotParameters.annotations = { "Perceptual field", "Spatial dimension", "Amplitude" };
+	plotParameters.dimensions = { 0, 360, -20, 50, 0.5};
 	visualization->addPlottingData("perceptual field", "activation");
 	visualization->addPlottingData("perceptual field", "input");
 	visualization->addPlottingData("perceptual field", "output");
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters, false));
 
 	visualization = std::make_shared<dnf_composer::Visualization>(simulation);
-	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
-	plotParameters.dimensions = { 0, 180, -30, 40, 0.5};
+	plotParameters.annotations = { "Output field", "Spatial dimension", "Amplitude" };
+	plotParameters.dimensions = { 0, 180, -20, 50, 0.5};
 	visualization->addPlottingData("output field", "activation");
 	visualization->addPlottingData("output field", "input");
 	visualization->addPlottingData("output field", "output");
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters, false));
 
 	// test the training by adding a stimulus to the perceptual field
-	constexpr dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 270 };
+	constexpr dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 15};
 	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus(new dnf_composer::element::GaussStimulus({ "gauss stimulus",{360, 0.5} }, gcp_a));
 	simulation->addElement(gauss_stimulus);
 	simulation->createInteraction("gauss stimulus", "output", "perceptual field");

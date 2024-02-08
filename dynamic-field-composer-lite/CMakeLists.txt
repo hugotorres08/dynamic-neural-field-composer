@@ -82,6 +82,7 @@ set(user_interface_headers
     "include/user_interface/plot_window.h"
     "include/user_interface/simulation_window.h"
     "include/user_interface/logger_window.h"
+    "include/user_interface/centroid_monitoring_window.h"
 )
 set(architecture_headers
     "include/architecture/architecture_builder.h"
@@ -139,6 +140,7 @@ set(src
     "src/user_interface/plot_window.cpp"
     "src/user_interface/simulation_window.cpp"
     "src/user_interface/logger_window.cpp"
+    "src/user_interface/centroid_monitoring_window.cpp"
 
     "src/architecture/architecture_builder.cpp"
     "src/architecture/architecture_file_handler.cpp"
