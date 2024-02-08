@@ -21,6 +21,9 @@ IF NOT DEFINED VCPKG_ROOT (
 :: Install implot using Vcpkg
 "%VCPKG_ROOT%\vcpkg.exe" install implot:x64-windows
 
+:: Install nlohmann-json using Vcpkg
+"%VCPKG_ROOT%\vcpkg.exe" install nlohmann-json:x64-windows
+
 :: Using MSBuild may require elevation
 "%VCPKG_ROOT%\vcpkg.exe" integrate install
 

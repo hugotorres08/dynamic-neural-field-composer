@@ -52,6 +52,7 @@ add_compile_definitions(OUTPUT_DIRECTORY="${OUTPUT_DIRECTORY}")
 set(simulation_headers
     "include/simulation/simulation.h"
     "include/simulation/visualization.h"
+    "include/simulation/simulation_file_manager.h"
 )
 set(application_headers
     "include/application/application.h"
@@ -84,10 +85,6 @@ set(user_interface_headers
     "include/user_interface/logger_window.h"
     "include/user_interface/centroid_monitoring_window.h"
 )
-set(architecture_headers
-    "include/architecture/architecture_builder.h"
-    "include/architecture/architecture_file_handler.h"
-)
 set(wizards_headers
     "include/wizards/learning_wizard.h"
 )
@@ -115,6 +112,7 @@ set(header
 set(src 
     "src/simulation/simulation.cpp"
     "src/simulation/visualization.cpp"
+    "src/simulation/simulation_file_manager.cpp"
 
     "src/application/application.cpp"
     
@@ -141,9 +139,6 @@ set(src
     "src/user_interface/simulation_window.cpp"
     "src/user_interface/logger_window.cpp"
     "src/user_interface/centroid_monitoring_window.cpp"
-
-    "src/architecture/architecture_builder.cpp"
-    "src/architecture/architecture_file_handler.cpp"
 
     "src/wizards/learning_wizard.cpp"
 
@@ -175,6 +170,10 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE imgui::imgui "d3d12.lib" "dx
 # Setup implot
 find_package(implot CONFIG REQUIRED)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE implot::implot)
+
+# Setup nlohmann-json
+find_package(nlohmann_json CONFIG REQUIRED)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
     DNF_COMPOSER=1
@@ -233,23 +232,18 @@ add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headles
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
-## Add executable example project run_sim_read_architecture_from_file
-#set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_read_architecture_from_file)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_read_architecture_from_file.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
-
 # Add executable example project run_learning_wizard
-set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_learning_wizard.cpp" ./resources/resources.rc)
-target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+set(EXE_PROJECT_EXAMPLE_LEARNING_WIZARD ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
+add_executable(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} "examples/run_learning_wizard.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
-# Add executable example project run_sim_element_factory
-set(EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_sim_element_factory)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} "examples/run_sim_element_factory.cpp" ./resources/resources.rc)
-target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_ELEMENT_FACTORY} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+# Add executable example project run_sim_read_write
+set(EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE ${CMAKE_PROJECT_NAME}-example-run_sim_read_write)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} "examples/run_sim_read_write.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
 
 # Setup Catch2
 enable_testing()
@@ -271,8 +265,6 @@ add_executable(${TEST_PROJECT}
     tests/test_simulation.cpp 
     tests/test_user_interface.cpp 
     tests/test_visualization.cpp 
-    tests/test_architecture_builder.cpp
-    tests/test_architecture_file_handler.cpp
     tests/test_learning_wizard.cpp
     tests/test_element_factory.cpp
     tests/test_kernel.cpp
