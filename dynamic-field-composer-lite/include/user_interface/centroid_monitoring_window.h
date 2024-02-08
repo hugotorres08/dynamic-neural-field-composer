@@ -21,6 +21,8 @@ namespace dnf_composer
 
 			void render() override;
 			~CentroidMonitoringWindow() override = default;
+		private:
+			void getNeuralFieldsAndRenderCentroids() const;
 		};
 	}
 }

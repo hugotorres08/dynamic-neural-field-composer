@@ -146,7 +146,7 @@ int main(int argc, char* argv[])
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters, false));
 
 	// test the training by adding a stimulus to the perceptual field
-	constexpr dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 15};
+	constexpr dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 90};
 	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus(new dnf_composer::element::GaussStimulus({ "gauss stimulus",{360, 0.5} }, gcp_a));
 	simulation->addElement(gauss_stimulus);
 	simulation->createInteraction("gauss stimulus", "output", "perceptual field");
