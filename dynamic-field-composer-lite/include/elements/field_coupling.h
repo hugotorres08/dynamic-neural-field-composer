@@ -54,6 +54,7 @@ namespace dnf_composer
 			void setUpdateAllWeights(bool updateAllWeights);
 
 			const std::vector<std::vector<double>>& getWeights() const;
+			FieldCouplingParameters getParameters() const;
 
 			~FieldCoupling() override = default;
 

@@ -45,7 +45,7 @@ namespace dnf_composer
 			int getMaxSpatialDimension() const;
 			int getSize() const;
 			double getStepSize() const;
-
+			ElementCommonParameters getElementCommonParameters() const;
 			int getUniqueIdentifier() const;
 			std::string getUniqueName() const;
 			ElementLabel getLabel() const;

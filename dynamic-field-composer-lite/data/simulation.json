@@ -1,0 +1,113 @@
+[
+    {
+        "activationFunction": {
+            "type": "heaviside",
+            "x_shift": 0.0
+        },
+        "d_x": 1.0,
+        "inputs": [
+            "in - in",
+            "noise kernel in"
+        ],
+        "label": "neural field",
+        "restingLevel": -10.0,
+        "tau": 25.0,
+        "uniqueName": "input field",
+        "x_max": 100
+    },
+    {
+        "activationFunction": {
+            "steepness": 1000.0,
+            "type": "sigmoid",
+            "x_shift": 0.0
+        },
+        "d_x": 0.5,
+        "inputs": [
+            "in - out",
+            "out - out",
+            "noise kernel out"
+        ],
+        "label": "neural field",
+        "restingLevel": -5.0,
+        "tau": 20.0,
+        "uniqueName": "output field",
+        "x_max": 50
+    },
+    {
+        "amplitude": 25.0,
+        "amplitudeGlobal": -0.1,
+        "d_x": 1.0,
+        "inputs": [
+            "input field"
+        ],
+        "label": "gauss kernel",
+        "sigma": 5.0,
+        "uniqueName": "in - in",
+        "x_max": 100
+    },
+    {
+        "amplitudeExc": 10.0,
+        "amplitudeGlobal": -0.05,
+        "amplitudeInh": 5.0,
+        "d_x": 0.5,
+        "inputs": [
+            "output field"
+        ],
+        "label": "mexican hat kernel",
+        "sigmaExc": 15.0,
+        "sigmaInh": 10.0,
+        "uniqueName": "out - out",
+        "x_max": 50
+    },
+    {
+        "d_x": 0.5,
+        "inputFieldSize": 100,
+        "inputs": [
+            "input field"
+        ],
+        "label": "field coupling",
+        "learningRate": 0.01,
+        "learningRule": 0,
+        "scalar": 0.25,
+        "uniqueName": "in - out",
+        "x_max": 50
+    },
+    {
+        "amplitude": 1.0,
+        "d_x": 1.0,
+        "label": "normal noise",
+        "uniqueName": "noise in",
+        "x_max": 100
+    },
+    {
+        "amplitude": 1.0,
+        "d_x": 0.5,
+        "label": "normal noise",
+        "uniqueName": "noise out",
+        "x_max": 50
+    },
+    {
+        "amplitude": 0.2,
+        "amplitudeGlobal": 0.0,
+        "d_x": 1.0,
+        "inputs": [
+            "noise in"
+        ],
+        "label": "gauss kernel",
+        "sigma": 0.25,
+        "uniqueName": "noise kernel in",
+        "x_max": 100
+    },
+    {
+        "amplitude": 0.2,
+        "amplitudeGlobal": 0.0,
+        "d_x": 0.5,
+        "inputs": [
+            "noise out"
+        ],
+        "label": "gauss kernel",
+        "sigma": 0.25,
+        "uniqueName": "noise kernel out",
+        "x_max": 50
+    }
+]

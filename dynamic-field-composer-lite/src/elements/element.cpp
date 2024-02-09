@@ -131,6 +131,11 @@ namespace dnf_composer
 			return commonParameters.dimensionParameters.d_x;
 		}
 
+		ElementCommonParameters Element::getElementCommonParameters() const
+		{
+			return commonParameters;
+		}
+
 		int Element::getSize() const
 		{
 			return commonParameters.dimensionParameters.size;

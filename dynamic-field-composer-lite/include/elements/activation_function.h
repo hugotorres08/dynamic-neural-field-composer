@@ -9,11 +9,12 @@ namespace dnf_composer
 		enum ActivationFunctionType : int
 		{
 			SIGMOID,
-			HEAVISIDE
+			HEAVISIDE,
 		};
 
 		struct ActivationFunction
 		{
+			ActivationFunctionType type;
 			ActivationFunction() = default;                                 
 			ActivationFunction(const ActivationFunction&) = default;
 			ActivationFunction& operator=(const ActivationFunction&) = delete;

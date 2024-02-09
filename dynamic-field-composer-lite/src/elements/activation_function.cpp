@@ -10,7 +10,9 @@ namespace dnf_composer
 	{
 		SigmoidFunction::SigmoidFunction(double x_shift, double steepness)
 		: x_shift(x_shift), steepness(steepness)
-		{}
+		{
+			type = ActivationFunctionType::SIGMOID;
+		}
 
 		std::vector<double> SigmoidFunction::operator()(const std::vector<double>& input)
 		{
@@ -34,7 +36,9 @@ namespace dnf_composer
 
 		HeavisideFunction::HeavisideFunction(double x_shift)
 		: x_shift(x_shift)
-		{}
+		{
+			type = ActivationFunctionType::HEAVISIDE;
+		}
 
 		std::vector<double> HeavisideFunction::operator()(const std::vector<double>& input)
 		{

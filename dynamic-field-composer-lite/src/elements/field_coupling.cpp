@@ -151,6 +151,11 @@ namespace dnf_composer
 			return weights;
 		}
 
+		FieldCouplingParameters FieldCoupling::getParameters() const
+		{
+			return parameters;
+		}
+
 		bool FieldCoupling::readWeights()
 		{
 			std::ifstream file(weightsFilePath);
