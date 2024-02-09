@@ -7,8 +7,8 @@
 
 namespace dnf_composer
 {
-	Simulation::Simulation(double deltaT, double tZero, double t)
-		: deltaT(deltaT), tZero(tZero), t(t)
+	Simulation::Simulation(std::string identifier, double deltaT, double tZero, double t)
+		: uniqueIdentifier(identifier), deltaT(deltaT), tZero(tZero), t(t)
 	{
 		if (deltaT <= 0 || tZero > t)
 			throw Exception(ErrorCode::SIM_INVALID_PARAMETER, "Invalid parameters for Simulation constructor");
@@ -165,6 +165,11 @@ namespace dnf_composer
 		const std::string logMessage = "Interaction created: " + stimulusElementId + " -> " + receivingElementId + '\n';
 		log(LogLevel::INFO, logMessage);
 
+	}
+
+	std::string Simulation::getUniqueIdentifier() const
+	{
+		return uniqueIdentifier;
 	}
 
 	std::shared_ptr<element::Element> Simulation::getElement(const std::string& id) const

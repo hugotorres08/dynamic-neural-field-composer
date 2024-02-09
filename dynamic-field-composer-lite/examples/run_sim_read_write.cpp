@@ -12,7 +12,7 @@
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
 	// create simulation object
-	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>(5, 0, 0);
+	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("run_sim_read_write",5, 0, 0);
 
 	const dnf_composer::element::ElementSpatialDimensionParameters inputFieldSpatialDimensionParameters{ 100, 1.0 };
 	const dnf_composer::element::ElementSpatialDimensionParameters outputFieldSpatialDimensionParameters{ 50, 0.5 };
@@ -56,31 +56,42 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	simulation->addElement(w_in_out);
 
 	// create noise stimulus and noise kernel
-	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_per(new dnf_composer::element::NormalNoise({ "noise in", inputFieldSpatialDimensionParameters }, { 1 }));
-	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_dec(new dnf_composer::element::NormalNoise({ "noise out", outputFieldSpatialDimensionParameters }, { 1 }));
-	const std::shared_ptr<dnf_composer::element::GaussKernel> noise_kernel_per(new dnf_composer::element::GaussKernel({ "noise kernel in", inputFieldSpatialDimensionParameters }, { 0.25, 0.2 }));
-	const std::shared_ptr<dnf_composer::element::GaussKernel> noise_kernel_dec(new dnf_composer::element::GaussKernel({ "noise kernel out", outputFieldSpatialDimensionParameters }, { 0.25, 0.2 }));
+	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_in(new dnf_composer::element::NormalNoise({ "noise in", inputFieldSpatialDimensionParameters }, { 1 }));
+	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_out(new dnf_composer::element::NormalNoise({ "noise out", outputFieldSpatialDimensionParameters }, { 1 }));
+	const std::shared_ptr<dnf_composer::element::GaussKernel> noise_kernel_in(new dnf_composer::element::GaussKernel({ "noise kernel in", inputFieldSpatialDimensionParameters }, { 0.25, 0.2 }));
+	const std::shared_ptr<dnf_composer::element::GaussKernel> noise_kernel_out(new dnf_composer::element::GaussKernel({ "noise kernel out", outputFieldSpatialDimensionParameters }, { 0.25, 0.2 }));
 
-	simulation->addElement(noise_per);
-	simulation->addElement(noise_dec);
-	simulation->addElement(noise_kernel_per);
-	simulation->addElement(noise_kernel_dec);
+	// add two gaussian stimulus
+	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus_in(new dnf_composer::element::GaussStimulus({ "stimulus in", inputFieldSpatialDimensionParameters }, { 5, 10, 50}));
+	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus_out(new dnf_composer::element::GaussStimulus({ "stimulus out", outputFieldSpatialDimensionParameters }, { 5, 10, 25 }));
+
+
+	simulation->addElement(noise_in);
+	simulation->addElement(noise_out);
+	simulation->addElement(noise_kernel_in);
+	simulation->addElement(noise_kernel_out);
+	simulation->addElement(gauss_stimulus_in);
+	simulation->addElement(gauss_stimulus_out);
 
 	// define the interactions between the elements
 	input_field->addInput(k_in_in); // self-excitation
-	input_field->addInput(noise_kernel_per); // noise
+	input_field->addInput(noise_kernel_in); // noise
+	input_field->addInput(gauss_stimulus_in);
 
 	output_field->addInput(k_out_out); // self-excitation
-	output_field->addInput(noise_kernel_dec); // noise
+	output_field->addInput(noise_kernel_out); // noise
 	output_field->addInput(w_in_out); // coupling
+	output_field->addInput(gauss_stimulus_out);
 
 	k_in_in->addInput(input_field);
 	k_out_out->addInput(output_field);
 
 	w_in_out->addInput(input_field, "activation");
 
-	noise_kernel_per->addInput(noise_per);
-	noise_kernel_dec->addInput(noise_dec);
+	noise_kernel_in->addInput(noise_in);
+	noise_kernel_out->addInput(noise_out);
+
+	
 
 	return simulation;
 }
@@ -89,14 +100,29 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 int main(int argc, char* argv[])
 {
 	// After defining the simulation, we can create the application.
-	const auto simulation = getExperimentSimulation();
-	// You can run the application without the user interface by setting the second parameter to false.
-	constexpr bool activateUserInterface = false;
-	const dnf_composer::Application app{ simulation, activateUserInterface };
+	//const auto simulation = getExperimentSimulation();
+	const auto simulation = std::make_shared<dnf_composer::Simulation>("run_sim_read_write",5, 0, 0);
 
 	// Create a simulation file manager to read and write simulations from .json files
-	const dnf_composer::SimulationFileManager sfm{simulation};
-	sfm.saveElementsToJson();
+	const dnf_composer::SimulationFileManager sfm{ simulation };
+	//sfm.saveElementsToJson();
+	sfm.loadElementsFromJson();
+
+	// You can run the application without the user interface by setting the second parameter to false.
+	constexpr bool activateUserInterface = true;
+	const dnf_composer::Application app{ simulation, activateUserInterface };
+
+	// After creating the application, we can add the windows we want to display.
+	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::SimulationWindow>(simulation));
+	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
+
+	dnf_composer::user_interface::PlotParameters plotParameters;
+	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
+	plotParameters.dimensions = { 0, 100, -30, 40 , 1.0};
+	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters));
+	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
+	plotParameters.dimensions = { 0, 50, -30, 40 , 0.5 };
+	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters));
 
 	try
 	{

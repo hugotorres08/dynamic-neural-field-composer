@@ -197,6 +197,11 @@ namespace dnf_composer
 			return inputVec;
 		}
 
+		std::unordered_map<std::shared_ptr<Element>, std::string> Element::getInputsAndComponents()
+		{
+			return inputs;
+		}
+
 		void Element::printCommonParameters() const
 		{
 			std::ostringstream logStream;

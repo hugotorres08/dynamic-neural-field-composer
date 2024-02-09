@@ -25,7 +25,7 @@ namespace dnf_composer
 		double tZero;
 		double t;
 	public:
-		Simulation(double deltaT = 1, double tZero = 0, double t = 0);
+		Simulation(std::string identifier, double deltaT = 1, double tZero = 0, double t = 0);
 		Simulation(const Simulation&) = delete;
 		Simulation& operator=(const Simulation&) = delete;
 		Simulation(Simulation&&) = delete;
@@ -45,6 +45,7 @@ namespace dnf_composer
 		void createInteraction(const std::string& stimulusElementId, const std::string& stimulusComponent, 
 			const std::string& receivingElementId) const;
 
+		std::string getUniqueIdentifier() const;
 		std::shared_ptr<element::Element> getElement(const std::string& id) const;
 		std::shared_ptr<element::Element> getElement(int index) const;
 		std::vector<double> getComponent(const std::string& id, const std::string& componentName) const;
