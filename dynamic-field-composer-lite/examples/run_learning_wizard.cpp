@@ -13,10 +13,10 @@
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
 	// define if you want to train the weights or not
-	constexpr bool train = false;
+	constexpr bool train = true;
 
 	// create simulation object
-	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>(5, 0, 0);
+	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("learning_wizard",5, 0, 0);
 
 	const dnf_composer::element::ElementSpatialDimensionParameters perceptualFieldSpatialDimensionParameters{360, 0.5};
 	const dnf_composer::element::ElementSpatialDimensionParameters outputFieldSpatialDimensionParameters{180, 0.5};
