@@ -1,6 +1,5 @@
 #include "./user_interface/centroid_monitoring_window.h"
 
-#include "elements/neural_field.h"
 
 namespace dnf_composer
 {
@@ -34,9 +33,22 @@ namespace dnf_composer
 					const auto neuralField = std::dynamic_pointer_cast<dnf_composer::element::NeuralField>(simulationElement);
 					const std::string elementName = neuralField->getUniqueName();
 					const double centroid = neuralField->getCentroid();
+					const bool stable = neuralField->isStable();
+
+					// Display centroid
 					ImGui::Text("%s centroid is %2f.", elementName.c_str(), centroid);
+
+					// Display stability status with color
+					if (stable) {
+						ImGui::TextColored(ImVec4(0, 1, 0, 1), "%s is stable.", elementName.c_str());
+					}
+					else {
+						ImGui::TextColored(ImVec4(1, 0, 0, 1), "%s is not stable.", elementName.c_str());
+					}
 				}
+
 			}
 		}
+
 	}
 }

@@ -243,5 +243,49 @@ namespace dnf_composer
 			return weights;
 		}
 
+		template <typename T>
+		bool compareVectors(const std::vector<T>& vec1, const std::vector<T>& vec2, T threshold) {
+			if (vec1.size() != vec2.size()) {
+				return false; // Vectors are of different sizes, hence not equal
+			}
+
+			for (size_t i = 0; i < vec1.size(); ++i) {
+				if (std::abs(vec1[i] - vec2[i]) > threshold) {
+					return false; // Difference between elements at index i exceeds threshold
+				}
+			}
+
+			return true; // Vectors are equal within threshold
+		}
+
+		template <typename T>
+		T calculateVectorSum(const std::vector<T>& vec) {
+			T result;
+			for (T value : vec) {
+				result += value;
+			}
+			return result;
+		}
+
+		template <typename T>
+		T calculateVectorAvg(const std::vector<T>& vec) {
+			if (vec.empty()) {
+				return T(); // Return default value if vector is empty
+			}
+
+			T sum = T();
+			for (const T& value : vec) {
+				sum += value;
+			}
+			return sum / static_cast<T>(vec.size()); // Calculate average
+		}
+
+		template <typename T>
+		T calculateVectorNorm(const std::vector<T>& vec) {
+			T sum_of_squares = std::accumulate(vec.begin(), vec.end(), 0.0,
+				[](T a, T b) { return a + b * b; });
+			return std::sqrt(sum_of_squares);
+		}
+
 	}
 }

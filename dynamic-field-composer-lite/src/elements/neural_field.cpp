@@ -9,7 +9,7 @@ namespace dnf_composer
 	namespace element
 	{
 		NeuralField::NeuralField(const ElementCommonParameters& elementCommonParameters, const NeuralFieldParameters& parameters)
-			: Element(elementCommonParameters), parameters(parameters), centroid(-1)
+			: Element(elementCommonParameters), parameters(parameters)
 		{
 			commonParameters.identifiers.label = ElementLabel::NEURAL_FIELD;
 			components["activation"] = std::vector<double>(commonParameters.dimensionParameters.size);
@@ -31,6 +31,7 @@ namespace dnf_composer
 			calculateActivation(t, deltaT);
 			calculateOutput();
 			calculateCentroid();
+			checkStability();
 		}
 
 		void NeuralField::close()
@@ -50,7 +51,14 @@ namespace dnf_composer
 
 		double NeuralField::getCentroid() const
 		{
-			return centroid;
+			return state.centroid;
+		}
+
+		bool NeuralField::isStable() const
+		{
+			if (state.stable)
+				return true;
+			return false;
 		}
 
 		void NeuralField::printParameters()
@@ -119,13 +127,43 @@ namespace dnf_composer
 				if (std::fabs(sumActivation) > epsilon)
 				{
 					// Shift the centroid back to the circular field
-					centroid = fmod(static_cast<double>(commonParameters.dimensionParameters.size) * 0.5 + sumWeightedPositions / sumActivation, static_cast<double>(commonParameters.dimensionParameters.size));
+					state.centroid = fmod(static_cast<double>(commonParameters.dimensionParameters.size) * 0.5 + sumWeightedPositions / sumActivation, static_cast<double>(commonParameters.dimensionParameters.size));
 					if (isAtLimits)
-						centroid = (centroid >= 0 ? centroid : centroid + static_cast<double>(commonParameters.dimensionParameters.size));
+						state.centroid = (state.centroid >= 0 ? state.centroid : state.centroid + static_cast<double>(commonParameters.dimensionParameters.size));
 				}
 			}
 			else
-				centroid = -1.0;
+				state.centroid = -1.0;
+		}
+
+		void NeuralField::checkStability()
+		{
+			static constexpr double threshold = 0.15; //ideally this threshold should be a calculation?
+			const double currentActivationSum = mathtools::calculateVectorSum(components["activation"]);
+			const double currentActivationAvg = mathtools::calculateVectorAvg(components["activation"]);
+			const double currentActivationNorm = mathtools::calculateVectorNorm(components["activation"]);
+
+			// this function is done like this, instead of comparing to a previously saved vector of activation,
+			// because it is simply faster and takes up less memory.
+			if (std::abs(currentActivationSum - state.prevActivationSum) < threshold)
+			{
+				if (std::abs(currentActivationAvg - state.prevActivationAvg) < threshold)
+				{
+					if(std::abs(currentActivationNorm - state.prevActivationNorm) < threshold)
+					{
+						state.prevActivationSum = currentActivationSum;
+						state.prevActivationAvg = currentActivationAvg;
+						state.prevActivationNorm = currentActivationNorm;
+						state.stable = true;
+						return;
+					}
+				}
+			}
+
+			state.prevActivationSum = currentActivationSum;
+			state.prevActivationAvg = currentActivationAvg;
+			state.prevActivationNorm = currentActivationNorm;
+			state.stable = false;
 		}
 	}
 }

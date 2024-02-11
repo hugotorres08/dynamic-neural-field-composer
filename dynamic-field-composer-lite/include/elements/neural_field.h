@@ -48,11 +48,24 @@ namespace dnf_composer
 			}
 		};
 
+		struct NeuralFieldState
+		{
+			double centroid;
+			double prevActivationSum;
+			double prevActivationAvg;
+			double prevActivationNorm;
+			bool stable;
+
+			NeuralFieldState()
+				:centroid(0.0), prevActivationSum(0.0), prevActivationAvg(0.0), prevActivationNorm(0.0), stable(false)
+			{}
+		};
+
 		class NeuralField : public Element
 		{
 		protected:
 			NeuralFieldParameters parameters;
-		    double centroid;
+			NeuralFieldState state;
 		public:
 			NeuralField(const ElementCommonParameters& elementCommonParameters, const NeuralFieldParameters& parameters);
 
@@ -65,6 +78,7 @@ namespace dnf_composer
 			void setParameters(const NeuralFieldParameters& parameters);
 			NeuralFieldParameters getParameters() const;
 		    double getCentroid() const;
+			bool isStable() const;
 
 			~NeuralField() override = default;
 
@@ -72,6 +86,7 @@ namespace dnf_composer
 			void calculateActivation(double t, double deltaT);
 			void calculateOutput();
 			void calculateCentroid();
+			void checkStability();
 		};
 	}
 }

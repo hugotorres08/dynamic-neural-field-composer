@@ -2,6 +2,7 @@
 
 #include "./user_interface/user_interface_window.h"
 #include "simulation/simulation.h"
+#include "elements/neural_field.h"
 
 namespace dnf_composer
 {

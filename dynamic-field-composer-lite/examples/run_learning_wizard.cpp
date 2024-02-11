@@ -13,10 +13,10 @@
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
 	// define if you want to train the weights or not
-	constexpr bool train = true;
+	constexpr bool train = false;
 
 	// create simulation object
-	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("learning_wizard",5, 0, 0);
+	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("learning_wizard",1, 0, 0);
 
 	const dnf_composer::element::ElementSpatialDimensionParameters perceptualFieldSpatialDimensionParameters{360, 0.5};
 	const dnf_composer::element::ElementSpatialDimensionParameters outputFieldSpatialDimensionParameters{180, 0.5};
@@ -58,8 +58,8 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	simulation->addElement(w_per_out);
 
 	// create noise stimulus and noise kernel
-	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_per(new dnf_composer::element::NormalNoise({ "noise per", perceptualFieldSpatialDimensionParameters }, { 1 }));
-	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_dec(new dnf_composer::element::NormalNoise({ "noise out", outputFieldSpatialDimensionParameters }, { 1 }));
+	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_per(new dnf_composer::element::NormalNoise({ "noise per", perceptualFieldSpatialDimensionParameters }, { 0.2 }));
+	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_dec(new dnf_composer::element::NormalNoise({ "noise out", outputFieldSpatialDimensionParameters }, { 0.2 }));
 	const std::shared_ptr<dnf_composer::element::GaussKernel> noise_kernel_per(new dnf_composer::element::GaussKernel({ "noise kernel per", perceptualFieldSpatialDimensionParameters }, { 0.25, 0.2 }));
 	const std::shared_ptr<dnf_composer::element::GaussKernel> noise_kernel_dec(new dnf_composer::element::GaussKernel({ "noise kernel out", outputFieldSpatialDimensionParameters }, { 0.25, 0.2 }));
 
