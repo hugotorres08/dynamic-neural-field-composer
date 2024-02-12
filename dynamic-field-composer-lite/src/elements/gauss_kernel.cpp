@@ -56,18 +56,37 @@ namespace dnf_composer
 
 			fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
 
-			std::vector<double> convolution(commonParameters.dimensionParameters.size);
-			const std::vector<double> subDataInput = mathtools::obtainCircularVector(extIndex, components["input"]);
+			//std::vector<double> convolution(commonParameters.dimensionParameters.size);
+			std::vector<double> subDataInput = mathtools::obtainCircularVector(extIndex, components["input"]);
 
+			const int h_src = components["input"].size();
+			constexpr int w_src = 1; // For 1-dimensional vectors
+			const int h_kernel = components["kernel"].size();
+			constexpr int w_kernel = 1; // For 1-dimensional kernels
 
-			if (circular)
+			//STD_Convolution::Workspace workspace;
+			//STD_Convolution::init_workspace(workspace, STD_Convolution::LINEAR_VALID, h_src, w_src, h_kernel, w_kernel);
+
+			FFTW_Convolution::Workspace workspace;
+			FFTW_Convolution::init_workspace(workspace, FFTW_Convolution::LINEAR_VALID, h_src, w_src, h_kernel, w_kernel);
+
+			//STD_Convolution::convolve(workspace, subDataInput.data(), components["kernel"].data());
+			FFTW_Convolution::convolve(workspace, subDataInput.data(), components["kernel"].data());
+
+			std::vector<double> convolution(workspace.dst, workspace.dst + workspace.h_dst * workspace.w_dst);
+
+			/*if (circular)
 				convolution = mathtools::conv_valid(subDataInput, components["kernel"]);
 			else
-				convolution = mathtools::conv(subDataInput, components["kernel"]);
+				convolution = mathtools::conv(subDataInput, components["kernel"]);*/
 
 			for (int i = 0; i < components["output"].size(); i++)
 				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
 				//commonParameters.dimensionParameters.d_x;
+
+			//STD_Convolution::clear_workspace(workspace);
+			FFTW_Convolution::clear_workspace(workspace);
+
 
 		}
 

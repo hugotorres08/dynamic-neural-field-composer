@@ -4,6 +4,8 @@
 
 #include "mathtools/mathtools.h"
 #include "kernel.h"
+#include "mathtools/convolution_std.h"
+#include "mathtools/convolution_fftw.h"
 
 
 namespace dnf_composer

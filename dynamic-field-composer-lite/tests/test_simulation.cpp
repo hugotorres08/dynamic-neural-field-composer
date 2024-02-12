@@ -19,7 +19,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 {
     SECTION("Simulation constructor")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test",1, 0, 100);
         // Test with valid parameters
         REQUIRE(sim.isInitialized() == false);
         REQUIRE(sim.getNumberOfElements() == 0);
@@ -28,13 +28,13 @@ TEST_CASE("Simulation class tests", "[simulation]")
         REQUIRE(sim.t == Catch::Approx(100.0));
 
         // Test with invalid parameters (expecting an exception)
-        REQUIRE_THROWS_AS(dnf_composer::Simulation(0.0, 0.0, 100.0), dnf_composer::Exception);
-        REQUIRE_THROWS_AS(dnf_composer::Simulation(1.0, 100.0, 0.0), dnf_composer::Exception);
+        REQUIRE_THROWS_AS(dnf_composer::Simulation("test", 0.0, 0.0, 100.0), dnf_composer::Exception);
+        REQUIRE_THROWS_AS(dnf_composer::Simulation("test", 1.0, 100.0, 0.0), dnf_composer::Exception);
     }
 
     SECTION("init method")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test",1, 0, 100);
 		sim.init();
 		REQUIRE(sim.isInitialized() == true);
         REQUIRE(sim.t == Catch::Approx(sim.tZero));
@@ -42,7 +42,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
     SECTION("step method")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test",1, 0, 100);
         sim.init();
         sim.step();
         REQUIRE(sim.t == Catch::Approx(1));
@@ -50,7 +50,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
     SECTION("close method")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test",1, 0, 100);
 		sim.init();
         REQUIRE(sim.isInitialized() == true);
 		sim.close();
@@ -63,14 +63,14 @@ TEST_CASE("Simulation class tests", "[simulation]")
         int t = 0;
         int tZero = 100;
         int runTime = 10;
-        dnf_composer::Simulation sim(deltaT, t, tZero);
+        dnf_composer::Simulation sim("simulation class test", deltaT, t, tZero);
 		sim.run(runTime);
 		REQUIRE(sim.t == Catch::Approx(runTime + tZero));
 	}
 
     SECTION("addElement method")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test", 1, 0, 100);
         std::shared_ptr<dnf_composer::element::NeuralField> element1 = createSampleElement("Element1");
         std::shared_ptr<dnf_composer::element::NeuralField> element2 = createSampleElement("Element2");
 
@@ -86,7 +86,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
     SECTION("createInteraction method")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test",1, 0, 100);
         std::shared_ptr<dnf_composer::element::NeuralField> stimulusElement = createSampleElement("Element1");
         std::shared_ptr<dnf_composer::element::NeuralField> receivingElement = createSampleElement("Element2");
 
@@ -104,7 +104,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
     SECTION("removeElement method")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test",1, 0, 100);
         std::shared_ptr<dnf_composer::element::NeuralField> element1 = createSampleElement("Element1");
         std::shared_ptr<dnf_composer::element::NeuralField> element2 = createSampleElement("Element2");
 
@@ -132,7 +132,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
     SECTION("resetElement method")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test",1, 0, 100);
         std::shared_ptr<dnf_composer::element::NeuralField> element1 = createSampleElement("Element1");
         std::shared_ptr<dnf_composer::element::NeuralField> element2 = createSampleElement("Element2");
 
@@ -153,7 +153,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
     SECTION("getElement method (with id)")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test", 1, 0, 100);
         std::shared_ptr<dnf_composer::element::NeuralField> element1 = createSampleElement("Element1");
         std::shared_ptr<dnf_composer::element::NeuralField> element2 = createSampleElement("Element2");
 
@@ -171,7 +171,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
     SECTION("getElement method (with index)")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test", 1, 0, 100);
         std::shared_ptr<dnf_composer::element::NeuralField> element1 = createSampleElement("Element1");
         std::shared_ptr<dnf_composer::element::NeuralField> element2 = createSampleElement("Element2");
 
@@ -189,7 +189,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
     SECTION("getComponent method")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test", 1, 0, 100);
         std::shared_ptr<dnf_composer::element::NeuralField> element1 = createSampleElement("Element1");
 
         // Add elements
@@ -208,7 +208,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
     SECTION("getComponentPtr method")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test", 1, 0, 100);
         std::shared_ptr<dnf_composer::element::NeuralField> element1 = createSampleElement("Element1");
 
         // Add elements
@@ -227,7 +227,7 @@ TEST_CASE("Simulation class tests", "[simulation]")
 
     SECTION("getNumberOfElements method")
     {
-	    dnf_composer::Simulation sim(1, 0, 100);
+	    dnf_composer::Simulation sim("simulation class test",1, 0, 100);
         std::shared_ptr<dnf_composer::element::NeuralField> element1 = createSampleElement("Element1");
         std::shared_ptr<dnf_composer::element::NeuralField> element2 = createSampleElement("Element2");
 

@@ -12,7 +12,7 @@
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
 	// create simulation object
-	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("run_sim_read_write",5, 0, 0);
+	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("run sim read write to json",5, 0, 0);
 
 	const dnf_composer::element::ElementSpatialDimensionParameters inputFieldSpatialDimensionParameters{ 100, 1.0 };
 	const dnf_composer::element::ElementSpatialDimensionParameters outputFieldSpatialDimensionParameters{ 50, 0.5 };

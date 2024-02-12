@@ -10,7 +10,7 @@
 int main(int argc, char* argv[])
 {
     // After defining the simulation, we can create the application.
-    const auto simulation = std::make_shared<dnf_composer::Simulation>(5, 0, 0);
+    const auto simulation = std::make_shared<dnf_composer::Simulation>("run sim headless example", 5, 0, 0);
     // You can run the application without the user interface by setting the second parameter to false.
     constexpr bool activateUserInterface = false;
     const dnf_composer::Application app{ simulation, activateUserInterface };

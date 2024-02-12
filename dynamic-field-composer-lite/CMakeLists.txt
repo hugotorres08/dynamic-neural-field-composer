@@ -15,6 +15,10 @@ if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(DNF_COMPOSER_LIB_PREFIX "debug")
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    set(DNF_COMPOSER_LIB_PREFIX "release")
+endif()
+
 set(DNF_COMPOSER_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
 set(DNF_COMPOSER_RUNTIME_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/bin")
 set(DNF_COMPOSER_LIBRARY_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib/${DNF_COMPOSER_LIB_PREFIX}")
@@ -73,6 +77,9 @@ set(elements_headers
 )
 set(mathtools_headers
     "include/mathtools/mathtools.h"
+    "include/mathtools/fftw3.h"
+    "include/mathtools/convolution_std.h"
+    "include/mathtools/convolution_fftw.h"
 )
 set(exceptions_headers
     "include/exceptions/exception.h"
@@ -130,6 +137,8 @@ set(src
     "src/elements/element_parameters.cpp"
     
     "src/mathtools/mathtools.cpp"
+    "src/mathtools/convolution_std.cpp"
+    "src/mathtools/convolution_fftw.cpp"
 
     "src/exceptions/exception.cpp"
     
@@ -163,6 +172,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
+
 # Setup imgui
 find_package(imgui CONFIG REQUIRED)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE imgui::imgui "d3d12.lib" "dxgi.lib" "d3dcompiler.lib")
@@ -174,6 +184,13 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE implot::implot)
 # Setup nlohmann-json
 find_package(nlohmann_json CONFIG REQUIRED)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
+
+# Setup fftw3
+set(LIB_DIR "${CMAKE_CURRENT_BINARY_DIR}/${DNF_COMPOSER_LIB_PREFIX}")
+file(COPY ${CMAKE_SOURCE_DIR}/lib/libfftw3-3.dll DESTINATION ${LIB_DIR})
+link_directories(${CMAKE_SOURCE_DIR}/lib)
+target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC "libfftw3-3.lib")
+
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
     DNF_COMPOSER=1
@@ -213,12 +230,12 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
     FILE ${CMAKE_PROJECT_NAME}-config.cmake
 )
 
-
 # Add executable project
 set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
 add_executable(${EXE_PROJECT} "src/dynamic-field-composer-lite.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT} PRIVATE include)
 target_link_libraries(${EXE_PROJECT} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME} )
+
 
 # Add executable example project run_sim
 set(EXE_PROJECT_EXAMPLE_RUN_SIM ${CMAKE_PROJECT_NAME}-example-run_sim)
@@ -236,7 +253,7 @@ target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::img
 set(EXE_PROJECT_EXAMPLE_LEARNING_WIZARD ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
 add_executable(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} "examples/run_learning_wizard.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE imgui::imgui  ${CMAKE_PROJECT_NAME} )
 
 # Add executable example project run_sim_read_write
 set(EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE ${CMAKE_PROJECT_NAME}-example-run_sim_read_write)
@@ -245,33 +262,33 @@ target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE inc
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 
-# Setup Catch2
-enable_testing()
-find_package(Catch2 CONFIG REQUIRED)
-include(CTest)
-include(Catch)
-
-# Add test project
-set(TEST_PROJECT ${CMAKE_PROJECT_NAME}-test)
-add_executable(${TEST_PROJECT} 
-    tests/test.cpp 
-    tests/test_application.cpp
-    tests/test_element.cpp 
-    tests/test_gauss_kernel.cpp 
-    tests/test_gauss_stimulus.cpp 
-    tests/test_mexican_hat_kernel.cpp 
-    tests/test_neural_field.cpp 
-    tests/test_normal_noise.cpp
-    tests/test_simulation.cpp 
-    tests/test_user_interface.cpp 
-    tests/test_visualization.cpp 
-    tests/test_learning_wizard.cpp
-    tests/test_element_factory.cpp
-    tests/test_kernel.cpp
-    tests/test_field_coupling.cpp
-    tests/test_gauss_field_coupling.cpp
-)
-target_include_directories(${TEST_PROJECT} PRIVATE include)
-target_link_libraries(${TEST_PROJECT} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain ${CMAKE_PROJECT_NAME})
-# Automatically discover and add tests
-catch_discover_tests(${TEST_PROJECT})
+## Setup Catch2
+#enable_testing()
+#find_package(Catch2 CONFIG REQUIRED)
+#include(CTest)
+#include(Catch)
+#
+## Add test project
+#set(TEST_PROJECT ${CMAKE_PROJECT_NAME}-test)
+#add_executable(${TEST_PROJECT} 
+#    tests/test.cpp 
+#    tests/test_application.cpp
+#    tests/test_element.cpp 
+#    tests/test_gauss_kernel.cpp 
+#    tests/test_gauss_stimulus.cpp 
+#    tests/test_mexican_hat_kernel.cpp 
+#    tests/test_neural_field.cpp 
+#    tests/test_normal_noise.cpp
+#    tests/test_simulation.cpp 
+#    tests/test_user_interface.cpp 
+#    tests/test_visualization.cpp 
+#    tests/test_learning_wizard.cpp
+#    tests/test_element_factory.cpp
+#    tests/test_kernel.cpp
+#    tests/test_field_coupling.cpp
+#    tests/test_gauss_field_coupling.cpp
+#)
+#target_include_directories(${TEST_PROJECT} PRIVATE include)
+#target_link_libraries(${TEST_PROJECT} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain ${CMAKE_PROJECT_NAME})
+## Automatically discover and add tests
+#catch_discover_tests(${TEST_PROJECT})

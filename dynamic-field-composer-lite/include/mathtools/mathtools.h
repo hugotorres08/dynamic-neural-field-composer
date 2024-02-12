@@ -260,7 +260,7 @@ namespace dnf_composer
 
 		template <typename T>
 		T calculateVectorSum(const std::vector<T>& vec) {
-			T result;
+			T result = 0.0;
 			for (T value : vec) {
 				result += value;
 			}
