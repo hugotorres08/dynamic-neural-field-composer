@@ -14,7 +14,6 @@
 
 namespace FFTW_Convolution
 {
-
     typedef enum
     {
         LINEAR_FULL,
@@ -48,21 +47,14 @@ namespace FFTW_Convolution
         int* n_factors,
         int factors[],
         int* implemented_factors);
-    
     bool is_optimal(int n, int* implemented_factors);
-
     int find_closest_factor(int n, int* implemented_factor);
 
     void init_workspace(Workspace& ws, Convolution_Mode mode, int h_src, int w_src, int h_kernel, int w_kernel);
-
     void clear_workspace(Workspace& ws);
-
-
     // Compute the circular convolution of src and kernel modulo ws.h_fftw, ws.w_fftw
     // using the Fast Fourier Transform
     // The result is in ws.dst
     void fftw_circular_convolution(Workspace& ws, double* src, double* kernel);
-
     void convolve(Workspace& ws, double* src, double* kernel);
-
 }

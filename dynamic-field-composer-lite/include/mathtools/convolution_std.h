@@ -27,11 +27,7 @@ namespace STD_Convolution
     } Workspace;
 
     void init_workspace(Workspace& ws, Convolution_Mode mode, int h_src, int w_src, int h_kernel, int w_kernel);
-
     void clear_workspace(Workspace& ws);
-
     void update_workspace(Workspace& ws, Convolution_Mode mode, int h_src, int w_src, int h_kernel, int w_kernel);
-
     void convolve(Workspace& ws, double* src, double* kernel);
-
 }
