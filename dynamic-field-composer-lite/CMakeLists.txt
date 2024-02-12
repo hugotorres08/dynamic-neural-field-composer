@@ -80,6 +80,7 @@ set(mathtools_headers
     "include/mathtools/fftw3.h"
     "include/mathtools/convolution_std.h"
     "include/mathtools/convolution_fftw.h"
+    "include/mathtools/timer.h"
 )
 set(exceptions_headers
     "include/exceptions/exception.h"
@@ -139,6 +140,7 @@ set(src
     "src/mathtools/mathtools.cpp"
     "src/mathtools/convolution_std.cpp"
     "src/mathtools/convolution_fftw.cpp"
+    "src/mathtools/timer.cpp"
 
     "src/exceptions/exception.cpp"
     
@@ -187,9 +189,14 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json
 
 # Setup fftw3
 set(LIB_DIR "${CMAKE_CURRENT_BINARY_DIR}/${DNF_COMPOSER_LIB_PREFIX}")
-file(COPY ${CMAKE_SOURCE_DIR}/lib/libfftw3-3.dll DESTINATION ${LIB_DIR})
-link_directories(${CMAKE_SOURCE_DIR}/lib)
+file(COPY ${CMAKE_SOURCE_DIR}/lib/fftw/libfftw3-3.dll DESTINATION ${LIB_DIR})
+link_directories(${CMAKE_SOURCE_DIR}/lib/fftw)
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC "libfftw3-3.lib")
+
+# Setup profilling-tools
+#file(COPY ${CMAKE_SOURCE_DIR}/lib/profiling-tools/profilling-tools.lib DESTINATION ${LIB_DIR})
+#link_directories(${CMAKE_SOURCE_DIR}/lib/profiling-tools)
+#target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC "profilling-tools.lib")
 
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC

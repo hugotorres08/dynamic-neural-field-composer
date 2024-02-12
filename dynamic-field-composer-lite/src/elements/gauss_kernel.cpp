@@ -4,6 +4,8 @@
 
 #include "elements/gauss_kernel.h"
 
+#include "mathtools/timer.h"
+
 namespace dnf_composer
 {
 	namespace element
@@ -51,7 +53,7 @@ namespace dnf_composer
 
 		void GaussKernel::step(double t, double deltaT)
 		{
-
+			Timer timer{"convolution"};
 			updateInput();
 
 			fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
@@ -75,10 +77,10 @@ namespace dnf_composer
 
 			std::vector<double> convolution(workspace.dst, workspace.dst + workspace.h_dst * workspace.w_dst);
 
-			/*if (circular)
-				convolution = mathtools::conv_valid(subDataInput, components["kernel"]);
-			else
-				convolution = mathtools::conv(subDataInput, components["kernel"]);*/
+			//if (circular)
+			//	convolution = mathtools::conv_valid(subDataInput, components["kernel"]);
+			//else
+			//	convolution = mathtools::conv(subDataInput, components["kernel"]);
 
 			for (int i = 0; i < components["output"].size(); i++)
 				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
@@ -86,8 +88,6 @@ namespace dnf_composer
 
 			//STD_Convolution::clear_workspace(workspace);
 			FFTW_Convolution::clear_workspace(workspace);
-
-
 		}
 
 		void GaussKernel::close()
