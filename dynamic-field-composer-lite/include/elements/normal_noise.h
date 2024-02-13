@@ -1,7 +1,7 @@
 
 #pragma once
 
-#include "mathtools/mathtools.h"
+#include "tools/math.h"
 
 #include "element.h"
 

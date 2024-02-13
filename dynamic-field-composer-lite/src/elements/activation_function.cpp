@@ -16,7 +16,7 @@ namespace dnf_composer
 
 		std::vector<double> SigmoidFunction::operator()(const std::vector<double>& input)
 		{
-			return mathtools::sigmoid(input, steepness, x_shift);
+			return tools::sigmoid(input, steepness, x_shift);
 		}
 
 		std::unique_ptr<ActivationFunction> SigmoidFunction::clone() const 
@@ -42,7 +42,7 @@ namespace dnf_composer
 
 		std::vector<double> HeavisideFunction::operator()(const std::vector<double>& input)
 		{
-			return mathtools::heaviside(input, x_shift);
+			return tools::heaviside(input, x_shift);
 		}
 
 		std::unique_ptr<ActivationFunction> HeavisideFunction::clone() const 

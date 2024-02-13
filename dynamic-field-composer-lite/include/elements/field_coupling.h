@@ -2,7 +2,7 @@
 
 #include <set>
 
-#include "mathtools/mathtools.h"
+#include "tools/math.h"
 #include "element.h"
 #include "utilities/utilities.h"
 

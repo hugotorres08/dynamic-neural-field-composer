@@ -10,13 +10,12 @@ set(DNF_COMPOSER_VERSION_MAJOR 1 CACHE STRING "major version" FORCE)
 set(DNF_COMPOSER_VERSION_MINOR 0 CACHE STRING "minor version" FORCE)
 set(DNF_COMPOSER_VERSION ${DNF_COMPOSER_VERSION_MAJOR}.${DNF_COMPOSER_VERSION_MINOR} CACHE STRING "version" FORCE)
 
-set(DNF_COMPOSER_LIB_PREFIX "")
+
+message( ${CMAKE_BUILD_TYPE})
+
+set(DNF_COMPOSER_LIB_PREFIX "release")
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(DNF_COMPOSER_LIB_PREFIX "debug")
-endif()
-
-if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(DNF_COMPOSER_LIB_PREFIX "release")
 endif()
 
 set(DNF_COMPOSER_INC_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
@@ -75,12 +74,13 @@ set(elements_headers
     "include/elements/activation_function.h"
     "include/elements/element_parameters.h"
 )
-set(mathtools_headers
-    "include/mathtools/mathtools.h"
-    "include/mathtools/fftw3.h"
-    "include/mathtools/convolution_std.h"
-    "include/mathtools/convolution_fftw.h"
-    "include/mathtools/timer.h"
+set(tools_headers
+    "include/tools/math.h"
+    "include/tools/fftw3.h"
+    "include/tools/convolution_std.h"
+    "include/tools/convolution_fftw.h"
+    "include/tools/profiling.h"
+    "include/tools/utils.h"
 )
 set(exceptions_headers
     "include/exceptions/exception.h"
@@ -107,7 +107,7 @@ set(header
     ${simulation_headers}
     ${application_headers}
     ${elements_headers}
-    ${mathtools_headers}
+    ${tools_headers}
     ${exceptions_headers}
     ${user_interface_headers}
     ${user_interface_headers}
@@ -137,10 +137,10 @@ set(src
     "src/elements/activation_function.cpp"
     "src/elements/element_parameters.cpp"
     
-    "src/mathtools/mathtools.cpp"
-    "src/mathtools/convolution_std.cpp"
-    "src/mathtools/convolution_fftw.cpp"
-    "src/mathtools/timer.cpp"
+    "src/tools/math.cpp"
+    "src/tools/convolution_fftw.cpp"
+    "src/tools/profiling.cpp"
+    "src/tools/utils.cpp"
 
     "src/exceptions/exception.cpp"
     
@@ -193,12 +193,6 @@ file(COPY ${CMAKE_SOURCE_DIR}/lib/fftw/libfftw3-3.dll DESTINATION ${LIB_DIR})
 link_directories(${CMAKE_SOURCE_DIR}/lib/fftw)
 target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC "libfftw3-3.lib")
 
-# Setup profilling-tools
-#file(COPY ${CMAKE_SOURCE_DIR}/lib/profiling-tools/profilling-tools.lib DESTINATION ${LIB_DIR})
-#link_directories(${CMAKE_SOURCE_DIR}/lib/profiling-tools)
-#target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC "profilling-tools.lib")
-
-
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
     DNF_COMPOSER=1
     DNF_COMPOSER_VERSION_MAJOR=${DNF_COMPOSER_VERSION_MAJOR}
@@ -228,7 +222,7 @@ write_basic_package_version_file(${version_file}
 install(FILES ${simulation_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/simulation)
 install(FILES ${application_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/application)
 install(FILES ${elements_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/elements)
-install(FILES ${mathtools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/mathtools)
+install(FILES ${tools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/tools)
 install(FILES ${exceptions_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/exceptions)
 install(FILES ${user_interface_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/user_interface)
 install(FILES ${architecture_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/architecture)
@@ -268,6 +262,12 @@ add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} "examples/run_sim_read_
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
+
+# Add executable example project run_convolution_test
+set(EXE_PROJECT_EXAMPLE_RUN_CONVO_TEST ${CMAKE_PROJECT_NAME}-example-run_convolution_test)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_CONVO_TEST} "examples/run_convolution_test.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_CONVO_TEST} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_CONVO_TEST} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 ## Setup Catch2
 #enable_testing()

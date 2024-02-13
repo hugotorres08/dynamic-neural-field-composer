@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../mathtools/mathtools.h"
+#include "../tools/math.h"
 
 namespace dnf_composer
 {

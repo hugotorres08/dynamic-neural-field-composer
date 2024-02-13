@@ -10,3 +10,4 @@
 #include "elements/field_coupling.h"
 #include "wizards/learning_wizard.h"
 #include "simulation/simulation_file_manager.h"
+#include "user_interface/centroid_monitoring_window.h"

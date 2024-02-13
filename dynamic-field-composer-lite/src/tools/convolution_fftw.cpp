@@ -1,4 +1,6 @@
-#include "./mathtools/convolution_fftw.h"
+#include "./tools/convolution_fftw.h"
+
+#include "tools/profiling.h"
 
 namespace FFTW_Convolution
 {
@@ -133,6 +135,7 @@ namespace FFTW_Convolution
             ws.w_dst = w_src;
             break;
         case LINEAR_VALID:
+	        
             // Valid Linear convolution
             if (ws.h_kernel > ws.h_src || ws.w_kernel > ws.w_src)
             {
@@ -149,6 +152,7 @@ namespace FFTW_Convolution
                 ws.h_dst = h_src - h_kernel + 1;
                 ws.w_dst = w_src - w_kernel + 1;
             }
+	        
             break;
         case CIRCULAR_SAME:
             ws.h_dst = h_src;
@@ -311,12 +315,16 @@ namespace FFTW_Convolution
                 break;
         */
         case LINEAR_VALID:
-            // Valid linear convolution
-            // Here we just take [h_dst x w_dst] elements starting at [h_kernel-1;w_kernel-1]
-            h_offset = ws.h_kernel - 1;
-            w_offset = ws.w_kernel - 1;
-            for (int i = 0; i < ws.h_dst; ++i)
-                memcpy(&ws.dst[i * ws.w_dst], &ws.dst_fft[(i + h_offset) * ws.w_fftw + w_offset], ws.w_dst * sizeof(double));
+	        {
+	            tools::Timer timer{ "fft using fftw lib - jeremyfix on GitHub" };
+
+	            // Valid linear convolution
+	            // Here we just take [h_dst x w_dst] elements starting at [h_kernel-1;w_kernel-1]
+	            h_offset = ws.h_kernel - 1;
+	            w_offset = ws.w_kernel - 1;
+	            for (int i = 0; i < ws.h_dst; ++i)
+	                memcpy(&ws.dst[i * ws.w_dst], &ws.dst_fft[(i + h_offset) * ws.w_fftw + w_offset], ws.w_dst * sizeof(double));
+	        }
             break;
         case CIRCULAR_SAME:
         case CIRCULAR_FULL:

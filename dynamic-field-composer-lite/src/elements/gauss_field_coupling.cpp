@@ -65,7 +65,7 @@ namespace dnf_composer
 				const auto activationAtx_i = components["input"][static_cast<int>(coupling.x_i)];
 				if (activationAtx_i > 0.0)
 				{
-					std::vector<double> gauss = mathtools::circularGauss(commonParameters.dimensionParameters.size, parameters.sigma, coupling.x_j);
+					std::vector<double> gauss = tools::circularGauss(commonParameters.dimensionParameters.size, parameters.sigma, coupling.x_j);
 					for (auto& element : gauss)
 						element *= coupling.w_i_j * activationAtx_i * element;
 

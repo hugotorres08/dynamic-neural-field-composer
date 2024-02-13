@@ -1,7 +1,7 @@
 #pragma once
 
 #include "element.h"
-#include "mathtools/mathtools.h"
+#include "tools/math.h"
 
 
 namespace dnf_composer

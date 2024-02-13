@@ -98,7 +98,7 @@ namespace dnf_composer
 
 		void NeuralField::calculateCentroid()
 		{
-			const std::vector<double> f_output = mathtools::heaviside(components["activation"], 0.1);
+			const std::vector<double> f_output = tools::heaviside(components["activation"], 0.1);
 
 			if (*std::ranges::max_element(f_output) > 0)
 			{
@@ -139,9 +139,9 @@ namespace dnf_composer
 		void NeuralField::checkStability()
 		{
 			static constexpr double threshold = 0.15; //ideally this threshold should be a calculation?
-			const double currentActivationSum = mathtools::calculateVectorSum(components["activation"]);
-			const double currentActivationAvg = mathtools::calculateVectorAvg(components["activation"]);
-			const double currentActivationNorm = mathtools::calculateVectorNorm(components["activation"]);
+			const double currentActivationSum = tools::calculateVectorSum(components["activation"]);
+			const double currentActivationAvg = tools::calculateVectorAvg(components["activation"]);
+			const double currentActivationNorm = tools::calculateVectorNorm(components["activation"]);
 
 			// this function is done like this, instead of comparing to a previously saved vector of activation,
 			// because it is simply faster and takes up less memory.

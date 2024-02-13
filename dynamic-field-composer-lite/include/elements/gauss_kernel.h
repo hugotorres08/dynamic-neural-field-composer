@@ -2,10 +2,10 @@
 
 #include <array>
 
-#include "mathtools/mathtools.h"
+#include "tools/math.h"
 #include "kernel.h"
-#include "mathtools/convolution_std.h"
-#include "mathtools/convolution_fftw.h"
+#include "tools/convolution_std.h"
+#include "tools/convolution_fftw.h"
 
 
 namespace dnf_composer
