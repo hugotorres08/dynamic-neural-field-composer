@@ -1,24 +1,23 @@
 #pragma once
 
-#include "tools/math.h"
-#include <vector>
-#include <string>
-#include <array>
 
 #include "kernel.h"
+#include "mexican_hat_kernel.h"
 
 namespace dnf_composer
 {
 	namespace element
 	{
-		struct MexicanHatKernelParameters
+		struct LateralInteractionsParameters
 		{
 			double sigmaExc;
 			double amplitudeExc;
 			double sigmaInh;
 			double amplitudeInh;
+			double amplitudeGlobal;
 
-			bool operator==(const MexicanHatKernelParameters& other) const
+
+			bool operator==(const LateralInteractionsParameters& other) const
 			{
 				constexpr double epsilon = 1e-6;
 
@@ -29,12 +28,12 @@ namespace dnf_composer
 			}
 		};
 
-		class MexicanHatKernel : public Kernel
+		class LateralInteractions : public Kernel
 		{
 		private:
-			MexicanHatKernelParameters parameters;
+			LateralInteractionsParameters parameters;
 		public:
-			MexicanHatKernel(const ElementCommonParameters& elementCommonParameters, const MexicanHatKernelParameters& mhk_parameters);
+			LateralInteractions(const ElementCommonParameters& elementCommonParameters, const LateralInteractionsParameters& li_parameters);
 
 			void init() override;
 			void step(double t, double deltaT) override;
@@ -42,10 +41,10 @@ namespace dnf_composer
 
 			void printParameters() override;
 
-			void setParameters(const MexicanHatKernelParameters& mhk_parameters);
-			MexicanHatKernelParameters getParameters() const;
+			void setParameters(const LateralInteractionsParameters& li_parameters);
+			LateralInteractionsParameters getParameters() const;
 
-			~MexicanHatKernel() override = default;
+			~LateralInteractions() override = default;
 		};
 	}
 }

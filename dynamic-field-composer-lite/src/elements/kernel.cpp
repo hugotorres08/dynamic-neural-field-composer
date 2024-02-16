@@ -12,11 +12,11 @@ namespace dnf_composer
 			: Element(elementCommonParameters)
 
 		{
-			circular = true;
-			normalized = false;
+			circular = true; // default is true
+			normalized = true; // default is true
 			kernelRange = { 0, 0 };
 			fullSum = 0.0;
-			cutOfFactor = 5;
+			cutOfFactor = 5; // do not change this
 			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size);
 		}
 

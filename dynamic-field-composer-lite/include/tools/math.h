@@ -89,6 +89,17 @@ namespace tools
 		}
 
 		template<typename T>
+		std::vector<T> gauss(const std::vector<int>& rangeX, const T& position, const T& sigma)
+		{
+			std::vector<T> g(rangeX.size());
+
+			for (int i = 0; i < g.size(); i++)
+				g[i] = exp(-0.5 * pow((rangeX[i] - position), 2) / pow(sigma, 2));
+
+			return g;
+		}
+
+		template<typename T>
 		std::vector<T> gauss(int size, const T& sigma, const T& position)
 		{
 			std::vector<T> g(size);

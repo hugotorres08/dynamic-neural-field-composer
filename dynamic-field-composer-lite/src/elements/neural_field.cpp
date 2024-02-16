@@ -134,6 +134,7 @@ namespace dnf_composer
 			}
 			else
 				state.centroid = -1.0;
+			state.centroid += 1;
 		}
 
 		void NeuralField::checkStability()

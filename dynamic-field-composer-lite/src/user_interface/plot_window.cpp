@@ -136,14 +136,12 @@ namespace dnf_composer
 						std::string label = parameters.visualization->getPlottingLabel(j);
 						std::vector<double> data = *parameters.visualization->getPlottingData(j);
 
-						// Shift x-values by 1 unit
+						// Shift x-values by 1 unit and scale
 						std::vector<double> shiftedXValues(data.size());
-						for (size_t i = 0; i < data.size(); ++i) {
-							shiftedXValues[i] = i + 1;
-						}
+						for (int i = 0; i < data.size(); ++i) 
+							shiftedXValues[i] = (i + 1) * parameters.dimensions.dx;
 
 						ImPlot::PlotLine(label.c_str(), shiftedXValues.data(), data.data(), static_cast<int>(data.size()));
-
 					}
 
 				}

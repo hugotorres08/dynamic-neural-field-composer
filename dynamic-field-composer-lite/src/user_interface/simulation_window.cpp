@@ -335,12 +335,10 @@ namespace dnf_composer
 			ImGui::InputDouble("sigmaInh", &sigmaInh, 1.0f, 10.0f, "%.2f");
 			static double amplitudeInh = 15;
 			ImGui::InputDouble("amplitudeInh", &amplitudeInh, 1.0f, 10.0f, "%.2f");
-			static double amplitudeGlobal = 0;
-			ImGui::InputDouble("global amplitude", &amplitudeGlobal, 1.0f, 10.0f, "%.2f");
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
-				const element::MexicanHatKernelParameters mhkp = { sigmaExc, amplitudeExc, sigmaInh, amplitudeInh, amplitudeGlobal };
+				const element::MexicanHatKernelParameters mhkp = { sigmaExc, amplitudeExc, sigmaInh, amplitudeInh };
 				const element::ElementSpatialDimensionParameters dimensions{ x_max, d_x };
 				const std::shared_ptr<element::MexicanHatKernel> mexicanHatKernel(new element::MexicanHatKernel({ id, dimensions }, mhkp));
 				simulation->addElement(mexicanHatKernel);

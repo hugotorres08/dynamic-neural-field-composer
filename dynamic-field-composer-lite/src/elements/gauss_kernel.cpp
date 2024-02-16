@@ -26,23 +26,17 @@ namespace dnf_composer
 			if (circular)
 				extIndex = tools::math::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
 			else
-			{
-				const std::string message = "Tried to initialize a non-circular Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.\n";
-				log(LogLevel::ERROR, message);
-			}
+				extIndex = {};
 
 			int rangeXsize = kernelRange[0] + kernelRange[1] + 1;
 			std::vector<int> rangeX(rangeXsize);
 			const int startingValue = static_cast<int>(kernelRange[0]);
 			std::iota(rangeX.begin(), rangeX.end(), -startingValue);
 			std::vector<double> gauss(commonParameters.dimensionParameters.size);
-			if (!normalized)
+			if (normalized)
 				gauss = tools::math::gaussNorm(rangeX, 0.0, parameters.sigma);
 			else
-			{
-				const std::string message = "Tried to initialize a normalized Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.\n";
-				log(LogLevel::ERROR, message);
-			}
+				gauss = tools::math::gauss(rangeX, 0.0, parameters.sigma);
 
 			components["kernel"].resize(rangeX.size());
 			for (int i = 0; i < components["kernel"].size(); i++)
@@ -66,11 +60,12 @@ namespace dnf_composer
 			if (circular)
 				convolution = tools::math::conv_valid(subDataInput, components["kernel"]);
 			else
-				convolution = tools::math::conv(subDataInput, components["kernel"]);
+				convolution = tools::math::conv(components["input"], components["kernel"]);
 
+			/*for (int i = 0; i < components["output"].size(); i++)
+				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;*/
 			for (int i = 0; i < components["output"].size(); i++)
-				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
-			//commonParameters.dimensionParameters.d_x;
+				components["output"][i] = convolution[i];
 		}
 
 		void GaussKernel::close()
@@ -85,7 +80,6 @@ namespace dnf_composer
 
 			logStream << "Logging specific element parameters" << std::endl;
 			logStream << "Amplitude: " << parameters.amplitude << std::endl;
-			logStream << "Amplitude Global: " << parameters.amplitudeGlobal << std::endl;
 			logStream << "Sigma: " << parameters.sigma << std::endl;
 			logStream << "Cut-Off Factor: " << cutOfFactor << std::endl;
 			logStream << "Circular: " << circular << std::endl;

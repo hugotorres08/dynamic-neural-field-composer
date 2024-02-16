@@ -63,8 +63,7 @@
         "x_max": 50
     },
     {
-        "amplitude": 25.0,
-        "amplitudeGlobal": -0.1,
+        "amplitude": 5.0,
         "d_x": 1.0,
         "inputs": [
             [
@@ -82,7 +81,6 @@
     },
     {
         "amplitudeExc": 10.0,
-        "amplitudeGlobal": -0.05,
         "amplitudeInh": 5.0,
         "d_x": 0.5,
         "inputs": [
@@ -143,7 +141,6 @@
     },
     {
         "amplitude": 0.2,
-        "amplitudeGlobal": 0.0,
         "d_x": 1.0,
         "inputs": [
             [
@@ -161,7 +158,6 @@
     },
     {
         "amplitude": 0.2,
-        "amplitudeGlobal": 0.0,
         "d_x": 0.5,
         "inputs": [
             [
@@ -178,7 +174,7 @@
         "x_max": 50
     },
     {
-        "amplitude": 10.0,
+        "amplitude": 5.0,
         "circular": true,
         "d_x": 1.0,
         "inputs": null,

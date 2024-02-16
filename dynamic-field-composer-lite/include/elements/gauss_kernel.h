@@ -16,15 +16,13 @@ namespace dnf_composer
 		{
 			double sigma = 5.0;
 			double amplitude = 10.0;
-			double amplitudeGlobal = 0.0;
 			
 			bool operator==(const GaussKernelParameters& other) const {
 				constexpr double epsilon = 1e-6; // Set an appropriate epsilon value
 
 				// Compare floating-point values with tolerance (epsilon)
 				return std::abs(sigma - other.sigma) < epsilon &&
-					std::abs(amplitude - other.amplitude) < epsilon &&
-					std::abs(amplitudeGlobal - other.amplitudeGlobal) < epsilon;
+					std::abs(amplitude - other.amplitude) < epsilon;
 			}
 		};
 

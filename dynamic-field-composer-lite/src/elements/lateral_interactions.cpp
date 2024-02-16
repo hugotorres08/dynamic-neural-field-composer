@@ -2,19 +2,20 @@
 
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
-#include "elements/mexican_hat_kernel.h"
+
+#include "elements/lateral_interactions.h"
 
 namespace dnf_composer
 {
 	namespace element
 	{
-		MexicanHatKernel::MexicanHatKernel(const ElementCommonParameters& elementCommonParameters, const MexicanHatKernelParameters& mhk_parameters)
-			: Kernel(elementCommonParameters), parameters(mhk_parameters)
+		LateralInteractions::LateralInteractions(const ElementCommonParameters& elementCommonParameters, const LateralInteractionsParameters& li_parameters)
+			: Kernel(elementCommonParameters), parameters(li_parameters)
 		{
-			commonParameters.identifiers.label = ElementLabel::MEXICAN_HAT_KERNEL;
+			commonParameters.identifiers.label = ElementLabel::LATERAL_INTERACTIONS;
 		}
 
-		void MexicanHatKernel::init()
+		void LateralInteractions::init()
 		{
 			const double maxSigma = std::max((parameters.amplitudeExc != 0.0) ? parameters.sigmaExc : 0,
 				(parameters.amplitudeInh != 0.0) ? parameters.sigmaInh : 0);
@@ -48,12 +49,15 @@ namespace dnf_composer
 			for (int i = 0; i < components["kernel"].size(); i++)
 				components["kernel"][i] = parameters.amplitudeExc * gaussExc[i] - parameters.amplitudeInh * gaussInh[i];
 
+			fullSum = 0;
 			std::ranges::fill(components["input"], 0.0);
 		}
 
-		void MexicanHatKernel::step(double t, double deltaT)
+		void LateralInteractions::step(double t, double deltaT)
 		{
 			updateInput();
+
+			fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
 
 			std::vector<double> convolution(commonParameters.dimensionParameters.size);
 			const std::vector<double> subDataInput = tools::math::obtainCircularVector(extIndex, components["input"]);
@@ -64,14 +68,14 @@ namespace dnf_composer
 				convolution = tools::math::conv(components["input"], components["kernel"]);
 
 			for (int i = 0; i < components["output"].size(); i++)
-				components["output"][i] = convolution[i];
+				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
 		}
 
-		void MexicanHatKernel::close()
+		void LateralInteractions::close()
 		{
 		}
 
-		void MexicanHatKernel::printParameters()
+		void LateralInteractions::printParameters()
 		{
 			printCommonParameters();
 
@@ -82,19 +86,20 @@ namespace dnf_composer
 			logStream << "SigmaExc: " << parameters.sigmaExc << std::endl;
 			logStream << "AmplitudeInh: " << parameters.amplitudeInh << std::endl;
 			logStream << "SigmaInh: " << parameters.sigmaInh << std::endl;
+			logStream << "AmplitudeGlobal: " << parameters.amplitudeGlobal << std::endl;
 			logStream << "CutOffFactor: " << cutOfFactor << std::endl;
 			logStream << "Normalized: " << normalized << std::endl;
 
 			log(LogLevel::INFO, logStream.str());
 		}
 
-		void MexicanHatKernel::setParameters(const MexicanHatKernelParameters& mhk_parameters)
+		void LateralInteractions::setParameters(const LateralInteractionsParameters& li_parameters)
 		{
-			parameters = mhk_parameters;
+			parameters = li_parameters;
 			init();
 		}
 
-		MexicanHatKernelParameters MexicanHatKernel::getParameters() const
+		LateralInteractionsParameters LateralInteractions::getParameters() const
 		{
 			return parameters;
 		}

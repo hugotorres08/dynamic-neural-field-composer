@@ -31,9 +31,8 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 
 	// create interactions and add them to the simulation
 	dnf_composer::element::GaussKernelParameters gkp1;
-	gkp1.amplitude = 25;
+	gkp1.amplitude = 5;
 	gkp1.sigma = 5;
-	gkp1.amplitudeGlobal = -0.1;
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_in_in(new dnf_composer::element::GaussKernel({ "in - in", inputFieldSpatialDimensionParameters }, gkp1));
 	simulation->addElement(k_in_in);
 
@@ -42,8 +41,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	gkp2.amplitudeInh = 5;
 	gkp2.sigmaExc = 15;
 	gkp2.sigmaInh = 10;
-	gkp2.amplitudeGlobal = -0.05;
-	const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_out_out(new dnf_composer::element::MexicanHatKernel({ "out - out", outputFieldSpatialDimensionParameters }, gkp2)); // self-excitation v-v
+	const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_out_out(new dnf_composer::element::MexicanHatKernel({ "out - out", outputFieldSpatialDimensionParameters }, gkp2));
 	simulation->addElement(k_out_out);
 
 	dnf_composer::element::FieldCouplingParameters fcp;
@@ -62,10 +60,11 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	const std::shared_ptr<dnf_composer::element::GaussKernel> noise_kernel_out(new dnf_composer::element::GaussKernel({ "noise kernel out", outputFieldSpatialDimensionParameters }, { 0.25, 0.2 }));
 
 	// add two gaussian stimulus
-	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus_in(new dnf_composer::element::GaussStimulus({ "stimulus in", inputFieldSpatialDimensionParameters }, { 5, 10, 50}));
+	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus_in(new dnf_composer::element::GaussStimulus({ "stimulus in", inputFieldSpatialDimensionParameters }, { 5, 5, 50}));
 	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus_out(new dnf_composer::element::GaussStimulus({ "stimulus out", outputFieldSpatialDimensionParameters }, { 5, 10, 25 }));
 
 
+	// define the interactions between the elements
 	simulation->addElement(noise_in);
 	simulation->addElement(noise_out);
 	simulation->addElement(noise_kernel_in);
@@ -73,7 +72,6 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	simulation->addElement(gauss_stimulus_in);
 	simulation->addElement(gauss_stimulus_out);
 
-	// define the interactions between the elements
 	input_field->addInput(k_in_in); // self-excitation
 	input_field->addInput(noise_kernel_in); // noise
 	input_field->addInput(gauss_stimulus_in);
@@ -91,7 +89,6 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	noise_kernel_in->addInput(noise_in);
 	noise_kernel_out->addInput(noise_out);
 
-	
 
 	return simulation;
 }
@@ -101,7 +98,7 @@ int main(int argc, char* argv[])
 {
 	// After defining the simulation, we can create the application.
 	//const auto simulation = getExperimentSimulation();
-	const auto simulation = std::make_shared<dnf_composer::Simulation>("run_sim_read_write",5, 0, 0);
+	const auto simulation = std::make_shared<dnf_composer::Simulation>("run sim read write to json",5, 0, 0);
 
 	// Create a simulation file manager to read and write simulations from .json files
 	const dnf_composer::SimulationFileManager sfm{ simulation };

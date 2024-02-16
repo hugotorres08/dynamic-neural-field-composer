@@ -19,7 +19,8 @@ namespace dnf_composer
 			MEXICAN_HAT_KERNEL,
 			NORMAL_NOISE,
 			FIELD_COUPLING,
-			GAUSS_FIELD_COUPLING
+			GAUSS_FIELD_COUPLING,
+			LATERAL_INTERACTIONS
 		};
 
 		inline const std::map<ElementLabel, std::string> ElementLabelToString = {
@@ -30,6 +31,7 @@ namespace dnf_composer
 			{GAUSS_KERNEL, "gauss kernel" },
 			{MEXICAN_HAT_KERNEL, "mexican hat kernel" },
 			{NORMAL_NOISE, "normal noise" },
+			{LATERAL_INTERACTIONS, "lateral interactions" },
 		};
 
 		struct ElementSpatialDimensionParameters

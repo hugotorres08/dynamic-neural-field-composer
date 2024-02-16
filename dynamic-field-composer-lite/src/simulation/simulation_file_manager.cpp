@@ -138,7 +138,6 @@ namespace dnf_composer
             const auto kernelParameters = kernel->getParameters();
             elementJson["sigma"] = kernelParameters.sigma;
             elementJson["amplitude"] = kernelParameters.amplitude;
-            elementJson["amplitudeGlobal"] = kernelParameters.amplitudeGlobal;
         }
         break;
         case element::MEXICAN_HAT_KERNEL:
@@ -149,7 +148,6 @@ namespace dnf_composer
             elementJson["amplitudeExc"] = kernelParameters.amplitudeExc;
             elementJson["sigmaInh"] = kernelParameters.sigmaInh;
             elementJson["amplitudeInh"] = kernelParameters.amplitudeInh;
-            elementJson["amplitudeGlobal"] = kernelParameters.amplitudeGlobal;
         }
         break;
         case element::NORMAL_NOISE:
@@ -249,11 +247,10 @@ namespace dnf_composer
             {
                 const double amplitude = elementJson["amplitude"];
                 const double sigma = elementJson["sigma"];
-                const double amplitudeGlobal = elementJson["amplitudeGlobal"];
 
                 auto kernel = std::make_shared<element::GaussKernel>(
                     element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::GaussKernelParameters(sigma, amplitude, amplitudeGlobal)
+                    element::GaussKernelParameters(sigma, amplitude)
                 );
                 simulation->addElement(kernel);
             }
@@ -264,11 +261,10 @@ namespace dnf_composer
                 const double sigmaExc = elementJson["sigmaExc"];
                 const double amplitudeInh = elementJson["amplitudeInh"];
                 const double sigmaInh = elementJson["sigmaInh"];
-                const double amplitudeGlobal = elementJson["amplitudeGlobal"];
 
                 auto kernel = std::make_shared<element::MexicanHatKernel>(
                     element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::MexicanHatKernelParameters(sigmaExc, amplitudeExc, sigmaInh, amplitudeInh, amplitudeGlobal)
+                    element::MexicanHatKernelParameters(sigmaExc, amplitudeExc, sigmaInh, amplitudeInh)
                 );
                 simulation->addElement(kernel);
             }

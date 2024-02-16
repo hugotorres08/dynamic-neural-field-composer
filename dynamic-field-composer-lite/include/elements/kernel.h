@@ -10,12 +10,12 @@ namespace dnf_composer
 		class Kernel : public Element
 		{
 		protected:
-			bool circular;
-			bool normalized;
+			bool circular; // default is true
+			bool normalized;  // default is true
 			std::array<int, 2> kernelRange;
 			std::vector<int> extIndex;
 			double fullSum = 0.0;
-			int cutOfFactor = 5;
+			int cutOfFactor = 5; // do not change this
 		public:
 			Kernel(const ElementCommonParameters& elementCommonParameters);
 			~Kernel() override = default;
