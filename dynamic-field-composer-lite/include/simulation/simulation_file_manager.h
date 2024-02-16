@@ -9,6 +9,9 @@
 #include "elements/gauss_kernel.h"
 #include "elements/mexican_hat_kernel.h"
 #include "elements/normal_noise.h"
+#include "elements/field_coupling.h"
+#include "elements/gauss_stimulus.h"
+#include "elements/lateral_interactions.h"
 
 namespace dnf_composer
 {

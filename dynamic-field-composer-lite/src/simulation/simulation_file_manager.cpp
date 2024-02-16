@@ -1,7 +1,6 @@
 #include "./simulation/simulation_file_manager.h"
 
-#include "elements/field_coupling.h"
-#include "elements/gauss_stimulus.h"
+
 
 
 namespace dnf_composer
@@ -150,6 +149,17 @@ namespace dnf_composer
             elementJson["amplitudeInh"] = kernelParameters.amplitudeInh;
         }
         break;
+        case element::LATERAL_INTERACTIONS:
+        {
+            const auto kernel = std::dynamic_pointer_cast<element::LateralInteractions>(element);
+            const auto kernelParameters = kernel->getParameters();
+            elementJson["sigmaExc"] = kernelParameters.sigmaExc;
+            elementJson["amplitudeExc"] = kernelParameters.amplitudeExc;
+            elementJson["sigmaInh"] = kernelParameters.sigmaInh;
+            elementJson["amplitudeInh"] = kernelParameters.amplitudeInh;
+            elementJson["amplitudeGlobal"] = kernelParameters.amplitudeGlobal;
+        }
+        break;
         case element::NORMAL_NOISE:
         {
             const auto normalNoise = std::dynamic_pointer_cast<element::NormalNoise>(element);
@@ -265,6 +275,21 @@ namespace dnf_composer
                 auto kernel = std::make_shared<element::MexicanHatKernel>(
                     element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
                     element::MexicanHatKernelParameters(sigmaExc, amplitudeExc, sigmaInh, amplitudeInh)
+                );
+                simulation->addElement(kernel);
+            }
+            break;
+            case element::LATERAL_INTERACTIONS:
+            {
+                const double amplitudeExc = elementJson["amplitudeExc"];
+                const double sigmaExc = elementJson["sigmaExc"];
+                const double amplitudeInh = elementJson["amplitudeInh"];
+                const double sigmaInh = elementJson["sigmaInh"];
+                const double amplitudeGlobal = elementJson["amplitudeGlobal"];
+
+                auto kernel = std::make_shared<element::LateralInteractions>(
+                    element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
+                    element::LateralInteractionsParameters(sigmaExc, amplitudeExc, sigmaInh, amplitudeInh, amplitudeGlobal)
                 );
                 simulation->addElement(kernel);
             }

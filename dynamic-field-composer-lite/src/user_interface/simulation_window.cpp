@@ -150,6 +150,9 @@ namespace dnf_composer
 				case element::ElementLabel::GAUSS_FIELD_COUPLING:
 					addElementGaussFieldCoupling();
 					break;
+				case element::ElementLabel::LATERAL_INTERACTIONS:
+					addElementLateralInteractions();
+					break;
 				default:
 					log(LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.\n");
 					break;
@@ -290,11 +293,12 @@ namespace dnf_composer
 
 		void SimulationWindow::addElementFieldCoupling() const
 		{
+			log(LogLevel::ERROR, "This is still not done, I'm sorry! :(.\n");
 		}
 
 		void SimulationWindow::addElementGaussFieldCoupling() const
 		{
-			
+			log(LogLevel::ERROR, "This is still not done, I'm sorry! :(.\n");
 		}
 
 		void SimulationWindow::addElementGaussKernel() const
@@ -342,6 +346,34 @@ namespace dnf_composer
 				const element::ElementSpatialDimensionParameters dimensions{ x_max, d_x };
 				const std::shared_ptr<element::MexicanHatKernel> mexicanHatKernel(new element::MexicanHatKernel({ id, dimensions }, mhkp));
 				simulation->addElement(mexicanHatKernel);
+			}
+		}
+
+		void SimulationWindow::addElementLateralInteractions() const
+		{
+			static char id[CHAR_SIZE] = "lateral interactions u -> u";
+			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
+			static int x_max = 100;
+			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
+			static double d_x = 0.1;
+			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
+			static double sigmaExc = 5;
+			ImGui::InputDouble("sigmaExc", &sigmaExc, 1.0f, 10.0f, "%.2f");
+			static double amplitudeExc = 15;
+			ImGui::InputDouble("amplitudeExc", &amplitudeExc, 1.0f, 10.0f, "%.2f");
+			static double sigmaInh = 10;
+			ImGui::InputDouble("sigmaInh", &sigmaInh, 1.0f, 10.0f, "%.2f");
+			static double amplitudeInh = 15;
+			ImGui::InputDouble("amplitudeInh", &amplitudeInh, 1.0f, 10.0f, "%.2f");
+			static double amplitudeGlobal = -0.1;
+			ImGui::InputDouble("amplitudeGlobal", &amplitudeGlobal, -1.0f, -10.0f, "%.2f");
+
+			if (ImGui::Button("Add", { 100.0f, 30.0f }))
+			{
+				const element::LateralInteractionsParameters lip = { sigmaExc, amplitudeExc, sigmaInh, amplitudeInh , amplitudeGlobal};
+				const element::ElementSpatialDimensionParameters dimensions{ x_max, d_x };
+				const std::shared_ptr<element::LateralInteractions> lateralInteractions(new element::LateralInteractions({ id, dimensions }, lip));
+				simulation->addElement(lateralInteractions);
 			}
 		}
 

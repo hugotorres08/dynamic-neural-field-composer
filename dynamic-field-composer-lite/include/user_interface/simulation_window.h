@@ -1,12 +1,11 @@
-
+﻿
 #pragma once
 
 #include "./user_interface/user_interface_window.h"
 #include "wizards/learning_wizard.h"
-
-
 #include "./elements/element_factory.h"
 #include "simulation/simulation.h"
+#include "elements/lateral_interactions.h"
 
 namespace dnf_composer
 {
@@ -36,6 +35,15 @@ namespace dnf_composer
 			void renderExportElementComponents() const;
 
 			// unfortunately, these functions need to be here like this
+			//                .=-.-.   _ __    
+			//    .-.,.---.  /==/_ /.-`.' ,`.  
+			//   /==/  `   \|==|, |/==/, -   \ 
+			//  |==|-, .=., |==|  |==| _ .=. | 
+			//  |==|   '='  /==|- |==| , '=',| 
+			//  |==|- ,   .'|==| ,|==|-  '..'  
+			//  |==|_  . ,'.|==|- |==|,  |     
+			//  /==/  /\ ,  )==/. /==/ - |     
+			//  `--`-`--`--'`--`-``--`---'     
 			void addElementNeuralField() const;
 			void addElementGaussStimulus() const;
 			void addElementFieldCoupling() const;
@@ -43,6 +51,7 @@ namespace dnf_composer
 			void addElementMexicanHatKernel() const;
 			void addElementNormalNoise() const;
 			void addElementGaussFieldCoupling() const;
+			void addElementLateralInteractions() const;
 		};
 	}
 }
