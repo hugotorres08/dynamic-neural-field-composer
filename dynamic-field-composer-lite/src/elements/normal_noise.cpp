@@ -21,7 +21,7 @@ namespace dnf_composer
 
 		void NormalNoise::step(double t, double deltaT)
 		{
-			const std::vector<double> rand = tools::generateNormalVector(commonParameters.dimensionParameters.size);
+			const std::vector<double> rand = tools::math::generateNormalVector(commonParameters.dimensionParameters.size);
 
 			for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
 				components["output"][i] = parameters.amplitude / sqrt(deltaT) * rand[i];

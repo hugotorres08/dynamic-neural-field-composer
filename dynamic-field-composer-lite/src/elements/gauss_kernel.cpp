@@ -4,7 +4,9 @@
 
 #include "elements/gauss_kernel.h"
 
+#include "tools/convlv.h"
 #include "tools/profiling.h"
+
 
 namespace dnf_composer
 {
@@ -19,10 +21,10 @@ namespace dnf_composer
 
 		void GaussKernel::init()
 		{
-			kernelRange = tools::computeKernelRange(parameters.sigma, cutOfFactor, commonParameters.dimensionParameters.size, circular);
+			kernelRange = tools::math::computeKernelRange(parameters.sigma, cutOfFactor, commonParameters.dimensionParameters.size, circular);
 
 			if (circular)
-				extIndex = tools::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
+				extIndex = tools::math::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
 			else
 			{
 				const std::string message = "Tried to initialize a non-circular Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.\n";
@@ -35,7 +37,7 @@ namespace dnf_composer
 			std::iota(rangeX.begin(), rangeX.end(), -startingValue);
 			std::vector<double> gauss(commonParameters.dimensionParameters.size);
 			if (!normalized)
-				gauss = tools::gaussNorm(rangeX, 0.0, parameters.sigma);
+				gauss = tools::math::gaussNorm(rangeX, 0.0, parameters.sigma);
 			else
 			{
 				const std::string message = "Tried to initialize a normalized Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.\n";
@@ -57,65 +59,18 @@ namespace dnf_composer
 
 			fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
 
-			std::vector<double> subDataInput = tools::obtainCircularVector(extIndex, components["input"]);
-
-			{
-				std::vector<double> convolution(commonParameters.dimensionParameters.size);
-
-				//convolution = STD_Convolution::conv_linear_full(subDataInput, components["kernel"]);
-				//convolution = STD_Convolution::conv_linear_same(subDataInput, components["kernel"]);
-				//convolution = STD_Convolution::conv_linear_valid(subDataInput, components["kernel"]);
-				//convolution = STD_Convolution::conv_circular_same(subDataInput, components["kernel"]);
-				convolution = STD_Convolution::conv_circular_full(subDataInput, components["kernel"]);
+			std::vector<double> convolution(commonParameters.dimensionParameters.size);
+			const std::vector<double> subDataInput = tools::math::obtainCircularVector(extIndex, components["input"]);
 
 
-				for (int i = 0; i < components["output"].size(); i++)
-					components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
-			}
+			if (circular)
+				convolution = tools::math::conv_valid(subDataInput, components["kernel"]);
+			else
+				convolution = tools::math::conv(subDataInput, components["kernel"]);
 
-
-
-			// testing three types of convolutions
-			// testing linear valid mode
-			// testing different kernel sizes 10, 100, 1000, 10000
-			// 1 - nested for loops - stack overflow
-			// 2 - nested for loops - jeremyfix on GitHub
-			// 3 - fft using fftw lib - jeremyfix on GitHub
-
-			const std::string testCase = "nested for loops - jeremyfix on GitHub";
-
-			//if(testCase == "nested for loops - stack overflow")
-			//{
-			//	std::vector<double> convolution(commonParameters.dimensionParameters.size);
-			//	if (circular)
-			//		convolution = tools::conv_valid(subDataInput, components["kernel"]);
-			//	else
-			//		convolution = tools::conv(subDataInput, components["kernel"]);
-
-			//	for (int i = 0; i < components["output"].size(); i++)
-			//		components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
-			//}
-
-			//if (testCase == "fft using fftw lib - jeremyfix on GitHub")
-			//{
-			//	const int h_src = static_cast<int>(components["input"].size());
-			//	constexpr int w_src = 1; // For 1-dimensional vectors
-			//	const int h_kernel = static_cast<int>(components["kernel"].size());
-			//	constexpr int w_kernel = 1; // For 1-dimensional kernels
-
-			//	FFTW_Convolution::Workspace workspace;
-			//	FFTW_Convolution::init_workspace(workspace, FFTW_Convolution::LINEAR_VALID, h_src, w_src, h_kernel, w_kernel);
-
-			//	FFTW_Convolution::convolve(workspace, subDataInput.data(), components["kernel"].data());
-
-			//	std::vector<double> convolution(workspace.dst, workspace.dst + workspace.h_dst * workspace.w_dst);
-
-			//	for (int i = 0; i < components["output"].size(); i++)
-			//		components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
-			//	//commonParameters.dimensionParameters.d_x;
-
-			//	FFTW_Convolution::clear_workspace(workspace);
-			//}
+			for (int i = 0; i < components["output"].size(); i++)
+				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
+			//commonParameters.dimensionParameters.d_x;
 		}
 
 		void GaussKernel::close()

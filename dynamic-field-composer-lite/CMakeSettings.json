@@ -13,7 +13,7 @@
       "variables": [
         {
           "name": "CMAKE_INSTALL_PREFIX",
-          "value": "C:/dev-files/dynamic-field-composer-lite/dynamic-field-composer-lite/out/install/x64-debug/debug",
+          "value": "C:/dev-files/dynamic-field-composer-lite/dynamic-field-composer-lite/build/install/x64-debug/debug",
           "type": "PATH"
         }
       ]
@@ -31,7 +31,7 @@
       "variables": [
         {
           "name": "CMAKE_INSTALL_PREFIX",
-          "value": "C:/dev-files/dynamic-field-composer-lite/dynamic-field-composer-lite/out/install/x64-release/release",
+          "value": "C:/dev-files/dynamic-field-composer-lite/dynamic-field-composer-lite/build/install/x64-release/release",
           "type": "PATH"
         }
       ]

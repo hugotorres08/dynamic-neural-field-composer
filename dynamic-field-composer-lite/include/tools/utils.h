@@ -3,5 +3,8 @@
 
 namespace tools
 {
-	
+	namespace utils
+	{
+		
+	}
 }

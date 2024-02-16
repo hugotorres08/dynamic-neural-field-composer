@@ -17,10 +17,10 @@ namespace dnf_composer
 		void MexicanHatKernel::init()
 		{
 			const double maxSigma = std::max(parameters.amplitudeExc * parameters.sigmaExc, parameters.amplitudeInh * parameters.sigmaInh);
-			kernelRange = tools::computeKernelRange(maxSigma, cutOfFactor, commonParameters.dimensionParameters.size, circular);
+			kernelRange = tools::math::computeKernelRange(maxSigma, cutOfFactor, commonParameters.dimensionParameters.size, circular);
 
 			if (circular)
-				extIndex = tools::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
+				extIndex = tools::math::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
 			else
 			{
 				const std::string message = "Tried to initialize a non-circular Mexican hat kernel '" + this->getUniqueName() + "'. That is not supported yet.\n";
@@ -35,8 +35,8 @@ namespace dnf_composer
 			std::vector<double> gaussInh(commonParameters.dimensionParameters.size);
 			if (!normalized)
 			{
-				gaussExc = tools::gaussNorm(rangeX, 0.0, parameters.sigmaExc);
-				gaussInh = tools::gaussNorm(rangeX, 0.0, parameters.sigmaInh);
+				gaussExc = tools::math::gaussNorm(rangeX, 0.0, parameters.sigmaExc);
+				gaussInh = tools::math::gaussNorm(rangeX, 0.0, parameters.sigmaInh);
 			}
 			else
 			{
@@ -58,12 +58,12 @@ namespace dnf_composer
 			fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
 
 			std::vector<double> convolution(commonParameters.dimensionParameters.size);
-			const std::vector<double> subDataInput = tools::obtainCircularVector(extIndex, components["input"]);
+			const std::vector<double> subDataInput = tools::math::obtainCircularVector(extIndex, components["input"]);
 
 			if (circular)
-				convolution = tools::conv_valid(subDataInput, components["kernel"]);
+				convolution = tools::math::conv_valid(subDataInput, components["kernel"]);
 			else
-				convolution = tools::conv(subDataInput, components["kernel"]);
+				convolution = tools::math::conv(subDataInput, components["kernel"]);
 
 			for (int i = 0; i < components["output"].size(); i++)
 				components["output"][i] = (convolution[i] + parameters.amplitudeGlobal) * commonParameters.dimensionParameters.d_x;

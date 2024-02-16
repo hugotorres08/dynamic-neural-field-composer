@@ -81,6 +81,8 @@ set(tools_headers
     "include/tools/convolution_fftw.h"
     "include/tools/profiling.h"
     "include/tools/utils.h"
+    "include/tools/fourier.h"
+    "include/tools/convlv.h"
 )
 set(exceptions_headers
     "include/exceptions/exception.h"
@@ -141,6 +143,8 @@ set(src
     "src/tools/convolution_fftw.cpp"
     "src/tools/profiling.cpp"
     "src/tools/utils.cpp"
+    "src/tools/fourier.cpp"
+    "src/tools/convlv.cpp"
 
     "src/exceptions/exception.cpp"
     
