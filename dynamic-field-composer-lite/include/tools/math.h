@@ -17,6 +17,7 @@
 #include <numeric>
 #include <functional>
 #include <random>
+#include <numbers> // std::numbers
 #include <fstream>
 
 #include "tools/profiling.h"
@@ -88,12 +89,15 @@ namespace tools
 		}
 
 		template<typename T>
-		std::vector<T> gauss(const std::vector<int>& rangeX, const T& position, const T& sigma)
+		std::vector<T> gauss(int size, const T& sigma, const T& position)
 		{
-			std::vector<T> g(rangeX.size());
+			std::vector<T> g(size);
 
 			for (int i = 0; i < g.size(); i++)
-				g[i] = exp(-0.5 * pow((rangeX[i] - position), 2) / pow(sigma, 2));
+			{
+				T x = static_cast<T>(i);
+				g[i] = exp(-0.5 * pow((x - position), 2) / pow(sigma, 2));
+			}
 
 			return g;
 		}

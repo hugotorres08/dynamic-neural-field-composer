@@ -24,18 +24,22 @@ namespace dnf_composer
 			if (parameters.circular)
 				g = tools::math::circularGauss(commonParameters.dimensionParameters.size, parameters.sigma, parameters.position / commonParameters.dimensionParameters.d_x);
 			else
-			{
-				const std::string message = "Tried to initialize a non-circular Gaussian stimulus '" + this->getUniqueName() + "'. That is not supported yet. \n";
-				log(LogLevel::ERROR, message);
-			}
+				g = tools::math::gauss(commonParameters.dimensionParameters.size, parameters.sigma, parameters.position / commonParameters.dimensionParameters.d_x);
 
 			if (!parameters.normalized)
 				for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
 					components["output"][i] = parameters.amplitude * g[i];
 			else
 			{
-				const std::string message = "Tried to initialize a normalized Gaussian stimulus '" + this->getUniqueName() + "'. That is not supported yet. \n";
-				log(LogLevel::ERROR, message);
+				const double sum = tools::math::calculateVectorSum(g);
+				if(sum != 0.0)
+					for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
+						components["output"][i] = parameters.amplitude * g[i] / sum;
+				else
+				{
+					const std::string message = "Tried to initialize a normalized Gaussian stimulus '" + this->getUniqueName() + "'. With the sum of the output vector equal to zero that is impossible! \n";
+					log(LogLevel::ERROR, message);
+				}
 			}
 
 			components["input"] = std::vector<double>(commonParameters.dimensionParameters.size);

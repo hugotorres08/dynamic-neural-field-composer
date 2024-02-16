@@ -15,8 +15,8 @@ namespace dnf_composer
 			double sigma = 5.0;
 			double amplitude = 15.0;
 			double position = 0.0;
-			bool circular = true;
-			bool normalized = false;
+			bool circular = true; // by default true
+			bool normalized = false; // by default false
 
 			bool operator==(const GaussStimulusParameters& other) const
 			{

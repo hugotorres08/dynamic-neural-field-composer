@@ -266,12 +266,17 @@ add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} "examples/run_sim_read_
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
-
 # Add executable example project run_convolution_test
 set(EXE_PROJECT_EXAMPLE_RUN_CONVO_TEST ${CMAKE_PROJECT_NAME}-example-run_convolution_test)
 add_executable(${EXE_PROJECT_EXAMPLE_RUN_CONVO_TEST} "examples/run_convolution_test.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_CONVO_TEST} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_CONVO_TEST} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project run_sim_test
+set(EXE_PROJECT_EXAMPLE_RUN_SIM_TEST ${CMAKE_PROJECT_NAME}-example-run_sim_test)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_TEST} "examples/run_sim_test.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_TEST} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_TEST} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 ## Setup Catch2
 #enable_testing()
