@@ -3,7 +3,6 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "dynamic-neural-field-composer.h"
-#include "user_interface/element_window.h"
 
 // This .cpp file is an example of how you can use the library to create your own DNF simulation.
 // This setup runs the application with a GUI.

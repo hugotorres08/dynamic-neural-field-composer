@@ -1,8 +1,6 @@
 #include "./simulation/simulation_file_manager.h"
 
 
-
-
 namespace dnf_composer
 {
     using json = nlohmann::json;

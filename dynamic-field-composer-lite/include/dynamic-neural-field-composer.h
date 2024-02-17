@@ -12,3 +12,5 @@
 #include "simulation/simulation_file_manager.h"
 #include "user_interface/centroid_monitoring_window.h"
 #include "elements/lateral_interactions.h"
+#include "user_interface/element_window.h"
+#include "user_interface/element_window.h"
