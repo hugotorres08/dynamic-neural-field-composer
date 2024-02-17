@@ -46,6 +46,8 @@ namespace dnf_composer
 			MexicanHatKernelParameters getParameters() const;
 
 			~MexicanHatKernel() override = default;
+		private:
+			void updateParameters();
 		};
 	}
 }

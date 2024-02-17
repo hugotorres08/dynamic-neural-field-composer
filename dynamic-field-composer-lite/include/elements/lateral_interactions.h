@@ -45,6 +45,8 @@ namespace dnf_composer
 			LateralInteractionsParameters getParameters() const;
 
 			~LateralInteractions() override = default;
+		private:
+			void updateParameters();
 		};
 	}
 }

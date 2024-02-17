@@ -3,6 +3,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "dynamic-neural-field-composer.h"
+#include "user_interface/element_window.h"
 
 // This .cpp file is a test to profile the different convolution functions.
 
@@ -17,19 +18,19 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	constexpr dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 50 };
 	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus(new dnf_composer::element::GaussStimulus({ "gauss stimulus", fieldDimensions }, gcp_a));simulation->addElement(gauss_stimulus);
 
-	dnf_composer::element::GaussKernelParameters gkp1;
+	/*dnf_composer::element::GaussKernelParameters gkp1;
 	gkp1.amplitude = 10;
 	gkp1.sigma = 8;
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k(new dnf_composer::element::GaussKernel({ "k", fieldDimensions }, gkp1));
+	simulation->addElement(k);*/
+
+	dnf_composer::element::MexicanHatKernelParameters mhkp = { 3,20,12,10 };
+	const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_(new dnf_composer::element::MexicanHatKernel({ "k_", fieldDimensions }, mhkp));
+	simulation->addElement(k_);
+
+	constexpr dnf_composer::element::LateralInteractionsParameters lip = { 3,7.2,12,6.4, -0.51 };
+	const std::shared_ptr<dnf_composer::element::LateralInteractions> k(new dnf_composer::element::LateralInteractions({ "k", fieldDimensions }, lip));
 	simulation->addElement(k);
-
-	//dnf_composer::element::MexicanHatKernelParameters mhkp = { 3,20,12,10 };
-	//const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k(new dnf_composer::element::MexicanHatKernel({ "k", fieldDimensions }, mhkp));
-	//simulation->addElement(k);
-
-	//constexpr dnf_composer::element::LateralInteractionsParameters lip = { 3,7.2,12,6.4, -0.51 };
-	//const std::shared_ptr<dnf_composer::element::LateralInteractions> k(new dnf_composer::element::LateralInteractions({ "k", fieldDimensions }, lip));
-	//simulation->addElement(k);
 
 	// create neural field
 	const dnf_composer::element::SigmoidFunction activationFunction{ 0, 4 };
@@ -60,6 +61,7 @@ int main(int argc, char* argv[])
 		app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::SimulationWindow>(simulation));
 		app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
 		app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::CentroidMonitoringWindow>(simulation));
+		app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::ElementWindow>(simulation));
 
 		auto visualization = std::make_shared<dnf_composer::Visualization>(simulation);
 		dnf_composer::user_interface::PlotParameters plotParameters;
@@ -71,7 +73,7 @@ int main(int argc, char* argv[])
 		visualization->addPlottingData("k", "output");
 		visualization->addPlottingData("k", "kernel");
 		visualization->addPlottingData("gauss stimulus", "output");
-		app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters, false));
+		app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters, true));
 
 
 		app.init();

@@ -3,6 +3,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "dynamic-neural-field-composer.h"
+#include "user_interface/element_window.h"
 
 // This .cpp file is an example of how you can use the library to create your own DNF simulation.
 // This setup runs the application with a GUI.
@@ -123,6 +124,7 @@ int main(int argc, char* argv[])
     app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::SimulationWindow>(simulation));
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
 	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::CentroidMonitoringWindow>(simulation));
+	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::ElementWindow>(simulation));
 
 	auto visualization = std::make_shared<dnf_composer::Visualization>(simulation);
 	dnf_composer::user_interface::PlotParameters plotParameters;

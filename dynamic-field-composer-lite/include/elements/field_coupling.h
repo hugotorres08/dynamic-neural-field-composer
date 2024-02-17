@@ -52,6 +52,7 @@ namespace dnf_composer
 
 			void setLearningRate(double learningRate);
 			void setUpdateAllWeights(bool updateAllWeights);
+			void setParameters(const FieldCouplingParameters& fcp);
 
 			const std::vector<std::vector<double>>& getWeights() const;
 			FieldCouplingParameters getParameters() const;

@@ -47,6 +47,8 @@ namespace dnf_composer
 			void setParameters(const GaussStimulusParameters& parameters);
 			GaussStimulusParameters getParameters() const;
 			~GaussStimulus() override = default;
+		private:
+			void updateParameters();
 		};
 	}
 }

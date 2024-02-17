@@ -75,12 +75,16 @@ namespace dnf_composer
 		void GaussStimulus::setParameters(const GaussStimulusParameters& gaussStimulusParameters)
 		{
 			parameters = gaussStimulusParameters;
-			init();
+			updateParameters();
 		}
 
 		GaussStimulusParameters GaussStimulus::getParameters() const
 		{
 			return parameters;
+		}
+		void GaussStimulus::updateParameters()
+		{
+			init();
 		}
 	}
 }

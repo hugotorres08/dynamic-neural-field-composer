@@ -21,7 +21,6 @@ namespace dnf_composer
 			std::ranges::fill(components["activation"], parameters.startingRestingLevel);
 			std::ranges::fill(components["input"], 0.0);
 			std::ranges::fill(components["resting level"], parameters.startingRestingLevel);
-
 			calculateOutput();
 		}
 
@@ -41,7 +40,7 @@ namespace dnf_composer
 		void NeuralField::setParameters(const NeuralFieldParameters& neuralFieldParameters)
 		{
 			parameters = neuralFieldParameters;
-			init();
+			updateParameters();
 		}
 
 		NeuralFieldParameters NeuralField::getParameters() const
@@ -131,9 +130,13 @@ namespace dnf_composer
 					if (isAtLimits)
 						state.centroid = (state.centroid >= 0 ? state.centroid : state.centroid + static_cast<double>(commonParameters.dimensionParameters.size));
 				}
+				state.centroid = state.centroid * commonParameters.dimensionParameters.d_x - commonParameters.dimensionParameters.d_x;
 			}
 			else
+			{
 				state.centroid = -1.0;
+				return;
+			}
 			state.centroid += 1;
 		}
 
@@ -165,6 +168,12 @@ namespace dnf_composer
 			state.prevActivationAvg = currentActivationAvg;
 			state.prevActivationNorm = currentActivationNorm;
 			state.stable = false;
+		}
+
+		void NeuralField::updateParameters()
+		{
+			std::ranges::fill(components["resting level"], parameters.startingRestingLevel);
+			calculateOutput();
 		}
 	}
 }

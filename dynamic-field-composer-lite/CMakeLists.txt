@@ -95,6 +95,7 @@ set(user_interface_headers
     "include/user_interface/simulation_window.h"
     "include/user_interface/logger_window.h"
     "include/user_interface/centroid_monitoring_window.h"
+    "include/user_interface/element_window.h"
 )
 set(wizards_headers
     "include/wizards/learning_wizard.h"
@@ -156,6 +157,7 @@ set(src
     "src/user_interface/simulation_window.cpp"
     "src/user_interface/logger_window.cpp"
     "src/user_interface/centroid_monitoring_window.cpp"
+    "src/user_interface/element_window.cpp"
 
     "src/wizards/learning_wizard.cpp"
 

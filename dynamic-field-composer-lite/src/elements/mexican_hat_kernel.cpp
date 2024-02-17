@@ -91,12 +91,17 @@ namespace dnf_composer
 		void MexicanHatKernel::setParameters(const MexicanHatKernelParameters& mhk_parameters)
 		{
 			parameters = mhk_parameters;
-			init();
+			updateParameters();
 		}
 
 		MexicanHatKernelParameters MexicanHatKernel::getParameters() const
 		{
 			return parameters;
+		}
+
+		void MexicanHatKernel::updateParameters()
+		{
+			init();
 		}
 	}
 }

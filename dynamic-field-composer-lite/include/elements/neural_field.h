@@ -87,6 +87,7 @@ namespace dnf_composer
 			void calculateOutput();
 			void calculateCentroid();
 			void checkStability();
+			void updateParameters();
 		};
 	}
 }

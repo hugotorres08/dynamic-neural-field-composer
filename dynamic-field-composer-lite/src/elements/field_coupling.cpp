@@ -75,7 +75,9 @@ namespace dnf_composer
 				logStream << "Delta learning rule Widrow Hoff variation" << std::endl;;
 				break;
 			case LearningRule::DELTA_KROGH_HERTZ:
-				logStream << "Delta learning rule Krogh and Hertz variation" << std::endl;;
+				logStream << "Delta learning rule Krogh and Hertz variation" << std::endl;
+			case LearningRule::OJA:
+				logStream << "Oja learning rule" << std::endl;
 				break;
 			}
 
@@ -121,6 +123,12 @@ namespace dnf_composer
 		void FieldCoupling::setUpdateAllWeights(bool updateAllWeights)
 		{
 			this->updateAllWeights = updateAllWeights;
+		}
+
+		void FieldCoupling::setParameters(const FieldCouplingParameters& fcp)
+		{
+			parameters = fcp;
+
 		}
 
 		void FieldCoupling::updateWeights(const std::vector<double>& input, const std::vector<double>& output)
