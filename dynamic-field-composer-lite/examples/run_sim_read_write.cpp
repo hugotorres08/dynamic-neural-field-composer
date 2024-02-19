@@ -30,13 +30,11 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	simulation->addElement(output_field);
 
 	// create interactions and add them to the simulation
-	dnf_composer::element::GaussKernelParameters gkp1;
-	gkp1.amplitude = 5;
-	gkp1.sigma = 5;
+	dnf_composer::element::GaussKernelParameters gkp1{5, 5};
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_in_in(new dnf_composer::element::GaussKernel({ "in - in", inputFieldSpatialDimensionParameters }, gkp1));
 	simulation->addElement(k_in_in);
 
-	dnf_composer::element::MexicanHatKernelParameters gkp2;
+	dnf_composer::element::MexicanHatKernelParameters gkp2 {};
 	gkp2.amplitudeExc = 10;
 	gkp2.amplitudeInh = 5;
 	gkp2.sigmaExc = 15;
@@ -102,8 +100,8 @@ int main(int argc, char* argv[])
 
 	// Create a simulation file manager to read and write simulations from .json files
 	const dnf_composer::SimulationFileManager sfm{ simulation };
-	//sfm.saveElementsToJson();
-	sfm.loadElementsFromJson();
+	sfm.saveElementsToJson();
+	//sfm.loadElementsFromJson();
 
 	// You can run the application without the user interface by setting the second parameter to false.
 	constexpr bool activateUserInterface = true;

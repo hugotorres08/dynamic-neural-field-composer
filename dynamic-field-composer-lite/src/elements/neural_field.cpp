@@ -130,14 +130,14 @@ namespace dnf_composer
 					if (isAtLimits)
 						state.centroid = (state.centroid >= 0 ? state.centroid : state.centroid + static_cast<double>(commonParameters.dimensionParameters.size));
 				}
-				state.centroid = state.centroid * commonParameters.dimensionParameters.d_x - commonParameters.dimensionParameters.d_x;
+				state.centroid = state.centroid * commonParameters.dimensionParameters.d_x + commonParameters.dimensionParameters.d_x;
 			}
 			else
 			{
 				state.centroid = -1.0;
 				return;
 			}
-			state.centroid += 1;
+			//state.centroid += 1;
 		}
 
 		void NeuralField::checkStability()
