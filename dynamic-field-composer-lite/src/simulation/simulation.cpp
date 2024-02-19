@@ -8,7 +8,7 @@
 namespace dnf_composer
 {
 	Simulation::Simulation(std::string identifier, double deltaT, double tZero, double t)
-		: uniqueIdentifier(identifier), deltaT(deltaT), tZero(tZero), t(t)
+		: uniqueIdentifier(std::move(identifier)), deltaT(deltaT), tZero(tZero), t(t)
 	{
 		if (deltaT <= 0 || tZero > t)
 			throw Exception(ErrorCode::SIM_INVALID_PARAMETER, "Invalid parameters for Simulation constructor");

@@ -10,13 +10,18 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		struct GaussStimulusParameters
+		struct GaussStimulusParameters : ElementSpecificParameters
 		{
-			double sigma = 5.0;
-			double amplitude = 15.0;
-			double position = 0.0;
-			bool circular = true; // by default true
-			bool normalized = false; // by default false
+
+			GaussStimulusParameters(double sigma = 5.0, double amplitude = 15.0, double position = 0.0, bool circular = true, bool normalized = false)
+				: sigma(sigma), amplitude(amplitude), position(position), circular(circular), normalized(normalized)
+			{}
+
+			double sigma;
+			double amplitude;
+			double position;
+			bool circular; // by default true
+			bool normalized; // by default false
 
 			bool operator==(const GaussStimulusParameters& other) const
 			{

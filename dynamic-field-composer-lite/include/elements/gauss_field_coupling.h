@@ -13,7 +13,7 @@ namespace dnf_composer
 
 	namespace element
 	{
-		struct GaussFieldCouplingParameters
+		struct GaussFieldCouplingParameters : ElementSpecificParameters
 		{
 			int inputFieldSize = 0;
 			double sigma = 0.0;

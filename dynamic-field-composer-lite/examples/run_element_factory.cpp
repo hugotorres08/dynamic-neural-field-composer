@@ -6,27 +6,61 @@
 
 // This .cpp file is an example of how you can use the library to create your own DNF simulation.
 // This setup runs the application with a GUI.
-// This .exe creates a simulation object programatically defining its elements.
-// This .exe shows you how to dynamic neural fields in three different ways.
-
-// 1. Manual - You define element parameters, you create the elements,
-// you add them to the simulation, and you create the interactions.
-//
-// 2. Semi-automatic - You define element parameters, you create the elements
-// and they get added automatically to the simulation, and you create the interactions.
-//
-// 3. Automatic - You define element parameters, you create a dynamic neural field object,
-// elements get created, added to the simulation, and the interactions between them are automatically created.
+// This .exe shows you how to use the ElementFactory to create elements (less verbose way of creating elements).
 
 int main(int argc, char* argv[])
 {
 	try
 	{
-		const auto simulation = std::make_shared<dnf_composer::Simulation>("Element factory example", 5, 0, 0);
+		using namespace dnf_composer;
+		auto simulation = std::make_shared<Simulation>("Element factory example", 5, 0, 0);
 		constexpr bool activateUserInterface = true;
-		const dnf_composer::Application app{ simulation, activateUserInterface };
+		const Application app{ simulation, activateUserInterface };
 
-		dnf_composer::element::ElementFactory factory;
+		element::ElementFactory factory;
+
+		element::GaussStimulusParameters gsp = { 5, 15, 50 };
+		const auto stimulus = factory.createElement(element::GAUSS_STIMULUS, { "stimulus", {100, 1.0} }, { gsp });
+		simulation->addElement(stimulus);
+
+		element::SigmoidFunction af = { 0.0, 10.0 };
+		element::NeuralFieldParameters nfp = { 20, -5, af };
+		const auto neural_field = factory.createElement(element::NEURAL_FIELD, { "field", {100, 1.0} }, { nfp });
+		simulation->addElement(neural_field);
+
+		element::GaussKernelParameters gkp = { 5, 10 };
+		const auto gauss_kernel = factory.createElement(element::GAUSS_KERNEL, { "gauss kernel", {100, 1.0} }, { gkp });
+		simulation->addElement(gauss_kernel);
+
+		element::MexicanHatKernelParameters mhkp = { 5, 10, 2, 8 };
+		const auto mexican_hat_kernel = factory.createElement(element::MEXICAN_HAT_KERNEL, { "mexican hat kernel", {100, 1.0} }, { mhkp });
+		simulation->addElement(mexican_hat_kernel);
+
+		element::LateralInteractionsParameters lip = { 5, 10, 2, 8, -0.1 };
+		const auto lateral_interactions = factory.createElement(element::LATERAL_INTERACTIONS, { "lateral int. kernel", {100, 1.0} }, { lip });
+		simulation->addElement(lateral_interactions);
+
+		element::NormalNoiseParameters nnp = { 0.1 };
+		const auto normal_noise = factory.createElement(element::NORMAL_NOISE, { "normal noise", {100, 1.0} }, nnp);
+		simulation->addElement(normal_noise);
+
+		// Here you can obviously use addInput() or createInteraction() methods
+		simulation->createInteraction("stimulus", "output", "field");
+		simulation->createInteraction("field", "output", "gauss kernel");
+		simulation->createInteraction("gauss kernel", "output", "field");
+		simulation->createInteraction("normal noise", "output", "field");
+
+		// After creating the application, we can add the windows we want to display.
+		app.activateUserInterfaceWindow(std::make_shared<user_interface::SimulationWindow>(simulation));
+		app.activateUserInterfaceWindow(std::make_shared<user_interface::LoggerWindow>());
+		app.activateUserInterfaceWindow(std::make_shared<user_interface::CentroidMonitoringWindow>(simulation));
+		app.activateUserInterfaceWindow(std::make_shared<user_interface::ElementWindow>(simulation));
+
+		auto visualization = std::make_shared<Visualization>(simulation);
+		user_interface::PlotParameters plotParameters;
+		plotParameters.annotations = { "Plot", "Spatial dimension", "Amplitude" };
+		plotParameters.dimensions = { 0, 100, -15, 14, 1.0 };
+		app.activateUserInterfaceWindow(std::make_shared<user_interface::PlotWindow>(visualization, plotParameters, true));
 
 		app.init();
 

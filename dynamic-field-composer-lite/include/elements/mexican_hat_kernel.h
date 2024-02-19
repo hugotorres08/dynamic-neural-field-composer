@@ -11,12 +11,16 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		struct MexicanHatKernelParameters
+		struct MexicanHatKernelParameters : ElementSpecificParameters
 		{
 			double sigmaExc;
 			double amplitudeExc;
 			double sigmaInh;
 			double amplitudeInh;
+
+			MexicanHatKernelParameters(double sigmaExc, double amplitudeExc, double sigmaInh, double amplitudeInh)
+				: sigmaExc(sigmaExc), amplitudeExc(amplitudeExc), sigmaInh(sigmaInh), amplitudeInh(amplitudeInh)
+			{}
 
 			bool operator==(const MexicanHatKernelParameters& other) const
 			{

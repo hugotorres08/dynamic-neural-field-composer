@@ -3,9 +3,9 @@
 
 #include "./user_interface/user_interface_window.h"
 #include "wizards/learning_wizard.h"
-#include "./elements/element_factory.h"
 #include "simulation/simulation.h"
 #include "elements/lateral_interactions.h"
+#include "elements/element_factory.h"
 
 namespace dnf_composer
 {

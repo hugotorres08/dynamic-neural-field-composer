@@ -7,7 +7,7 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		struct NeuralFieldParameters
+		struct NeuralFieldParameters : ElementSpecificParameters
 		{
 		    double tau;
 		    double startingRestingLevel;

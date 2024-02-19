@@ -19,12 +19,16 @@ namespace dnf_composer
 
 	namespace element
 	{
-		struct FieldCouplingParameters
+		struct FieldCouplingParameters : ElementSpecificParameters
 		{
 			int inputFieldSize;
 			double scalar;
 			double learningRate;
 			LearningRule learningRule;
+
+			FieldCouplingParameters(int inputFieldSize, double scalar, double learningRate, LearningRule learningRule)
+			: inputFieldSize(inputFieldSize), scalar(scalar), learningRate(learningRate), learningRule(learningRule)
+			{}
 		};
 
 		class FieldCoupling : public Element

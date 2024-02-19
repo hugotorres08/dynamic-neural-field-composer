@@ -8,7 +8,7 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		struct LateralInteractionsParameters
+		struct LateralInteractionsParameters : ElementSpecificParameters
 		{
 			double sigmaExc;
 			double amplitudeExc;
@@ -16,6 +16,9 @@ namespace dnf_composer
 			double amplitudeInh;
 			double amplitudeGlobal;
 
+			LateralInteractionsParameters(double sigmaExc, double amplitudeExc, double sigmaInh, double amplitudeInh, double amplitudeGlobal)
+				: sigmaExc(sigmaExc), amplitudeExc(amplitudeExc), sigmaInh(sigmaInh), amplitudeInh(amplitudeInh), amplitudeGlobal(amplitudeGlobal)
+			{}
 
 			bool operator==(const LateralInteractionsParameters& other) const
 			{

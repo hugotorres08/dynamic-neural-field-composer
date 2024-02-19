@@ -58,7 +58,6 @@ set(application_headers
     "include/application/application.h"
 )
 set(elements_headers
-    "include/elements/element_factory.h"
     "include/elements/element.h"
     "include/elements/field_coupling.h"
     "include/elements/neural_field.h"
@@ -71,6 +70,8 @@ set(elements_headers
     "include/elements/activation_function.h"
     "include/elements/element_parameters.h"
     "include/elements/lateral_interactions.h"
+    "include/elements/element_factory.h"
+
 )
 set(tools_headers
     "include/tools/math.h"
@@ -125,7 +126,6 @@ set(src
 
     "src/application/application.cpp"
     
-    "src/elements/element_factory.cpp"
     "src/elements/element.cpp"
     "src/elements/field_coupling.cpp"
     "src/elements/neural_field.cpp" 
@@ -138,6 +138,7 @@ set(src
     "src/elements/activation_function.cpp"
     "src/elements/element_parameters.cpp"
     "src/elements/lateral_interactions.cpp"
+    "src/elements/element_factory.cpp"
     
     "src/tools/math.cpp"
     "src/tools/convolution_fftw.cpp"

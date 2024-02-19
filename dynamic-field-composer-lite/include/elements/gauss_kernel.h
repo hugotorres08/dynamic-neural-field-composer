@@ -12,10 +12,14 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		struct GaussKernelParameters
+		struct GaussKernelParameters : ElementSpecificParameters
 		{
-			double sigma = 5.0;
-			double amplitude = 10.0;
+			GaussKernelParameters(double sigma = 5.0, double amp = 10.0)
+				: sigma(sigma), amplitude(amp)
+			{}
+
+			double sigma;
+			double amplitude;
 			
 			bool operator==(const GaussKernelParameters& other) const {
 				constexpr double epsilon = 1e-6; // Set an appropriate epsilon value

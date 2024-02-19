@@ -67,5 +67,15 @@ namespace dnf_composer
 			ElementCommonParameters(ElementIdentifiers identifiers, const ElementSpatialDimensionParameters& dimensionParameters);
 			void print() const;
 		};
+
+		struct ElementSpecificParameters
+		{
+			// This struct is intentionally left empty.
+			// Derived structs are expected to define specific member variables
+			// and functions relevant to their respective elements.
+			ElementSpecificParameters() = default;
+			// Declare a virtual destructor
+			virtual ~ElementSpecificParameters() = default;
+		};
 	}
 }
