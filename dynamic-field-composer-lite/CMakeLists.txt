@@ -10,9 +10,6 @@ set(DNF_COMPOSER_VERSION_MAJOR 1 CACHE STRING "major version" FORCE)
 set(DNF_COMPOSER_VERSION_MINOR 0 CACHE STRING "minor version" FORCE)
 set(DNF_COMPOSER_VERSION ${DNF_COMPOSER_VERSION_MAJOR}.${DNF_COMPOSER_VERSION_MINOR} CACHE STRING "version" FORCE)
 
-
-message( ${CMAKE_BUILD_TYPE})
-
 set(DNF_COMPOSER_LIB_PREFIX "release")
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
     set(DNF_COMPOSER_LIB_PREFIX "debug")
@@ -275,6 +272,12 @@ set(EXE_PROJECT_EXAMPLE_RUN_TESTBENCH ${CMAKE_PROJECT_NAME}-example-run_testbenc
 add_executable(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} "examples/run_testbench.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project run_element_factory
+set(EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_element_factory)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} "examples/run_element_factory.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 ## Setup Catch2
 #enable_testing()
