@@ -15,19 +15,43 @@ namespace dnf_composer
 		{
 			int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
 			double dx = 0.0;
+
+			PlotDimensions()
+				: xMin(0), xMax(0), yMin(0), yMax(0), dx(0.0)
+			{}
+
+			PlotDimensions(int xMin, int xMax, int yMin, int yMax, double dx)
+				: xMin(xMin), xMax(xMax), yMin(yMin), yMax(yMax), dx(dx)
+			{}
 		};
 
 		struct PlotAnnotations
 		{
-			std::string title{}, x_label{}, y_label{};
+			std::string title, x_label, y_label;
+
+			PlotAnnotations() 
+				:title(), x_label(), y_label()
+			{}
+
+			PlotAnnotations(std::string title, std::string x_label, std::string y_label)
+				:title(std::move(title)), x_label(std::move(title)), y_label(std::move(title))
+			{}
 		};
 
-		struct PlotParameters
+		struct PlotParameters : UserInterfaceWindowParameters
 		{
 			int id;
 			std::shared_ptr<Visualization> visualization;
 			PlotDimensions dimensions;
 			PlotAnnotations annotations;
+
+			PlotParameters()
+				: id(0), visualization(nullptr), dimensions(), annotations()
+			{}
+
+			PlotParameters(const PlotDimensions& dimensions, PlotAnnotations annotations)
+				: id(0), visualization(nullptr), dimensions(dimensions), annotations(std::move(annotations))
+			{}
 		};
 
 		class PlotWindow : public UserInterfaceWindow

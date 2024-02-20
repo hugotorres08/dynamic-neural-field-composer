@@ -21,32 +21,23 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	const dnf_composer::element::HeavisideFunction activationFunction1{ 0 };
 	const dnf_composer::element::NeuralFieldParameters nfp1 = { 25, -10 , activationFunction1 };
 	const std::shared_ptr<dnf_composer::element::NeuralField> input_field(new dnf_composer::element::NeuralField({ "input field", inputFieldSpatialDimensionParameters }, nfp1));
+	simulation->addElement(input_field); 
 
 	const dnf_composer::element::SigmoidFunction activationFunction2{0, 1000};
 	const dnf_composer::element::NeuralFieldParameters nfp2 = { 20, -5 , activationFunction2 };
 	const std::shared_ptr<dnf_composer::element::NeuralField> output_field(new dnf_composer::element::NeuralField({ "output field", outputFieldSpatialDimensionParameters }, nfp2));
-
-	simulation->addElement(input_field);
 	simulation->addElement(output_field);
 
 	// create interactions and add them to the simulation
-	dnf_composer::element::GaussKernelParameters gkp1{5, 5};
+	const dnf_composer::element::GaussKernelParameters gkp1{5, 5};
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_in_in(new dnf_composer::element::GaussKernel({ "in - in", inputFieldSpatialDimensionParameters }, gkp1));
 	simulation->addElement(k_in_in);
 
-	dnf_composer::element::MexicanHatKernelParameters gkp2 {};
-	gkp2.amplitudeExc = 10;
-	gkp2.amplitudeInh = 5;
-	gkp2.sigmaExc = 15;
-	gkp2.sigmaInh = 10;
+	const dnf_composer::element::MexicanHatKernelParameters gkp2{15, 10, 10, 5};
 	const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_out_out(new dnf_composer::element::MexicanHatKernel({ "out - out", outputFieldSpatialDimensionParameters }, gkp2));
 	simulation->addElement(k_out_out);
 
-	dnf_composer::element::FieldCouplingParameters fcp;
-	fcp.inputFieldSize = inputFieldSpatialDimensionParameters.size;
-	fcp.learningRate = 0.01;
-	fcp.scalar = 0.25;
-	fcp.learningRule = dnf_composer::LearningRule::HEBBIAN;
+	const dnf_composer::element::FieldCouplingParameters fcp{ inputFieldSpatialDimensionParameters.size , 0.25, 0.01, dnf_composer::LearningRule::HEBBIAN };
 	const std::shared_ptr<dnf_composer::element::FieldCoupling> w_in_out
 	(new dnf_composer::element::FieldCoupling({ "in - out", outputFieldSpatialDimensionParameters }, fcp));
 	simulation->addElement(w_in_out);
@@ -100,24 +91,26 @@ int main(int argc, char* argv[])
 
 	// Create a simulation file manager to read and write simulations from .json files
 	const dnf_composer::SimulationFileManager sfm{ simulation };
-	sfm.saveElementsToJson();
-	//sfm.loadElementsFromJson();
+	//sfm.saveElementsToJson();
+	sfm.loadElementsFromJson();
 
 	// You can run the application without the user interface by setting the second parameter to false.
 	constexpr bool activateUserInterface = true;
 	const dnf_composer::Application app{ simulation, activateUserInterface };
 
 	// After creating the application, we can add the windows we want to display.
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::SimulationWindow>(simulation));
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
+	app.activateUserInterfaceWindow(dnf_composer::user_interface::SIMULATION_WINDOW);
+	app.activateUserInterfaceWindow(dnf_composer::user_interface::LOG_WINDOW);
+	app.activateUserInterfaceWindow(dnf_composer::user_interface::ELEMENT_WINDOW);
+	app.activateUserInterfaceWindow(dnf_composer::user_interface::MONITORING_WINDOW);
 
 	dnf_composer::user_interface::PlotParameters plotParameters;
 	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
 	plotParameters.dimensions = { 0, 100, -30, 40 , 1.0};
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters));
+	app.activateUserInterfaceWindow(dnf_composer::user_interface::PLOT_WINDOW, plotParameters);
 	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
 	plotParameters.dimensions = { 0, 50, -30, 40 , 0.5 };
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters));
+	app.activateUserInterfaceWindow(dnf_composer::user_interface::PLOT_WINDOW, plotParameters);
 
 	try
 	{

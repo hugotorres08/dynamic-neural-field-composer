@@ -20,6 +20,25 @@ namespace dnf_composer
 	namespace user_interface
 	{
 
+		enum UserInterfaceWindowType : int
+		{
+			MONITORING_WINDOW,
+			ELEMENT_WINDOW,
+			LOG_WINDOW,
+			PLOT_WINDOW,
+			SIMULATION_WINDOW,
+		};
+
+		struct UserInterfaceWindowParameters
+		{
+			// This struct is intentionally left empty.
+			// Derived structs are expected to define specific member variables
+			// and functions relevant to their respective elements.
+			UserInterfaceWindowParameters() = default;
+			// Declare a virtual destructor
+			virtual ~UserInterfaceWindowParameters() = default;
+		};
+
 		class UserInterfaceWindow
 		{
 		public:

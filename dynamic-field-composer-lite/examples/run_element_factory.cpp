@@ -19,7 +19,7 @@ int main(int argc, char* argv[])
 
 		element::ElementFactory factory;
 
-		element::GaussStimulusParameters gsp = { 5, 15, 50 };
+		element::GaussStimulusParameters gsp = { 5, 5, 50 };
 		const auto stimulus = factory.createElement(element::GAUSS_STIMULUS, { "stimulus", {100, 1.0} }, { gsp });
 		simulation->addElement(stimulus);
 
@@ -28,7 +28,7 @@ int main(int argc, char* argv[])
 		const auto neural_field = factory.createElement(element::NEURAL_FIELD, { "field", {100, 1.0} }, { nfp });
 		simulation->addElement(neural_field);
 
-		element::GaussKernelParameters gkp = { 5, 10 };
+		element::GaussKernelParameters gkp = { 3, 5 };
 		const auto gauss_kernel = factory.createElement(element::GAUSS_KERNEL, { "gauss kernel", {100, 1.0} }, { gkp });
 		simulation->addElement(gauss_kernel);
 
@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 		const auto lateral_interactions = factory.createElement(element::LATERAL_INTERACTIONS, { "lateral int. kernel", {100, 1.0} }, { lip });
 		simulation->addElement(lateral_interactions);
 
-		element::NormalNoiseParameters nnp = { 0.1 };
+		element::NormalNoiseParameters nnp = { 0.01 };
 		const auto normal_noise = factory.createElement(element::NORMAL_NOISE, { "normal noise", {100, 1.0} }, nnp);
 		simulation->addElement(normal_noise);
 
@@ -51,16 +51,12 @@ int main(int argc, char* argv[])
 		simulation->createInteraction("normal noise", "output", "field");
 
 		// After creating the application, we can add the windows we want to display.
-		app.activateUserInterfaceWindow(std::make_shared<user_interface::SimulationWindow>(simulation));
-		app.activateUserInterfaceWindow(std::make_shared<user_interface::LoggerWindow>());
-		app.activateUserInterfaceWindow(std::make_shared<user_interface::CentroidMonitoringWindow>(simulation));
-		app.activateUserInterfaceWindow(std::make_shared<user_interface::ElementWindow>(simulation));
-
-		auto visualization = std::make_shared<Visualization>(simulation);
-		user_interface::PlotParameters plotParameters;
-		plotParameters.annotations = { "Plot", "Spatial dimension", "Amplitude" };
-		plotParameters.dimensions = { 0, 100, -15, 14, 1.0 };
-		app.activateUserInterfaceWindow(std::make_shared<user_interface::PlotWindow>(visualization, plotParameters, true));
+		app.activateUserInterfaceWindow(user_interface::SIMULATION_WINDOW);
+		app.activateUserInterfaceWindow(user_interface::LOG_WINDOW);
+		app.activateUserInterfaceWindow(user_interface::ELEMENT_WINDOW);
+		app.activateUserInterfaceWindow(user_interface::MONITORING_WINDOW);
+		user_interface::PlotParameters plotParameters{ {0, 100, -15, 14, 1.0},{ "Plot", "Spatial dimension", "Amplitude" } };
+		app.activateUserInterfaceWindow(user_interface::PLOT_WINDOW, plotParameters);
 
 		app.init();
 

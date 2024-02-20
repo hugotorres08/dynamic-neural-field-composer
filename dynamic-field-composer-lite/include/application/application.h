@@ -4,6 +4,9 @@
 #include "simulation/simulation.h"
 #include "simulation/visualization.h"
 #include "user_interface/user_interface.h"
+#include "user_interface/centroid_monitoring_window.h"
+#include "user_interface/element_window.h"
+
 
 namespace dnf_composer
 {
@@ -24,7 +27,9 @@ namespace dnf_composer
 		void step() const;
 		void close() const;
 
-		void activateUserInterfaceWindow(const std::shared_ptr<user_interface::UserInterfaceWindow>& window) const;
+		//void activateUserInterfaceWindow(const std::shared_ptr<user_interface::UserInterfaceWindow>& window) const;
+
+		void activateUserInterfaceWindow(user_interface::UserInterfaceWindowType winType, const user_interface::UserInterfaceWindowParameters& winParams = {}) const;
 		void setActivateUserInterfaceAs(bool activateUI);
 
 		bool getCloseUI() const;

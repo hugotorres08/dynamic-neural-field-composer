@@ -4,7 +4,6 @@
 
 #include "dynamic-neural-field-composer.h"
 
-// This .cpp file is a test to profile the different convolution functions.
 
 const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 200, 0.5 };
 
@@ -22,9 +21,9 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	//const std::shared_ptr<dnf_composer::element::GaussKernel> k(new dnf_composer::element::GaussKernel({ "k", fieldDimensions }, gkp1));
 	//simulation->addElement(k);
 
-	const dnf_composer::element::MexicanHatKernelParameters mhkp = { 3,20,12,10 };
-	const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_(new dnf_composer::element::MexicanHatKernel({ "k_", fieldDimensions }, mhkp));
-	simulation->addElement(k_);
+	//const dnf_composer::element::MexicanHatKernelParameters mhkp = { 3,20,12,10 };
+	//const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_(new dnf_composer::element::MexicanHatKernel({ "k_", fieldDimensions }, mhkp));
+	//simulation->addElement(k_);
 
 	const dnf_composer::element::LateralInteractionsParameters lip = { 3,7.2,12,6.4, -0.51 };
 	const std::shared_ptr<dnf_composer::element::LateralInteractions> k(new dnf_composer::element::LateralInteractions({ "k", fieldDimensions }, lip));
@@ -50,28 +49,28 @@ int main(int argc, char* argv[])
 	try
 	{
 		// After defining the simulation, we can create the application.
-		auto simulation = getExperimentSimulation();
+		const auto simulation = getExperimentSimulation();
 		// You can run the application without the user interface by setting the second parameter to false.
 		constexpr bool activateUserInterface = true;
 		const dnf_composer::Application app{ simulation, activateUserInterface };
 
 		// After creating the application, we can add the windows we want to display.
-		app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::SimulationWindow>(simulation));
-		app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
-		app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::CentroidMonitoringWindow>(simulation));
-		app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::ElementWindow>(simulation));
+		app.activateUserInterfaceWindow(dnf_composer::user_interface::SIMULATION_WINDOW);
+		app.activateUserInterfaceWindow(dnf_composer::user_interface::LOG_WINDOW);
+		app.activateUserInterfaceWindow(dnf_composer::user_interface::ELEMENT_WINDOW);
+		app.activateUserInterfaceWindow(dnf_composer::user_interface::MONITORING_WINDOW);
 
-		auto visualization = std::make_shared<dnf_composer::Visualization>(simulation);
+		//auto visualization = std::make_shared<dnf_composer::Visualization>(simulation);
 		dnf_composer::user_interface::PlotParameters plotParameters;
 		plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
 		plotParameters.dimensions = { 0, fieldDimensions.x_max, -15, 14, fieldDimensions.d_x };
-		visualization->addPlottingData("neural field", "activation");
+		/*visualization->addPlottingData("neural field", "activation");
 		visualization->addPlottingData("neural field", "input");
 		visualization->addPlottingData("neural field", "output");
 		visualization->addPlottingData("k", "output");
 		visualization->addPlottingData("k", "kernel");
-		visualization->addPlottingData("gauss stimulus", "output");
-		app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters, true));
+		visualization->addPlottingData("gauss stimulus", "output");*/
+		app.activateUserInterfaceWindow(dnf_composer::user_interface::PLOT_WINDOW, plotParameters);
 
 		app.init();
 

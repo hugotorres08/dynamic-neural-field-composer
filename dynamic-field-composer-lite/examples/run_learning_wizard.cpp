@@ -45,11 +45,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_out_out(new dnf_composer::element::GaussKernel({ "out - out", outputFieldSpatialDimensionParameters }, gkp2)); // self-excitation v-v
 	simulation->addElement(k_out_out);
 
-	dnf_composer::element::FieldCouplingParameters fcp;
-	fcp.inputFieldSize = perceptualFieldSpatialDimensionParameters.size;
-	fcp.learningRate = 0.01;
-	fcp.scalar = 0.75;
-	fcp.learningRule = dnf_composer::LearningRule::DELTA_WIDROW_HOFF;
+	dnf_composer::element::FieldCouplingParameters fcp{ perceptualFieldSpatialDimensionParameters.size , 0.75, 0.01, dnf_composer::LearningRule::DELTA_WIDROW_HOFF };
 	const std::shared_ptr<dnf_composer::element::FieldCoupling> w_per_out
 	(new dnf_composer::element::FieldCoupling({ "per - out", outputFieldSpatialDimensionParameters }, fcp));
 	simulation->addElement(w_per_out);
@@ -113,38 +109,39 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 
 int main(int argc, char* argv[])
 {
+	using namespace dnf_composer;
+
     // After defining the simulation, we can create the application.
     auto simulation = getExperimentSimulation();
     // You can run the application without the user interface by setting the second parameter to false.
     constexpr bool activateUserInterface = true;
-    const dnf_composer::Application app{ simulation, activateUserInterface };
+    const Application app{ simulation, activateUserInterface };
 
     // After creating the application, we can add the windows we want to display.
-    app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::SimulationWindow>(simulation));
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::CentroidMonitoringWindow>(simulation));
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::ElementWindow>(simulation));
+	app.activateUserInterfaceWindow(user_interface::SIMULATION_WINDOW);
+	app.activateUserInterfaceWindow(user_interface::LOG_WINDOW);
+	app.activateUserInterfaceWindow(user_interface::ELEMENT_WINDOW);
+	app.activateUserInterfaceWindow(user_interface::MONITORING_WINDOW);
 
-	auto visualization = std::make_shared<dnf_composer::Visualization>(simulation);
-	dnf_composer::user_interface::PlotParameters plotParameters;
+
+	user_interface::PlotParameters plotParameters;
 	plotParameters.annotations = { "Perceptual field", "Spatial dimension", "Amplitude" };
 	plotParameters.dimensions = { 0, 360, -20, 50, 0.5};
-	visualization->addPlottingData("perceptual field", "activation");
-	visualization->addPlottingData("perceptual field", "input");
-	visualization->addPlottingData("perceptual field", "output");
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters, false));
+	//visualization->addPlottingData("perceptual field", "activation");
+	//visualization->addPlottingData("perceptual field", "input");
+	//visualization->addPlottingData("perceptual field", "output");
+	app.activateUserInterfaceWindow(user_interface::PLOT_WINDOW, plotParameters);
 
-	visualization = std::make_shared<dnf_composer::Visualization>(simulation);
 	plotParameters.annotations = { "Output field", "Spatial dimension", "Amplitude" };
 	plotParameters.dimensions = { 0, 180, -20, 50, 0.5};
-	visualization->addPlottingData("output field", "activation");
-	visualization->addPlottingData("output field", "input");
-	visualization->addPlottingData("output field", "output");
-	app.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters, false));
+	//visualization->addPlottingData("output field", "activation");
+	//visualization->addPlottingData("output field", "input");
+	//visualization->addPlottingData("output field", "output");
+	app.activateUserInterfaceWindow(user_interface::PLOT_WINDOW, plotParameters);
 
 	// test the training by adding a stimulus to the perceptual field
-	constexpr dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 11, 90};
-	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus(new dnf_composer::element::GaussStimulus({ "gauss stimulus",{360, 0.5} }, gcp_a));
+	const element::GaussStimulusParameters gcp_a = { 5, 11, 90};
+	const std::shared_ptr<element::GaussStimulus> gauss_stimulus(new element::GaussStimulus({ "gauss stimulus",{360, 0.5} }, gcp_a));
 	simulation->addElement(gauss_stimulus);
 	simulation->createInteraction("gauss stimulus", "output", "perceptual field");
 
