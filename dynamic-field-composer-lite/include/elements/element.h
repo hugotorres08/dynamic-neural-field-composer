@@ -8,8 +8,8 @@
 #include <algorithm>
 
 #include "exceptions/exception.h"
+#include "tools/logger.h"
 #include "element_parameters.h"
-#include "logging/logger.h"
 
 namespace dnf_composer
 {

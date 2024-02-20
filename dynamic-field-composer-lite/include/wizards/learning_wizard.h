@@ -6,8 +6,8 @@
 #include "./elements/gauss_stimulus.h"
 #include "elements/gauss_kernel.h"
 
-#include "utilities/utilities.h"
-#include "logging/logger.h"
+#include "tools/utils.h"
+#include "tools/logger.h"
 
 
 namespace dnf_composer

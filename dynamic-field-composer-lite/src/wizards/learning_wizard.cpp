@@ -205,7 +205,7 @@ namespace dnf_composer
         else
         {
             const std::string message = "Failed to save data to " + filename + ".\n";
-            log(LogLevel::ERROR, message);
+            log(tools::logger::LogLevel::ERROR, message);
         }
     }
 
@@ -234,14 +234,14 @@ namespace dnf_composer
             {
                 const std::string message = "Error training the field coupling weights. "
                     "Line " + std::to_string(static_cast<int>(line)) + " not found in " + filename + ".\n";
-                log(LogLevel::ERROR, message);
+                log(tools::logger::LogLevel::ERROR, message);
             }
             file.close();
         }
         else
         {
             const std::string message = "Failed to open file " + filename + ".\n";
-            log(LogLevel::ERROR, message);
+            log(tools::logger::LogLevel::ERROR, message);
         }
 
         return data;
@@ -250,13 +250,13 @@ namespace dnf_composer
     void LearningWizard::trainWeights(const int iterations) const
     {
         // check how much lines "temp_input.txt", and "temp_output.txt" have
-        const int numLinesInput = utilities::countNumOfLinesInFile(pathToFieldActivationPre);
-        const int numLinesOutput = utilities::countNumOfLinesInFile(pathToFieldActivationPost);
+        const int numLinesInput = tools::utils::countNumOfLinesInFile(pathToFieldActivationPre);
+        const int numLinesOutput = tools::utils::countNumOfLinesInFile(pathToFieldActivationPost);
 
         if (numLinesInput != numLinesOutput)
         {
             const std::string message = "Error training the field coupling weights. The files " + pathToFieldActivationPre + " and " + pathToFieldActivationPost + " have a different number of lines.\n";
-            log(LogLevel::ERROR, message);
+            log(tools::logger::LogLevel::ERROR, message);
         }
 
         // read data and update weights

@@ -9,7 +9,7 @@
 
 #include "elements/element.h"
 #include "exceptions/exception.h"
-#include "utilities/utilities.h"
+#include "tools/utils.h"
 
 namespace dnf_composer
 {

@@ -36,7 +36,7 @@ namespace dnf_composer
 			logStream << "Logging specific element parameters" << std::endl;
 			logStream << "Amplitude: " << parameters.amplitude << std::endl;
 
-			log(LogLevel::INFO, logStream.str());
+			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
 		void NormalNoise::setParameters(NormalNoiseParameters normalNoiseParameters)

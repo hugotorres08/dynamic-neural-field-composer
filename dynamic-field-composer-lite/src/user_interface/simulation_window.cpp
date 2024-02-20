@@ -154,7 +154,7 @@ namespace dnf_composer
 					addElementLateralInteractions();
 					break;
 				default:
-					log(LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.\n");
+					log(tools::logger::LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.\n");
 					break;
 				}
 				ImGui::TreePop();
@@ -293,12 +293,12 @@ namespace dnf_composer
 
 		void SimulationWindow::addElementFieldCoupling() const
 		{
-			log(LogLevel::ERROR, "This is still not done, I'm sorry! :(.\n");
+			log(tools::logger::LogLevel::ERROR, "This is still not done, I'm sorry! :(.\n");
 		}
 
 		void SimulationWindow::addElementGaussFieldCoupling() const
 		{
-			log(LogLevel::ERROR, "This is still not done, I'm sorry! :(.\n");
+			log(tools::logger::LogLevel::ERROR, "This is still not done, I'm sorry! :(.\n");
 		}
 
 		void SimulationWindow::addElementGaussKernel() const

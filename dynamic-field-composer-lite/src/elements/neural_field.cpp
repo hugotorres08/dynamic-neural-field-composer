@@ -77,7 +77,7 @@ namespace dnf_composer
 
 			logStream << std::endl << "Current centroid value: " << getCentroid() << std::endl;
 
-			log(LogLevel::INFO, logStream.str());
+			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
 		void NeuralField::calculateActivation(double t, double deltaT)

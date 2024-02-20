@@ -90,7 +90,7 @@ namespace dnf_composer
 			logStream << "CutOffFactor: " << cutOfFactor << std::endl;
 			logStream << "Normalized: " << normalized << std::endl;
 
-			log(LogLevel::INFO, logStream.str());
+			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
 		void LateralInteractions::setParameters(const LateralInteractionsParameters& li_parameters)

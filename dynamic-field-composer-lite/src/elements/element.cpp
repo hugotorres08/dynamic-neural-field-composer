@@ -13,7 +13,7 @@ namespace dnf_composer
 			if(parameters.dimensionParameters.size <= 0)
 			{
 				const std::string logMessage = "Element '" + parameters.identifiers.uniqueName + "' has an invalid size. Thus, Element constructor halted. \n";
-				log(LogLevel::ERROR, logMessage);
+				log(tools::logger::LogLevel::ERROR, logMessage);
 				return;
 				//throw Exception(ErrorCode::ELEM_INVALID_SIZE, commonParameters.identifiers.uniqueName);
 			}
@@ -27,7 +27,7 @@ namespace dnf_composer
 			if (!inputElement)
 			{
 				const std::string logMessage = "Input is null. Thus, addInput() method halted. \n";
-				log(LogLevel::ERROR, logMessage);
+				log(tools::logger::LogLevel::ERROR, logMessage);
 				return;
 				//throw Exception(ErrorCode::ELEM_INPUT_IS_NULL, this->getUniqueIdentifier());
 			}
@@ -36,7 +36,7 @@ namespace dnf_composer
 			if (existingInput != inputs.end())
 			{
 				const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' already exists. Thus, addInput() method halted. \n";
-				log(LogLevel::ERROR, logMessage);
+				log(tools::logger::LogLevel::ERROR, logMessage);
 				return;
 				//throw Exception(ErrorCode::ELEM_INPUT_ALREADY_EXISTS, existingInput->first->getUniqueIdentifier());
 			}
@@ -46,7 +46,7 @@ namespace dnf_composer
 				if (inputElement->getComponentPtr("output")->size() != this->getSize())
 				{
 					const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' has a different size than '" + this->getUniqueName() + "'. Thus, addInput() method halted. \n";
-					log(LogLevel::ERROR, logMessage);
+					log(tools::logger::LogLevel::ERROR, logMessage);
 					return;
 					//throw Exception(ErrorCode::ELEM_INPUT_SIZE_MISMATCH, inputElement->getUniqueIdentifier());
 				}
@@ -55,7 +55,7 @@ namespace dnf_composer
 			inputs[inputElement] = inputComponent;
 
 			const std::string logMessage = "Input '" + inputElement->getUniqueName() +"' added successfully to '" +  this->getUniqueName() + ". \n";
-			log(LogLevel::INFO, logMessage);
+			log(tools::logger::LogLevel::INFO, logMessage);
 		}
 
 		void Element::removeInput(const std::string& inputElementId)
@@ -64,7 +64,7 @@ namespace dnf_composer
 			{
 				if (key->commonParameters.identifiers.uniqueName == inputElementId) {
 					inputs.erase(key);
-					log(LogLevel::INFO, "Input '" + inputElementId + "' removed successfully from '" + this->getUniqueName() + ". \n");
+					log(tools::logger::LogLevel::INFO, "Input '" + inputElementId + "' removed successfully from '" + this->getUniqueName() + ". \n");
 					return;
 				}
 			}
@@ -76,7 +76,7 @@ namespace dnf_composer
 			{
 				if (key->commonParameters.identifiers.uniqueIdentifier == uniqueId) {
 					inputs.erase(key);
-					log(LogLevel::INFO, "Input '" + std::to_string(uniqueId) + "' removed successfully from '" + this->getUniqueName() + ".");
+					log(tools::logger::LogLevel::INFO, "Input '" + std::to_string(uniqueId) + "' removed successfully from '" + this->getUniqueName() + ".");
 					return;
 				}
 			}
@@ -229,7 +229,7 @@ namespace dnf_composer
 
 			logStream << std::endl;
 
-			log(LogLevel::INFO, logStream.str());
+			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
 	}

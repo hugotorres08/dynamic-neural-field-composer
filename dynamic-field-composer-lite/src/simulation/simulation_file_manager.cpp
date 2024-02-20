@@ -9,7 +9,7 @@ namespace dnf_composer
 		: simulation(simulation)
 	{
         filePath = std::string(OUTPUT_DIRECTORY) + "/simulations/simulation_" + simulation->getUniqueIdentifier() + ".json";
-        log(INFO, "Simulation file manager will read and write data regarding this simulation to: " + filePath + ".\n");
+        log(tools::logger::INFO, "Simulation file manager will read and write data regarding this simulation to: " + filePath + ".\n");
 	}
 
 	void SimulationFileManager::saveElementsToJson() const
@@ -30,10 +30,10 @@ namespace dnf_composer
         std::ofstream file(filePath);
         if (file.is_open()) {
             file << elementsJson.dump(4); // Add indentation for readability
-            log(INFO, "Elements saved to: " + filePath + ".\n");
+            log(tools::logger::INFO, "Elements saved to: " + filePath + ".\n");
         }
         else {
-            log(ERROR, "Unable to open file to save elements: " + filePath + ".\n");
+            log(tools::logger::ERROR, "Unable to open file to save elements: " + filePath + ".\n");
         }
 	}
 
@@ -42,7 +42,7 @@ namespace dnf_composer
         // Open the JSON file for reading
         std::ifstream file(filePath);
         if (!file.is_open()) {
-            log(ERROR, "Unable to open file to load elements: " + filePath + ".\n");
+            log(tools::logger::ERROR, "Unable to open file to load elements: " + filePath + ".\n");
             return;
         }
 
@@ -52,11 +52,11 @@ namespace dnf_composer
             file >> elementsJson;
         }
         catch (const std::exception& e) {
-            log(ERROR, "Error reading JSON file: " + std::string(e.what()) + "\n");
+            log(tools::logger::ERROR, "Error reading JSON file: " + std::string(e.what()) + "\n");
             return;
         }
 
-        log(INFO, "Elements loaded from: " + filePath + ".\n");
+        log(tools::logger::INFO, "Elements loaded from: " + filePath + ".\n");
 
         jsonToElements(elementsJson);
 

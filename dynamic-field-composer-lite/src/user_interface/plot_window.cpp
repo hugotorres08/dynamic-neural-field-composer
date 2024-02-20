@@ -110,7 +110,7 @@ namespace dnf_composer
 			plots.emplace_back(parameters);
 
 			const std::string message = "Added a new plot to the application with id: " + parameters.annotations.title + ".\n";
-			log(LogLevel::INFO, message);
+			log(tools::logger::LogLevel::INFO, message);
 		}
 
 		void PlotWindow::renderPlot(const PlotParameters& parameters)

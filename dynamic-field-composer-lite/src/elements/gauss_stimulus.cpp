@@ -38,7 +38,7 @@ namespace dnf_composer
 				else
 				{
 					const std::string message = "Tried to initialize a normalized Gaussian stimulus '" + this->getUniqueName() + "'. With the sum of the output vector equal to zero that is impossible! \n";
-					log(LogLevel::ERROR, message);
+					log(tools::logger::LogLevel::ERROR, message);
 				}
 			}
 
@@ -69,7 +69,7 @@ namespace dnf_composer
 			logStream << "Circular: " << parameters.circular << std::endl;
 			logStream << "Normalized: " << parameters.normalized << std::endl;
 
-			log(LogLevel::INFO, logStream.str());
+			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
 		void GaussStimulus::setParameters(const GaussStimulusParameters& gaussStimulusParameters)

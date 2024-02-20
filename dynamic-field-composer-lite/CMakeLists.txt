@@ -82,6 +82,8 @@ set(tools_headers
     "include/tools/utils.h"
     "include/tools/fourier.h"
     "include/tools/convlv.h"
+    "include/tools/logger.h"
+	"include/tools/resources.h"
 )
 set(exceptions_headers
     "include/exceptions/exception.h"
@@ -98,12 +100,6 @@ set(user_interface_headers
 set(wizards_headers
     "include/wizards/learning_wizard.h"
 )
-set(logging_headers
-    "include/logging/logger.h"
-)
-set(utilities_headers
-    "include/utilities/utilities.h"
-)
 
 set(header 
     ${simulation_headers}
@@ -114,8 +110,6 @@ set(header
     ${user_interface_headers}
     ${user_interface_headers}
     ${wizards_headers}
-    ${logging_headers}
-    ${utilities_headers}
 )
 
 # Set source files
@@ -146,6 +140,7 @@ set(src
     "src/tools/utils.cpp"
     "src/tools/fourier.cpp"
     "src/tools/convlv.cpp"
+    "src/tools/logger.cpp"
 
     "src/exceptions/exception.cpp"
     
@@ -158,10 +153,6 @@ set(src
     "src/user_interface/element_window.cpp"
 
     "src/wizards/learning_wizard.cpp"
-
-    "src/logging/logger.cpp"
-
-    "src/utilities/utilities.cpp"
 )
 
 configure_file(./resources/resources.rc.in ./resources/resources.rc)

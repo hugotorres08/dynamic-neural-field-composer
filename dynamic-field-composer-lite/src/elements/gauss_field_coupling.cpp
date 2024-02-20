@@ -52,7 +52,7 @@ namespace dnf_composer
 
 			logStream << std::endl;
 
-			log(LogLevel::INFO, logStream.str());
+			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
 		void GaussFieldCoupling::updateOutput()

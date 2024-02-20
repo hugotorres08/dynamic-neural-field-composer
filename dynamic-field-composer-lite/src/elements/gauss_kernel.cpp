@@ -83,7 +83,7 @@ namespace dnf_composer
 			logStream << "Circular: " << circular << std::endl;
 			logStream << "Normalized: " << normalized << std::endl;
 
-			log(LogLevel::INFO, logStream.str());
+			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
 		void GaussKernel::setParameters(const GaussKernelParameters& gk_parameters)

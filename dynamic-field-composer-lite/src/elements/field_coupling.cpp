@@ -19,10 +19,10 @@ namespace dnf_composer
 			commonParameters.identifiers.label = ElementLabel::FIELD_COUPLING;
 
 			components["input"] = std::vector<double>(parameters.inputFieldSize);
-			utilities::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
+			tools::utils::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
 
 			// Initialize the weight matrix with random values
-			utilities::fillMatrixWithRandomValues(weights, -1, 1);
+			tools::utils::fillMatrixWithRandomValues(weights, -1, 1);
 
 			weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" + commonParameters.identifiers.uniqueName + "_weights.txt";
 
@@ -81,7 +81,7 @@ namespace dnf_composer
 				break;
 			}
 
-			log(LogLevel::INFO, logStream.str());
+			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
 		void FieldCoupling::getInputFunction()
@@ -117,7 +117,7 @@ namespace dnf_composer
 		void FieldCoupling::resetWeights()
 		{
 			// empty weight matrix
-			utilities::fillMatrixWithRandomValues(weights, 0, 0);
+			tools::utils::fillMatrixWithRandomValues(weights, 0, 0);
 		}
 
 		void FieldCoupling::setUpdateAllWeights(bool updateAllWeights)
@@ -172,7 +172,7 @@ namespace dnf_composer
 			std::tuple<int, int> readWeightsSize = std::make_tuple(0, 0);
 
 			if (file.is_open()) {
-				utilities::resizeMatrix(weights, 0, 0);
+				tools::utils::resizeMatrix(weights, 0, 0);
 				double element;
 				std::vector<double> row;
 				while (file >> element) 
@@ -186,20 +186,20 @@ namespace dnf_composer
 				}
 				file.close();
 				const std::string message = "Weights '" + this->getUniqueName() + "' read successfully from: " + weightsFilePath + ". \n";
-				log(LogLevel::INFO, message);
+				log(tools::logger::LogLevel::INFO, message);
 
 				// Check if dimensions are correct.
 				readWeightsSize = std::make_tuple(static_cast<int>(weights.size()), static_cast<int>(weights[0].size()));
 				if(initialWeightsSize != readWeightsSize)
 				{
-					log(LogLevel::ERROR, "Weight matrix read from file has a different dimensionality compared to the actual matrix size! \n");
+					log(tools::logger::LogLevel::ERROR, "Weight matrix read from file has a different dimensionality compared to the actual matrix size! \n");
 					return false;
 				}
 				return true;	
 			}
 
 			const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " + weightsFilePath + ". \n";
-			log(LogLevel::ERROR, message);
+			log(tools::logger::LogLevel::ERROR, message);
 			
 			return false;
 		}
@@ -217,20 +217,20 @@ namespace dnf_composer
 				}
 				file.close();
 				const std::string message = "Saved weights '" + this->getUniqueName() +"' to: " + weightsFilePath + ". \n";
-				log(LogLevel::INFO, message);
+				log(tools::logger::LogLevel::INFO, message);
 			}
 			else
 			{
 				const std::string message = "Failed to saved weights '" + this->getUniqueName() + "' to: " + weightsFilePath + ". \n";
-				log(LogLevel::ERROR, message);
+				log(tools::logger::LogLevel::ERROR, message);
 			}
 		}
 
 		void FieldCoupling::fillWeightsRandomly()
 		{
-			utilities::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
-			utilities::fillMatrixWithRandomValues(weights, 0.0, 0.0);
-			log(LogLevel::INFO, "Filling the weight matrix with random values. \n");
+			tools::utils::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
+			tools::utils::fillMatrixWithRandomValues(weights, 0.0, 0.0);
+			log(tools::logger::LogLevel::INFO, "Filling the weight matrix with random values. \n");
 			trained = false;
 			writeWeights();
 		}

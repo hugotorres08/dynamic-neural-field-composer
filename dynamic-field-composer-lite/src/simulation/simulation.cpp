@@ -26,7 +26,7 @@ namespace dnf_composer
 			element->init();
 
 		initialized = true;
-		log(LogLevel::INFO, "Simulation initialized.\n");
+		log(tools::logger::LogLevel::INFO, "Simulation initialized.\n");
 	}
 
 	void Simulation::step()
@@ -44,19 +44,19 @@ namespace dnf_composer
 			element->close();
 		
 		initialized = false;
-		log(LogLevel::INFO, "Simulation closed.\n");
+		log(tools::logger::LogLevel::INFO, "Simulation closed.\n");
 	}
 
 	void Simulation::pause()
 	{
 		paused = true;
-		log(LogLevel::INFO, "Simulation paused.\n");
+		log(tools::logger::LogLevel::INFO, "Simulation paused.\n");
 	}
 
 	void Simulation::resume()
 	{
 		paused = false;
-		log(LogLevel::INFO, "Simulation resumed.\n");
+		log(tools::logger::LogLevel::INFO, "Simulation resumed.\n");
 	}
 
 	void Simulation::run(double runTime)
@@ -83,7 +83,7 @@ namespace dnf_composer
 			if (existingElement->getUniqueName() == newElementName) 
 			{
 				const std::string logMessage = "An element with the same unique name already exists '" + newElementName + "'! New element was not added.\n";
-				log(LogLevel::WARNING, logMessage);
+				log(tools::logger::LogLevel::WARNING, logMessage);
 				return;
 			}
 		}
@@ -92,7 +92,7 @@ namespace dnf_composer
 		element->init(); 
 
 		const std::string logMessage = "Element '" + newElementName + "' was added to the simulation.\n";
-		log(LogLevel::INFO, logMessage);
+		log(tools::logger::LogLevel::INFO, logMessage);
 	}
 
 	void Simulation::removeElement(const std::string& elementId)
@@ -106,12 +106,12 @@ namespace dnf_composer
 			{
 				elements.erase(elements.begin() + i);
 				const std::string logMessage = "Element '" + elementId + "' was removed from the simulation.\n";
-				log(LogLevel::INFO, logMessage);
+				log(tools::logger::LogLevel::INFO, logMessage);
 				return;
 			}
 		}
 		const std::string logMessage = "Element '" + elementId + "' was not found and consequently not removed from the simulation.\n";
-		log(LogLevel::FATAL, logMessage);
+		log(tools::logger::LogLevel::FATAL, logMessage);
 	}
 
 	void Simulation::resetElement(const std::string& idOfElementToReset, const std::shared_ptr<element::Element>& newElement)
@@ -125,7 +125,7 @@ namespace dnf_composer
 				element = newElement;
 				element->init();
 				const std::string logMessage = "Element '" + idOfElementToReset + "' was reset in the simulation.\n";
-				log(LogLevel::INFO, logMessage);
+				log(tools::logger::LogLevel::INFO, logMessage);
 				elementFound = true;
 				break;
 			}
@@ -134,7 +134,7 @@ namespace dnf_composer
 		if (!elementFound)
 		{
 			const std::string logMessage = "Element '" + idOfElementToReset + "' was not found and consequently not reset.\n";
-			log(LogLevel::FATAL, logMessage);
+			log(tools::logger::LogLevel::FATAL, logMessage);
 		}
 	}
 
@@ -147,7 +147,7 @@ namespace dnf_composer
 		if (!stimulusElement)
 		{
 			const std::string logMessage = "Element '" + stimulusElementId + "' was not found and consequently no interaction was created.\n";
-			log(LogLevel::FATAL, logMessage);
+			log(tools::logger::LogLevel::FATAL, logMessage);
 			return;
 			//throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, stimulusElementId);
 		}
@@ -155,7 +155,7 @@ namespace dnf_composer
 		if (!receivingElement)
 		{
 			const std::string logMessage = "Element '" + receivingElementId + "' was not found and consequently no interaction was created.\n";
-			log(LogLevel::FATAL, logMessage);
+			log(tools::logger::LogLevel::FATAL, logMessage);
 			return;
 			//throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, receivingElementId);
 		}
@@ -163,7 +163,7 @@ namespace dnf_composer
 		receivingElement->addInput(stimulusElement, stimulusComponent);
 
 		const std::string logMessage = "Interaction created: " + stimulusElementId + " -> " + receivingElementId + '\n';
-		log(LogLevel::INFO, logMessage);
+		log(tools::logger::LogLevel::INFO, logMessage);
 
 	}
 
@@ -235,16 +235,16 @@ namespace dnf_composer
 		// Add the time signature to the filename
 		const std::string filename = std::string(OUTPUT_DIRECTORY) + "/exports/" + id + "_" + componentName + "_" + timeSignature + ".txt";
 
-		const bool success = utilities::saveVectorToFile(component, filename);
+		const bool success = tools::utils::saveVectorToFile(component, filename);
 		if (success)
 		{
 			const std::string logMessage = "Component '" + componentName + "' of element '" + id + "' was exported to file '" + filename + "'.\n";
-			log(LogLevel::INFO, logMessage);
+			log(tools::logger::LogLevel::INFO, logMessage);
 		}
 		else
 		{
 			const std::string logMessage = "Component '" + componentName + "' of element '" + id + "' was not exported to file '" + filename + "'.\n";
-			log(LogLevel::ERROR, logMessage);
+			log(tools::logger::LogLevel::ERROR, logMessage);
 		}
 
 	}

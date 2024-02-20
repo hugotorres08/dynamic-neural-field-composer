@@ -85,7 +85,7 @@ namespace dnf_composer
 			logStream << "CutOffFactor: " << cutOfFactor << std::endl;
 			logStream << "Normalized: " << normalized << std::endl;
 
-			log(LogLevel::INFO, logStream.str());
+			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
 		void MexicanHatKernel::setParameters(const MexicanHatKernelParameters& mhk_parameters)

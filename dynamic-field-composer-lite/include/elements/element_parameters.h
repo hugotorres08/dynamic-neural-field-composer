@@ -4,7 +4,7 @@
 #include <string>
 #include <format>
 
-#include "logging/logger.h"
+#include "tools/logger.h"
 
 namespace dnf_composer
 {
