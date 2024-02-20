@@ -27,8 +27,7 @@ namespace dnf_composer
 		void step() const;
 		void close() const;
 
-		//void activateUserInterfaceWindow(const std::shared_ptr<user_interface::UserInterfaceWindow>& window) const;
-
+		void activateUserInterfaceWindow(const std::shared_ptr<user_interface::UserInterfaceWindow>& window) const;
 		void activateUserInterfaceWindow(user_interface::UserInterfaceWindowType winType, const user_interface::UserInterfaceWindowParameters& winParams = {}) const;
 		void setActivateUserInterfaceAs(bool activateUI);
 

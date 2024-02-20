@@ -118,7 +118,7 @@
         "x_max": 50
     },
     {
-        "amplitude": 1.0,
+        "amplitude": 0.01,
         "d_x": 1.0,
         "inputs": null,
         "label": [
@@ -129,7 +129,7 @@
         "x_max": 100
     },
     {
-        "amplitude": 1.0,
+        "amplitude": 0.01,
         "d_x": 0.5,
         "inputs": null,
         "label": [

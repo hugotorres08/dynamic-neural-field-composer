@@ -60,17 +60,17 @@ int main(int argc, char* argv[])
 		app.activateUserInterfaceWindow(dnf_composer::user_interface::ELEMENT_WINDOW);
 		app.activateUserInterfaceWindow(dnf_composer::user_interface::MONITORING_WINDOW);
 
-		//auto visualization = std::make_shared<dnf_composer::Visualization>(simulation);
 		dnf_composer::user_interface::PlotParameters plotParameters;
 		plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
 		plotParameters.dimensions = { 0, fieldDimensions.x_max, -15, 14, fieldDimensions.d_x };
-		/*visualization->addPlottingData("neural field", "activation");
-		visualization->addPlottingData("neural field", "input");
-		visualization->addPlottingData("neural field", "output");
-		visualization->addPlottingData("k", "output");
-		visualization->addPlottingData("k", "kernel");
-		visualization->addPlottingData("gauss stimulus", "output");*/
-		app.activateUserInterfaceWindow(dnf_composer::user_interface::PLOT_WINDOW, plotParameters);
+		const auto plotWindow = std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters);
+		plotWindow->addPlottingData("neural field", "activation");
+		plotWindow->addPlottingData("neural field", "input");
+		plotWindow->addPlottingData("neural field", "output");
+		plotWindow->addPlottingData("k", "output");
+		plotWindow->addPlottingData("k", "kernel");
+		plotWindow->addPlottingData("gauss stimulus", "output");
+		app.activateUserInterfaceWindow(plotWindow);
 
 		app.init();
 

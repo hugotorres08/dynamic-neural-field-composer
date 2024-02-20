@@ -60,7 +60,7 @@ namespace dnf_composer
 				break;
 			case user_interface::PLOT_WINDOW:
 				const auto plotParameters = dynamic_cast<const user_interface::PlotParameters*>(&winParams);
-				userInterface->activateWindow(std::make_shared<user_interface::PlotWindow>(simulation, *plotParameters, true));
+				userInterface->activateWindow(std::make_shared<user_interface::PlotWindow>(simulation, *plotParameters));
 				break;
 			}
 		}
@@ -73,11 +73,11 @@ namespace dnf_composer
 			userInterface = std::make_shared<user_interface::UserInterface>();
 	}
 
-	/*void Application::activateUserInterfaceWindow(const std::shared_ptr<user_interface::UserInterfaceWindow>& window) const
+	void Application::activateUserInterfaceWindow(const std::shared_ptr<user_interface::UserInterfaceWindow>& window) const
 	{
 		if (activateUserInterface)
 			userInterface->activateWindow(window);
-	}*/
+	}
 
 	bool Application::getCloseUI() const
 	{

@@ -13,8 +13,8 @@ namespace dnf_composer
 
 		struct PlotDimensions
 		{
-			int xMin = 0, xMax = 0, yMin = 0, yMax = 0;
-			double dx = 0.0;
+			int xMin, xMax, yMin, yMax;
+			double dx;
 
 			PlotDimensions()
 				: xMin(0), xMax(0), yMin(0), yMax(0), dx(0.0)
@@ -34,23 +34,27 @@ namespace dnf_composer
 			{}
 
 			PlotAnnotations(std::string title, std::string x_label, std::string y_label)
-				:title(std::move(title)), x_label(std::move(title)), y_label(std::move(title))
+				:title(std::move(title)), x_label(std::move(x_label)), y_label(std::move(y_label))
 			{}
 		};
 
 		struct PlotParameters : UserInterfaceWindowParameters
 		{
 			int id;
-			std::shared_ptr<Visualization> visualization;
 			PlotDimensions dimensions;
 			PlotAnnotations annotations;
+			bool renderDataSelector;
 
 			PlotParameters()
-				: id(0), visualization(nullptr), dimensions(), annotations()
+				: id(0), dimensions(), annotations(), renderDataSelector(true)
 			{}
 
 			PlotParameters(const PlotDimensions& dimensions, PlotAnnotations annotations)
-				: id(0), visualization(nullptr), dimensions(dimensions), annotations(std::move(annotations))
+				: id(0), dimensions(dimensions), annotations(std::move(annotations)), renderDataSelector(true)
+			{}
+
+			PlotParameters(const PlotDimensions& dimensions, PlotAnnotations annotations, bool renderElementSelector)
+				: id(0), dimensions(dimensions), annotations(std::move(annotations)), renderDataSelector(renderElementSelector)
 			{}
 		};
 
@@ -58,20 +62,22 @@ namespace dnf_composer
 		{
 		private:
 			std::vector<PlotParameters> plots;
-			bool elementSelectorWindowSelected;
+			std::shared_ptr<Visualization> visualization;
 		public:
-			PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderElementSelector = true);
-			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters, bool renderElementSelector = true);
-			PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderElementSelector = true);
-			PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotParameters parameters, bool renderElementSelector = true);
+			PlotWindow(const std::shared_ptr<Simulation>& simulation);
+			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters);
+			PlotWindow(const std::shared_ptr<Visualization>& visualization);
+			PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotParameters parameters);
+
+			void addPlottingData(const std::string& elementId, const std::string& componentId) const;
 
 			void render() override;
 			~PlotWindow() override = default;
 		private:
 			void createPlot(PlotParameters& parameters);
-			void renderPlotControl();
-			static void renderPlot(const PlotParameters& parameters);
-			static void renderElementSelector(const PlotParameters& parameters);
+			//void renderPlotControl();
+			void renderPlot(const PlotParameters& parameters) const;
+			void renderElementSelector(const PlotParameters& parameters) const;
 			static void configure(const PlotDimensions& dimensions);
 		};
 	}

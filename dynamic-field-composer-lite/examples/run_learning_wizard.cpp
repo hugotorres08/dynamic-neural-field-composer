@@ -111,42 +111,44 @@ int main(int argc, char* argv[])
 {
 	using namespace dnf_composer;
 
-    // After defining the simulation, we can create the application.
-    auto simulation = getExperimentSimulation();
-    // You can run the application without the user interface by setting the second parameter to false.
-    constexpr bool activateUserInterface = true;
-    const Application app{ simulation, activateUserInterface };
-
-    // After creating the application, we can add the windows we want to display.
-	app.activateUserInterfaceWindow(user_interface::SIMULATION_WINDOW);
-	app.activateUserInterfaceWindow(user_interface::LOG_WINDOW);
-	app.activateUserInterfaceWindow(user_interface::ELEMENT_WINDOW);
-	app.activateUserInterfaceWindow(user_interface::MONITORING_WINDOW);
-
-
-	user_interface::PlotParameters plotParameters;
-	plotParameters.annotations = { "Perceptual field", "Spatial dimension", "Amplitude" };
-	plotParameters.dimensions = { 0, 360, -20, 50, 0.5};
-	//visualization->addPlottingData("perceptual field", "activation");
-	//visualization->addPlottingData("perceptual field", "input");
-	//visualization->addPlottingData("perceptual field", "output");
-	app.activateUserInterfaceWindow(user_interface::PLOT_WINDOW, plotParameters);
-
-	plotParameters.annotations = { "Output field", "Spatial dimension", "Amplitude" };
-	plotParameters.dimensions = { 0, 180, -20, 50, 0.5};
-	//visualization->addPlottingData("output field", "activation");
-	//visualization->addPlottingData("output field", "input");
-	//visualization->addPlottingData("output field", "output");
-	app.activateUserInterfaceWindow(user_interface::PLOT_WINDOW, plotParameters);
-
-	// test the training by adding a stimulus to the perceptual field
-	const element::GaussStimulusParameters gcp_a = { 5, 11, 90};
-	const std::shared_ptr<element::GaussStimulus> gauss_stimulus(new element::GaussStimulus({ "gauss stimulus",{360, 0.5} }, gcp_a));
-	simulation->addElement(gauss_stimulus);
-	simulation->createInteraction("gauss stimulus", "output", "perceptual field");
-
 	try
 	{
+	    // After defining the simulation, we can create the application.
+	    auto simulation = getExperimentSimulation();
+	    // You can run the application without the user interface by setting the second parameter to false.
+	    constexpr bool activateUserInterface = true;
+	    const Application app{ simulation, activateUserInterface };
+
+	    // After creating the application, we can add the windows we want to display.
+		app.activateUserInterfaceWindow(user_interface::SIMULATION_WINDOW);
+		app.activateUserInterfaceWindow(user_interface::LOG_WINDOW);
+		app.activateUserInterfaceWindow(user_interface::ELEMENT_WINDOW);
+		app.activateUserInterfaceWindow(user_interface::MONITORING_WINDOW);
+
+		user_interface::PlotParameters perceptualFieldPlotParams;
+		perceptualFieldPlotParams.annotations = { "Perceptual field", "Spatial dimension", "Amplitude" };
+		perceptualFieldPlotParams.dimensions = { 0, 360, -20, 50, 0.5};
+		auto perceptualFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, perceptualFieldPlotParams);
+		perceptualFieldPlotWindow->addPlottingData("perceptual field", "activation");
+		perceptualFieldPlotWindow->addPlottingData("perceptual field", "input");
+		perceptualFieldPlotWindow->addPlottingData("perceptual field", "output");
+		app.activateUserInterfaceWindow(perceptualFieldPlotWindow);
+
+		user_interface::PlotParameters outputFieldPlotParams;
+		outputFieldPlotParams.annotations = { "Output field", "Spatial dimension", "Amplitude" };
+		outputFieldPlotParams.dimensions = { 0, 180, -20, 50, 0.5};
+		auto outputFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, outputFieldPlotParams);
+		outputFieldPlotWindow->addPlottingData("output field", "activation");
+		outputFieldPlotWindow->addPlottingData("output field", "input");
+		outputFieldPlotWindow->addPlottingData("output field", "output");
+		app.activateUserInterfaceWindow(outputFieldPlotWindow);
+
+		// test the training by adding a stimulus to the perceptual field
+		const element::GaussStimulusParameters gcp_a = { 5, 11, 90};
+		const std::shared_ptr<element::GaussStimulus> gauss_stimulus(new element::GaussStimulus({ "gauss stimulus",{360, 0.5} }, gcp_a));
+		simulation->addElement(gauss_stimulus);
+		simulation->createInteraction("gauss stimulus", "output", "perceptual field");
+
 		app.init();
 
 		bool userRequestClose = false;

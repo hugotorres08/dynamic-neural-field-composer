@@ -160,13 +160,57 @@ int main(int argc, char* argv[])
 		simulation->createInteraction("intention field", "output", "il -> ael");
 		simulation->createInteraction("il -> ael", "output", "action execution field");
 
-
+		// Create User Interface windows
 		app.activateUserInterfaceWindow(user_interface::SIMULATION_WINDOW);
 		app.activateUserInterfaceWindow(user_interface::LOG_WINDOW);
 		app.activateUserInterfaceWindow(user_interface::ELEMENT_WINDOW);
 		app.activateUserInterfaceWindow(user_interface::MONITORING_WINDOW);
-		user_interface::PlotParameters plotParameters{ {0, dimension_parameters.x_max, -15, 14, dimension_parameters.d_x},{ "Intention field", "Spatial dimension", "Amplitude" } };
-		app.activateUserInterfaceWindow(user_interface::PLOT_WINDOW, plotParameters);
+
+		// Create a plot for each neural field
+		user_interface::PlotParameters actionObservationPlotParameters;
+		actionObservationPlotParameters.annotations = { "Action observation field", "Spatial dimension", "Amplitude" };
+		actionObservationPlotParameters.dimensions = { 0, dimension_parameters.x_max, -10, 20, dimension_parameters.d_x };
+		const auto actionObservationPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, actionObservationPlotParameters);
+		actionObservationPlotWindow->addPlottingData("action observation field", "activation");
+		actionObservationPlotWindow->addPlottingData("action observation field", "input");
+		actionObservationPlotWindow->addPlottingData("action observation field", "output");
+		app.activateUserInterfaceWindow(actionObservationPlotWindow);
+
+		user_interface::PlotParameters intentionFieldPlotParameters;
+		intentionFieldPlotParameters.annotations = { "Intention field", "Spatial dimension", "Amplitude" };
+		intentionFieldPlotParameters.dimensions = { 0, dimension_parameters.x_max, -10, 20, dimension_parameters.d_x };
+		const auto intentionFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, intentionFieldPlotParameters);
+		intentionFieldPlotWindow->addPlottingData("intention field", "activation");
+		intentionFieldPlotWindow->addPlottingData("intention field", "input");
+		intentionFieldPlotWindow->addPlottingData("intention field", "output");
+		app.activateUserInterfaceWindow(intentionFieldPlotWindow);
+
+		user_interface::PlotParameters csglFieldPlotParameters;
+		csglFieldPlotParameters.annotations = { "Common sub-goals field", "Spatial dimension", "Amplitude" };
+		csglFieldPlotParameters.dimensions = { 0, dimension_parameters.x_max, -10, 20, dimension_parameters.d_x };
+		const auto csglFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, csglFieldPlotParameters);
+		csglFieldPlotWindow->addPlottingData("common sub-goals field", "activation");
+		csglFieldPlotWindow->addPlottingData("common sub-goals field", "input");
+		csglFieldPlotWindow->addPlottingData("common sub-goals field", "output");
+		app.activateUserInterfaceWindow(csglFieldPlotWindow);
+
+		user_interface::PlotParameters omlFieldPlotParameters;
+		omlFieldPlotParameters.annotations = { "Object memory field", "Spatial dimension", "Amplitude" };
+		omlFieldPlotParameters.dimensions = { 0, dimension_parameters.x_max, -10, 20, dimension_parameters.d_x };
+		const auto omlFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, omlFieldPlotParameters);
+		omlFieldPlotWindow->addPlottingData("object memory field", "activation");
+		omlFieldPlotWindow->addPlottingData("object memory field", "input");
+		omlFieldPlotWindow->addPlottingData("object memory field", "output");
+		app.activateUserInterfaceWindow(omlFieldPlotWindow);
+
+		user_interface::PlotParameters aelFieldPlotParameters;
+		aelFieldPlotParameters.annotations = { "Action execution field", "Spatial dimension", "Amplitude" };
+		aelFieldPlotParameters.dimensions = { 0, dimension_parameters.x_max, -10, 20, dimension_parameters.d_x };
+		const auto aelFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, aelFieldPlotParameters);
+		aelFieldPlotWindow->addPlottingData("action execution field", "activation");
+		aelFieldPlotWindow->addPlottingData("action execution field", "input");
+		aelFieldPlotWindow->addPlottingData("action execution field", "output");
+		app.activateUserInterfaceWindow(aelFieldPlotWindow);
 
 		app.init();
 

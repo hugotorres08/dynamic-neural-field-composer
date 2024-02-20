@@ -55,8 +55,14 @@ int main(int argc, char* argv[])
 		app.activateUserInterfaceWindow(user_interface::LOG_WINDOW);
 		app.activateUserInterfaceWindow(user_interface::ELEMENT_WINDOW);
 		app.activateUserInterfaceWindow(user_interface::MONITORING_WINDOW);
-		user_interface::PlotParameters plotParameters{ {0, 100, -15, 14, 1.0},{ "Plot", "Spatial dimension", "Amplitude" } };
-		app.activateUserInterfaceWindow(user_interface::PLOT_WINDOW, plotParameters);
+		user_interface::PlotParameters plotParameters;
+		plotParameters.annotations = { "Element factory example", "Spatial dimension", "Amplitude" };
+		plotParameters.dimensions = { 0, 100, -20, 50, 1.0};
+		const auto plotWindow = std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters);
+		plotWindow->addPlottingData("field", "activation");
+		plotWindow->addPlottingData("field", "input");
+		plotWindow->addPlottingData("field", "output");
+		app.activateUserInterfaceWindow(plotWindow);
 
 		app.init();
 

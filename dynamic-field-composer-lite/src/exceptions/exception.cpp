@@ -100,6 +100,8 @@ namespace dnf_composer
 			return "Invalid parameter for simulation.";
 		case ErrorCode::LOG_LOCAL_TIME_ERROR:
 			return "Error trying to obtain local time for error.";
+		case ErrorCode::PLOT_INVALID_VIS_OBJ:
+			return "You tried to create a plot without a visualization object.";
 		default:
 			return "An error was detected but no suitable response was found!";
 		}

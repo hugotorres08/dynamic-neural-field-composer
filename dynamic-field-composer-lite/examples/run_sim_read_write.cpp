@@ -43,8 +43,8 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	simulation->addElement(w_in_out);
 
 	// create noise stimulus and noise kernel
-	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_in(new dnf_composer::element::NormalNoise({ "noise in", inputFieldSpatialDimensionParameters }, { 1 }));
-	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_out(new dnf_composer::element::NormalNoise({ "noise out", outputFieldSpatialDimensionParameters }, { 1 }));
+	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_in(new dnf_composer::element::NormalNoise({ "noise in", inputFieldSpatialDimensionParameters }, { 0.01 }));
+	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_out(new dnf_composer::element::NormalNoise({ "noise out", outputFieldSpatialDimensionParameters }, { 0.01 }));
 	const std::shared_ptr<dnf_composer::element::GaussKernel> noise_kernel_in(new dnf_composer::element::GaussKernel({ "noise kernel in", inputFieldSpatialDimensionParameters }, { 0.25, 0.2 }));
 	const std::shared_ptr<dnf_composer::element::GaussKernel> noise_kernel_out(new dnf_composer::element::GaussKernel({ "noise kernel out", outputFieldSpatialDimensionParameters }, { 0.25, 0.2 }));
 
@@ -86,13 +86,13 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 int main(int argc, char* argv[])
 {
 	// After defining the simulation, we can create the application.
-	//const auto simulation = getExperimentSimulation();
-	const auto simulation = std::make_shared<dnf_composer::Simulation>("run sim read write to json",5, 0, 0);
+	const auto simulation = getExperimentSimulation();
+	//const auto simulation = std::make_shared<dnf_composer::Simulation>("run sim read write to json",5, 0, 0);
 
 	// Create a simulation file manager to read and write simulations from .json files
 	const dnf_composer::SimulationFileManager sfm{ simulation };
-	//sfm.saveElementsToJson();
-	sfm.loadElementsFromJson();
+	sfm.saveElementsToJson();
+	//sfm.loadElementsFromJson();
 
 	// You can run the application without the user interface by setting the second parameter to false.
 	constexpr bool activateUserInterface = true;

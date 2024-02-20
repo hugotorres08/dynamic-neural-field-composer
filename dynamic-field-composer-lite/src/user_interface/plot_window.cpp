@@ -8,11 +8,10 @@ namespace dnf_composer
 {
 	namespace user_interface
 	{
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, bool renderElementSelector)
-			:elementSelectorWindowSelected(renderElementSelector)
+		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation)
+			: visualization(std::make_shared<Visualization>(simulation))
 		{
 			PlotParameters parameters;
-			parameters.visualization = std::make_shared<Visualization>(simulation);
 			parameters.dimensions = { 0, 100, -30, 40 , 1.0};
 			parameters.annotations.title = "Plot window ";
 			parameters.annotations.x_label = "Spatial dimension";
@@ -20,18 +19,16 @@ namespace dnf_composer
 			createPlot(parameters);
 		}
 
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters, bool renderElementSelector)
-			:elementSelectorWindowSelected(renderElementSelector)
+		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters)
+			: visualization(std::make_shared<Visualization>(simulation))
 		{
-			parameters.visualization = std::make_shared<Visualization>(simulation);
 			createPlot(parameters);
 		}
 
-		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, bool renderElementSelector)
-			:elementSelectorWindowSelected(renderElementSelector)
+		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization)
+			: visualization(visualization)
 		{
 			PlotParameters parameters;
-			parameters.visualization = visualization;
 			parameters.dimensions = { 0, 100, -30, 40, 1.0 };
 			parameters.annotations.title = "Plot window ";
 			parameters.annotations.x_label = "Spatial dimension";
@@ -39,69 +36,71 @@ namespace dnf_composer
 			createPlot(parameters);
 		}
 
-		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotParameters parameters, bool renderElementSelector)
-			:elementSelectorWindowSelected(renderElementSelector)
+		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotParameters parameters)
+			: visualization(visualization)
 		{
-			parameters.visualization = visualization;
 			createPlot(parameters);
+		}
+
+		void PlotWindow::addPlottingData(const std::string& elementId, const std::string& componentId) const
+		{
+			visualization->addPlottingData(elementId, componentId);
 		}
 
 		void PlotWindow::render()
 		{
-			if (elementSelectorWindowSelected)
-				renderPlotControl();
 			for(const auto& plot : plots)
 			{
-				if(elementSelectorWindowSelected)
+				if(plot.renderDataSelector)
 					renderElementSelector(plot);
 				renderPlot(plot);
 			}
 		}
 
-		void PlotWindow::renderPlotControl()
-		{
-			if (ImGui::Begin("Plot control"))
-			{
-				if (ImGui::CollapsingHeader("Create new plot"))
-				{
-					static char title[CHAR_SIZE] = "This is a plot title";
-					ImGui::InputTextWithHint("title", "enter text here", title, IM_ARRAYSIZE(title));
+		//void PlotWindow::renderPlotControl()
+		//{
+		//	if (ImGui::Begin("Plot control"))
+		//	{
+		//		if (ImGui::CollapsingHeader("Create new plot"))
+		//		{
+		//			static char title[CHAR_SIZE] = "This is a plot title";
+		//			ImGui::InputTextWithHint("title", "enter text here", title, IM_ARRAYSIZE(title));
 
-					static char x_label[CHAR_SIZE] = "x label";
-					ImGui::InputTextWithHint("x_label", "enter text here", x_label, IM_ARRAYSIZE(x_label));
+		//			static char x_label[CHAR_SIZE] = "x label";
+		//			ImGui::InputTextWithHint("x_label", "enter text here", x_label, IM_ARRAYSIZE(x_label));
 
-					static char y_label[CHAR_SIZE] = "y label";
-					ImGui::InputTextWithHint("y_label", "enter text here", y_label, IM_ARRAYSIZE(y_label));
+		//			static char y_label[CHAR_SIZE] = "y label";
+		//			ImGui::InputTextWithHint("y_label", "enter text here", y_label, IM_ARRAYSIZE(y_label));
 
-					static int x_min = 0;
-					ImGui::InputInt("x_min", &x_min, 1.0, 10.0);
+		//			static int x_min = 0;
+		//			ImGui::InputInt("x_min", &x_min, 1.0, 10.0);
 
-					static int x_max = 100;
-					ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
+		//			static int x_max = 100;
+		//			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
 
-					static int y_min = -10;
-					ImGui::InputInt("y_min", &y_min, 1.0, 10.0);
+		//			static int y_min = -10;
+		//			ImGui::InputInt("y_min", &y_min, 1.0, 10.0);
 
-					static int y_max = 20;
-					ImGui::InputInt("y_max", &y_max, 1.0, 10.0);
+		//			static int y_max = 20;
+		//			ImGui::InputInt("y_max", &y_max, 1.0, 10.0);
 
-					static double d_x = 1.0;
-					ImGui::InputDouble("d_x", &d_x, 0.05, 0.1);
+		//			static double d_x = 1.0;
+		//			ImGui::InputDouble("d_x", &d_x, 0.05, 0.1);
 
 
-					if (ImGui::Button("Add", { 100.0f, 30.0f }))
-					{
-						PlotParameters parameters;
-						parameters.annotations = {title, x_label, y_label};
-						parameters.dimensions = {x_min, x_max, y_min, y_max, d_x};
-						std::shared_ptr<Simulation> simulation = plots[0].visualization->getAssociatedSimulationPtr();
-						parameters.visualization = std::make_shared<Visualization>(simulation);
-						createPlot(parameters);
-					}
-				}
-			}
-			ImGui::End();
-		}
+		//			if (ImGui::Button("Add", { 100.0f, 30.0f }))
+		//			{
+		//				PlotParameters parameters;
+		//				parameters.annotations = {title, x_label, y_label};
+		//				parameters.dimensions = {x_min, x_max, y_min, y_max, d_x};
+		//				std::shared_ptr<Simulation> simulation = plots[0].visualization->getAssociatedSimulationPtr();
+		//				parameters.visualization = std::make_shared<Visualization>(simulation);
+		//				createPlot(parameters);
+		//			}
+		//		}
+		//	}
+		//	ImGui::End();
+		//}
 
 		void PlotWindow::createPlot( PlotParameters& parameters)
 		{
@@ -113,7 +112,7 @@ namespace dnf_composer
 			log(tools::logger::LogLevel::INFO, message);
 		}
 
-		void PlotWindow::renderPlot(const PlotParameters& parameters)
+		void PlotWindow::renderPlot(const PlotParameters& parameters) const
 		{
 			configure(parameters.dimensions);
 
@@ -130,11 +129,11 @@ namespace dnf_composer
 					ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str());
 					ImPlot::SetupLegend(ImPlotLocation_NorthEast, ImPlotLegendFlags_Outside);
 
-					const int numOfPlots = parameters.visualization->getNumberOfPlots();
+					const int numOfPlots = visualization->getNumberOfPlots();
 					for (int j = 0; j < numOfPlots; j++)
 					{
-						std::string label = parameters.visualization->getPlottingLabel(j);
-						std::vector<double> data = *parameters.visualization->getPlottingData(j);
+						std::string label = visualization->getPlottingLabel(j);
+						std::vector<double> data = *visualization->getPlottingData(j);
 
 						// Shift x-values by 1 unit and scale
 						std::vector<double> shiftedXValues(data.size());
@@ -150,9 +149,9 @@ namespace dnf_composer
 			ImGui::End();
 		}
 
-		void PlotWindow::renderElementSelector(const PlotParameters& parameters)
+		void PlotWindow::renderElementSelector(const PlotParameters& parameters) const
 		{
-			const auto simulation = parameters.visualization->getAssociatedSimulationPtr();
+			const auto simulation = visualization->getAssociatedSimulationPtr();
 			const int numberOfElementsInSimulation = simulation->getNumberOfElements();
 
 			static std::string selectedElementId{};
@@ -223,7 +222,7 @@ namespace dnf_composer
 
 				if (ImGui::Button("Add", { 100.0f, 30.0f }))
 				{
-					parameters.visualization->addPlottingData(selectedElementId, simulationElement->getComponentList()[currentComponentIdx]);
+					visualization->addPlottingData(selectedElementId, simulationElement->getComponentList()[currentComponentIdx]);
 				}
 			}
 			ImGui::End();
