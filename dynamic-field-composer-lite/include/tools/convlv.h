@@ -11,23 +11,26 @@
 
 #define SQR(a) ((a)*(a))
 
-namespace tools
+namespace dnf_composer
 {
-	namespace math
+	namespace tools
 	{
-		namespace numerical_recipes
+		namespace math
 		{
+			namespace numerical_recipes
+			{
 
-	        using namespace std;
+				using namespace std;
 
-	        typedef double Doub;
-	        typedef int Int;
-	        typedef vector<double> VecDoub;
+				typedef double Doub;
+				typedef int Int;
+				typedef vector<double> VecDoub;
 
 
-	        void convlv(const VecDoub& data, const VecDoub& respns, const Int isign, VecDoub& ans);
+				void convlv(const VecDoub& data, const VecDoub& respns, const Int isign, VecDoub& ans);
 
-	        void convlv_valid(const VecDoub& data, const VecDoub& respns, const Int isign, VecDoub& ans);
-	    }
+				void convlv_valid(const VecDoub& data, const VecDoub& respns, const Int isign, VecDoub& ans);
+			}
+		}
 	}
 }

@@ -4,38 +4,42 @@
 
 #include "tools/utils.h"
 
-namespace tools
+namespace dnf_composer
 {
-	namespace utils
+	namespace tools
 	{
-		int countNumOfLinesInFile(const std::string& filename)
+		namespace utils
 		{
-			std::ifstream file(filename);
-			if (file.is_open()) {
-				int lineCount = 0;
-				std::string line;
-				while (std::getline(file, line)) {
-					lineCount++;
-				}
-				file.close();
-				return lineCount;
-			}
-
-			return -1; // Return -1 to indicate an error
-		}
-
-		bool saveVectorToFile(const std::vector<double>& vector, const std::string& filename)
-		{
-			std::ofstream file(filename);
-			if (file.is_open())
+			int countNumOfLinesInFile(const std::string& filename)
 			{
-				for (auto& element : vector)
-					file << element << " ";
-				file.close();
-				return true;
+				std::ifstream file(filename);
+				if (file.is_open()) {
+					int lineCount = 0;
+					std::string line;
+					while (std::getline(file, line)) {
+						lineCount++;
+					}
+					file.close();
+					return lineCount;
+				}
+
+				return -1; // Return -1 to indicate an error
 			}
-			return false;
+
+			bool saveVectorToFile(const std::vector<double>& vector, const std::string& filename)
+			{
+				std::ofstream file(filename);
+				if (file.is_open())
+				{
+					for (auto& element : vector)
+						file << element << " ";
+					file.close();
+					return true;
+				}
+				return false;
+			}
 		}
 	}
 }
+
 

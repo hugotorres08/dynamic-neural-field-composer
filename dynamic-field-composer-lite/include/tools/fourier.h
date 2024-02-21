@@ -7,35 +7,39 @@
 
 #define SWAP(a,b) {temp=(a);(a)=(b);(b)=temp;}
 
-namespace tools
+namespace dnf_composer
 {
-    namespace math
+    namespace tools
     {
-        namespace fourier
+        namespace math
         {
-            using namespace std;
+            namespace fourier
+            {
+                using namespace std;
 
-            typedef double Doub;
-            typedef int Int;
-            typedef complex<double> Complex;
-            typedef vector<double> VecDoub;
-            typedef vector<Complex> VecComplex;
+                typedef double Doub;
+                typedef int Int;
+                typedef complex<double> Complex;
+                typedef vector<double> VecDoub;
+                typedef vector<Complex> VecComplex;
 
 
-            void four1(Doub* data, const Int n, const Int isign);
+                void four1(Doub* data, const Int n, const Int isign);
 
-            void four1(VecDoub& data, const Int isign);
+                void four1(VecDoub& data, const Int isign);
 
-            void four1(VecComplex& data, const Int isign);
+                void four1(VecComplex& data, const Int isign);
 
-            void realft(VecDoub& data, const Int isign);
+                void realft(VecDoub& data, const Int isign);
 
-            void sinft(VecDoub& y);
+                void sinft(VecDoub& y);
 
-            void cosft1(VecDoub& y);
+                void cosft1(VecDoub& y);
 
-            void cosft2(VecDoub& y, const Int isign);
+                void cosft2(VecDoub& y, const Int isign);
 
+            }
         }
     }
+
 }
