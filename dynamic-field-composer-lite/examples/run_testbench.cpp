@@ -5,40 +5,48 @@
 #include "dynamic-neural-field-composer.h"
 
 
-const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 200, 0.5 };
+const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 100, 1.0 };
 
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
 	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("test sim", 1, 0, 0);
 
-
 	const dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 50 };
 	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus(new dnf_composer::element::GaussStimulus({ "gauss stimulus", fieldDimensions }, gcp_a));simulation->addElement(gauss_stimulus);
 
-	//dnf_composer::element::GaussKernelParameters gkp1;
-	//gkp1.amplitude = 10;
-	//gkp1.sigma = 8;
-	//const std::shared_ptr<dnf_composer::element::GaussKernel> k(new dnf_composer::element::GaussKernel({ "k", fieldDimensions }, gkp1));
-	//simulation->addElement(k);
+	const dnf_composer::element::LateralInteractionsParameters lip1 = { 3,7.2,12,6.4, -0.51 };
+	const std::shared_ptr<dnf_composer::element::LateralInteractions> k_1(new dnf_composer::element::LateralInteractions({ "k 1", fieldDimensions }, lip1));
+	simulation->addElement(k_1);
 
-	//const dnf_composer::element::MexicanHatKernelParameters mhkp = { 3,20,12,10 };
-	//const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_(new dnf_composer::element::MexicanHatKernel({ "k_", fieldDimensions }, mhkp));
-	//simulation->addElement(k_);
-
-	const dnf_composer::element::LateralInteractionsParameters lip = { 3,7.2,12,6.4, -0.51 };
-	const std::shared_ptr<dnf_composer::element::LateralInteractions> k(new dnf_composer::element::LateralInteractions({ "k", fieldDimensions }, lip));
-	simulation->addElement(k);
-
-	// create neural field
 	const dnf_composer::element::SigmoidFunction activationFunction{ 0, 4 };
 	const dnf_composer::element::NeuralFieldParameters nfp1 = { 20, -10 , activationFunction };
-	const std::shared_ptr<dnf_composer::element::NeuralField> neural_field(new dnf_composer::element::NeuralField({ "neural field", fieldDimensions }, nfp1));
+	const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_1(new dnf_composer::element::NeuralField({ "neural field 1", fieldDimensions }, nfp1));
+	simulation->addElement(neural_field_1);
 
-	simulation->addElement(neural_field);
+	neural_field_1->addInput(k_1);
+	neural_field_1->addInput(gauss_stimulus);
+	k_1->addInput(neural_field_1);
 
-	neural_field->addInput(k);
-	neural_field->addInput(gauss_stimulus);
-	k->addInput(neural_field);
+	const dnf_composer::element::LateralInteractionsParameters lip2 = { 3,7.2,12,6.4, -0.51 };
+	const std::shared_ptr<dnf_composer::element::LateralInteractions> k_2(new dnf_composer::element::LateralInteractions({ "k 2", fieldDimensions }, lip2));
+	simulation->addElement(k_2);
+
+	const dnf_composer::element::NeuralFieldParameters nfp2 = { 20, -10 , activationFunction };
+	const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_2(new dnf_composer::element::NeuralField({ "neural field 2", fieldDimensions }, nfp2));
+	simulation->addElement(neural_field_2);
+
+	neural_field_2->addInput(k_2);
+	k_2->addInput(neural_field_2);
+
+	// excitatory connections between fields
+	dnf_composer::element::GaussKernelParameters gkp1;
+	gkp1.amplitude = 10;
+	gkp1.sigma = 8;
+	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1_2(new dnf_composer::element::GaussKernel({ "k 1 2", fieldDimensions }, gkp1));
+	simulation->addElement(k_1_2);
+
+	neural_field_2->addInput(k_1_2);
+	k_1_2->addInput(neural_field_1);
 
 	return simulation;
 }
@@ -54,6 +62,9 @@ int main(int argc, char* argv[])
 		constexpr bool activateUserInterface = true;
 		const dnf_composer::Application app{ simulation, activateUserInterface };
 
+		const dnf_composer::SimulationFileManager sfm{ simulation };
+		sfm.saveElementsToJson();
+
 		// After creating the application, we can add the windows we want to display.
 		app.activateUserInterfaceWindow(dnf_composer::user_interface::SIMULATION_WINDOW);
 		app.activateUserInterfaceWindow(dnf_composer::user_interface::LOG_WINDOW);
@@ -64,12 +75,6 @@ int main(int argc, char* argv[])
 		plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
 		plotParameters.dimensions = { 0, fieldDimensions.x_max, -15, 14, fieldDimensions.d_x };
 		const auto plotWindow = std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters);
-		plotWindow->addPlottingData("neural field", "activation");
-		plotWindow->addPlottingData("neural field", "input");
-		plotWindow->addPlottingData("neural field", "output");
-		plotWindow->addPlottingData("k", "output");
-		plotWindow->addPlottingData("k", "kernel");
-		plotWindow->addPlottingData("gauss stimulus", "output");
 		app.activateUserInterfaceWindow(plotWindow);
 
 		app.init();

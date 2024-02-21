@@ -8,6 +8,10 @@
 #include "exceptions/exception.h"
 #include "user_interface/logger_window.h"
 
+#ifdef ERROR
+#undef ERROR
+#endif
+
 namespace dnf_composer
 {
 	namespace tools
