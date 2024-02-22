@@ -14,8 +14,8 @@ namespace dnf_composer
 			bool normalized;  // default is true
 			std::array<int, 2> kernelRange;
 			std::vector<int> extIndex;
-			double fullSum = 0.0;
-			int cutOfFactor = 5; // do not change this
+			double fullSum;
+			int cutOfFactor;
 		public:
 			Kernel(const ElementCommonParameters& elementCommonParameters);
 			~Kernel() override = default;
