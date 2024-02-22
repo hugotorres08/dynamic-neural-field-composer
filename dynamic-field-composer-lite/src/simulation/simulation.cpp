@@ -18,6 +18,91 @@ namespace dnf_composer
 		elements = {};
 	}
 
+	Simulation::Simulation(const Simulation& other)
+		:	initialized(other.initialized),
+			paused(other.paused),
+			uniqueIdentifier(other.uniqueIdentifier), 
+			deltaT(other.deltaT),
+			tZero(other.tZero),
+			t(other.t) 
+	{
+		// Deep copy of elements vector, assuming Element has a clone() method
+		elements.reserve(other.elements.size());
+		std::transform(other.elements.begin(), other.elements.end(), std::back_inserter(elements),
+			[](const std::shared_ptr<element::Element>& originalElem) -> std::shared_ptr<element::Element> {
+				return originalElem->clone(); // This line assumes that Element has a clone() method
+			});
+	}
+
+	Simulation& Simulation::operator=(const Simulation& other)
+	{
+		if (this == &other)
+			return *this; // Self-assignment, do nothing
+
+		// Copy simple and built-in type members
+		initialized = other.initialized;
+		paused = other.paused;
+		uniqueIdentifier = other.uniqueIdentifier; // Make unique if necessary
+		deltaT = other.deltaT;
+		tZero = other.tZero;
+		t = other.t;
+
+		// Clear the current elements and deep copy from other
+		elements.clear();
+		for (const auto& elem : other.elements)
+			elements.push_back(elem->clone());
+
+		return *this;
+	}
+
+	Simulation::Simulation(Simulation&& other) noexcept
+		: initialized(other.initialized), // Transfer basic types
+		paused(other.paused),
+		elements(std::move(other.elements)), // Use std::move for vector and other container types
+		uniqueIdentifier(std::move(other.uniqueIdentifier)), // std::move for std::string and similar
+		deltaT(other.deltaT),
+		tZero(other.tZero),
+		t(other.t)
+	{
+		// Set the source object's basic types to default values if necessary
+		other.initialized = false;
+		other.paused = false;
+		other.deltaT = 0;
+		other.tZero = 0;
+		other.t = 0;
+
+		// No need to clear other.elements or other.uniqueIdentifier as std::move has transferred their ownership
+		// and left the source object in an empty or default state.
+	}
+
+	Simulation& Simulation::operator=(Simulation&& other) noexcept {
+		if (this == &other) {
+			// Handle self-assignment
+			return *this;
+		}
+
+		// Transfer basic types and resources
+		initialized = other.initialized;
+		paused = other.paused;
+		elements = std::move(other.elements); // Transfer ownership of vector
+		uniqueIdentifier = std::move(other.uniqueIdentifier); // Transfer ownership of string
+		deltaT = other.deltaT;
+		tZero = other.tZero;
+		t = other.t;
+
+		// Reset the source object's state
+		other.initialized = false;
+		other.paused = false;
+		other.deltaT = 1; // Reset to default or 0, depending on your class design
+		other.tZero = 0;
+		other.t = 0;
+
+		// Since std::move was used on the vector and string, no further action
+		// is required to clear them in the source object; they are already empty.
+
+		return *this;
+	}
+
 	void Simulation::init()
 	{
 		paused = false;

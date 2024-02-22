@@ -86,6 +86,13 @@ namespace dnf_composer
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
+		std::shared_ptr<Element> GaussKernel::clone() const
+		{
+			auto cloned = std::make_shared<GaussKernel>(*this);
+			// If there are deep copy specifics that the copy constructor doesn't handle, do them here.
+			return cloned;
+		}
+
 		void GaussKernel::setParameters(const GaussKernelParameters& gk_parameters)
 		{
 			parameters = gk_parameters;

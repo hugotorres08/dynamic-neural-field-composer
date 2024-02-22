@@ -26,10 +26,10 @@ namespace dnf_composer
 		double t;
 	public:
 		Simulation(std::string identifier = "default name", double deltaT = 1, double tZero = 0, double t = 0);
-		Simulation(const Simulation&) = delete;
-		Simulation& operator=(const Simulation&) = delete;
-		Simulation(Simulation&&) = delete;
-		Simulation& operator=(Simulation&&) = delete;
+		Simulation(const Simulation& other);
+		Simulation& operator=(const Simulation& other);
+		Simulation(Simulation&& other) noexcept;
+		Simulation& operator=(Simulation&&) noexcept;
 
 		void init();
 		void step();

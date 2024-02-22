@@ -39,6 +39,13 @@ namespace dnf_composer
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
+		std::shared_ptr<Element> NormalNoise::clone() const
+		{
+			auto cloned = std::make_shared<NormalNoise>(*this);
+			// If there are deep copy specifics that the copy constructor doesn't handle, do them here.
+			return cloned;
+		}
+
 		void NormalNoise::setParameters(NormalNoiseParameters normalNoiseParameters)
 		{
 			parameters = normalNoiseParameters;

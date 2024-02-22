@@ -3,7 +3,7 @@
 #include <string>
 #include <chrono>
 
-#include "./user_interface/user_interface_window.h"
+#include "user_interface/user_interface_window.h"
 
 namespace dnf_composer
 {

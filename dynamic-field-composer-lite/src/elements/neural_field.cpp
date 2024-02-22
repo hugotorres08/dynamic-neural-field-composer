@@ -80,6 +80,13 @@ namespace dnf_composer
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
+		std::shared_ptr<Element> NeuralField::clone() const
+		{
+			auto cloned = std::make_shared<NeuralField>(*this);
+			// If there are deep copy specifics that the copy constructor doesn't handle, do them here.
+			return cloned;
+		}
+
 		void NeuralField::calculateActivation(double t, double deltaT)
 		{
 			for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
@@ -91,7 +98,6 @@ namespace dnf_composer
 
 		void NeuralField::calculateOutput()
 		{
-
 			components["output"] = parameters.activationFunction->operator()(components["activation"]);
 		}
 

@@ -13,7 +13,6 @@
 
 namespace dnf_composer
 {
-
 	namespace element
 	{
 		class Element
@@ -25,15 +24,12 @@ namespace dnf_composer
 		public:
 			Element(const ElementCommonParameters& parameters);
 
-			Element(const Element&) = delete;
-			Element& operator=(const Element&) = delete;
-			Element(Element&&) = delete;
-			Element& operator=(Element&&) = delete;
-
 			virtual void init() = 0;
 			virtual void step(double t, double deltaT) = 0;
 			virtual void close() = 0;
 			virtual void printParameters() = 0;
+			virtual std::shared_ptr<Element> clone() const = 0;
+			virtual ~Element() = default;
 
 			void addInput(const std::shared_ptr<Element>& inputElement, const std::string& inputComponent = "output");
 			void removeInput(const std::string& inputElementId);
@@ -56,8 +52,6 @@ namespace dnf_composer
 
 			std::vector<std::shared_ptr<Element>> getInputs();
 			std::unordered_map<std::shared_ptr<Element>, std::string> getInputsAndComponents();
-
-			virtual ~Element() = default;
 
 		protected:
 			void printCommonParameters() const;

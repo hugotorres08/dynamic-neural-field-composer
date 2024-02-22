@@ -88,6 +88,13 @@ namespace dnf_composer
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
+		std::shared_ptr<Element> MexicanHatKernel::clone() const
+		{
+			auto cloned = std::make_shared<MexicanHatKernel>(*this);
+			// If there are deep copy specifics that the copy constructor doesn't handle, do them here.
+			return cloned;
+		}
+
 		void MexicanHatKernel::setParameters(const MexicanHatKernelParameters& mhk_parameters)
 		{
 			parameters = mhk_parameters;
