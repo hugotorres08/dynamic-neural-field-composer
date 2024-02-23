@@ -1,7 +1,7 @@
 ﻿cmake_minimum_required(VERSION 3.15)
 
 project(dynamic-neural-field-composer
-        DESCRIPTION "A lighter version of a C++ application to develop Dynamic Neural Field Architectures"
+        DESCRIPTION "A C++ application to simulate Dynamic Neural Field Architectures"
         LANGUAGES CXX
 )
 
@@ -83,7 +83,6 @@ set(tools_headers
     "include/tools/fourier.h"
     "include/tools/convlv.h"
     "include/tools/logger.h"
-	"include/tools/resources.h"
 )
 set(exceptions_headers
     "include/exceptions/exception.h"
@@ -97,8 +96,11 @@ set(user_interface_headers
     "include/user_interface/centroid_monitoring_window.h"
     "include/user_interface/element_window.h"
 )
-set(wizards_headers
+set(resources_headers
     "include/wizards/learning_wizard.h"
+)
+set(wizards_headers
+    "include/resources/resources.h"
 )
 
 set(header 
@@ -222,7 +224,9 @@ install(FILES ${elements_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/el
 install(FILES ${tools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/tools)
 install(FILES ${exceptions_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/exceptions)
 install(FILES ${user_interface_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/user_interface)
-install(FILES ${architecture_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/architecture)
+install(FILES ${wizards_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/wizards)
+install(FILES ${resources_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/resources)
+
 
 install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CONFIG_INSTALL_DIR}
     FILE ${CMAKE_PROJECT_NAME}-config.cmake
@@ -288,6 +292,7 @@ set(TEST_PROJECT ${CMAKE_PROJECT_NAME}-test)
 add_executable(${TEST_PROJECT} 
     tests/test.cpp 
     tests/test_clones.cpp
+    tests/test_simulation_rw.cpp
 #    tests/test_application.cpp
 #    tests/test_element.cpp 
 #    tests/test_gauss_kernel.cpp 

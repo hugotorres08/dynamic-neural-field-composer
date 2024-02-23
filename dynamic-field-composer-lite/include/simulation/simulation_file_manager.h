@@ -23,7 +23,7 @@ namespace dnf_composer
 		std::shared_ptr<Simulation> simulation;
 		std::string filePath;
 	public:
-		SimulationFileManager(const std::shared_ptr<Simulation>& simulation);
+		SimulationFileManager(const std::shared_ptr<Simulation>& simulation, const std::string& filePath = {});
 
 		void saveElementsToJson() const;
 		void loadElementsFromJson() const;

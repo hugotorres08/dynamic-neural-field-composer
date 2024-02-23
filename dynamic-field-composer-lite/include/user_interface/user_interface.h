@@ -26,7 +26,7 @@
 #include <iostream>
 
 #include "user_interface_window.h"
-#include "tools/resources.h"
+#include "resources/resources.h"
 
 // Dear ImGui stuff
 struct FrameContext

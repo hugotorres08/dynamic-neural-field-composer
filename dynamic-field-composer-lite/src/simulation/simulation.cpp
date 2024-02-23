@@ -4,6 +4,8 @@
 
 #include "simulation/simulation.h"
 
+#include "simulation/simulation_file_manager.h"
+
 
 namespace dnf_composer
 {
@@ -144,6 +146,18 @@ namespace dnf_composer
 		log(tools::logger::LogLevel::INFO, "Simulation resumed.\n");
 	}
 
+	void Simulation::save(const std::string& savePath)  
+	{
+		const SimulationFileManager sfm{ shared_from_this(), savePath };
+		sfm.saveElementsToJson();
+	}
+
+	void Simulation::read(const std::string& readPath)
+	{
+		const SimulationFileManager sfm{ shared_from_this(), readPath };
+		sfm.loadElementsFromJson();
+	}
+
 	void Simulation::run(double runTime)
 	{
 		if (runTime <= 0)
@@ -250,6 +264,11 @@ namespace dnf_composer
 		const std::string logMessage = "Interaction created: " + stimulusElementId + " -> " + receivingElementId + '\n';
 		log(tools::logger::LogLevel::INFO, logMessage);
 
+	}
+
+	void Simulation::setUniqueIdentifier(const std::string& id)
+	{
+		uniqueIdentifier = id;
 	}
 
 	std::string Simulation::getUniqueIdentifier() const

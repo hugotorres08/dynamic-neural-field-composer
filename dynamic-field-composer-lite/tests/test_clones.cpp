@@ -12,7 +12,6 @@
 #include "simulation/simulation_file_manager.h"
 
 
-// Assuming dnf_composer is the namespace where Simulation is defined
 using namespace dnf_composer;
 
 TEST_CASE("Simulation Copy Constructor", "[Simulation]") {

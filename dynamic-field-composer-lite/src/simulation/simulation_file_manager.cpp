@@ -5,11 +5,12 @@ namespace dnf_composer
 {
     using json = nlohmann::json;
 
-	SimulationFileManager::SimulationFileManager(const std::shared_ptr<Simulation>& simulation)
-		: simulation(simulation)
+	SimulationFileManager::SimulationFileManager(const std::shared_ptr<Simulation>& simulation, const std::string& filePath)
+		: simulation(simulation), filePath(filePath)
 	{
-        filePath = std::string(OUTPUT_DIRECTORY) + "/simulations/simulation_" + simulation->getUniqueIdentifier() + ".json";
-        log(tools::logger::INFO, "Simulation file manager will read and write data regarding this simulation to: " + filePath + ".\n");
+        if (filePath.empty())
+            this->filePath = std::string(OUTPUT_DIRECTORY) + "/simulations/simulation_" + simulation->getUniqueIdentifier() + ".json";
+        log(tools::logger::INFO, "Simulation file manager will read and write data from and to: " + filePath + ".\n");
 	}
 
 	void SimulationFileManager::saveElementsToJson() const

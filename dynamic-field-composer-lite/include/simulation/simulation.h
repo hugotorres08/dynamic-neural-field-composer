@@ -13,7 +13,7 @@
 
 namespace dnf_composer
 {
-	class Simulation
+	class Simulation : public std::enable_shared_from_this<Simulation>
 	{
 	protected:
 		bool initialized;
@@ -37,13 +37,16 @@ namespace dnf_composer
 		void close();
 		void pause();
 		void resume();
+		void save(const std::string& savePath = {});
+		void read(const std::string& readPath = {});
 
 		void addElement(const std::shared_ptr<element::Element>& element);
 		void removeElement(const std::string& elementId);
 		void resetElement(const std::string& idOfElementToReset, const std::shared_ptr<element::Element>& newElement);
-
 		void createInteraction(const std::string& stimulusElementId, const std::string& stimulusComponent, 
 			const std::string& receivingElementId) const;
+
+		void setUniqueIdentifier(const std::string& id);
 
 		std::string getUniqueIdentifier() const;
 		std::shared_ptr<element::Element> getElement(const std::string& id) const;
