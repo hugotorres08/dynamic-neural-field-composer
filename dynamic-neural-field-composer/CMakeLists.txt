@@ -218,7 +218,7 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
 
 # Add executable project
 set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
-add_executable(${EXE_PROJECT} "src/dynamic-field-composer-lite.cpp" ./resources/resources.rc)
+add_executable(${EXE_PROJECT} "src/dynamic-neural-field-composer.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT} PRIVATE include)
 target_link_libraries(${EXE_PROJECT} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME} )
 
