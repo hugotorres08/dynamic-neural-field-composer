@@ -4,9 +4,6 @@
 
 #include "elements/gauss_kernel.h"
 
-#include "tools/convlv.h"
-#include "tools/profiling.h"
-
 
 namespace dnf_composer
 {

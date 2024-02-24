@@ -75,13 +75,8 @@ set(elements_headers
 )
 set(tools_headers
     "include/tools/math.h"
-    "include/tools/fftw3.h"
-    "include/tools/convolution_std.h"
-    "include/tools/convolution_fftw.h"
     "include/tools/profiling.h"
     "include/tools/utils.h"
-    "include/tools/fourier.h"
-    "include/tools/convlv.h"
     "include/tools/logger.h"
 )
 set(exceptions_headers
@@ -137,11 +132,8 @@ set(src
     "src/elements/element_factory.cpp"
     
     "src/tools/math.cpp"
-    "src/tools/convolution_fftw.cpp"
     "src/tools/profiling.cpp"
     "src/tools/utils.cpp"
-    "src/tools/fourier.cpp"
-    "src/tools/convlv.cpp"
     "src/tools/logger.cpp"
 
     "src/exceptions/exception.cpp"
