@@ -10,7 +10,7 @@ namespace dnf_composer
 	{
         if (filePath.empty())
             this->filePath = std::string(OUTPUT_DIRECTORY) + "/simulations/simulation_" + simulation->getUniqueIdentifier() + ".json";
-        log(tools::logger::INFO, "Simulation file manager will read and write data from and to: " + filePath + ".\n");
+        log(tools::logger::INFO, "Simulation file manager will read and write data from and to: " + this->filePath + ".\n");
 	}
 
 	void SimulationFileManager::saveElementsToJson() const

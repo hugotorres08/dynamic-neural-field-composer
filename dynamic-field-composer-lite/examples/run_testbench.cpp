@@ -4,7 +4,6 @@
 
 #include "dynamic-neural-field-composer.h"
 
-
 const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 100, 1.0 };
 
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
@@ -57,15 +56,10 @@ int main(int argc, char* argv[])
 	try
 	{
 		// After defining the simulation, we can create the application.
-		//const auto simulation = getExperimentSimulation();
-		const auto simulation = std::make_shared<dnf_composer::Simulation>("test sim", 1, 0, 0);
+		const auto simulation = getExperimentSimulation();
 		// You can run the application without the user interface by setting the second parameter to false.
 		constexpr bool activateUserInterface = true;
 		const dnf_composer::Application app{ simulation, activateUserInterface };
-
-		const dnf_composer::SimulationFileManager sfm{ simulation };
-		//sfm.saveElementsToJson();
-		sfm.loadElementsFromJson();
 
 		// After creating the application, we can add the windows we want to display.
 		app.activateUserInterfaceWindow(dnf_composer::user_interface::SIMULATION_WINDOW);

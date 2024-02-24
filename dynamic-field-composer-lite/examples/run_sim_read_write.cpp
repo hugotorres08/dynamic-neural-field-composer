@@ -6,8 +6,7 @@
 
 // This .cpp file is an example of how you can use the library to create your own DNF simulation.
 // This setup runs the application with a GUI.
-// This setup read and writes a simulation to a .json file.
-
+// This setup reads and writes a simulation to a .json file.
 
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
@@ -86,13 +85,11 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 int main(int argc, char* argv[])
 {
 	// After defining the simulation, we can create the application.
-	const auto simulation = getExperimentSimulation();
-	//const auto simulation = std::make_shared<dnf_composer::Simulation>("run sim read write to json",5, 0, 0);
+	const auto simulation = std::make_shared<dnf_composer::Simulation>("run sim read write to json",5, 0, 0);
 
-	// Create a simulation file manager to read and write simulations from .json files
-	const dnf_composer::SimulationFileManager sfm{ simulation };
-	sfm.saveElementsToJson();
-	//sfm.loadElementsFromJson();
+	// Simply call the read and save methods to read and write the simulation to a .json file.
+	simulation->read();
+	simulation->save();
 
 	// You can run the application without the user interface by setting the second parameter to false.
 	constexpr bool activateUserInterface = true;
