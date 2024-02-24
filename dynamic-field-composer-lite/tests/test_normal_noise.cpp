@@ -5,8 +5,7 @@
 TEST_CASE("NormalNoise class tests", "[NormalNoise]")
 {
 	int size = 10;
-	dnf_composer::element::NormalNoiseParameters params;
-	params.amplitude = 1.0;
+	dnf_composer::element::NormalNoiseParameters params{1.0};
 	SECTION("NormalNoise constructor and getParameters method")
 	{
 		dnf_composer::element::NormalNoise noise({ "test", size }, params);

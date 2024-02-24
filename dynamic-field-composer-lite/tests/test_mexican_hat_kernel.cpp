@@ -5,12 +5,7 @@
 TEST_CASE("MexicanHatKernel class tests", "[MexicanHatKernel]")
 {
     int size = 10;
-    dnf_composer::element::MexicanHatKernelParameters params;
-    params.sigmaExc = 1.0;
-    params.amplitudeExc = 2.0;
-    params.sigmaInh = 0.5;
-    params.amplitudeInh = 1.0;
-    params.amplitudeGlobal = 0.1;
+    dnf_composer::element::MexicanHatKernelParameters params {1.0, 2.0, 0.5, 1.0};
 
     SECTION("MexicanHatKernel constructor and getParameters method")
     {

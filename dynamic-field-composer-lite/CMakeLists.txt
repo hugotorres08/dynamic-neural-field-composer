@@ -96,10 +96,10 @@ set(user_interface_headers
     "include/user_interface/centroid_monitoring_window.h"
     "include/user_interface/element_window.h"
 )
-set(resources_headers
+set(wizards_headers
     "include/wizards/learning_wizard.h"
 )
-set(wizards_headers
+set(resources_headers
     "include/resources/resources.h"
 )
 
@@ -159,7 +159,6 @@ set(src
 
 configure_file(./resources/resources.rc.in ./resources/resources.rc)
 
-
 # Define library target
 add_library(${CMAKE_PROJECT_NAME} 
     ${header}
@@ -173,7 +172,6 @@ target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
     PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include
 )
 
-
 # Setup imgui
 find_package(imgui CONFIG REQUIRED)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE imgui::imgui "d3d12.lib" "dxgi.lib" "d3dcompiler.lib")
@@ -185,12 +183,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE implot::implot)
 # Setup nlohmann-json
 find_package(nlohmann_json CONFIG REQUIRED)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json)
-
-# Setup fftw3
-set(LIB_DIR "${CMAKE_CURRENT_BINARY_DIR}/${DNF_COMPOSER_LIB_PREFIX}")
-file(COPY ${CMAKE_SOURCE_DIR}/lib/fftw/libfftw3-3.dll DESTINATION ${LIB_DIR})
-link_directories(${CMAKE_SOURCE_DIR}/lib/fftw)
-target_link_libraries(${CMAKE_PROJECT_NAME} PUBLIC "libfftw3-3.lib")
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
     DNF_COMPOSER=1

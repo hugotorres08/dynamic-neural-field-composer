@@ -21,9 +21,12 @@ public:
     void init() override {}
     void step(double t, double deltaT) override {}
     void close() override {}
-
-    void printParameters() override {};
+    std::shared_ptr<Element> clone() const override {
+        return std::make_shared<MockElement>(*this);
+    }
+    void printParameters() override {}
 };
+
 
 TEST_CASE("Element class tests", "[element]")
 {

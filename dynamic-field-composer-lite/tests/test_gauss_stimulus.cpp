@@ -43,9 +43,9 @@ TEST_CASE("GaussStimulus class tests", "[GaussStimulus]")
         gaussStimulus.init();
 
         // Check if components["output"] has correct values
-        REQUIRE(gaussStimulus.getComponent("output")[0] == Catch::Approx(amplitude * dnf_composer::tools::circularGauss(size, sigma, position)[0]));
-        REQUIRE(gaussStimulus.getComponent("output")[1] == Catch::Approx(amplitude * dnf_composer::tools::circularGauss(size, sigma, position)[1]));
-        REQUIRE(gaussStimulus.getComponent("output")[2] == Catch::Approx(amplitude * dnf_composer::tools::circularGauss(size, sigma, position)[2]));
+        REQUIRE(gaussStimulus.getComponent("output")[0] == Catch::Approx(amplitude * dnf_composer::tools::math::circularGauss(size, sigma, position)[0]));
+        REQUIRE(gaussStimulus.getComponent("output")[1] == Catch::Approx(amplitude * dnf_composer::tools::math::circularGauss(size, sigma, position)[1]));
+        REQUIRE(gaussStimulus.getComponent("output")[2] == Catch::Approx(amplitude * dnf_composer::tools::math::circularGauss(size, sigma, position)[2]));
     }
 
     SECTION("setParameters() method")
@@ -60,9 +60,9 @@ TEST_CASE("GaussStimulus class tests", "[GaussStimulus]")
 
         // Check if parameters were updated and init() was called
         REQUIRE(gaussStimulus.getParameters() == newgsp);
-        REQUIRE(gaussStimulus.getComponent("output")[0] == Catch::Approx(newAmplitude * dnf_composer::tools::circularGauss(size, newSigma, newPosition)[0]));
-        REQUIRE(gaussStimulus.getComponent("output")[1] == Catch::Approx(newAmplitude * dnf_composer::tools::circularGauss(size, newSigma, newPosition)[1]));
-        REQUIRE(gaussStimulus.getComponent("output")[2] == Catch::Approx(newAmplitude * dnf_composer::tools::circularGauss(size, newSigma, newPosition)[2]));
+        REQUIRE(gaussStimulus.getComponent("output")[0] == Catch::Approx(newAmplitude * dnf_composer::tools::math::circularGauss(size, newSigma, newPosition)[0]));
+        REQUIRE(gaussStimulus.getComponent("output")[1] == Catch::Approx(newAmplitude * dnf_composer::tools::math::circularGauss(size, newSigma, newPosition)[1]));
+        REQUIRE(gaussStimulus.getComponent("output")[2] == Catch::Approx(newAmplitude * dnf_composer::tools::math::circularGauss(size, newSigma, newPosition)[2]));
     }
 
     SECTION("init() step() close() methods")

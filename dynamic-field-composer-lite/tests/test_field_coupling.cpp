@@ -7,11 +7,7 @@ using namespace dnf_composer::element;
 TEST_CASE("FieldCoupling - Initialization and Basic Properties")
 {
     // Initialize FieldCoupling with valid parameters
-    FieldCouplingParameters params;
-    params.inputFieldSize = 5;
-    params.scalar = 2.0;
-    params.learningRate = 0.1;
-    params.learningRule = dnf_composer::LearningRule::HEBBIAN;
+    FieldCouplingParameters params{5,2.0,0.1,dnf_composer::LearningRule::HEBBIAN};
 
     REQUIRE_NOTHROW(FieldCoupling({ "field_coupling_1", 10 }, params));
 
@@ -27,11 +23,7 @@ TEST_CASE("FieldCoupling - Initialization and Basic Properties")
 TEST_CASE("FieldCoupling - Computation and Output Scaling")
 {
     // Initialize FieldCoupling with valid parameters
-    FieldCouplingParameters params;
-    params.inputFieldSize = 3;
-    params.scalar = 1.5;
-    params.learningRate = 0.2;
-    params.learningRule = dnf_composer::LearningRule::DELTA_WIDROW_HOFF;
+    const FieldCouplingParameters params{3, 1.5, 0.2, dnf_composer::LearningRule::DELTA_WIDROW_HOFF};
 
     FieldCoupling fieldCoupling({ "field_coupling_4", 5 }, params);
 
@@ -41,11 +33,7 @@ TEST_CASE("FieldCoupling - Computation and Output Scaling")
 TEST_CASE("FieldCoupling - File I/O Operations")
 {
     // Initialize FieldCoupling with valid parameters
-    FieldCouplingParameters params;
-    params.inputFieldSize = 2;
-    params.scalar = 1.0;
-    params.learningRate = 0.5;
-    params.learningRule = dnf_composer::LearningRule::DELTA_KROGH_HERTZ;
+    FieldCouplingParameters params{2, 1.0, 0.5, dnf_composer::LearningRule::DELTA_KROGH_HERTZ};
 
     FieldCoupling fieldCoupling({ "field_coupling_5", 3 }, params);
 
