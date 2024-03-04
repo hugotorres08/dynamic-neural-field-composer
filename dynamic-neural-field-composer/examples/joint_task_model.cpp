@@ -9,83 +9,94 @@ int main(int argc, char* argv[])
 	try
 	{
 		using namespace dnf_composer;
-		auto simulation = std::make_shared<Simulation>("Element factory example", 5, 0, 0);
+		auto simulation = std::make_shared<Simulation>("Element factory example", 10, 0, 0);
 		constexpr bool activateUserInterface = true;
 		const Application app{ simulation, activateUserInterface };
 
 		element::ElementFactory factory;
-		element::ElementSpatialDimensionParameters dimension_parameters{ 360, 1.0 };
+		element::ElementSpatialDimensionParameters dim_params{ 360, 1.0 };
 
+		// Intention layer // why this global inhibition? // Added inhibitory component to kernel
+		element::SigmoidFunction il_af = { 0.0, 10.0 };
+		element::NeuralFieldParameters il_params = { 20, -7, il_af };
+		const auto il = factory.createElement(element::NEURAL_FIELD, { "intention field", dim_params }, { il_params });
+		simulation->addElement(il);
 
-		// Intention field // why this global inhibition? // Added inhibitory component to kernel
-		element::SigmoidFunction intention_field_af = { 0.0, 10.0 };
-		element::NeuralFieldParameters intention_field_parameters = { 20, -5, intention_field_af };
-		const auto intention_field = factory.createElement(element::NEURAL_FIELD, { "intention field", dimension_parameters }, { intention_field_parameters });
-		simulation->addElement(intention_field);
+		element::LateralInteractionsParameters il_il_k_params = { 6, 5, 15, 5, -0.0027777777777778 }; //-0.0027777777777778
+		const auto il_k = factory.createElement(element::LATERAL_INTERACTIONS, { "il -> il", dim_params }, { il_il_k_params });
+		simulation->addElement(il_k);
 
-		element::LateralInteractionsParameters intention_field_kernel_parameters = { 6, 5, 15, 5, -0.0027777777777778 };
-		const auto intention_field_kernel = factory.createElement(element::LATERAL_INTERACTIONS, { "il -> il", dimension_parameters }, { intention_field_kernel_parameters });
-		simulation->addElement(intention_field_kernel);
-
-		element::NormalNoiseParameters intention_field_nnp = { 0.001 };
-		const auto intention_field_normal_noise = factory.createElement(element::NORMAL_NOISE, { "normal noise il", dimension_parameters }, intention_field_nnp);
-		simulation->addElement(intention_field_normal_noise);
+		element::NormalNoiseParameters il_nn_params = { 0.001 };
+		const auto il_nn = factory.createElement(element::NORMAL_NOISE, { "normal noise il", dim_params }, il_nn_params);
+		simulation->addElement(il_nn);
 
 		simulation->createInteraction("intention field", "output", "il -> il");
 		simulation->createInteraction("il -> il", "output", "intention field");
 		simulation->createInteraction("normal noise il", "output", "intention field");
 
-		// Action observation field // doesn't have kernel??
+		// Action observation field // doesn't have kernel?? // added self-excitation kernel
 		element::GaussStimulusParameters hand_position_gsp = { 6, 0, 0 };
-		const auto hand_position_stimulus = factory.createElement(element::GAUSS_STIMULUS, { "hand position stimulus", dimension_parameters }, { hand_position_gsp });
+		const auto hand_position_stimulus = factory.createElement(element::GAUSS_STIMULUS, { "hand position stimulus", dim_params }, { hand_position_gsp });
 		simulation->addElement(hand_position_stimulus);
 
-		element::SigmoidFunction action_observation_field_af = { 0.0, 10.0 };
-		element::NeuralFieldParameters action_observation_field_parameters = { 20, -2, action_observation_field_af };
-		const auto action_observation_field = factory.createElement(element::NEURAL_FIELD, { "action observation field", dimension_parameters }, { action_observation_field_parameters });
-		simulation->addElement(action_observation_field);
+		element::SigmoidFunction aol_af = { 0.0, 10.0 };
+		element::NeuralFieldParameters aol_params = { 20, -4, aol_af };
+		const auto aol = factory.createElement(element::NEURAL_FIELD, { "action observation field", dim_params }, { aol_params });
+		simulation->addElement(aol);
 
-		element::GaussKernelParameters action_observation_field_kernel_parameters = { 6, 3.5 };
-		const auto action_observation_field_kernel = factory.createElement(element::GAUSS_KERNEL, { "aol -> il", dimension_parameters }, { action_observation_field_kernel_parameters });
-		simulation->addElement(action_observation_field_kernel);
+		element::GaussKernelParameters aol_aol_k_params = { 6, 3.5 };
+		const auto aol_aol_k = factory.createElement(element::GAUSS_KERNEL, { "aol -> aol", dim_params }, { aol_aol_k_params });
+		simulation->addElement(aol_aol_k);
 
-		element::NormalNoiseParameters action_observation_field_nnp = { 0.001 };
-		const auto action_observation_field_normal_noise = factory.createElement(element::NORMAL_NOISE, { "normal noise aol", dimension_parameters }, action_observation_field_nnp);
-		simulation->addElement(action_observation_field_normal_noise);
+		element::GaussKernelParameters aol_il_k_params = { 5, 5 };
+		const auto aol_il_k = factory.createElement(element::GAUSS_KERNEL, { "aol -> il", dim_params }, { aol_il_k_params });
+		simulation->addElement(aol_il_k);
+
+		element::NormalNoiseParameters aol_nn_params = { 0.001 };
+		const auto aol_nn = factory.createElement(element::NORMAL_NOISE, { "normal noise aol", dim_params }, aol_nn_params);
+		simulation->addElement(aol_nn);
 
 		simulation->createInteraction("action observation field", "output", "aol -> il");
+		simulation->createInteraction("action observation field", "output", "aol -> aol");
+		simulation->createInteraction("aol -> aol", "output", "action observation field");
 		simulation->createInteraction("aol -> il", "output", "intention field");
 		simulation->createInteraction("normal noise aol", "output", "action observation field");
 		simulation->createInteraction("hand position stimulus", "output", "action observation field");
 
 		// Common sub-goals field // Also no self-excitation component?
-		element::GaussStimulusParameters common_sub_goal_gsp = { 6, 8, 72 };
-		const auto common_sub_goal_stimulus_1 = factory.createElement(element::GAUSS_STIMULUS, { "common sub-goal stimulus 1", dimension_parameters }, { common_sub_goal_gsp });
-		simulation->addElement(common_sub_goal_stimulus_1);
+		element::GaussStimulusParameters csgl_gsp = { 6, 8, 72 };
+		const auto csgl_stimulus_1 = factory.createElement(element::GAUSS_STIMULUS, { "common sub-goal stimulus 1", dim_params }, { csgl_gsp });
+		simulation->addElement(csgl_stimulus_1);
 
-		common_sub_goal_gsp = { 6, 8, 180 };
-		const auto common_sub_goal_stimulus_2 = factory.createElement(element::GAUSS_STIMULUS, { "common sub-goal stimulus 2", dimension_parameters }, { common_sub_goal_gsp });
-		simulation->addElement(common_sub_goal_stimulus_2);
+		csgl_gsp = { 6, 8, 180 };
+		const auto csgl_stimulus_2 = factory.createElement(element::GAUSS_STIMULUS, { "common sub-goal stimulus 2", dim_params }, { csgl_gsp });
+		simulation->addElement(csgl_stimulus_2);
 
-		common_sub_goal_gsp = { 6, 8, 288 };
-		const auto common_sub_goal_stimulus_3 = factory.createElement(element::GAUSS_STIMULUS, { "common sub-goal stimulus 3", dimension_parameters }, { common_sub_goal_gsp });
-		simulation->addElement(common_sub_goal_stimulus_3);
+		csgl_gsp = { 6, 8, 288 };
+		const auto csgl_stimulus_3 = factory.createElement(element::GAUSS_STIMULUS, { "common sub-goal stimulus 3", dim_params }, { csgl_gsp });
+		simulation->addElement(csgl_stimulus_3);
 
-		element::SigmoidFunction common_sub_goals_field_af = { 0.0, 10.0 };
-		element::NeuralFieldParameters common_sub_goals_field_parameters = { 20, -5, common_sub_goals_field_af };
-		const auto common_sub_goals_field = factory.createElement(element::NEURAL_FIELD, { "common sub-goals field", dimension_parameters }, { common_sub_goals_field_parameters });
-		simulation->addElement(common_sub_goals_field);
+		element::SigmoidFunction csgl_af = { 0.0, 10.0 };
+		element::NeuralFieldParameters csgl_params = { 20, -5, csgl_af };
+		const auto csgl = factory.createElement(element::NEURAL_FIELD, { "common sub-goals field", dim_params }, { csgl_params });
+		simulation->addElement(csgl);
 
-		element::GaussKernelParameters common_sub_goals_field_kernel_parameters = { 6, 3 };
-		const auto common_sub_goals_field_kernel = factory.createElement(element::GAUSS_KERNEL, { "csgl -> il", dimension_parameters }, { common_sub_goals_field_kernel_parameters });
-		simulation->addElement(common_sub_goals_field_kernel);
+		element::GaussKernelParameters csgl_csgl_k_params = { 3, 3 };
+		const auto csgl_csgl_k = factory.createElement(element::GAUSS_KERNEL, { "csgl -> csgl", dim_params }, { csgl_csgl_k_params });
+		simulation->addElement(csgl_csgl_k);
 
-		element::NormalNoiseParameters common_sub_goals_field_nnp = { 0.001 };
-		const auto common_sub_goals_field_normal_noise = factory.createElement(element::NORMAL_NOISE, { "normal noise csgl", dimension_parameters }, common_sub_goals_field_nnp);
-		simulation->addElement(common_sub_goals_field_normal_noise);
+		element::GaussKernelParameters csgl_il_k_params = { 6, 3 };
+		const auto csgl_il_k = factory.createElement(element::GAUSS_KERNEL, { "csgl -> il", dim_params }, { csgl_il_k_params });
+		simulation->addElement(csgl_il_k);
+
+		element::NormalNoiseParameters csgl_nn_params = { 0.001 };
+		const auto csgl_nn = factory.createElement(element::NORMAL_NOISE, { "normal noise csgl", dim_params }, csgl_nn_params);
+		simulation->addElement(csgl_nn);
 
 		simulation->createInteraction("common sub-goals field", "output", "csgl -> il");
 		simulation->createInteraction("csgl -> il", "output", "intention field");
+		simulation->createInteraction("common sub-goals field", "output", "csgl -> csgl");
+		simulation->createInteraction("csgl -> csgl", "output", "common sub-goals field");
 		simulation->createInteraction("normal noise csgl", "output", "common sub-goals field");
 		simulation->createInteraction("common sub-goal stimulus 1", "output", "common sub-goals field");
 		simulation->createInteraction("common sub-goal stimulus 2", "output", "common sub-goals field");
@@ -93,41 +104,47 @@ int main(int argc, char* argv[])
 
 
 		// Object-memory field // Again no self-excitation?
-		element::GaussStimulusParameters object_memory_gsp = { 6, 8, 36 };
-		const auto object_memory_stimulus_1 = factory.createElement(element::GAUSS_STIMULUS, { "object memory stimulus 1", dimension_parameters }, { object_memory_gsp });
-		simulation->addElement(object_memory_stimulus_1);
+		element::GaussStimulusParameters oml_gsp = { 6, 8, 36 };
+		const auto oml_stimulus_1 = factory.createElement(element::GAUSS_STIMULUS, { "object memory stimulus 1", dim_params }, { oml_gsp });
+		simulation->addElement(oml_stimulus_1);
 
-		object_memory_gsp = { 6, 8, 72 };
-		const auto object_memory_stimulus_2 = factory.createElement(element::GAUSS_STIMULUS, { "object memory stimulus 2", dimension_parameters }, { object_memory_gsp });
-		simulation->addElement(object_memory_stimulus_2);
+		oml_gsp = { 6, 8, 72 };
+		const auto oml_stimulus_2 = factory.createElement(element::GAUSS_STIMULUS, { "object memory stimulus 2", dim_params }, { oml_gsp });
+		simulation->addElement(oml_stimulus_2);
 
-		object_memory_gsp = { 6, 8, 108 };
-		const auto object_memory_stimulus_3 = factory.createElement(element::GAUSS_STIMULUS, { "object memory stimulus 3", dimension_parameters }, { object_memory_gsp });
-		simulation->addElement(object_memory_stimulus_3);
+		oml_gsp = { 6, 8, 108 };
+		const auto oml_stimulus_3 = factory.createElement(element::GAUSS_STIMULUS, { "object memory stimulus 3", dim_params }, { oml_gsp });
+		simulation->addElement(oml_stimulus_3);
 
-		object_memory_gsp = { 6, 8, 144 };
-		const auto object_memory_stimulus_4 = factory.createElement(element::GAUSS_STIMULUS, { "object memory stimulus 4", dimension_parameters }, { object_memory_gsp });
-		simulation->addElement(object_memory_stimulus_4);
+		oml_gsp = { 6, 8, 144 };
+		const auto oml_stimulus_4 = factory.createElement(element::GAUSS_STIMULUS, { "object memory stimulus 4", dim_params }, { oml_gsp });
+		simulation->addElement(oml_stimulus_4);
 
-		object_memory_gsp = { 6, 8,180 };
-		const auto object_memory_stimulus_5 = factory.createElement(element::GAUSS_STIMULUS, { "object memory stimulus 5", dimension_parameters }, { object_memory_gsp });
-		simulation->addElement(object_memory_stimulus_5);
+		oml_gsp = { 6, 8,180 };
+		const auto oml_stimulus_5 = factory.createElement(element::GAUSS_STIMULUS, { "object memory stimulus 5", dim_params }, { oml_gsp });
+		simulation->addElement(oml_stimulus_5);
 
-		element::SigmoidFunction object_memory_field_af = { 0.0, 10.0 };
-		element::NeuralFieldParameters object_memory_field_parameters = { 20, -5, object_memory_field_af };
-		const auto object_memory_field = factory.createElement(element::NEURAL_FIELD, { "object memory field", dimension_parameters }, { object_memory_field_parameters });
-		simulation->addElement(object_memory_field);
+		element::SigmoidFunction oml_af = { 0.0, 10.0 };
+		element::NeuralFieldParameters oml_params = { 20, -5, oml_af };
+		const auto oml = factory.createElement(element::NEURAL_FIELD, { "object memory field", dim_params }, { oml_params });
+		simulation->addElement(oml);
 
-		element::GaussKernelParameters object_memory_field_kernel_parameters = { 6, 3 };
-		const auto object_memory_field_kernel = factory.createElement(element::GAUSS_KERNEL, { "oml -> il", dimension_parameters }, { object_memory_field_kernel_parameters });
-		simulation->addElement(object_memory_field_kernel);
+		element::GaussKernelParameters oml_oml_k_params = { 3, 3 };
+		const auto oml_oml_k = factory.createElement(element::GAUSS_KERNEL, { "oml -> oml", dim_params }, { oml_oml_k_params });
+		simulation->addElement(oml_oml_k);
 
-		element::NormalNoiseParameters object_memory_field_nnp = { 0.001 };
-		const auto object_memory_field_normal_noise = factory.createElement(element::NORMAL_NOISE, { "normal noise oml", dimension_parameters }, object_memory_field_nnp);
-		simulation->addElement(object_memory_field_normal_noise);
+		element::GaussKernelParameters oml_il_k_params = { 6, 3 };
+		const auto oml_il_k = factory.createElement(element::GAUSS_KERNEL, { "oml -> il", dim_params }, { oml_il_k_params });
+		simulation->addElement(oml_il_k);
+
+		element::NormalNoiseParameters oml_nn_params = { 0.001 };
+		const auto oml_nn = factory.createElement(element::NORMAL_NOISE, { "normal noise oml", dim_params }, oml_nn_params);
+		simulation->addElement(oml_nn);
 
 		simulation->createInteraction("object memory field", "output", "oml -> il");
 		simulation->createInteraction("oml -> il", "output", "intention field");
+		simulation->createInteraction("object memory field", "output", "oml -> oml");
+		simulation->createInteraction("oml -> oml", "output", "object memory field");
 		simulation->createInteraction("normal noise oml", "output", "object memory field");
 		simulation->createInteraction("object memory stimulus 1", "output", "object memory field");
 		simulation->createInteraction("object memory stimulus 2", "output", "object memory field");
@@ -137,21 +154,21 @@ int main(int argc, char* argv[])
 
 
 		// Action execution field // global inhibition calc? // added inhibitory component to kernel and increased global inhibition
-		element::SigmoidFunction action_execution_field_af = { 0.0, 10.0 };
-		element::NeuralFieldParameters action_execution_field_parameters = { 20, -5, action_execution_field_af };
-		const auto action_execution_field = factory.createElement(element::NEURAL_FIELD, { "action execution field", dimension_parameters }, { action_execution_field_parameters });
-		simulation->addElement(action_execution_field);
+		element::SigmoidFunction ael_af = { 0.0, 10.0 };
+		element::NeuralFieldParameters ael_params = { 20, -5, ael_af };
+		const auto ael = factory.createElement(element::NEURAL_FIELD, { "action execution field", dim_params }, { ael_params });
+		simulation->addElement(ael);
 
-		element::GaussKernelParameters il_ael_gkp = { 6, 10 };
-		const auto il_ael_gk = factory.createElement(element::GAUSS_KERNEL, { "il -> ael", dimension_parameters }, { il_ael_gkp });
-		simulation->addElement(il_ael_gk);
+		element::GaussKernelParameters il_ael_k_params = { 4, 10 };
+		const auto il_ael_k = factory.createElement(element::GAUSS_KERNEL, { "il -> ael", dim_params }, { il_ael_k_params });
+		simulation->addElement(il_ael_k);
 
-		element::LateralInteractionsParameters ael_ael_likp = { 6, 5, 15, 5, -0.5 }; //h*AEL_ampl_exc/fieldSize -5/-5 / 360 = 1/360 = 0.0027777777777778
-		const auto ael_ael_lik = factory.createElement(element::LATERAL_INTERACTIONS, { "ael -> ael", dimension_parameters }, { ael_ael_likp });
-		simulation->addElement(ael_ael_lik);
+		element::LateralInteractionsParameters ael_ael_k_params = { 6, 5, 15, 5, -0.8 }; //h*AEL_ampl_exc/fieldSize -5/-5 / 360 = 1/360 = 0.0027777777777778
+		const auto ael_ael_k = factory.createElement(element::LATERAL_INTERACTIONS, { "ael -> ael", dim_params }, { ael_ael_k_params });
+		simulation->addElement(ael_ael_k);
 
-		element::NormalNoiseParameters ael_nnp = { 0.001 };
-		const auto ael_nn = factory.createElement(element::NORMAL_NOISE, { "normal noise ael", dimension_parameters }, ael_nnp);
+		element::NormalNoiseParameters ael_nn_params = { 0.001 };
+		const auto ael_nn = factory.createElement(element::NORMAL_NOISE, { "normal noise ael", dim_params }, ael_nn_params);
 		simulation->addElement(ael_nn);
 
 		simulation->createInteraction("action execution field", "output", "ael -> ael");
@@ -166,47 +183,50 @@ int main(int argc, char* argv[])
 		app.activateUserInterfaceWindow(user_interface::ELEMENT_WINDOW);
 		app.activateUserInterfaceWindow(user_interface::MONITORING_WINDOW);
 
+		constexpr int yMax = 10;
+		constexpr int yMin = 8;
+
 		// Create a plot for each neural field
-		user_interface::PlotParameters actionObservationPlotParameters;
-		actionObservationPlotParameters.annotations = { "Action observation field", "Spatial dimension", "Amplitude" };
-		actionObservationPlotParameters.dimensions = { 0, dimension_parameters.x_max, -10, 20, dimension_parameters.d_x };
-		const auto actionObservationPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, actionObservationPlotParameters);
+		user_interface::PlotParameters aolPlotParameters;
+		aolPlotParameters.annotations = { "Action observation field", "Spatial dimension", "Amplitude" };
+		aolPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
+		const auto actionObservationPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, aolPlotParameters);
 		actionObservationPlotWindow->addPlottingData("action observation field", "activation");
 		actionObservationPlotWindow->addPlottingData("action observation field", "input");
 		actionObservationPlotWindow->addPlottingData("action observation field", "output");
 		app.activateUserInterfaceWindow(actionObservationPlotWindow);
 
-		user_interface::PlotParameters intentionFieldPlotParameters;
-		intentionFieldPlotParameters.annotations = { "Intention field", "Spatial dimension", "Amplitude" };
-		intentionFieldPlotParameters.dimensions = { 0, dimension_parameters.x_max, -10, 20, dimension_parameters.d_x };
-		const auto intentionFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, intentionFieldPlotParameters);
+		user_interface::PlotParameters ilPlotParameters;
+		ilPlotParameters.annotations = { "Intention field", "Spatial dimension", "Amplitude" };
+		ilPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
+		const auto intentionFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, ilPlotParameters);
 		intentionFieldPlotWindow->addPlottingData("intention field", "activation");
 		intentionFieldPlotWindow->addPlottingData("intention field", "input");
 		intentionFieldPlotWindow->addPlottingData("intention field", "output");
 		app.activateUserInterfaceWindow(intentionFieldPlotWindow);
 
-		user_interface::PlotParameters csglFieldPlotParameters;
-		csglFieldPlotParameters.annotations = { "Common sub-goals field", "Spatial dimension", "Amplitude" };
-		csglFieldPlotParameters.dimensions = { 0, dimension_parameters.x_max, -10, 20, dimension_parameters.d_x };
-		const auto csglFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, csglFieldPlotParameters);
+		user_interface::PlotParameters csglPlotParameters;
+		csglPlotParameters.annotations = { "Common sub-goals field", "Spatial dimension", "Amplitude" };
+		csglPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
+		const auto csglFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, csglPlotParameters);
 		csglFieldPlotWindow->addPlottingData("common sub-goals field", "activation");
 		csglFieldPlotWindow->addPlottingData("common sub-goals field", "input");
 		csglFieldPlotWindow->addPlottingData("common sub-goals field", "output");
 		app.activateUserInterfaceWindow(csglFieldPlotWindow);
 
-		user_interface::PlotParameters omlFieldPlotParameters;
-		omlFieldPlotParameters.annotations = { "Object memory field", "Spatial dimension", "Amplitude" };
-		omlFieldPlotParameters.dimensions = { 0, dimension_parameters.x_max, -10, 20, dimension_parameters.d_x };
-		const auto omlFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, omlFieldPlotParameters);
+		user_interface::PlotParameters omlPlotParameters;
+		omlPlotParameters.annotations = { "Object memory field", "Spatial dimension", "Amplitude" };
+		omlPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
+		const auto omlFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, omlPlotParameters);
 		omlFieldPlotWindow->addPlottingData("object memory field", "activation");
 		omlFieldPlotWindow->addPlottingData("object memory field", "input");
 		omlFieldPlotWindow->addPlottingData("object memory field", "output");
 		app.activateUserInterfaceWindow(omlFieldPlotWindow);
 
-		user_interface::PlotParameters aelFieldPlotParameters;
-		aelFieldPlotParameters.annotations = { "Action execution field", "Spatial dimension", "Amplitude" };
-		aelFieldPlotParameters.dimensions = { 0, dimension_parameters.x_max, -10, 20, dimension_parameters.d_x };
-		const auto aelFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, aelFieldPlotParameters);
+		user_interface::PlotParameters aelPlotParameters;
+		aelPlotParameters.annotations = { "Action execution field", "Spatial dimension", "Amplitude" };
+		aelPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
+		const auto aelFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, aelPlotParameters);
 		aelFieldPlotWindow->addPlottingData("action execution field", "activation");
 		aelFieldPlotWindow->addPlottingData("action execution field", "input");
 		aelFieldPlotWindow->addPlottingData("action execution field", "output");
