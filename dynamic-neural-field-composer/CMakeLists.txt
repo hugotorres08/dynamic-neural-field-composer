@@ -259,11 +259,18 @@ add_executable(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} "examples/run_element_
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
-# Add executable example project joint_task_model
-set(EXE_PROJECT_EXAMPLE_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-joint_task_model)
-add_executable(${EXE_PROJECT_EXAMPLE_JOINT_TASK} "examples/joint_task_model.cpp" ./resources/resources.rc)
-target_include_directories(${EXE_PROJECT_EXAMPLE_JOINT_TASK} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_JOINT_TASK} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+# Add executable example project pepper_robot_joint_task_model
+set(EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-pepper-joint_task_model)
+add_executable(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} "examples/pepper_robot_joint_task_model.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project panda_joint_task_model
+set(EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-panda_joint_task_model)
+add_executable(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} "examples/panda_robot_joint_task_model.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
 
 ## Setup Catch2
 enable_testing()

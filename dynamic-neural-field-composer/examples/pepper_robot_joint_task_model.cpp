@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
 	try
 	{
 		using namespace dnf_composer;
-		auto simulation = std::make_shared<Simulation>("Element factory example", 10, 0, 0);
+		auto simulation = std::make_shared<Simulation>("Pepper robot joint task model", 10, 0, 0);
 		constexpr bool activateUserInterface = true;
 		const Application app{ simulation, activateUserInterface };
 
