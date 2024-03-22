@@ -39,7 +39,6 @@ namespace dnf_composer
 			}
 			else
 			{
-
 				gaussExc = tools::math::gauss(rangeX, 0.0, parameters.sigmaExc);
 				gaussInh = tools::math::gauss(rangeX, 0.0, parameters.sigmaInh);
 			}

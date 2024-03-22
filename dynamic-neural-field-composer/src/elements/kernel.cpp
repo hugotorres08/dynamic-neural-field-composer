@@ -12,7 +12,7 @@ namespace dnf_composer
 			: Element(elementCommonParameters)
 
 		{
-			circular = true; // default is true
+			circular = false; // default is true
 			normalized = true; // default is true
 			kernelRange = { 0, 0 };
 			extIndex = {};
