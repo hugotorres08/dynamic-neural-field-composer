@@ -63,7 +63,7 @@ namespace dnf_composer
 				convolution = tools::math::conv(components["input"], components["kernel"]);
 
 			for (int i = 0; i < components["output"].size(); i++)
-				components["output"][i] = convolution[i];
+				components["output"][i] = convolution[i];// *commonParameters.dimensionParameters.d_x;
 		}
 
 		void MexicanHatKernel::close()
