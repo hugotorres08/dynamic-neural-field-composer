@@ -8,7 +8,7 @@ const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 
 
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
-	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("test sim", 1, 0, 0);
+	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("test sim", 10, 0, 0);
 
 	const dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 50, true};
 	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus(new dnf_composer::element::GaussStimulus({ "gauss stimulus", fieldDimensions }, gcp_a));simulation->addElement(gauss_stimulus);
@@ -17,8 +17,12 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	//const std::shared_ptr<dnf_composer::element::LateralInteractions> k_1(new dnf_composer::element::LateralInteractions({ "k 1", fieldDimensions }, lip1));
 	//simulation->addElement(k_1);
 
-	const dnf_composer::element::MexicanHatKernelParameters mhkp = { 3,7.2,12,6.4 };
-	const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_1(new dnf_composer::element::MexicanHatKernel({ "k 1", fieldDimensions }, mhkp));
+	//const dnf_composer::element::MexicanHatKernelParameters mhkp = { 3,7.2,12,6.4 };
+	//const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_1(new dnf_composer::element::MexicanHatKernel({ "k 1", fieldDimensions }, mhkp));
+	//simulation->addElement(k_1);
+
+	const dnf_composer::element::GaussKernelParameters gkp = { 5, 10 };
+	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1(new dnf_composer::element::GaussKernel({ "k 1", fieldDimensions }, gkp));
 	simulation->addElement(k_1);
 
 	const dnf_composer::element::SigmoidFunction activationFunction{ 0, 4 };
