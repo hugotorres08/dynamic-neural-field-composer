@@ -12,19 +12,23 @@ namespace dnf_composer
 	{
 		struct GaussKernelParameters : ElementSpecificParameters
 		{
-			GaussKernelParameters(double sigma = 5.0, double amp = 10.0)
-				: sigma(sigma), amplitude(amp)
-			{}
-
 			double sigma;
 			double amplitude;
-			
+			bool circular;
+			bool normalized;
+
+			GaussKernelParameters(double sigma = 5.0, double amp = 10.0, bool circular = true, bool normalized = true)
+				: sigma(sigma), amplitude(amp), circular(circular), normalized(normalized)
+			{}
+
 			bool operator==(const GaussKernelParameters& other) const {
 				constexpr double epsilon = 1e-6; // Set an appropriate epsilon value
 
 				// Compare floating-point values with tolerance (epsilon)
 				return std::abs(sigma - other.sigma) < epsilon &&
-					std::abs(amplitude - other.amplitude) < epsilon;
+					std::abs(amplitude - other.amplitude) < epsilon &&
+					circular == other.circular &&
+					normalized == other.normalized;
 			}
 		};
 
@@ -34,7 +38,6 @@ namespace dnf_composer
 			GaussKernelParameters parameters;
 		public:
 			GaussKernel(const ElementCommonParameters& elementCommonParameters, GaussKernelParameters parameters);
-			GaussKernel(const ElementCommonParameters& elementCommonParameters, GaussKernelParameters parameters, const bool circular, const bool normalized);
 
 			void init() override;
 			void step( double t,  double deltaT) override;
@@ -45,8 +48,6 @@ namespace dnf_composer
 
 			void setParameters(const GaussKernelParameters& gk_parameters);
 			GaussKernelParameters getParameters() const;
-
-			~GaussKernel() override = default;
 		};
 	}
 }

@@ -8,14 +8,8 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		MexicanHatKernel::MexicanHatKernel(const ElementCommonParameters& elementCommonParameters, const MexicanHatKernelParameters& mhk_parameters)
-			: Kernel(elementCommonParameters), parameters(mhk_parameters)
-		{
-			commonParameters.identifiers.label = ElementLabel::MEXICAN_HAT_KERNEL;
-		}
-
-		MexicanHatKernel::MexicanHatKernel(const ElementCommonParameters& elementCommonParameters, const MexicanHatKernelParameters& mhk_parameters, const bool circular, const bool normalized)
-			: Kernel(elementCommonParameters, circular, normalized), parameters(mhk_parameters)
+		MexicanHatKernel::MexicanHatKernel(const ElementCommonParameters& elementCommonParameters, MexicanHatKernelParameters mhk_parameters)
+			: Kernel(elementCommonParameters), parameters(std::move(mhk_parameters))
 		{
 			commonParameters.identifiers.label = ElementLabel::MEXICAN_HAT_KERNEL;
 		}
@@ -24,9 +18,9 @@ namespace dnf_composer
 		{
 			const double maxSigma = std::max((parameters.amplitudeExc != 0.0) ? parameters.sigmaExc : 0,
 				(parameters.amplitudeInh != 0.0) ? parameters.sigmaInh : 0);
-			kernelRange = tools::math::computeKernelRange(maxSigma, cutOfFactor, commonParameters.dimensionParameters.size, circular);
+			kernelRange = tools::math::computeKernelRange(maxSigma, cutOfFactor, commonParameters.dimensionParameters.size, parameters.circular);
 
-			if (circular)
+			if (parameters.circular)
 				extIndex = tools::math::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
 			else
 				extIndex = {};
@@ -37,7 +31,7 @@ namespace dnf_composer
 			std::iota(rangeX.begin(), rangeX.end(), -startingValue);
 			std::vector<double> gaussExc(commonParameters.dimensionParameters.size);
 			std::vector<double> gaussInh(commonParameters.dimensionParameters.size);
-			if (normalized)
+			if (parameters.normalized)
 			{
 				gaussExc = tools::math::gaussNorm(rangeX, 0.0, parameters.sigmaExc);
 				gaussInh = tools::math::gaussNorm(rangeX, 0.0, parameters.sigmaInh);
@@ -52,7 +46,6 @@ namespace dnf_composer
 			for (int i = 0; i < components["kernel"].size(); i++)
 				components["kernel"][i] = parameters.amplitudeExc * gaussExc[i] - parameters.amplitudeInh * gaussInh[i];
 
-			//fullSum = 0;
 			std::ranges::fill(components["input"], 0.0);
 		}
 
@@ -60,19 +53,16 @@ namespace dnf_composer
 		{
 			updateInput();
 
-			//fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
-
 			std::vector<double> convolution(commonParameters.dimensionParameters.size);
 			const std::vector<double> subDataInput = tools::math::obtainCircularVector(extIndex, components["input"]);
 
-			if (circular)
+			if (parameters.circular)
 				convolution = tools::math::conv_valid(subDataInput, components["kernel"]);
 			else
 				convolution = tools::math::conv_same(components["input"], components["kernel"]);
-				//convolution = tools::math::conv(components["input"], components["kernel"]);
 
 			for (int i = 0; i < components["output"].size(); i++)
-				components["output"][i] = convolution[i];// *commonParameters.dimensionParameters.d_x;
+				components["output"][i] = convolution[i];
 		}
 
 		void MexicanHatKernel::close()
@@ -91,7 +81,8 @@ namespace dnf_composer
 			logStream << "AmplitudeInh: " << parameters.amplitudeInh << std::endl;
 			logStream << "SigmaInh: " << parameters.sigmaInh << std::endl;
 			logStream << "CutOffFactor: " << cutOfFactor << std::endl;
-			logStream << "Normalized: " << normalized << std::endl;
+			logStream << "Normalized: " << parameters.normalized << std::endl;
+			logStream << "Circularity: " << parameters.circular << std::endl;
 
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
@@ -99,7 +90,6 @@ namespace dnf_composer
 		std::shared_ptr<Element> MexicanHatKernel::clone() const
 		{
 			auto cloned = std::make_shared<MexicanHatKernel>(*this);
-			// If there are deep copy specifics that the copy constructor doesn't handle, do them here.
 			return cloned;
 		}
 

@@ -16,18 +16,11 @@ namespace dnf_composer
 			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size);
 		}
 
-		GaussKernel::GaussKernel(const ElementCommonParameters& elementCommonParameters, GaussKernelParameters gk_parameters, const bool circular, const bool normalized)
-			: Kernel(elementCommonParameters, circular, normalized), parameters(std::move(gk_parameters))
-		{
-			commonParameters.identifiers.label = ElementLabel::GAUSS_KERNEL;
-			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size);
-		}
-
 		void GaussKernel::init()
 		{
-			kernelRange = tools::math::computeKernelRange(parameters.sigma, cutOfFactor, commonParameters.dimensionParameters.size, circular);
+			kernelRange = tools::math::computeKernelRange(parameters.sigma, cutOfFactor, commonParameters.dimensionParameters.size, parameters.circular);
 
-			if (circular)
+			if (parameters.circular)
 			{
 				extIndex = tools::math::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
 				components["input"].resize(extIndex.size()); 
@@ -43,7 +36,7 @@ namespace dnf_composer
 			const int startingValue = static_cast<int>(kernelRange[0]);
 			std::iota(rangeX.begin(), rangeX.end(), -startingValue);
 			std::vector<double> gauss(commonParameters.dimensionParameters.size);
-			if (normalized)
+			if (parameters.normalized)
 				gauss = tools::math::gaussNorm(rangeX, 0.0, parameters.sigma);
 			else
 				gauss = tools::math::gauss(rangeX, 0.0, parameters.sigma);
@@ -63,7 +56,7 @@ namespace dnf_composer
 			const std::vector<double> subDataInput = tools::math::obtainCircularVector(extIndex, components["input"]);
 
 
-			if (circular)
+			if (parameters.circular)
 				convolution = tools::math::conv_valid(subDataInput, components["kernel"]);
 			else
 				convolution = tools::math::conv_same(components["input"], components["kernel"]);
@@ -86,8 +79,8 @@ namespace dnf_composer
 			logStream << "Amplitude: " << parameters.amplitude << std::endl;
 			logStream << "Sigma: " << parameters.sigma << std::endl;
 			logStream << "Cut-Off Factor: " << cutOfFactor << std::endl;
-			logStream << "Circular: " << circular << std::endl;
-			logStream << "Normalized: " << normalized << std::endl;
+			logStream << "Circular: " << parameters.circular << std::endl;
+			logStream << "Normalized: " << parameters.normalized << std::endl;
 
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}

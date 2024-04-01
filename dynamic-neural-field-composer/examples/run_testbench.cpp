@@ -29,7 +29,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 
 	const dnf_composer::element::MexicanHatKernelParameters mhkp1 = { 6.8, 4.1, 8.9, 3.4};
 	const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_1
-	(new dnf_composer::element::MexicanHatKernel({ "k 1", fieldDimensions }, mhkp1, circularity, normalization));
+	(new dnf_composer::element::MexicanHatKernel({ "k 1", fieldDimensions }, mhkp1));
 	simulation->addElement(k_1);
 
 	const dnf_composer::element::SigmoidFunction activationFunction{ 0, 4 };

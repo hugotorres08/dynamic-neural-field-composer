@@ -17,9 +17,11 @@ namespace dnf_composer
 			double amplitudeExc;
 			double sigmaInh;
 			double amplitudeInh;
+			bool circular;
+			bool normalized;
 
-			MexicanHatKernelParameters(double sigmaExc, double amplitudeExc, double sigmaInh, double amplitudeInh)
-				: sigmaExc(sigmaExc), amplitudeExc(amplitudeExc), sigmaInh(sigmaInh), amplitudeInh(amplitudeInh)
+			MexicanHatKernelParameters(double sigmaExc, double amplitudeExc, double sigmaInh, double amplitudeInh, bool circular = true, bool normalized = true)
+				: sigmaExc(sigmaExc), amplitudeExc(amplitudeExc), sigmaInh(sigmaInh), amplitudeInh(amplitudeInh), circular(circular), normalized(normalized)
 			{}
 
 			bool operator==(const MexicanHatKernelParameters& other) const
@@ -29,7 +31,9 @@ namespace dnf_composer
 				return std::abs(sigmaExc - other.sigmaExc) < epsilon &&
 					std::abs(amplitudeExc - other.amplitudeExc) < epsilon &&
 					std::abs(sigmaInh - other.sigmaInh) < epsilon &&
-					std::abs(amplitudeInh - other.amplitudeInh) < epsilon;
+					std::abs(amplitudeInh - other.amplitudeInh) < epsilon &&
+					circular == other.circular &&
+					normalized == other.normalized;
 			}
 		};
 
@@ -38,9 +42,7 @@ namespace dnf_composer
 		private:
 			MexicanHatKernelParameters parameters;
 		public:
-			MexicanHatKernel(const ElementCommonParameters& elementCommonParameters, const MexicanHatKernelParameters& mhk_parameters);
-			MexicanHatKernel(const ElementCommonParameters& elementCommonParameters, const MexicanHatKernelParameters& mhk_parameters, const bool circular, const bool normalized);
-
+			MexicanHatKernel(const ElementCommonParameters& elementCommonParameters, MexicanHatKernelParameters mhk_parameters);
 
 			void init() override;
 			void step(double t, double deltaT) override;
@@ -50,8 +52,6 @@ namespace dnf_composer
 
 			void setParameters(const MexicanHatKernelParameters& mhk_parameters);
 			MexicanHatKernelParameters getParameters() const;
-
-			~MexicanHatKernel() override = default;
 		private:
 			void updateParameters();
 		};

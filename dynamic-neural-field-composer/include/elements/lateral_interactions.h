@@ -15,9 +15,11 @@ namespace dnf_composer
 			double sigmaInh;
 			double amplitudeInh;
 			double amplitudeGlobal;
+			bool circular;
+			bool normalized;
 
-			LateralInteractionsParameters(double sigmaExc, double amplitudeExc, double sigmaInh, double amplitudeInh, double amplitudeGlobal)
-				: sigmaExc(sigmaExc), amplitudeExc(amplitudeExc), sigmaInh(sigmaInh), amplitudeInh(amplitudeInh), amplitudeGlobal(amplitudeGlobal)
+			LateralInteractionsParameters(double sigmaExc, double amplitudeExc, double sigmaInh, double amplitudeInh, double amplitudeGlobal, bool circular = true, bool normalized = true)
+				: sigmaExc(sigmaExc), amplitudeExc(amplitudeExc), sigmaInh(sigmaInh), amplitudeInh(amplitudeInh), amplitudeGlobal(amplitudeGlobal), circular(circular), normalized(normalized)
 			{}
 
 			bool operator==(const LateralInteractionsParameters& other) const
@@ -27,7 +29,10 @@ namespace dnf_composer
 				return std::abs(sigmaExc - other.sigmaExc) < epsilon &&
 					std::abs(amplitudeExc - other.amplitudeExc) < epsilon &&
 					std::abs(sigmaInh - other.sigmaInh) < epsilon &&
-					std::abs(amplitudeInh - other.amplitudeInh) < epsilon;
+					std::abs(amplitudeInh - other.amplitudeInh) < epsilon &&
+					std::abs(amplitudeGlobal - other.amplitudeGlobal) < epsilon &&
+					circular == other.circular &&
+					normalized == other.normalized;
 			}
 		};
 
@@ -36,8 +41,7 @@ namespace dnf_composer
 		private:
 			LateralInteractionsParameters parameters;
 		public:
-			LateralInteractions(const ElementCommonParameters& elementCommonParameters, const LateralInteractionsParameters& li_parameters);
-			LateralInteractions(const ElementCommonParameters& elementCommonParameters, const LateralInteractionsParameters& li_parameters, const bool circular, const bool normalized);
+			LateralInteractions(const ElementCommonParameters& elementCommonParameters, LateralInteractionsParameters li_parameters);
 
 			void init() override;
 			void step(double t, double deltaT) override;
@@ -47,8 +51,6 @@ namespace dnf_composer
 
 			void setParameters(const LateralInteractionsParameters& li_parameters);
 			LateralInteractionsParameters getParameters() const;
-
-			~LateralInteractions() override = default;
 		private:
 			void updateParameters();
 		};
