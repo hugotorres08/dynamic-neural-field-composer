@@ -116,7 +116,7 @@ namespace dnf_composer
 			ImGui::SameLine(); ImGui::Text("Sigma");
 
 			label = "##" + element->getUniqueName() + "Position";
-			ImGui::SliderFloat(label.c_str(), &position, 0, static_cast<float>(stimulus->getElementCommonParameters().dimensionParameters.size));
+			ImGui::SliderFloat(label.c_str(), &position, 0, static_cast<float>(stimulus->getElementCommonParameters().dimensionParameters.x_max));
 			ImGui::SameLine(); ImGui::Text("Position");
 
 			gsp.amplitude = amplitude;

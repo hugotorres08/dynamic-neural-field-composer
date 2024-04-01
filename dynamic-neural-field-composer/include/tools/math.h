@@ -72,6 +72,30 @@ namespace dnf_composer
 				return out;
 			}
 
+			// ChatGPT 4.0
+			template<typename T>
+			std::vector<T> conv_same(std::vector<T> const& f, std::vector<T> const& g) {
+				int const nf = f.size();
+				int const ng = g.size();
+				std::vector<T> out(nf, T()); // Output size matches the size of f for 'same' mode
+
+				// Calculate padding needed for 'same' mode, adjusted for shift correction
+				const int pad = (ng - 1) / 2;
+
+				for (int i = 0; i < nf; ++i) {
+					T sum = T(); // Initialize sum for each element of output
+					for (int j = 0; j < ng; ++j) {
+						int fIndex = i + j - pad; // Adjust index for 'same' mode with shift correction
+						if (fIndex >= 0 && fIndex < nf) { // Check boundaries
+							sum += f[fIndex] * g[j];
+						}
+					}
+					out[i] = sum;
+				}
+				return out;
+			}
+
+
 			template<typename T>
 			std::vector<T> gaussNorm(const std::vector<int>& rangeX, const T& position, const T& sigma)
 			{
@@ -107,7 +131,7 @@ namespace dnf_composer
 
 				for (int i = 0; i < g.size(); i++)
 				{
-					T x = static_cast<T>(i);
+					T x = static_cast<T>(i + 1);
 					g[i] = exp(-0.5 * pow((x - position), 2) / pow(sigma, 2));
 				}
 

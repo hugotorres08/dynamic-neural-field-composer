@@ -18,6 +18,7 @@ namespace dnf_composer
 			int cutOfFactor;
 		public:
 			Kernel(const ElementCommonParameters& elementCommonParameters);
+			Kernel(const ElementCommonParameters& elementCommonParameters, bool circular, bool normalized);
 			~Kernel() override = default;
 
 			std::array<int, 2> getKernelRange() const;

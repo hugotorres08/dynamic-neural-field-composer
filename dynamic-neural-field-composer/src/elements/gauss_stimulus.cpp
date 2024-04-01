@@ -75,7 +75,6 @@ namespace dnf_composer
 		std::shared_ptr<Element> GaussStimulus::clone() const
 		{
 			auto cloned = std::make_shared<GaussStimulus>(*this);
-			// If there are deep copy specifics that the copy constructor doesn't handle, do them here.
 			return cloned;
 		}
 

@@ -14,7 +14,7 @@ int main(int argc, char* argv[])
 		const Application app{ simulation, activateUserInterface };
 
 		element::ElementFactory factory;
-		element::ElementSpatialDimensionParameters dim_params{ 100, 0.2 };
+		element::ElementSpatialDimensionParameters dim_params{ 50, 0.2 };
 		const bool circularity = true;
 
 		//// Action observation layer

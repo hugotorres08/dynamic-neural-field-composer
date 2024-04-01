@@ -15,6 +15,12 @@ namespace dnf_composer
 			commonParameters.identifiers.label = ElementLabel::LATERAL_INTERACTIONS;
 		}
 
+		LateralInteractions::LateralInteractions(const ElementCommonParameters& elementCommonParameters, const LateralInteractionsParameters& li_parameters, const bool circular, const bool normalized)
+			: Kernel(elementCommonParameters, circular, normalized), parameters(li_parameters)
+		{
+			commonParameters.identifiers.label = ElementLabel::LATERAL_INTERACTIONS;
+		}
+
 		void LateralInteractions::init()
 		{
 			const double maxSigma = std::max((parameters.amplitudeExc != 0.0) ? parameters.sigmaExc : 0,
@@ -65,7 +71,7 @@ namespace dnf_composer
 			if (circular)
 				convolution = tools::math::conv_valid(subDataInput, components["kernel"]);
 			else
-				convolution = tools::math::conv(components["input"], components["kernel"]);
+				convolution = tools::math::conv_same(components["input"], components["kernel"]);
 
 			for (int i = 0; i < components["output"].size(); i++)
 				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;

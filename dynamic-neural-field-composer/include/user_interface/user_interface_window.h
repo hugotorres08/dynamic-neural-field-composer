@@ -35,7 +35,6 @@ namespace dnf_composer
 			// Derived structs are expected to define specific member variables
 			// and functions relevant to their respective elements.
 			UserInterfaceWindowParameters() = default;
-			// Declare a virtual destructor
 			virtual ~UserInterfaceWindowParameters() = default;
 		};
 
