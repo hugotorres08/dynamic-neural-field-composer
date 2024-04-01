@@ -21,6 +21,16 @@ namespace dnf_composer
 			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size);
 		}
 
+		Kernel::Kernel(const ElementCommonParameters& elementCommonParameters, bool circular, bool normalized)
+			: Element(elementCommonParameters), circular(circular), normalized(normalized)
+		{
+			kernelRange = { 0, 0 };
+			extIndex = {};
+			fullSum = 0.0;
+			cutOfFactor = 5; // do not change this
+			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size);
+		}
+
 		bool Kernel::getCircular() const
 		{
 			return circular;

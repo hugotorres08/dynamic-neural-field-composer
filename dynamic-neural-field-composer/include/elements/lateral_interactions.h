@@ -37,6 +37,7 @@ namespace dnf_composer
 			LateralInteractionsParameters parameters;
 		public:
 			LateralInteractions(const ElementCommonParameters& elementCommonParameters, const LateralInteractionsParameters& li_parameters);
+			LateralInteractions(const ElementCommonParameters& elementCommonParameters, const LateralInteractionsParameters& li_parameters, const bool circular, const bool normalized);
 
 			void init() override;
 			void step(double t, double deltaT) override;

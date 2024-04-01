@@ -9,8 +9,15 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		GaussKernel::GaussKernel(const ElementCommonParameters& elementCommonParameters, const GaussKernelParameters& gk_parameters)
-			: Kernel(elementCommonParameters), parameters(gk_parameters)
+		GaussKernel::GaussKernel(const ElementCommonParameters& elementCommonParameters, GaussKernelParameters gk_parameters)
+			: Kernel(elementCommonParameters), parameters(std::move(gk_parameters))
+		{
+			commonParameters.identifiers.label = ElementLabel::GAUSS_KERNEL;
+			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size);
+		}
+
+		GaussKernel::GaussKernel(const ElementCommonParameters& elementCommonParameters, GaussKernelParameters gk_parameters, const bool circular, const bool normalized)
+			: Kernel(elementCommonParameters, circular, normalized), parameters(std::move(gk_parameters))
 		{
 			commonParameters.identifiers.label = ElementLabel::GAUSS_KERNEL;
 			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size);
@@ -21,9 +28,15 @@ namespace dnf_composer
 			kernelRange = tools::math::computeKernelRange(parameters.sigma, cutOfFactor, commonParameters.dimensionParameters.size, circular);
 
 			if (circular)
+			{
 				extIndex = tools::math::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
+				components["input"].resize(extIndex.size()); 
+			}
 			else
+			{
 				extIndex = {};
+				components["input"].resize(commonParameters.dimensionParameters.size);
+			}
 
 			int rangeXsize = kernelRange[0] + kernelRange[1] + 1;
 			std::vector<int> rangeX(rangeXsize);
@@ -39,16 +52,12 @@ namespace dnf_composer
 			for (int i = 0; i < components["kernel"].size(); i++)
 				components["kernel"][i] = parameters.amplitude * gauss[i];
 
-			components["input"].resize(extIndex.size());
-			fullSum = 0;
 			std::ranges::fill(components["input"], 0.0);
 		}
 
 		void GaussKernel::step(double t, double deltaT)
 		{
 			updateInput();
-
-			fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
 
 			std::vector<double> convolution(commonParameters.dimensionParameters.size);
 			const std::vector<double> subDataInput = tools::math::obtainCircularVector(extIndex, components["input"]);
@@ -57,7 +66,7 @@ namespace dnf_composer
 			if (circular)
 				convolution = tools::math::conv_valid(subDataInput, components["kernel"]);
 			else
-				convolution = tools::math::conv(components["input"], components["kernel"]);
+				convolution = tools::math::conv_same(components["input"], components["kernel"]);
 
 			for (int i = 0; i < components["output"].size(); i++)
 				components["output"][i] = convolution[i];
@@ -86,7 +95,6 @@ namespace dnf_composer
 		std::shared_ptr<Element> GaussKernel::clone() const
 		{
 			auto cloned = std::make_shared<GaussKernel>(*this);
-			// If there are deep copy specifics that the copy constructor doesn't handle, do them here.
 			return cloned;
 		}
 

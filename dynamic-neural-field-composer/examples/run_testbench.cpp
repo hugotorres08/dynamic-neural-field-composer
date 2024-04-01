@@ -4,17 +4,32 @@
 
 #include "dynamic-neural-field-composer.h"
 
-const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 100, 1.0 };
+const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 123, 0.3 };
 
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
 	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("test sim", 1, 0, 0);
+	constexpr bool circularity = false;
+	constexpr bool normalization = false;
 
-	const dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 50 };
-	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus(new dnf_composer::element::GaussStimulus({ "gauss stimulus", fieldDimensions }, gcp_a));simulation->addElement(gauss_stimulus);
+	const dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 50, circularity, normalization};
+	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus
+		(new dnf_composer::element::GaussStimulus({ "gauss stimulus", fieldDimensions }, gcp_a));
+	simulation->addElement(gauss_stimulus);
 
-	const dnf_composer::element::LateralInteractionsParameters lip1 = { 3,7.2,12,6.4, -0.51 };
-	const std::shared_ptr<dnf_composer::element::LateralInteractions> k_1(new dnf_composer::element::LateralInteractions({ "k 1", fieldDimensions }, lip1));
+	/*const dnf_composer::element::LateralInteractionsParameters lip1 = { 3,7.2,12,6.4, -0.51 };
+	const std::shared_ptr<dnf_composer::element::LateralInteractions> k_1
+	(new dnf_composer::element::LateralInteractions({ "k 1", fieldDimensions }, lip1, circularity, normalization));
+	simulation->addElement(k_1);*/
+
+	//const dnf_composer::element::GaussKernelParameters gkp1 = { 2, 1 };
+	//const std::shared_ptr<dnf_composer::element::GaussKernel> k_1
+	//	(new dnf_composer::element::GaussKernel({ "k 1", fieldDimensions }, gkp1, circularity, normalization));
+	//simulation->addElement(k_1);
+
+	const dnf_composer::element::MexicanHatKernelParameters mhkp1 = { 6.8, 4.1, 8.9, 3.4};
+	const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_1
+	(new dnf_composer::element::MexicanHatKernel({ "k 1", fieldDimensions }, mhkp1, circularity, normalization));
 	simulation->addElement(k_1);
 
 	const dnf_composer::element::SigmoidFunction activationFunction{ 0, 4 };
@@ -26,26 +41,26 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	neural_field_1->addInput(gauss_stimulus);
 	k_1->addInput(neural_field_1);
 
-	const dnf_composer::element::LateralInteractionsParameters lip2 = { 3,7.2,12,6.4, -0.51 };
-	const std::shared_ptr<dnf_composer::element::LateralInteractions> k_2(new dnf_composer::element::LateralInteractions({ "k 2", fieldDimensions }, lip2));
-	simulation->addElement(k_2);
+	//const dnf_composer::element::LateralInteractionsParameters lip2 = { 3,7.2,12,6.4, -0.51 };
+	//const std::shared_ptr<dnf_composer::element::LateralInteractions> k_2(new dnf_composer::element::LateralInteractions({ "k 2", fieldDimensions }, lip2));
+	//simulation->addElement(k_2);
 
-	const dnf_composer::element::NeuralFieldParameters nfp2 = { 20, -10 , activationFunction };
-	const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_2(new dnf_composer::element::NeuralField({ "neural field 2", fieldDimensions }, nfp2));
-	simulation->addElement(neural_field_2);
+	//const dnf_composer::element::NeuralFieldParameters nfp2 = { 20, -10 , activationFunction };
+	//const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_2(new dnf_composer::element::NeuralField({ "neural field 2", fieldDimensions }, nfp2));
+	//simulation->addElement(neural_field_2);
 
-	neural_field_2->addInput(k_2);
-	k_2->addInput(neural_field_2);
+	//neural_field_2->addInput(k_2);
+	//k_2->addInput(neural_field_2);
 
-	// excitatory connections between fields
-	dnf_composer::element::GaussKernelParameters gkp1;
-	gkp1.amplitude = 10;
-	gkp1.sigma = 8;
-	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1_2(new dnf_composer::element::GaussKernel({ "k 1 2", fieldDimensions }, gkp1));
-	simulation->addElement(k_1_2);
+	//// excitatory connections between fields
+	//dnf_composer::element::GaussKernelParameters gkp1;
+	//gkp1.amplitude = 10;
+	//gkp1.sigma = 8;
+	//const std::shared_ptr<dnf_composer::element::GaussKernel> k_1_2(new dnf_composer::element::GaussKernel({ "k 1 2", fieldDimensions }, gkp1));
+	//simulation->addElement(k_1_2);
 
-	neural_field_2->addInput(k_1_2);
-	k_1_2->addInput(neural_field_1);
+	//neural_field_2->addInput(k_1_2);
+	//k_1_2->addInput(neural_field_1);
 
 	return simulation;
 }

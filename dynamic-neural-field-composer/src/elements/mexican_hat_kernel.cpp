@@ -14,6 +14,12 @@ namespace dnf_composer
 			commonParameters.identifiers.label = ElementLabel::MEXICAN_HAT_KERNEL;
 		}
 
+		MexicanHatKernel::MexicanHatKernel(const ElementCommonParameters& elementCommonParameters, const MexicanHatKernelParameters& mhk_parameters, const bool circular, const bool normalized)
+			: Kernel(elementCommonParameters, circular, normalized), parameters(mhk_parameters)
+		{
+			commonParameters.identifiers.label = ElementLabel::MEXICAN_HAT_KERNEL;
+		}
+
 		void MexicanHatKernel::init()
 		{
 			const double maxSigma = std::max((parameters.amplitudeExc != 0.0) ? parameters.sigmaExc : 0,
@@ -24,7 +30,6 @@ namespace dnf_composer
 				extIndex = tools::math::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
 			else
 				extIndex = {};
-
 
 			int rangeXsize = kernelRange[0] + kernelRange[1] + 1;
 			std::vector<int> rangeX(rangeXsize);
@@ -61,7 +66,8 @@ namespace dnf_composer
 			if (circular)
 				convolution = tools::math::conv_valid(subDataInput, components["kernel"]);
 			else
-				convolution = tools::math::conv(components["input"], components["kernel"]);
+				convolution = tools::math::conv_same(components["input"], components["kernel"]);
+				//convolution = tools::math::conv(components["input"], components["kernel"]);
 
 			for (int i = 0; i < components["output"].size(); i++)
 				components["output"][i] = convolution[i];
