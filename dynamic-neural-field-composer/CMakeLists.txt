@@ -216,54 +216,54 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
     FILE ${CMAKE_PROJECT_NAME}-config.cmake
 )
 
-## Add executable project
-#set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
-#add_executable(${EXE_PROJECT} "src/dynamic-neural-field-composer.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME} )
-#
-#
-## Add executable example project run_sim
-#set(EXE_PROJECT_EXAMPLE_RUN_SIM ${CMAKE_PROJECT_NAME}-example-run_sim)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM} "examples/run_sim.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
-#
-## Add executable example project run_sim_headless
-#set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_headless)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headless.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
-#
-## Add executable example project run_learning_wizard
-#set(EXE_PROJECT_EXAMPLE_LEARNING_WIZARD ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
-#add_executable(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} "examples/run_learning_wizard.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE imgui::imgui  ${CMAKE_PROJECT_NAME} )
-#
-## Add executable example project run_sim_read_write
-#set(EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE ${CMAKE_PROJECT_NAME}-example-run_sim_read_write)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} "examples/run_sim_read_write.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
-#
+# Add executable project
+set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
+add_executable(${EXE_PROJECT} "src/dynamic-neural-field-composer.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT} PRIVATE include)
+target_link_libraries(${EXE_PROJECT} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME} )
+
+
+# Add executable example project run_sim
+set(EXE_PROJECT_EXAMPLE_RUN_SIM ${CMAKE_PROJECT_NAME}-example-run_sim)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM} "examples/run_sim.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project run_sim_headless
+set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_headless)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headless.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project run_learning_wizard
+set(EXE_PROJECT_EXAMPLE_LEARNING_WIZARD ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
+add_executable(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} "examples/run_learning_wizard.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE imgui::imgui  ${CMAKE_PROJECT_NAME} )
+
+# Add executable example project run_sim_read_write
+set(EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE ${CMAKE_PROJECT_NAME}-example-run_sim_read_write)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} "examples/run_sim_read_write.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
 # Add executable example project run_testbench
 set(EXE_PROJECT_EXAMPLE_RUN_TESTBENCH ${CMAKE_PROJECT_NAME}-example-run_testbench)
 add_executable(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} "examples/run_testbench.cpp" ./resources/resources.rc)
 target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE include)
 target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
-#
-## Add executable example project run_element_factory
-#set(EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_element_factory)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} "examples/run_element_factory.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
-#
-## Add executable example project pepper_robot_joint_task_model
-#set(EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-pepper-joint_task_model)
-#add_executable(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} "examples/pepper_robot_joint_task_model.cpp" ./resources/resources.rc)
-#target_include_directories(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project run_element_factory
+set(EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_element_factory)
+add_executable(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} "examples/run_element_factory.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
+
+# Add executable example project pepper_robot_joint_task_model
+set(EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-pepper-joint_task_model)
+add_executable(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} "examples/pepper_robot_joint_task_model.cpp" ./resources/resources.rc)
+target_include_directories(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 # Add executable example project panda_joint_task_model
 set(EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-panda_joint_task_model)
@@ -272,35 +272,35 @@ target_include_directories(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} PRIVATE inclu
 target_link_libraries(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} PRIVATE imgui::imgui ${CMAKE_PROJECT_NAME})
 
 
-### Setup Catch2
-#enable_testing()
-#find_package(Catch2 CONFIG REQUIRED)
-#include(CTest)
-#include(Catch)
-#
-## Add test project
-#set(TEST_PROJECT ${CMAKE_PROJECT_NAME}-test)
-#add_executable(${TEST_PROJECT} 
-#    tests/test.cpp 
-#    tests/test_clones.cpp
-#    tests/test_simulation_rw.cpp
-#    tests/test_application.cpp
-#    tests/test_element.cpp 
-#    tests/test_gauss_kernel.cpp 
-#    tests/test_gauss_stimulus.cpp 
-#    tests/test_mexican_hat_kernel.cpp 
-#    tests/test_neural_field.cpp 
-#    tests/test_normal_noise.cpp
-#    tests/test_simulation.cpp 
-#    tests/test_user_interface.cpp 
-#    tests/test_visualization.cpp 
-#    tests/test_learning_wizard.cpp
-#    tests/test_element_factory.cpp
-#    tests/test_kernel.cpp
-#    tests/test_field_coupling.cpp
-#    tests/test_gauss_field_coupling.cpp
-#)
-#target_include_directories(${TEST_PROJECT} PRIVATE include)
-#target_link_libraries(${TEST_PROJECT} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain ${CMAKE_PROJECT_NAME})
-## Automatically discover and add tests
-#catch_discover_tests(${TEST_PROJECT})
+## Setup Catch2
+enable_testing()
+find_package(Catch2 CONFIG REQUIRED)
+include(CTest)
+include(Catch)
+
+# Add test project
+set(TEST_PROJECT ${CMAKE_PROJECT_NAME}-test)
+add_executable(${TEST_PROJECT} 
+    tests/test.cpp 
+    tests/test_clones.cpp
+    tests/test_simulation_rw.cpp
+    tests/test_application.cpp
+    tests/test_element.cpp 
+    tests/test_gauss_kernel.cpp 
+    tests/test_gauss_stimulus.cpp 
+    tests/test_mexican_hat_kernel.cpp 
+    tests/test_neural_field.cpp 
+    tests/test_normal_noise.cpp
+    tests/test_simulation.cpp 
+    tests/test_user_interface.cpp 
+    tests/test_visualization.cpp 
+    tests/test_learning_wizard.cpp
+    tests/test_element_factory.cpp
+    tests/test_kernel.cpp
+    tests/test_field_coupling.cpp
+    tests/test_gauss_field_coupling.cpp
+)
+target_include_directories(${TEST_PROJECT} PRIVATE include)
+target_link_libraries(${TEST_PROJECT} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain ${CMAKE_PROJECT_NAME})
+# Automatically discover and add tests
+catch_discover_tests(${TEST_PROJECT})
