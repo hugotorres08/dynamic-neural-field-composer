@@ -1,11 +1,20 @@
 #pragma once
 
-#include "tools/math.h"
 #include <vector>
 #include <string>
 #include <array>
 
 #include "kernel.h"
+#include "tools/math.h"
+
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
+
 
 namespace dnf_composer
 {

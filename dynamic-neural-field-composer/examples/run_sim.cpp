@@ -18,15 +18,15 @@ int main(int argc, char* argv[])
 	    const dnf_composer::Application app{ simulation, activateUserInterface };
 
 	    // After creating the application, we can add the windows we want to display.
-		app.activateUserInterfaceWindow(dnf_composer::user_interface::SIMULATION_WINDOW);
+		/*app.activateUserInterfaceWindow(dnf_composer::user_interface::SIMULATION_WINDOW);
 		app.activateUserInterfaceWindow(dnf_composer::user_interface::LOG_WINDOW);
 		app.activateUserInterfaceWindow(dnf_composer::user_interface::ELEMENT_WINDOW);
-		app.activateUserInterfaceWindow(dnf_composer::user_interface::MONITORING_WINDOW);
+		app.activateUserInterfaceWindow(dnf_composer::user_interface::MONITORING_WINDOW);*/
 
 	    dnf_composer::user_interface::PlotParameters plotParameters;
 	    plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
 	    plotParameters.dimensions = { 0, 100, -30, 40 , 1.0};
-		app.activateUserInterfaceWindow(dnf_composer::user_interface::PLOT_WINDOW, plotParameters);
+		//app.activateUserInterfaceWindow(dnf_composer::user_interface::PLOT_WINDOW, plotParameters);
 
 		app.init();
 

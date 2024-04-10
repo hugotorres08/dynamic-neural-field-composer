@@ -216,6 +216,7 @@ namespace dnf_composer
 
 		void SimulationWindow::addElementNeuralField() const
 		{
+
 			static char id[CHAR_SIZE] = "neural field u";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int x_max = 100;

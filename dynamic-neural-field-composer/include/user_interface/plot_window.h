@@ -1,7 +1,8 @@
 #pragma once
 
 
-#include "user_interface_window.h"
+#include <imgui-platform-kit/user_interface_window.h>
+
 #include "simulation/visualization.h"
 
 
@@ -38,7 +39,7 @@ namespace dnf_composer
 			{}
 		};
 
-		struct PlotParameters : UserInterfaceWindowParameters
+		struct PlotParameters : imgui_kit::UserInterfaceWindowParameters
 		{
 			int id;
 			PlotDimensions dimensions;
@@ -58,7 +59,7 @@ namespace dnf_composer
 			{}
 		};
 
-		class PlotWindow : public UserInterfaceWindow
+		class PlotWindow : public imgui_kit::UserInterfaceWindow
 		{
 		private:
 			std::vector<PlotParameters> plots;

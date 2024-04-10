@@ -62,7 +62,7 @@ namespace dnf_composer
 
             void Logger::log_ui(const std::string& message)
             {
-                dnf_composer::user_interface::LoggerWindow::addLog(message.c_str());
+                imgui_kit::LogWindow::addLog(message.c_str());
             }
 
 

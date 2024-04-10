@@ -4,9 +4,9 @@
 #include <string>
 #include <chrono>
 #include <iomanip>
+#include <imgui-platform-kit/log_window.h>
 
 #include "exceptions/exception.h"
-#include "user_interface/logger_window.h"
 
 #ifdef ERROR
 #undef ERROR
