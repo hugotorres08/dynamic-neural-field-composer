@@ -25,6 +25,7 @@ namespace dnf_composer
 		double tZero;
 		double t;
 	public:
+
 		Simulation(std::string identifier = "default name", double deltaT = 1, double tZero = 0, double t = 0);
 		Simulation(const Simulation& other);
 		Simulation& operator=(const Simulation& other);

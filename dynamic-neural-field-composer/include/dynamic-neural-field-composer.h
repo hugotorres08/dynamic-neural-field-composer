@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <imgui-platform-kit/log_window.h>
+
 #include "application/application.h"
 #include "elements/element_factory.h"
 #include "user_interface/simulation_window.h"
