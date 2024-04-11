@@ -9,6 +9,11 @@
 
 namespace dnf_composer
 {
+	std::shared_ptr<Simulation> createSimulation(const std::string& identifier, double deltaT, double tZero, double t)
+	{
+		return std::make_shared<Simulation>(identifier, deltaT, tZero, t);
+	}
+
 	Simulation::Simulation(std::string identifier, double deltaT, double tZero, double t)
 		: uniqueIdentifier(std::move(identifier)), deltaT(deltaT), tZero(tZero), t(t)
 	{

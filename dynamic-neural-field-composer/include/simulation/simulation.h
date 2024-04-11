@@ -13,6 +13,9 @@
 
 namespace dnf_composer
 {
+	class Simulation;
+	std::shared_ptr<Simulation> createSimulation(const std::string& identifier, double deltaT, double tZero, double t);
+
 	class Simulation : public std::enable_shared_from_this<Simulation>
 	{
 	protected:

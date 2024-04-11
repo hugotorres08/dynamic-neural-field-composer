@@ -8,7 +8,7 @@ const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 
 
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
-	std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("test sim", 1, 0, 0);
+	auto simulation = dnf_composer::createSimulation("test sim", 5, 0, 0);
 	constexpr bool circularity = false;
 	constexpr bool normalization = false;
 
@@ -72,21 +72,27 @@ int main(int argc, char* argv[])
 	{
 		// After defining the simulation, we can create the application.
 		const auto simulation = getExperimentSimulation();
-		// You can run the application without the user interface by setting the second parameter to false.
-		constexpr bool activateUserInterface = true;
-		const dnf_composer::Application app{ simulation, activateUserInterface };
+
+		const imgui_kit::WindowParameters winParams{ L"Dynamic Neural Field Composer", 2560, 1600 };
+		const imgui_kit::FontParameters fontParams{ "../../../resources/fonts/Lexend-Light.ttf", 22 };
+		const imgui_kit::StyleParameters styleParams{ ImVec4(0.2f, 0.2f, 0.2f, 0.8f) };
+		const imgui_kit::IconParameters iconParams{ "../../../resources/icons/win_icon.ico" };
+		imgui_kit::UserInterfaceParameters uiParameters{ winParams, fontParams, styleParams, iconParams };
+		dnf_composer::ApplicationParameters appParameters{ uiParameters };
+		dnf_composer::Application app{ simulation, appParameters };
 
 		// After creating the application, we can add the windows we want to display.
-		app.activateUserInterfaceWindow(dnf_composer::user_interface::SIMULATION_WINDOW);
-		app.activateUserInterfaceWindow(dnf_composer::user_interface::LOG_WINDOW);
-		app.activateUserInterfaceWindow(dnf_composer::user_interface::ELEMENT_WINDOW);
-		app.activateUserInterfaceWindow(dnf_composer::user_interface::MONITORING_WINDOW);
+		app.addWindow<imgui_kit::LogWindow>();
+		app.addWindow<dnf_composer::user_interface::SimulationWindow>();
+		app.addWindow<dnf_composer::user_interface::ElementWindow>();
 
+		// To add plots with data already loaded you need to use a Visualization object.
 		dnf_composer::user_interface::PlotParameters plotParameters;
 		plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
 		plotParameters.dimensions = { 0, fieldDimensions.x_max, -15, 14, fieldDimensions.d_x };
-		const auto plotWindow = std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters);
-		app.activateUserInterfaceWindow(plotWindow);
+		auto visualization = createVisualization(simulation);
+		visualization->addPlottingData("neural field 1", "activation");
+		app.addWindow<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters);
 
 		app.init();
 
@@ -94,7 +100,7 @@ int main(int argc, char* argv[])
 		while (!userRequestClose)
 		{
 			app.step();
-			userRequestClose = app.getCloseUI();
+			userRequestClose = app.hasUIBeenClosed();
 		}
 		app.close();
 		return 0;

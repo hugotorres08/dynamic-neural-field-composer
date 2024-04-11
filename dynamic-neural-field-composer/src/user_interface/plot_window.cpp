@@ -8,23 +8,6 @@ namespace dnf_composer
 {
 	namespace user_interface
 	{
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation)
-			: visualization(std::make_shared<Visualization>(simulation))
-		{
-			PlotParameters parameters;
-			parameters.dimensions = { 0, 100, -30, 40 , 1.0};
-			parameters.annotations.title = "Plot window ";
-			parameters.annotations.x_label = "Spatial dimension";
-			parameters.annotations.y_label = "Amplitude";
-			createPlot(parameters);
-		}
-
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters)
-			: visualization(std::make_shared<Visualization>(simulation))
-		{
-			createPlot(parameters);
-		}
-
 		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization)
 			: visualization(visualization)
 		{

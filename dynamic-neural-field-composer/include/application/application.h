@@ -36,7 +36,8 @@ namespace dnf_composer
 		ApplicationParameters parameters;
 		std::shared_ptr<imgui_kit::win32_directx12::UserInterface> ui;
 	public:
-		Application(const Simulation& simulation, bool activateUserInterface = true);
+		Application(const std::shared_ptr<Simulation>& simulation, bool activateUserInterface = true);
+		Application(const std::shared_ptr<Simulation>& simulation, ApplicationParameters uiParams);
 		Application(const Application&) = delete;             
 		Application& operator=(const Application&) = delete;  
 		Application(Application&&) = delete;                  

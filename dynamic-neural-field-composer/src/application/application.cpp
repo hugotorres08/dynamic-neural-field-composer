@@ -24,12 +24,18 @@ namespace dnf_composer
 		:uiParameters(std::move(userInterfaceParameters)), uiActive(true)
 	{}
 
-	Application::Application(const Simulation& simulation, bool activateUserInterface)
-		:simulation(std::make_shared<Simulation>(simulation))
+	Application::Application(const std::shared_ptr<Simulation>& simulation, bool activateUserInterface)
+		:simulation(simulation)
 	{
 		if (activateUserInterface)
 			ui = std::make_shared<imgui_kit::win32_directx12::UserInterface>(parameters.uiParameters);
 		parameters.uiActive = activateUserInterface;
+	}
+
+	Application::Application(const std::shared_ptr<Simulation>& simulation, ApplicationParameters uiParams)
+		:simulation(simulation), parameters(std::move(uiParams))
+	{
+		ui = std::make_shared<imgui_kit::win32_directx12::UserInterface>(parameters.uiParameters);
 	}
 
 	void Application::init() const

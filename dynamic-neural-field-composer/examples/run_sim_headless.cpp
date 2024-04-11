@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
 		while (!userRequestClose)
 		{
 			app.step();
-			userRequestClose = app.getCloseUI();
+			userRequestClose = app.hasUIBeenClosed();
 		}
 		app.close();
 		return 0;

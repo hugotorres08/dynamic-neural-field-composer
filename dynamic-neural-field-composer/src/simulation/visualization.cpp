@@ -7,6 +7,11 @@
 
 namespace dnf_composer
 {
+	std::shared_ptr<Visualization> createVisualization(std::shared_ptr<Simulation> targetSimulation)
+	{
+		return std::make_shared<Visualization>(targetSimulation);
+	}
+
 	Visualization::Visualization(std::shared_ptr<Simulation> targetSimulation)
 	{
 		if (targetSimulation == nullptr)

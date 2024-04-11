@@ -8,32 +8,36 @@
 
 int main(int argc, char* argv[])
 {
-	// After defining the simulation, we can create the application.
-	const auto simulation = std::make_shared<dnf_composer::Simulation>("run sim with gui example", 5, 0, 0);
-	// You can run the application without the user interface by setting the second parameter to false.
-	constexpr bool activateUserInterface = true;
-	const dnf_composer::Application app{ simulation, activateUserInterface };
-
-	// After creating the application, we can add the windows we want to display.
-	//app.activateUserInterfaceWindow(dnf_composer::user_interface::SIMULATION_WINDOW);
-	//app.activateUserInterfaceWindow(dnf_composer::user_interface::LOG_WINDOW);
-	//app.activateUserInterfaceWindow(dnf_composer::user_interface::ELEMENT_WINDOW);
-	//app.activateUserInterfaceWindow(dnf_composer::user_interface::MONITORING_WINDOW);
-
-	dnf_composer::user_interface::PlotParameters plotParameters;
-	plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
-	plotParameters.dimensions = { 0, 100, -30, 40 , 1.0 };
-	//app.activateUserInterfaceWindow(dnf_composer::user_interface::PLOT_WINDOW, plotParameters);
-
 	try
 	{
+		const auto simulation = dnf_composer::createSimulation( "run sim with gui example", 5, 0, 0 );
+
+		const imgui_kit::WindowParameters winParams{ L"Dynamic Neural Field Composer", 2560, 1600 };
+		const imgui_kit::FontParameters fontParams{ "../../../resources/fonts/Lexend-Light.ttf", 22 };
+		const imgui_kit::StyleParameters styleParams{ ImVec4(0.2f, 0.2f, 0.2f, 0.8f) };
+		const imgui_kit::IconParameters iconParams{ "../../../resources/icons/win_icon.ico" };
+		const imgui_kit::BackgroundImageParameters bgParams{};
+		imgui_kit::UserInterfaceParameters uiParameters{ winParams, fontParams, styleParams, iconParams, bgParams };
+		dnf_composer::ApplicationParameters appParameters{ uiParameters };
+		dnf_composer::Application app{ simulation, appParameters };
+
+		app.addWindow<imgui_kit::LogWindow>();
+		app.addWindow<dnf_composer::user_interface::SimulationWindow>();
+		app.addWindow<dnf_composer::user_interface::ElementWindow>();
+
+		dnf_composer::user_interface::PlotParameters plotParameters;
+		plotParameters.annotations = { "Plot title", "Spatial dimension", "Amplitude" };
+		plotParameters.dimensions = { 0, 100, -30, 40 , 1.0 };
+		auto visualization = dnf_composer::createVisualization(simulation);
+		app.addWindow<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters);
+
 		app.init();
 
 		bool userRequestClose = false;
 		while (!userRequestClose)
 		{
 			app.step();
-			userRequestClose = app.getCloseUI();
+			userRequestClose = app.hasUIBeenClosed();
 		}
 		app.close();
 		return 0;

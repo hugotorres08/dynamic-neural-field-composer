@@ -9,9 +9,7 @@ int main(int argc, char* argv[])
 	try
 	{
 		using namespace dnf_composer;
-		auto simulation = std::make_shared<Simulation>("Panda robot joint task model", 5, 0, 0);
-		constexpr bool activateUserInterface = true;
-		const Application app{ simulation, activateUserInterface };
+		const auto simulation = createSimulation("Panda robot joint task model", 5, 0, 0 );
 
 		element::ElementFactory factory;
 		element::ElementSpatialDimensionParameters dim_params{ 50, 0.2 };
@@ -142,11 +140,20 @@ int main(int argc, char* argv[])
 		simulation->createInteraction("oml -> ael", "output", "ael");
 		simulation->createInteraction("oml", "output", "oml -> ael");
 
+		const imgui_kit::WindowParameters winParams{ L"Dynamic Neural Field Composer", 2560, 1600 };
+		const imgui_kit::FontParameters fontParams{ "../../../resources/fonts/Lexend-Light.ttf", 22 };
+		const imgui_kit::StyleParameters styleParams{ ImVec4(0.2f, 0.2f, 0.2f, 0.8f) };
+		const imgui_kit::IconParameters iconParams{ "../../../resources/icons/win_icon.ico" };
+		const imgui_kit::BackgroundImageParameters bgParams{};
+		imgui_kit::UserInterfaceParameters uiParameters{ winParams, fontParams, styleParams, iconParams, bgParams };
+		ApplicationParameters appParameters{ uiParameters };
+		Application app{ simulation, appParameters };
+
 		// Create User Interface windows
-		app.activateUserInterfaceWindow(user_interface::SIMULATION_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::LOG_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::ELEMENT_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::MONITORING_WINDOW);
+		app.addWindow<imgui_kit::LogWindow>();
+		app.addWindow<user_interface::SimulationWindow>();
+		app.addWindow<user_interface::ElementWindow>();
+		app.addWindow<user_interface::CentroidMonitoringWindow>();
 
 		constexpr int yMax = 10;
 		constexpr int yMin = 8;
@@ -155,44 +162,38 @@ int main(int argc, char* argv[])
 		user_interface::PlotParameters aolPlotParameters;
 		aolPlotParameters.annotations = { "Action observation layer", "Spatial dimension", "Amplitude" };
 		aolPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
-		const auto aolPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, aolPlotParameters);
-		aolPlotWindow->addPlottingData("aol", "activation");
-		aolPlotWindow->addPlottingData("aol", "input");
-		aolPlotWindow->addPlottingData("aol", "output");
-		app.activateUserInterfaceWindow(aolPlotWindow);
+		auto aol_vis = createVisualization(simulation);
+		aol_vis->addPlottingData("aol", "activation");
+		aol_vis->addPlottingData("aol", "input");
+		aol_vis->addPlottingData("aol", "output");
+		app.addWindow<user_interface::PlotWindow>(aol_vis, aolPlotParameters);
 
 		user_interface::PlotParameters aslPlotParameters;
 		aslPlotParameters.annotations = { "Action simulation layer", "Spatial dimension", "Amplitude" };
 		aslPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
-		const auto aslPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, aslPlotParameters);
-		aslPlotWindow->addPlottingData("asl", "activation");
-		aslPlotWindow->addPlottingData("asl", "input");
-		aslPlotWindow->addPlottingData("asl", "output");
-		app.activateUserInterfaceWindow(aslPlotWindow);
+		auto asl_vis = createVisualization(simulation);
+		asl_vis->addPlottingData("asl", "activation");
+		asl_vis->addPlottingData("asl", "input");
+		asl_vis->addPlottingData("asl", "output");
+		app.addWindow<user_interface::PlotWindow>(asl_vis, aslPlotParameters);
 
 		user_interface::PlotParameters omlPlotParameters;
 		omlPlotParameters.annotations = { "Object memory layer", "Spatial dimension", "Amplitude" };
 		omlPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
-		const auto omlPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, omlPlotParameters);
-		omlPlotWindow->addPlottingData("oml", "activation");
-		omlPlotWindow->addPlottingData("oml", "input");
-		omlPlotWindow->addPlottingData("oml", "output");
-
-		omlPlotWindow->addPlottingData("object stimulus 1", "output");
-		omlPlotWindow->addPlottingData("object stimulus 2", "output");
-		omlPlotWindow->addPlottingData("object stimulus 3", "output");
-
-		app.activateUserInterfaceWindow(omlPlotWindow);
+		auto oml_vis = createVisualization(simulation);
+		oml_vis->addPlottingData("oml", "activation");
+		oml_vis->addPlottingData("oml", "input");
+		oml_vis->addPlottingData("oml", "output");
+		app.addWindow<user_interface::PlotWindow>(oml_vis, omlPlotParameters);
 
 		user_interface::PlotParameters aelPlotParameters;
 		aelPlotParameters.annotations = { "Action execution layer", "Spatial dimension", "Amplitude" };
 		aelPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
-		const auto aelPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, aelPlotParameters);
-		aelPlotWindow->addPlottingData("ael", "activation");
-		aelPlotWindow->addPlottingData("ael", "input");
-		aelPlotWindow->addPlottingData("ael", "output");
-
-		app.activateUserInterfaceWindow(aelPlotWindow);
+		auto ael_vis = createVisualization(simulation);
+		ael_vis->addPlottingData("ael", "activation");
+		ael_vis->addPlottingData("ael", "input");
+		ael_vis->addPlottingData("ael", "output");
+		app.addWindow<user_interface::PlotWindow>(ael_vis, aelPlotParameters);
 
 		app.init();
 
@@ -200,7 +201,7 @@ int main(int argc, char* argv[])
 		while (!userRequestClose)
 		{
 			app.step();
-			userRequestClose = app.getCloseUI();
+			userRequestClose = app.hasUIBeenClosed();
 		}
 		app.close();
 		return 0;
