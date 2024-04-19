@@ -77,5 +77,4 @@ namespace dnf_composer
 	{
 		return parameters.uiActive;
 	}
-	
 }

@@ -44,18 +44,17 @@ namespace dnf_composer
 			int id;
 			PlotDimensions dimensions;
 			PlotAnnotations annotations;
-			bool renderDataSelector;
 
 			PlotParameters()
-				: id(0), dimensions(), annotations(), renderDataSelector(true)
+				: id(0), dimensions(), annotations()
 			{}
 
 			PlotParameters(const PlotDimensions& dimensions, PlotAnnotations annotations)
-				: id(0), dimensions(dimensions), annotations(std::move(annotations)), renderDataSelector(true)
+				: id(0), dimensions(dimensions), annotations(std::move(annotations))
 			{}
 
 			PlotParameters(const PlotDimensions& dimensions, PlotAnnotations annotations, bool renderElementSelector)
-				: id(0), dimensions(dimensions), annotations(std::move(annotations)), renderDataSelector(renderElementSelector)
+				: id(0), dimensions(dimensions), annotations(std::move(annotations))
 			{}
 		};
 

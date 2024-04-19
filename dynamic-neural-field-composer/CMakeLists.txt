@@ -84,6 +84,7 @@ set(exceptions_headers
 )
 set(user_interface_headers
     "include/user_interface/plot_window.h"
+    "include/user_interface/plot_control_window.h"
     "include/user_interface/simulation_window.h"
     "include/user_interface/centroid_monitoring_window.h"
     "include/user_interface/element_window.h"
@@ -133,6 +134,7 @@ set(src
     "src/exceptions/exception.cpp"
     
     "src/user_interface/plot_window.cpp"
+    "src/user_interface/plot_control_window.cpp"
     "src/user_interface/simulation_window.cpp"
     "src/user_interface/centroid_monitoring_window.cpp"
     "src/user_interface/element_window.cpp"
