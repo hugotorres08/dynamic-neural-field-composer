@@ -1,7 +1,10 @@
 #pragma once
 
 #include <type_traits>
+#if defined(_WIN32)
 #include <imgui-platform-kit/user_interface.h>
+#elif defined(__linux__)
+#endif
 
 #include "exceptions/exception.h"
 #include "simulation/simulation.h"
@@ -34,7 +37,7 @@ namespace dnf_composer
 	private:
 		std::shared_ptr<Simulation> simulation;
 		ApplicationParameters parameters;
-		std::shared_ptr<imgui_kit::win32_directx12::UserInterface> ui;
+		std::shared_ptr<imgui_kit::UserInterface> ui;
 	public:
 		Application(const std::shared_ptr<Simulation>& simulation, bool activateUserInterface = true);
 		Application(const std::shared_ptr<Simulation>& simulation, ApplicationParameters uiParams);

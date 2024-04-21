@@ -4,11 +4,11 @@
 
 #include "dynamic-neural-field-composer.h"
 
-const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 123, 0.3 };
+const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 100, 1.0 };
 
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
-	auto simulation = dnf_composer::createSimulation("test sim", 5, 0, 0);
+	auto simulation = dnf_composer::createSimulation("test sim", 25, 0, 0);
 	constexpr bool circularity = false;
 	constexpr bool normalization = false;
 
@@ -17,28 +17,39 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 		(new dnf_composer::element::GaussStimulus({ "gauss stimulus", fieldDimensions }, gcp_a));
 	simulation->addElement(gauss_stimulus);
 
-	/*const dnf_composer::element::LateralInteractionsParameters lip1 = { 3,7.2,12,6.4, -0.51 };
+	const dnf_composer::element::GaussStimulusParameters gcp_b = { 5, 10, 25, circularity, normalization };
+	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus_b
+	(new dnf_composer::element::GaussStimulus({ "gauss stimulus b", fieldDimensions }, gcp_b));
+	simulation->addElement(gauss_stimulus_b);
+
+	/*const dnf_composer::element::LateralInteractionsParameters lip1 = { 5.3,7.4,6,6, -0.55, circularity, normalization};
 	const std::shared_ptr<dnf_composer::element::LateralInteractions> k_1
-	(new dnf_composer::element::LateralInteractions({ "k 1", fieldDimensions }, lip1, circularity, normalization));
+	(new dnf_composer::element::LateralInteractions({ "k 1", fieldDimensions }, lip1));
 	simulation->addElement(k_1);*/
 
-	//const dnf_composer::element::GaussKernelParameters gkp1 = { 2, 1 };
-	//const std::shared_ptr<dnf_composer::element::GaussKernel> k_1
-	//	(new dnf_composer::element::GaussKernel({ "k 1", fieldDimensions }, gkp1, circularity, normalization));
-	//simulation->addElement(k_1);
+	const dnf_composer::element::NormalNoiseParameters nnp = {0.3};
+	const std::shared_ptr<dnf_composer::element::NormalNoise> noise(new dnf_composer::element::NormalNoise({ "noise", fieldDimensions }, nnp));
+	simulation->addElement(noise);
 
-	const dnf_composer::element::MexicanHatKernelParameters mhkp1 = { 6.8, 4.1, 8.9, 3.4};
-	const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_1
-	(new dnf_composer::element::MexicanHatKernel({ "k 1", fieldDimensions }, mhkp1));
+	const dnf_composer::element::GaussKernelParameters gkp1 = { 2, 1, circularity, normalization };
+	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1
+		(new dnf_composer::element::GaussKernel({ "k 1", fieldDimensions }, gkp1));
 	simulation->addElement(k_1);
 
-	const dnf_composer::element::SigmoidFunction activationFunction{ 0, 4 };
-	const dnf_composer::element::NeuralFieldParameters nfp1 = { 20, -10 , activationFunction };
+	//const dnf_composer::element::MexicanHatKernelParameters mhkp1 = { 6.8, 4.1, 8.9, 3.4};
+	//const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_1
+	//(new dnf_composer::element::MexicanHatKernel({ "k 1", fieldDimensions }, mhkp1));
+	//simulation->addElement(k_1);
+
+	const dnf_composer::element::HeavisideFunction activationFunction{ 0};
+	const dnf_composer::element::NeuralFieldParameters nfp1 = { 25, -10 , activationFunction };
 	const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_1(new dnf_composer::element::NeuralField({ "neural field 1", fieldDimensions }, nfp1));
 	simulation->addElement(neural_field_1);
 
 	neural_field_1->addInput(k_1);
 	neural_field_1->addInput(gauss_stimulus);
+	neural_field_1->addInput(gauss_stimulus_b);
+	neural_field_1->addInput(noise);
 	k_1->addInput(neural_field_1);
 
 	//const dnf_composer::element::LateralInteractionsParameters lip2 = { 3,7.2,12,6.4, -0.51 };
@@ -73,7 +84,7 @@ int main(int argc, char* argv[])
 		// After defining the simulation, we can create the application.
 		const auto simulation = getExperimentSimulation();
 
-		const imgui_kit::WindowParameters winParams{ L"Dynamic Neural Field Composer", 2560, 1600 };
+		const imgui_kit::WindowParameters winParams{ "Dynamic Neural Field Composer", 2560, 1600 };
 		const imgui_kit::FontParameters fontParams{ "../../../resources/fonts/Lexend-Light.ttf", 22 };
 		const imgui_kit::StyleParameters styleParams{ ImVec4(0.2f, 0.2f, 0.2f, 0.8f) };
 		const imgui_kit::IconParameters iconParams{ "../../../resources/icons/win_icon.ico" };

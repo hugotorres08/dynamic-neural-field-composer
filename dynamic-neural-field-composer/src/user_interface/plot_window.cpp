@@ -168,7 +168,7 @@ namespace dnf_composer
 					visualization->addPlottingData(selectedElementId, simulationElement->getComponentList()[currentComponentIdx]);
 				}
 			}
-			ImGui::End();
+			//ImGui::End();
 		}
 
 		void PlotWindow::configure(const PlotDimensions& dimensions)

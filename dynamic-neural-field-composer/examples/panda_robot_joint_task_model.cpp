@@ -140,7 +140,7 @@ int main(int argc, char* argv[])
 		simulation->createInteraction("oml -> ael", "output", "ael");
 		simulation->createInteraction("oml", "output", "oml -> ael");
 
-		const imgui_kit::WindowParameters winParams{ L"Dynamic Neural Field Composer", 2560, 1600 };
+		const imgui_kit::WindowParameters winParams{ "Dynamic Neural Field Composer", 2560, 1600 };
 		const imgui_kit::FontParameters fontParams{ "../../../resources/fonts/Lexend-Light.ttf", 22 };
 		const imgui_kit::StyleParameters styleParams{ ImVec4(0.2f, 0.2f, 0.2f, 0.8f) };
 		const imgui_kit::IconParameters iconParams{ "../../../resources/icons/win_icon.ico" };

@@ -11,8 +11,7 @@ namespace dnf_composer
 		:uiActive(activateUserInterface)
 	{
 		using namespace imgui_kit;
-		using namespace imgui_kit::win32_directx12;
-		const WindowParameters winParams{ L"Dynamic Neural Field Composer" };
+		const WindowParameters winParams{ "Dynamic Neural Field Composer" };
 		const FontParameters fontParams{ "../../../resources/fonts/Lexend-Light.ttf", 22 };
 		const StyleParameters styleParams{ ImVec4(0.2f, 0.2f, 0.2f, 0.8f) };
 		const IconParameters iconParams{ "../../../resources/icons/win_icon.ico" };
@@ -28,14 +27,14 @@ namespace dnf_composer
 		:simulation(simulation)
 	{
 		if (activateUserInterface)
-			ui = std::make_shared<imgui_kit::win32_directx12::UserInterface>(parameters.uiParameters);
+			ui = std::make_shared<imgui_kit::UserInterface>(parameters.uiParameters);
 		parameters.uiActive = activateUserInterface;
 	}
 
 	Application::Application(const std::shared_ptr<Simulation>& simulation, ApplicationParameters uiParams)
 		:simulation(simulation), parameters(std::move(uiParams))
 	{
-		ui = std::make_shared<imgui_kit::win32_directx12::UserInterface>(parameters.uiParameters);
+		ui = std::make_shared<imgui_kit::UserInterface>(parameters.uiParameters);
 	}
 
 	void Application::init() const
@@ -63,7 +62,7 @@ namespace dnf_composer
 	{
 		parameters.uiActive = activateUI;
 		if (parameters.uiActive)
-			ui = std::make_shared<imgui_kit::win32_directx12::UserInterface>(parameters.uiParameters);
+			ui = std::make_shared<imgui_kit::UserInterface>(parameters.uiParameters);
 	}
 
 	bool Application::hasUIBeenClosed() const
