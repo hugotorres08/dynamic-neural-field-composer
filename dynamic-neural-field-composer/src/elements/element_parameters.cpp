@@ -19,7 +19,7 @@ namespace dnf_composer
 			logStream << std::left;
 			logStream << "Maximum spatial dimension size: " << x_max << std::endl;
 			logStream << "Spatial dimension step size: " << d_x << std::endl;
-			logStream << "Number of samples in spatial dimension: " << size << std::endl;
+			logStream << "Number of samples in spatial dimension: " << size;
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
@@ -37,7 +37,7 @@ namespace dnf_composer
 			logStream << std::left;
 			logStream << "Unique identifier: " << uniqueIdentifier << std::endl;
 			logStream << "Unique name: " << uniqueName << std::endl;
-			logStream << "Label: " << ElementLabelToString.at(label) << std::endl;
+			logStream << "Label: " << ElementLabelToString.at(label);
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 

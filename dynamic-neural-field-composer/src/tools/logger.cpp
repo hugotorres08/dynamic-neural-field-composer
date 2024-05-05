@@ -1,4 +1,4 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
+//This is a personal academic project. Dear PVS-Studio, please check it.
 
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
@@ -57,7 +57,7 @@ namespace dnf_composer
             void Logger::log_cmd(const std::string& message)
             {
                 const std::string finalMessage_cmd = message + "\033[0m"; // Reset color code
-                std::cout << finalMessage_cmd;
+                std::cout << finalMessage_cmd << std::endl;
             }
 
             void Logger::log_ui(const std::string& message)

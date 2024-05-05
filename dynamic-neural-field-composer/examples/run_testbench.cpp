@@ -84,11 +84,12 @@ int main(int argc, char* argv[])
 		// After defining the simulation, we can create the application.
 		const auto simulation = getExperimentSimulation();
 
-		const imgui_kit::WindowParameters winParams{ "Dynamic Neural Field Composer", 2560, 1600 };
-		const imgui_kit::FontParameters fontParams{ "../../../resources/fonts/Lexend-Light.ttf", 22 };
+		const imgui_kit::WindowParameters winParams{ "Dynamic Neural Field Composer" };
+		const imgui_kit::FontParameters fontParams{ std::string(PROJECT_DIR) + "/resources/fonts/Lexend-Light.ttf", 22 };
 		const imgui_kit::StyleParameters styleParams{ ImVec4(0.2f, 0.2f, 0.2f, 0.8f) };
-		const imgui_kit::IconParameters iconParams{ "../../../resources/icons/win_icon.ico" };
-		imgui_kit::UserInterfaceParameters uiParameters{ winParams, fontParams, styleParams, iconParams };
+		const imgui_kit::IconParameters iconParams{ std::string(PROJECT_DIR) + "/resources/icons/icon.ico" };
+		const imgui_kit::BackgroundImageParameters bgParams{ std::string(PROJECT_DIR) + "/resources/images/background.png", 0.2};
+		imgui_kit::UserInterfaceParameters uiParameters{ winParams, fontParams, styleParams, iconParams, bgParams};
 		dnf_composer::ApplicationParameters appParameters{ uiParameters };
 		dnf_composer::Application app{ simulation, appParameters };
 
@@ -118,18 +119,18 @@ int main(int argc, char* argv[])
 	}
 	catch (const dnf_composer::Exception& ex)
 	{
-		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode())) + ". \n";
+		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode())) + ". ";
 		log(dnf_composer::tools::logger::LogLevel::FATAL, errorMessage, dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return static_cast<int>(ex.getErrorCode());
 	}
 	catch (const std::exception& ex)
 	{
-		log(dnf_composer::tools::logger::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()) + ". \n", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
+		log(dnf_composer::tools::logger::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()) + ". ", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return 1;
 	}
 	catch (...)
 	{
-		log(dnf_composer::tools::logger::LogLevel::FATAL, "Unknown exception occurred. \n", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
+		log(dnf_composer::tools::logger::LogLevel::FATAL, "Unknown exception occurred. ", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return 1;
 	}
 }

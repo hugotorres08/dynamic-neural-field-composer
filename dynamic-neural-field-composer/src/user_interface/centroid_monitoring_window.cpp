@@ -35,10 +35,8 @@ namespace dnf_composer
 					const double centroid = neuralField->getCentroid();
 					const bool stable = neuralField->isStable();
 
-					// Display centroid
 					ImGui::Text("%s centroid is %.2f.", elementName.c_str(), centroid);
 
-					// Display stability status with color
 					if (stable) {
 						ImGui::TextColored(ImVec4(0, 1, 0, 1), "%s is stable.", elementName.c_str());
 					}

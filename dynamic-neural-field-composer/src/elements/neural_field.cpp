@@ -75,7 +75,7 @@ namespace dnf_composer
 			//logStream << "Steepness: " << parameters.activationFunction. << " | ";
 			//logStream << "XShift: " << parameters.activationFunctionParameters.xShift << " | ";
 
-			logStream << std::endl << "Current centroid value: " << getCentroid() << std::endl;
+			logStream << std::endl << "Current centroid value: " << getCentroid();// << std::endl;
 
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}

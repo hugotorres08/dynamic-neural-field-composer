@@ -12,10 +12,10 @@ namespace dnf_composer
 	{
 		using namespace imgui_kit;
 		const WindowParameters winParams{ "Dynamic Neural Field Composer" };
-		const FontParameters fontParams{ "../../../resources/fonts/Lexend-Light.ttf", 22 };
+		const FontParameters fontParams{ std::string(PROJECT_DIR) + "/resources/fonts/Lexend-Light.ttf", 22 };
 		const StyleParameters styleParams{ ImVec4(0.2f, 0.2f, 0.2f, 0.8f) };
-		const IconParameters iconParams{ "../../../resources/icons/win_icon.ico" };
-		const BackgroundImageParameters bgParams{};
+		const IconParameters iconParams{ std::string(PROJECT_DIR) + "/resources/icons/icon.ico" };
+		const BackgroundImageParameters bgParams{ std::string(PROJECT_DIR) + "/resources/images/background.png", 0.2};
 		uiParameters = UserInterfaceParameters{ winParams, fontParams, styleParams, iconParams, bgParams };
 	}
 

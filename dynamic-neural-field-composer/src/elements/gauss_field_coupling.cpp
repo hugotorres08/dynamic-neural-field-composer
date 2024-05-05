@@ -50,15 +50,12 @@ namespace dnf_composer
 				logStream << "x_i: " << coupling.x_i << ", x_j: " << coupling.x_j << ", w_i_j: " << coupling.w_i_j << " | ";
 			}
 
-			logStream << std::endl;
-
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
 		std::shared_ptr<Element> GaussFieldCoupling::clone() const
 		{
 			auto cloned = std::make_shared<GaussFieldCoupling>(*this);
-			// If there are deep copy specifics that the copy constructor doesn't handle, do them here.
 			return cloned;
 		}
 

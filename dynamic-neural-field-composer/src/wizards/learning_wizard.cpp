@@ -204,7 +204,7 @@ namespace dnf_composer
         }
         else
         {
-            const std::string message = "Failed to save data to " + filename + ".\n";
+            const std::string message = "Failed to save data to " + filename + ".";
             log(tools::logger::LogLevel::ERROR, message);
         }
     }
@@ -233,14 +233,14 @@ namespace dnf_composer
             else
             {
                 const std::string message = "Error training the field coupling weights. "
-                    "Line " + std::to_string(static_cast<int>(line)) + " not found in " + filename + ".\n";
+                    "Line " + std::to_string(static_cast<int>(line)) + " not found in " + filename + ".";
                 log(tools::logger::LogLevel::ERROR, message);
             }
             file.close();
         }
         else
         {
-            const std::string message = "Failed to open file " + filename + ".\n";
+            const std::string message = "Failed to open file " + filename + ".";
             log(tools::logger::LogLevel::ERROR, message);
         }
 
@@ -255,7 +255,7 @@ namespace dnf_composer
 
         if (numLinesInput != numLinesOutput)
         {
-            const std::string message = "Error training the field coupling weights. The files " + pathToFieldActivationPre + " and " + pathToFieldActivationPost + " have a different number of lines.\n";
+            const std::string message = "Error training the field coupling weights. The files " + pathToFieldActivationPre + " and " + pathToFieldActivationPost + " have a different number of lines.";
             log(tools::logger::LogLevel::ERROR, message);
         }
 

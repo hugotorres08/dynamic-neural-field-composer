@@ -8,7 +8,7 @@
 namespace dnf_composer
 {
 	class Visualization;
-	std::shared_ptr<Visualization> createVisualization(std::shared_ptr<Simulation> targetSimulation);
+	std::shared_ptr<Visualization> createVisualization(const std::shared_ptr<Simulation>& targetSimulation);
 
 	class Visualization
 	{

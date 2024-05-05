@@ -82,7 +82,7 @@ namespace dnf_composer
 			logStream << "SigmaInh: " << parameters.sigmaInh << std::endl;
 			logStream << "CutOffFactor: " << cutOfFactor << std::endl;
 			logStream << "Normalized: " << parameters.normalized << std::endl;
-			logStream << "Circularity: " << parameters.circular << std::endl;
+			logStream << "Circularity: " << parameters.circular;// << std::endl;
 
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}

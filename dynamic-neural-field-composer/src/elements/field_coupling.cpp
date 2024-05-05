@@ -21,7 +21,6 @@ namespace dnf_composer
 			components["input"] = std::vector<double>(parameters.inputFieldSize);
 			tools::utils::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
 
-			// Initialize the weight matrix with random values
 			tools::utils::fillMatrixWithRandomValues(weights, -1, 1);
 
 			weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" + commonParameters.identifiers.uniqueName + "_weights.txt";
@@ -87,15 +86,12 @@ namespace dnf_composer
 		std::shared_ptr<Element> FieldCoupling::clone() const
 		{
 			auto cloned = std::make_shared<FieldCoupling>(*this);
-			// If there are deep copy specifics that the copy constructor doesn't handle, do them here.
 			return cloned;
 		}
 
 		void FieldCoupling::getInputFunction()
 		{
-			// get input
 			updateInput();
-			// only the positive values of the input are considered
 			for (auto& value : components["input"])
 				if (value < 0)
 					value = 0;
@@ -103,12 +99,10 @@ namespace dnf_composer
 
 		void FieldCoupling::computeOutput()
 		{
-			// multiply the input by the weights to get output
 			for (int i = 0; i < components["output"].size(); i++)
 				for (int j = 0; j < components["input"].size(); j++)
 					components["output"][i] += weights[j][i] * components["input"][j];
 
-			// only the positive values of the output are considered
 			for (auto& value : components["output"])
 				if (value < 0)
 					value = 0;
@@ -116,14 +110,12 @@ namespace dnf_composer
 
 		void FieldCoupling::scaleOutput()
 		{
-			// Scale the output by parameter k
 			for (auto& value : components["output"])
 				value *= parameters.scalar;
 		}
 
 		void FieldCoupling::resetWeights()
 		{
-			// empty weight matrix
 			tools::utils::fillMatrixWithRandomValues(weights, 0, 0);
 		}
 
@@ -192,20 +184,19 @@ namespace dnf_composer
 					}
 				}
 				file.close();
-				const std::string message = "Weights '" + this->getUniqueName() + "' read successfully from: " + weightsFilePath + ". \n";
+				const std::string message = "Weights '" + this->getUniqueName() + "' read successfully from: " + weightsFilePath + ".";
 				log(tools::logger::LogLevel::INFO, message);
 
-				// Check if dimensions are correct.
 				readWeightsSize = std::make_tuple(static_cast<int>(weights.size()), static_cast<int>(weights[0].size()));
 				if(initialWeightsSize != readWeightsSize)
 				{
-					log(tools::logger::LogLevel::ERROR, "Weight matrix read from file has a different dimensionality compared to the actual matrix size! \n");
+					log(tools::logger::LogLevel::ERROR, "Weight matrix read from file has a different dimensionality compared to the actual matrix size! ");
 					return false;
 				}
 				return true;	
 			}
 
-			const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " + weightsFilePath + ". \n";
+			const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " + weightsFilePath + ". ";
 			log(tools::logger::LogLevel::ERROR, message);
 			
 			return false;
@@ -223,12 +214,12 @@ namespace dnf_composer
 					file << '\n'; 
 				}
 				file.close();
-				const std::string message = "Saved weights '" + this->getUniqueName() +"' to: " + weightsFilePath + ". \n";
+				const std::string message = "Saved weights '" + this->getUniqueName() +"' to: " + weightsFilePath + ".";
 				log(tools::logger::LogLevel::INFO, message);
 			}
 			else
 			{
-				const std::string message = "Failed to saved weights '" + this->getUniqueName() + "' to: " + weightsFilePath + ". \n";
+				const std::string message = "Failed to saved weights '" + this->getUniqueName() + "' to: " + weightsFilePath + ". ";
 				log(tools::logger::LogLevel::ERROR, message);
 			}
 		}
@@ -237,7 +228,7 @@ namespace dnf_composer
 		{
 			tools::utils::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
 			tools::utils::fillMatrixWithRandomValues(weights, 0.0, 0.0);
-			log(tools::logger::LogLevel::INFO, "Filling the weight matrix with random values. \n");
+			log(tools::logger::LogLevel::INFO, "Filling the weight matrix with random values.");
 			trained = false;
 			writeWeights();
 		}
