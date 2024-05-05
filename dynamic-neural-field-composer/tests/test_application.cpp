@@ -48,20 +48,20 @@ TEST_CASE("Application", "[Application]")
         std::shared_ptr<Simulation> simulation = std::make_shared<Simulation>();
         Application application(simulation, false); // Deactivate user interface initially
 
-        REQUIRE(application.getCloseUI() == false); // User interface should be deactivated initially
-        REQUIRE(application.getActivateUserInterface() == false); 
+        REQUIRE(application.hasUIBeenClosed() == false); // User interface should be deactivated initially
+        REQUIRE(application.isUIActive() == false); 
 
         application.setActivateUserInterfaceAs(true);
-        REQUIRE(application.getCloseUI() == false); // User interface is activated, but not yet closed
-        REQUIRE(application.getActivateUserInterface() == true); 
+        REQUIRE(application.hasUIBeenClosed() == false); // User interface is activated, but not yet closed
+        REQUIRE(application.isUIActive() == true);
 
         //application.activateUserInterfaceWindow(std::make_shared<dnf_composer::user_interface::LoggerWindow>());
         // Additional checks for the activated state of the user interface window
 
         // Test deactivation
         application.setActivateUserInterfaceAs(false);
-        REQUIRE(application.getCloseUI() == false); // User interface is deactivated, but not yet closed
-        REQUIRE(application.getActivateUserInterface() == false); 
+        REQUIRE(application.hasUIBeenClosed() == false); // User interface is deactivated, but not yet closed
+        REQUIRE(application.isUIActive() == false);
 
     }
 }

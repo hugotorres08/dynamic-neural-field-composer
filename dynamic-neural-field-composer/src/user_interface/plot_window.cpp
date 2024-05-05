@@ -8,23 +8,6 @@ namespace dnf_composer
 {
 	namespace user_interface
 	{
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation)
-			: visualization(std::make_shared<Visualization>(simulation))
-		{
-			PlotParameters parameters;
-			parameters.dimensions = { 0, 100, -30, 40 , 1.0};
-			parameters.annotations.title = "Plot window ";
-			parameters.annotations.x_label = "Spatial dimension";
-			parameters.annotations.y_label = "Amplitude";
-			createPlot(parameters);
-		}
-
-		PlotWindow::PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters)
-			: visualization(std::make_shared<Visualization>(simulation))
-		{
-			createPlot(parameters);
-		}
-
 		PlotWindow::PlotWindow(const std::shared_ptr<Visualization>& visualization)
 			: visualization(visualization)
 		{
@@ -51,56 +34,16 @@ namespace dnf_composer
 		{
 			for(const auto& plot : plots)
 			{
-				if(plot.renderDataSelector)
+				const std::string plotWindowTitle = plot.annotations.title + " window";
+
+				if (ImGui::Begin(plotWindowTitle.c_str()))
+				{
+					renderPlot(plot);
 					renderElementSelector(plot);
-				renderPlot(plot);
+				}
+				ImGui::End();
 			}
 		}
-
-		//void PlotWindow::renderPlotControl()
-		//{
-		//	if (ImGui::Begin("Plot control"))
-		//	{
-		//		if (ImGui::CollapsingHeader("Create new plot"))
-		//		{
-		//			static char title[CHAR_SIZE] = "This is a plot title";
-		//			ImGui::InputTextWithHint("title", "enter text here", title, IM_ARRAYSIZE(title));
-
-		//			static char x_label[CHAR_SIZE] = "x label";
-		//			ImGui::InputTextWithHint("x_label", "enter text here", x_label, IM_ARRAYSIZE(x_label));
-
-		//			static char y_label[CHAR_SIZE] = "y label";
-		//			ImGui::InputTextWithHint("y_label", "enter text here", y_label, IM_ARRAYSIZE(y_label));
-
-		//			static int x_min = 0;
-		//			ImGui::InputInt("x_min", &x_min, 1.0, 10.0);
-
-		//			static int x_max = 100;
-		//			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
-
-		//			static int y_min = -10;
-		//			ImGui::InputInt("y_min", &y_min, 1.0, 10.0);
-
-		//			static int y_max = 20;
-		//			ImGui::InputInt("y_max", &y_max, 1.0, 10.0);
-
-		//			static double d_x = 1.0;
-		//			ImGui::InputDouble("d_x", &d_x, 0.05, 0.1);
-
-
-		//			if (ImGui::Button("Add", { 100.0f, 30.0f }))
-		//			{
-		//				PlotParameters parameters;
-		//				parameters.annotations = {title, x_label, y_label};
-		//				parameters.dimensions = {x_min, x_max, y_min, y_max, d_x};
-		//				std::shared_ptr<Simulation> simulation = plots[0].visualization->getAssociatedSimulationPtr();
-		//				parameters.visualization = std::make_shared<Visualization>(simulation);
-		//				createPlot(parameters);
-		//			}
-		//		}
-		//	}
-		//	ImGui::End();
-		//}
 
 		void PlotWindow::createPlot( PlotParameters& parameters)
 		{
@@ -108,7 +51,7 @@ namespace dnf_composer
 			parameters.annotations.title += " " + std::to_string(parameters.id);
 			plots.emplace_back(parameters);
 
-			const std::string message = "Added a new plot to the application with id: " + parameters.annotations.title + ".\n";
+			const std::string message = "Added a new plot to the application with id: " + parameters.annotations.title + ".";
 			log(tools::logger::LogLevel::INFO, message);
 		}
 
@@ -116,10 +59,10 @@ namespace dnf_composer
 		{
 			configure(parameters.dimensions);
 
-			const std::string plotWindowTitle = parameters.annotations.title + " window";
+			//const std::string plotWindowTitle = parameters.annotations.title + " window";
 
-			if (ImGui::Begin(plotWindowTitle.c_str()))
-			{
+			//if (ImGui::Begin(plotWindowTitle.c_str()))
+			//{
 				ImVec2 plotSize = ImGui::GetContentRegionAvail();  // Get available size in the ImGui window
 				plotSize.x -= 5.0f; // Subtract some padding
 				plotSize.y -= 5.0f; // Subtract some padding
@@ -145,8 +88,8 @@ namespace dnf_composer
 
 				}
 				ImPlot::EndPlot();
-			}
-			ImGui::End();
+			//}
+			//ImGui::End();
 		}
 
 		void PlotWindow::renderElementSelector(const PlotParameters& parameters) const
@@ -159,9 +102,9 @@ namespace dnf_composer
 
 			const std::string selectorTitle = parameters.annotations.title + " plot selector";
 
-			if (ImGui::Begin(selectorTitle.c_str()))
+			if (ImGui::CollapsingHeader(selectorTitle.c_str()))
 			{
-				//ImGui::Columns(2, nullptr, false); // Use 2 columns
+				ImGui::Columns(2, nullptr, false); // Use 2 columns
 
 				// First column: List box for selecting an element
 				ImGui::Text("Select element");
@@ -185,7 +128,7 @@ namespace dnf_composer
 				}
 
 				// Next column: List box for selecting a component
-				//ImGui::NextColumn();
+				ImGui::NextColumn();
 
 				std::shared_ptr<element::Element> simulationElement;
 				static int currentComponentIdx = 0;
@@ -218,14 +161,14 @@ namespace dnf_composer
 				}
 
 				// Reset columns
-				//ImGui::Columns(1);
+				ImGui::Columns(1);
 
 				if (ImGui::Button("Add", { 100.0f, 30.0f }))
 				{
 					visualization->addPlottingData(selectedElementId, simulationElement->getComponentList()[currentComponentIdx]);
 				}
 			}
-			ImGui::End();
+			//ImGui::End();
 		}
 
 		void PlotWindow::configure(const PlotDimensions& dimensions)

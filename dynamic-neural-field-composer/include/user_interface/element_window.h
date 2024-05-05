@@ -1,7 +1,8 @@
 #pragma once
 
+#include <imgui-platform-kit/user_interface_window.h>
+
 #include "simulation/simulation.h"
-#include "user_interface/user_interface_window.h"
 #include "elements/gauss_stimulus.h"
 #include "elements/neural_field.h"
 
@@ -10,7 +11,7 @@ namespace dnf_composer
 {
 	namespace user_interface
 	{
-		class ElementWindow : public UserInterfaceWindow
+		class ElementWindow : public imgui_kit::UserInterfaceWindow
 		{
 		private:
 			std::shared_ptr<Simulation> simulation;

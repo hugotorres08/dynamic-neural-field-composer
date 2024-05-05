@@ -1,7 +1,8 @@
 #pragma once
 
 
-#include "user_interface_window.h"
+#include <imgui-platform-kit/user_interface_window.h>
+
 #include "simulation/visualization.h"
 
 
@@ -38,34 +39,31 @@ namespace dnf_composer
 			{}
 		};
 
-		struct PlotParameters : UserInterfaceWindowParameters
+		struct PlotParameters : imgui_kit::UserInterfaceWindowParameters
 		{
 			int id;
 			PlotDimensions dimensions;
 			PlotAnnotations annotations;
-			bool renderDataSelector;
 
 			PlotParameters()
-				: id(0), dimensions(), annotations(), renderDataSelector(true)
+				: id(0), dimensions(), annotations()
 			{}
 
 			PlotParameters(const PlotDimensions& dimensions, PlotAnnotations annotations)
-				: id(0), dimensions(dimensions), annotations(std::move(annotations)), renderDataSelector(true)
+				: id(0), dimensions(dimensions), annotations(std::move(annotations))
 			{}
 
 			PlotParameters(const PlotDimensions& dimensions, PlotAnnotations annotations, bool renderElementSelector)
-				: id(0), dimensions(dimensions), annotations(std::move(annotations)), renderDataSelector(renderElementSelector)
+				: id(0), dimensions(dimensions), annotations(std::move(annotations))
 			{}
 		};
 
-		class PlotWindow : public UserInterfaceWindow
+		class PlotWindow : public imgui_kit::UserInterfaceWindow
 		{
 		private:
 			std::vector<PlotParameters> plots;
 			std::shared_ptr<Visualization> visualization;
 		public:
-			PlotWindow(const std::shared_ptr<Simulation>& simulation);
-			PlotWindow(const std::shared_ptr<Simulation>& simulation, PlotParameters parameters);
 			PlotWindow(const std::shared_ptr<Visualization>& visualization);
 			PlotWindow(const std::shared_ptr<Visualization>& visualization, PlotParameters parameters);
 

@@ -178,10 +178,10 @@ int main(int argc, char* argv[])
 		simulation->createInteraction("il -> ael", "output", "action execution field");
 
 		// Create User Interface windows
-		app.activateUserInterfaceWindow(user_interface::SIMULATION_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::LOG_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::ELEMENT_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::MONITORING_WINDOW);
+		app.addWindow<imgui_kit::LogWindow>();
+		app.addWindow<user_interface::SimulationWindow>();
+		app.addWindow<user_interface::ElementWindow>();
+		app.addWindow<user_interface::CentroidMonitoringWindow>();
 
 		constexpr int yMax = 10;
 		constexpr int yMin = 8;
@@ -190,47 +190,47 @@ int main(int argc, char* argv[])
 		user_interface::PlotParameters aolPlotParameters;
 		aolPlotParameters.annotations = { "Action observation field", "Spatial dimension", "Amplitude" };
 		aolPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
-		const auto actionObservationPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, aolPlotParameters);
-		actionObservationPlotWindow->addPlottingData("action observation field", "activation");
-		actionObservationPlotWindow->addPlottingData("action observation field", "input");
-		actionObservationPlotWindow->addPlottingData("action observation field", "output");
-		app.activateUserInterfaceWindow(actionObservationPlotWindow);
+		auto aol_vis = createVisualization(simulation);
+		aol_vis->addPlottingData("action observation field", "activation");
+		aol_vis->addPlottingData("action observation field", "input");
+		aol_vis->addPlottingData("action observation field", "output");
+		app.addWindow<user_interface::PlotWindow>(aol_vis, aolPlotParameters);
 
 		user_interface::PlotParameters ilPlotParameters;
 		ilPlotParameters.annotations = { "Intention field", "Spatial dimension", "Amplitude" };
 		ilPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
-		const auto intentionFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, ilPlotParameters);
-		intentionFieldPlotWindow->addPlottingData("intention field", "activation");
-		intentionFieldPlotWindow->addPlottingData("intention field", "input");
-		intentionFieldPlotWindow->addPlottingData("intention field", "output");
-		app.activateUserInterfaceWindow(intentionFieldPlotWindow);
+		auto il_vis = createVisualization(simulation);
+		il_vis->addPlottingData("intention field", "activation");
+		il_vis->addPlottingData("intention field", "input");
+		il_vis->addPlottingData("intention field", "output");
+		app.addWindow<user_interface::PlotWindow>(il_vis, ilPlotParameters);
 
 		user_interface::PlotParameters csglPlotParameters;
 		csglPlotParameters.annotations = { "Common sub-goals field", "Spatial dimension", "Amplitude" };
 		csglPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
-		const auto csglFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, csglPlotParameters);
-		csglFieldPlotWindow->addPlottingData("common sub-goals field", "activation");
-		csglFieldPlotWindow->addPlottingData("common sub-goals field", "input");
-		csglFieldPlotWindow->addPlottingData("common sub-goals field", "output");
-		app.activateUserInterfaceWindow(csglFieldPlotWindow);
+		auto csgl_vis = createVisualization(simulation);
+		csgl_vis->addPlottingData("common sub-goals field", "activation");
+		csgl_vis->addPlottingData("common sub-goals field", "input");
+		csgl_vis->addPlottingData("common sub-goals field", "output");
+		app.addWindow<user_interface::PlotWindow>(csgl_vis, csglPlotParameters);
 
 		user_interface::PlotParameters omlPlotParameters;
 		omlPlotParameters.annotations = { "Object memory field", "Spatial dimension", "Amplitude" };
 		omlPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
-		const auto omlFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, omlPlotParameters);
-		omlFieldPlotWindow->addPlottingData("object memory field", "activation");
-		omlFieldPlotWindow->addPlottingData("object memory field", "input");
-		omlFieldPlotWindow->addPlottingData("object memory field", "output");
-		app.activateUserInterfaceWindow(omlFieldPlotWindow);
-
+		auto oml_vis = createVisualization(simulation);
+		oml_vis->addPlottingData("object memory field", "activation");
+		oml_vis->addPlottingData("object memory field", "input");
+		oml_vis->addPlottingData("object memory field", "output");
+		app.addWindow<user_interface::PlotWindow>(oml_vis, omlPlotParameters);
+		
 		user_interface::PlotParameters aelPlotParameters;
 		aelPlotParameters.annotations = { "Action execution field", "Spatial dimension", "Amplitude" };
 		aelPlotParameters.dimensions = { 0, dim_params.x_max, -yMin, yMax, dim_params.d_x };
-		const auto aelFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, aelPlotParameters);
-		aelFieldPlotWindow->addPlottingData("action execution field", "activation");
-		aelFieldPlotWindow->addPlottingData("action execution field", "input");
-		aelFieldPlotWindow->addPlottingData("action execution field", "output");
-		app.activateUserInterfaceWindow(aelFieldPlotWindow);
+		auto ael_vis = createVisualization(simulation);
+		ael_vis->addPlottingData("action execution field", "activation");
+		ael_vis->addPlottingData("action execution field", "input");
+		ael_vis->addPlottingData("action execution field", "output");
+		app.addWindow<user_interface::PlotWindow>(ael_vis, aelPlotParameters);
 
 		app.init();
 
@@ -238,25 +238,25 @@ int main(int argc, char* argv[])
 		while (!userRequestClose)
 		{
 			app.step();
-			userRequestClose = app.getCloseUI();
+			userRequestClose = app.hasUIBeenClosed();
 		}
 		app.close();
 		return 0;
 	}
 	catch (const dnf_composer::Exception& ex)
 	{
-		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode())) + ". \n";
+		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode())) + ". ";
 		log(dnf_composer::tools::logger::LogLevel::FATAL, errorMessage, dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return static_cast<int>(ex.getErrorCode());
 	}
 	catch (const std::exception& ex)
 	{
-		log(dnf_composer::tools::logger::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()) + ". \n", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
+		log(dnf_composer::tools::logger::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()) + ". ", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return 1;
 	}
 	catch (...)
 	{
-		log(dnf_composer::tools::logger::LogLevel::FATAL, "Unknown exception occurred. \n", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
+		log(dnf_composer::tools::logger::LogLevel::FATAL, "Unknown exception occurred. ", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return 1;
 	}
 }

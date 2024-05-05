@@ -120,28 +120,27 @@ int main(int argc, char* argv[])
 	    const Application app{ simulation, activateUserInterface };
 
 	    // After creating the application, we can add the windows we want to display.
-		app.activateUserInterfaceWindow(user_interface::SIMULATION_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::LOG_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::ELEMENT_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::MONITORING_WINDOW);
+		app.addWindow<imgui_kit::LogWindow>();
+		app.addWindow<user_interface::SimulationWindow>();
+		app.addWindow<user_interface::ElementWindow>();
 
 		user_interface::PlotParameters perceptualFieldPlotParams;
 		perceptualFieldPlotParams.annotations = { "Perceptual field", "Spatial dimension", "Amplitude" };
 		perceptualFieldPlotParams.dimensions = { 0, 360, -20, 50, 0.5};
-		auto perceptualFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, perceptualFieldPlotParams);
-		perceptualFieldPlotWindow->addPlottingData("perceptual field", "activation");
-		perceptualFieldPlotWindow->addPlottingData("perceptual field", "input");
-		perceptualFieldPlotWindow->addPlottingData("perceptual field", "output");
-		app.activateUserInterfaceWindow(perceptualFieldPlotWindow);
+		auto perceptualFieldVisualization = createVisualization(simulation);
+		perceptualFieldVisualization->addPlottingData("perceptual field", "activation");
+		perceptualFieldVisualization->addPlottingData("perceptual field", "input");
+		perceptualFieldVisualization->addPlottingData("perceptual field", "output");
+		app.addWindow<user_interface::PlotWindow>(perceptualFieldVisualization, perceptualFieldPlotParams);
 
 		user_interface::PlotParameters outputFieldPlotParams;
 		outputFieldPlotParams.annotations = { "Output field", "Spatial dimension", "Amplitude" };
 		outputFieldPlotParams.dimensions = { 0, 180, -20, 50, 0.5};
-		auto outputFieldPlotWindow = std::make_shared<user_interface::PlotWindow>(simulation, outputFieldPlotParams);
-		outputFieldPlotWindow->addPlottingData("output field", "activation");
-		outputFieldPlotWindow->addPlottingData("output field", "input");
-		outputFieldPlotWindow->addPlottingData("output field", "output");
-		app.activateUserInterfaceWindow(outputFieldPlotWindow);
+		auto outputFieldVisualization = createVisualization(simulation);
+		outputFieldVisualization->addPlottingData("output field", "activation");
+		outputFieldVisualization->addPlottingData("output field", "input");
+		outputFieldVisualization->addPlottingData("output field", "output");
+		app.addWindow<user_interface::PlotWindow>(outputFieldVisualization, outputFieldPlotParams);
 
 		// test the training by adding a stimulus to the perceptual field
 		const element::GaussStimulusParameters gcp_a = { 5, 11, 90};
@@ -155,25 +154,25 @@ int main(int argc, char* argv[])
 		while (!userRequestClose)
 		{
 			app.step();
-			userRequestClose = app.getCloseUI();
+			userRequestClose = app.hasUIBeenClosed();
 		}
 		app.close();
 		return 0;
 	}
 	catch (const dnf_composer::Exception& ex)
 	{
-		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode())) + ". \n";
+		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode())) + ". ";
 		log(dnf_composer::tools::logger::LogLevel::FATAL, errorMessage, dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return static_cast<int>(ex.getErrorCode());
 	}
 	catch (const std::exception& ex)
 	{
-		log(dnf_composer::tools::logger::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()) + ". \n", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
+		log(dnf_composer::tools::logger::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()) + ". ", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return 1;
 	}
 	catch (...)
 	{
-		log(dnf_composer::tools::logger::LogLevel::FATAL, "Unknown exception occurred. \n", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
+		log(dnf_composer::tools::logger::LogLevel::FATAL, "Unknown exception occurred. ", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return 1;
 	}
 }

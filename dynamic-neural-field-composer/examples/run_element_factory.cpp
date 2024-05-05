@@ -51,18 +51,18 @@ int main(int argc, char* argv[])
 		simulation->createInteraction("normal noise", "output", "field");
 
 		// After creating the application, we can add the windows we want to display.
-		app.activateUserInterfaceWindow(user_interface::SIMULATION_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::LOG_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::ELEMENT_WINDOW);
-		app.activateUserInterfaceWindow(user_interface::MONITORING_WINDOW);
+		app.addWindow<imgui_kit::LogWindow>();
+		app.addWindow<user_interface::SimulationWindow>();
+		app.addWindow<user_interface::ElementWindow>();
+
 		user_interface::PlotParameters plotParameters;
 		plotParameters.annotations = { "Element factory example", "Spatial dimension", "Amplitude" };
 		plotParameters.dimensions = { 0, 100, -20, 50, 1.0};
-		const auto plotWindow = std::make_shared<dnf_composer::user_interface::PlotWindow>(simulation, plotParameters);
-		plotWindow->addPlottingData("field", "activation");
-		plotWindow->addPlottingData("field", "input");
-		plotWindow->addPlottingData("field", "output");
-		app.activateUserInterfaceWindow(plotWindow);
+		auto visualization = createVisualization(simulation);
+		visualization->addPlottingData("field", "activation");
+		visualization->addPlottingData("field", "input");
+		visualization->addPlottingData("field", "output");
+		app.addWindow<user_interface::PlotWindow>(visualization, plotParameters);
 
 		app.init();
 
@@ -70,25 +70,25 @@ int main(int argc, char* argv[])
 		while (!userRequestClose)
 		{
 			app.step();
-			userRequestClose = app.getCloseUI();
+			userRequestClose = app.hasUIBeenClosed();
 		}
 		app.close();
 		return 0;
 	}
 	catch (const dnf_composer::Exception& ex)
 	{
-		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode())) + ". \n";
+		const std::string errorMessage = "Exception: " + std::string(ex.what()) + " ErrorCode: " + std::to_string(static_cast<int>(ex.getErrorCode())) + ". ";
 		log(dnf_composer::tools::logger::LogLevel::FATAL, errorMessage, dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return static_cast<int>(ex.getErrorCode());
 	}
 	catch (const std::exception& ex)
 	{
-		log(dnf_composer::tools::logger::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()) + ". \n", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
+		log(dnf_composer::tools::logger::LogLevel::FATAL, "Exception caught: " + std::string(ex.what()) + ". ", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return 1;
 	}
 	catch (...)
 	{
-		log(dnf_composer::tools::logger::LogLevel::FATAL, "Unknown exception occurred. \n", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
+		log(dnf_composer::tools::logger::LogLevel::FATAL, "Unknown exception occurred. ", dnf_composer::tools::logger::LogOutputMode::CONSOLE);
 		return 1;
 	}
 }

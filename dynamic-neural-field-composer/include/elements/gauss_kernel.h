@@ -22,9 +22,8 @@ namespace dnf_composer
 			{}
 
 			bool operator==(const GaussKernelParameters& other) const {
-				constexpr double epsilon = 1e-6; // Set an appropriate epsilon value
+				constexpr double epsilon = 1e-6; 
 
-				// Compare floating-point values with tolerance (epsilon)
 				return std::abs(sigma - other.sigma) < epsilon &&
 					std::abs(amplitude - other.amplitude) < epsilon &&
 					circular == other.circular &&

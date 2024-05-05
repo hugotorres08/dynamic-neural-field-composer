@@ -4,91 +4,76 @@
 
 #include "application/application.h"
 
-#include "user_interface/plot_window.h"
-#include "user_interface/simulation_window.h"
-
 
 namespace dnf_composer
 {
-	Application::Application(const std::shared_ptr<Simulation>& simulation, bool activateUserInterface)
-		:simulation(simulation), activateUserInterface(activateUserInterface)
+	ApplicationParameters::ApplicationParameters(bool activateUserInterface)
+		:uiActive(activateUserInterface)
 	{
-		if (activateUserInterface)
-			userInterface = std::make_shared<user_interface::UserInterface>();
+		using namespace imgui_kit;
+		const WindowParameters winParams{ "Dynamic Neural Field Composer" };
+		const FontParameters fontParams{ std::string(PROJECT_DIR) + "/resources/fonts/Lexend-Light.ttf", 22 };
+		const StyleParameters styleParams{ ImVec4(0.2f, 0.2f, 0.2f, 0.8f) };
+		const IconParameters iconParams{ std::string(PROJECT_DIR) + "/resources/icons/icon.ico" };
+		const BackgroundImageParameters bgParams{ std::string(PROJECT_DIR) + "/resources/images/background.png", 0.2};
+		uiParameters = UserInterfaceParameters{ winParams, fontParams, styleParams, iconParams, bgParams };
 	}
 
+	ApplicationParameters::ApplicationParameters(imgui_kit::UserInterfaceParameters userInterfaceParameters)
+		:uiParameters(std::move(userInterfaceParameters)), uiActive(true)
+	{}
+
+	Application::Application(const std::shared_ptr<Simulation>& simulation, bool activateUserInterface)
+		:simulation(simulation)
+	{
+		if (activateUserInterface)
+			ui = std::make_shared<imgui_kit::UserInterface>(parameters.uiParameters);
+		parameters.uiActive = activateUserInterface;
+	}
+
+	Application::Application(const std::shared_ptr<Simulation>& simulation, ApplicationParameters uiParams)
+		:simulation(simulation), parameters(std::move(uiParams))
+	{
+		ui = std::make_shared<imgui_kit::UserInterface>(parameters.uiParameters);
+	}
 
 	void Application::init() const
 	{
 		simulation->init();
-		if (activateUserInterface)
-			userInterface->init();
+		if (parameters.uiActive)
+			ui->initialize();
 	}
 
 	void Application::step() const
 	{
 		simulation->step();
-		if (activateUserInterface)
-			userInterface->step();
+		if (parameters.uiActive)
+			ui->render();
 	}
 
 	void Application::close() const
 	{
 		simulation->close();
-		if (activateUserInterface)
-			userInterface->close();
-	}
-
-	void Application::activateUserInterfaceWindow(user_interface::UserInterfaceWindowType winType, const user_interface::UserInterfaceWindowParameters& winParams) const
-	{
-
-		if(activateUserInterface)
-		{
-			switch(winType)
-			{
-			case user_interface::ELEMENT_WINDOW:
-				userInterface->activateWindow(std::make_shared<user_interface::ElementWindow>(simulation));
-				break;
-			case user_interface::MONITORING_WINDOW:
-				userInterface->activateWindow(std::make_shared<user_interface::CentroidMonitoringWindow>(simulation));
-				break;
-			case user_interface::SIMULATION_WINDOW:
-				userInterface->activateWindow(std::make_shared<user_interface::SimulationWindow>(simulation));
-				break;
-			case user_interface::LOG_WINDOW:
-				userInterface->activateWindow(std::make_shared<user_interface::LoggerWindow>());
-				break;
-			case user_interface::PLOT_WINDOW:
-				const auto plotParameters = dynamic_cast<const user_interface::PlotParameters*>(&winParams);
-				userInterface->activateWindow(std::make_shared<user_interface::PlotWindow>(simulation, *plotParameters));
-				break;
-			}
-		}
+		if (parameters.uiActive)
+			ui->shutdown();
 	}
 
 	void Application::setActivateUserInterfaceAs(bool activateUI)
 	{
-		activateUserInterface = activateUI;
-		if (activateUserInterface)
-			userInterface = std::make_shared<user_interface::UserInterface>();
+		parameters.uiActive = activateUI;
+		if (parameters.uiActive)
+			ui = std::make_shared<imgui_kit::UserInterface>(parameters.uiParameters);
 	}
 
-	void Application::activateUserInterfaceWindow(const std::shared_ptr<user_interface::UserInterfaceWindow>& window) const
+	bool Application::hasUIBeenClosed() const
 	{
-		if (activateUserInterface)
-			userInterface->activateWindow(window);
-	}
-
-	bool Application::getCloseUI() const
-	{
-		if (activateUserInterface)
-			return userInterface->getCloseUI();
+		if (parameters.uiActive)
+			return ui->isShutdownRequested();
 		return false;
 	}
 
-	bool Application::getActivateUserInterface() const
+	bool Application::isUIActive() const
 	{
-		return activateUserInterface;
+		return parameters.uiActive;
 	}
-	
 }

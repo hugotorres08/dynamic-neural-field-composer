@@ -12,10 +12,9 @@ namespace dnf_composer
 		{
 			if(parameters.dimensionParameters.size <= 0)
 			{
-				const std::string logMessage = "Element '" + parameters.identifiers.uniqueName + "' has an invalid size. Thus, Element constructor halted. \n";
+				const std::string logMessage = "Element '" + parameters.identifiers.uniqueName + "' has an invalid size. Thus, Element constructor halted. ";
 				log(tools::logger::LogLevel::ERROR, logMessage);
 				return;
-				//throw Exception(ErrorCode::ELEM_INVALID_SIZE, commonParameters.identifiers.uniqueName);
 			}
 			commonParameters = parameters;
 			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size);
@@ -26,35 +25,32 @@ namespace dnf_composer
 		{
 			if (!inputElement)
 			{
-				const std::string logMessage = "Input is null. Thus, addInput() method halted. \n";
+				const std::string logMessage = "Input is null. Thus, addInput() method halted. ";
 				log(tools::logger::LogLevel::ERROR, logMessage);
 				return;
-				//throw Exception(ErrorCode::ELEM_INPUT_IS_NULL, this->getUniqueIdentifier());
 			}
 
 			const auto existingInput = inputs.find(inputElement);
 			if (existingInput != inputs.end())
 			{
-				const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' already exists. Thus, addInput() method halted. \n";
+				const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' already exists. Thus, addInput() method halted. ";
 				log(tools::logger::LogLevel::ERROR, logMessage);
 				return;
-				//throw Exception(ErrorCode::ELEM_INPUT_ALREADY_EXISTS, existingInput->first->getUniqueIdentifier());
 			}
 
 			if (inputElement->getComponentPtr("output")->size() != this->getComponentPtr("input")->size())
 			{
 				if (inputElement->getComponentPtr("output")->size() != this->getSize())
 				{
-					const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' has a different size than '" + this->getUniqueName() + "'. Thus, addInput() method halted. \n";
+					const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' has a different size than '" + this->getUniqueName() + "'. Thus, addInput() method halted. ";
 					log(tools::logger::LogLevel::ERROR, logMessage);
 					return;
-					//throw Exception(ErrorCode::ELEM_INPUT_SIZE_MISMATCH, inputElement->getUniqueIdentifier());
 				}
 			}
 
 			inputs[inputElement] = inputComponent;
 
-			const std::string logMessage = "Input '" + inputElement->getUniqueName() +"' added successfully to '" +  this->getUniqueName() + ". \n";
+			const std::string logMessage = "Input '" + inputElement->getUniqueName() +"' added successfully to '" +  this->getUniqueName() + ". ";
 			log(tools::logger::LogLevel::INFO, logMessage);
 		}
 
@@ -64,7 +60,7 @@ namespace dnf_composer
 			{
 				if (key->commonParameters.identifiers.uniqueName == inputElementId) {
 					inputs.erase(key);
-					log(tools::logger::LogLevel::INFO, "Input '" + inputElementId + "' removed successfully from '" + this->getUniqueName() + ". \n");
+					log(tools::logger::LogLevel::INFO, "Input '" + inputElementId + "' removed successfully from '" + this->getUniqueName() + ". ");
 					return;
 				}
 			}
@@ -226,8 +222,6 @@ namespace dnf_composer
 
 				logStream << inputElement->getUniqueName() << "->" << inputComponent << " | ";
 			}
-
-			logStream << std::endl;
 
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}

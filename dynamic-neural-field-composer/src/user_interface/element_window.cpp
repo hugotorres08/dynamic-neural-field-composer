@@ -75,7 +75,7 @@ namespace dnf_composer
 				modifyElementLateralInteractions(element);
 				break;
 			default:
-				log(tools::logger::LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.\n");
+				log(tools::logger::LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.");
 				break;
 			}
 		}

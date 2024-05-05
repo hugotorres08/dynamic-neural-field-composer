@@ -1,6 +1,8 @@
-# Dynamic Neural Field Composer
+<img src="./dynamic-neural-field-composer/resources/images/background.png" alt="logo" >
 
-Dynamic Neural Field Composer is a C++ application designed for developing Dynamic Neural Field Architectures.
+Dynamic Neural Field Composer - C++ application designed for developing Dynamic Neural Field Architectures.
+===============================================
+
 
 ## Project Dependencies
 

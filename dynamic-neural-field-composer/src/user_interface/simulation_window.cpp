@@ -154,7 +154,7 @@ namespace dnf_composer
 					addElementLateralInteractions();
 					break;
 				default:
-					log(tools::logger::LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.\n");
+					log(tools::logger::LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.");
 					break;
 				}
 				ImGui::TreePop();
@@ -216,6 +216,7 @@ namespace dnf_composer
 
 		void SimulationWindow::addElementNeuralField() const
 		{
+
 			static char id[CHAR_SIZE] = "neural field u";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int x_max = 100;
@@ -293,12 +294,12 @@ namespace dnf_composer
 
 		void SimulationWindow::addElementFieldCoupling() const
 		{
-			log(tools::logger::LogLevel::ERROR, "This is still not done, I'm sorry! :(.\n");
+			log(tools::logger::LogLevel::ERROR, "This is still not done, I'm sorry! :(.");
 		}
 
 		void SimulationWindow::addElementGaussFieldCoupling() const
 		{
-			log(tools::logger::LogLevel::ERROR, "This is still not done, I'm sorry! :(.\n");
+			log(tools::logger::LogLevel::ERROR, "This is still not done, I'm sorry! :(.");
 		}
 
 		void SimulationWindow::addElementGaussKernel() const

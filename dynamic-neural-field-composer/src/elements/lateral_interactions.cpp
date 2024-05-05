@@ -10,7 +10,7 @@ namespace dnf_composer
 	namespace element
 	{
 		LateralInteractions::LateralInteractions(const ElementCommonParameters& elementCommonParameters, LateralInteractionsParameters li_parameters)
-			: Kernel(elementCommonParameters), parameters(li_parameters)
+			: Kernel(elementCommonParameters), parameters(std::move(li_parameters))
 		{
 			commonParameters.identifiers.label = ElementLabel::LATERAL_INTERACTIONS;
 		}
@@ -89,7 +89,7 @@ namespace dnf_composer
 			logStream << "AmplitudeGlobal: " << parameters.amplitudeGlobal << std::endl;
 			logStream << "CutOffFactor: " << cutOfFactor << std::endl;
 			logStream << "Normalized: " << parameters.normalized << std::endl;
-			logStream << "Circularity: " << parameters.circular << std::endl;
+			logStream << "Circularity: " << parameters.circular;
 
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}

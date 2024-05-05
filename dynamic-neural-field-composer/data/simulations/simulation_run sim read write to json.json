@@ -11,11 +11,11 @@
                 "output"
             ],
             [
-                "noise kernel in",
+                "stimulus in",
                 "output"
             ],
             [
-                "stimulus in",
+                "noise kernel in",
                 "output"
             ]
         ],
@@ -45,11 +45,11 @@
                 "output"
             ],
             [
-                "in - out",
+                "stimulus out",
                 "output"
             ],
             [
-                "stimulus out",
+                "in - out",
                 "output"
             ]
         ],
