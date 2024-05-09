@@ -22,6 +22,9 @@ int main(int argc, char* argv[])
 		plotParameters.dimensions = { 0, 100, -30, 40 , 1.0 };
 		auto visualization = dnf_composer::createVisualization(simulation);
 		app.addWindow<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters);
+		app.addWindow<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters);
+		app.addWindow<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters);
+
 
 		app.init();
 

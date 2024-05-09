@@ -27,10 +27,10 @@ namespace dnf_composer
 
                 std::tm buf;
                 if (localtime_s(&buf, &in_time_t))
-                    throw dnf_composer::Exception(dnf_composer::ErrorCode::LOG_LOCAL_TIME_ERROR);
+                    throw Exception(ErrorCode::LOG_LOCAL_TIME_ERROR);
 
                 const std::string levelStr = getLogLevelText(logLevel);
-                const std::string prefixStr = "[DNF COMPOSER] " + levelStr;
+                const std::string prefixStr = levelStr + "[DNF COMPOSER] ";
                 std::ostringstream oss;
                 const std::string finalMessage = oss.str();
                 std::string colorCode;
@@ -106,11 +106,11 @@ namespace dnf_composer
             {
                 switch (level)
                 {
-                case DEBUG: return      "[DEBUG]  ";
-                case INFO: return       "[INFO]   ";
-                case WARNING: return    "[WARNING]";
-                case ERROR: return      "[ERROR]  ";
-                case FATAL: return      "[FATAL]  ";
+                case DEBUG: return      "[DEBUG]   ";
+                case INFO: return       "[INFO]    ";
+                case WARNING: return    "[WARNING] ";
+                case ERROR: return      "[ERROR]   ";
+                case FATAL: return      "[FATAL]   ";
                 default: return "";
                 }
             }

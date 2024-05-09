@@ -32,16 +32,26 @@ namespace dnf_composer
 
 		void PlotWindow::render()
 		{
-			for(const auto& plot : plots)
+			for (auto it = plots.begin(); it != plots.end();)
 			{
+				PlotParameters& plot = *it;
 				const std::string plotWindowTitle = plot.annotations.title + " window";
+				bool open = true; 
 
-				if (ImGui::Begin(plotWindowTitle.c_str()))
+				if (ImGui::Begin(plotWindowTitle.c_str(), &open, ImGuiWindowFlags_NoCollapse))
 				{
 					renderPlot(plot);
 					renderElementSelector(plot);
 				}
 				ImGui::End();
+
+				if (!open)
+				{
+					it = plots.erase(it);
+					log(tools::logger::LogLevel::INFO, "Plot window closed.");
+				}
+				else
+					++it;
 			}
 		}
 
@@ -102,13 +112,23 @@ namespace dnf_composer
 
 			const std::string selectorTitle = parameters.annotations.title + " plot selector";
 
-			if (ImGui::CollapsingHeader(selectorTitle.c_str()))
+			if (numberOfElementsInSimulation == 0)
 			{
-				ImGui::Columns(2, nullptr, false); // Use 2 columns
+				ImGui::Text("No elements in simulation.");
+				return;
+			}
+
+			if (ImGui::CollapsingHeader(selectorTitle.c_str(), ImGuiTreeNodeFlags_DefaultOpen))
+			{
+				ImGui::Columns(2, nullptr, false);  // Use 2 columns
+
+				// Calculate the list box height dynamically based on content with a reasonable maximum.
+				const float lineHeight = ImGui::GetTextLineHeightWithSpacing();
+				float listBoxHeight = std::min(lineHeight * static_cast<float>(numberOfElementsInSimulation), 8 * lineHeight);
 
 				// First column: List box for selecting an element
 				ImGui::Text("Select element");
-				if (ImGui::BeginListBox("##Element list", { 300.00f, 200.0f }))
+				if (ImGui::BeginListBox("##Element list", ImVec2(-1, listBoxHeight)))
 				{
 					for (int n = 0; n < numberOfElementsInSimulation; n++)
 					{
@@ -132,22 +152,16 @@ namespace dnf_composer
 
 				std::shared_ptr<element::Element> simulationElement;
 				static int currentComponentIdx = 0;
-				if (selectedElementId.empty())
-				{
-					ImGui::Text("Select component");
-					if (ImGui::BeginListBox("##Component list", { 250.0f, 200.0f }))
-					{
-						ImGui::EndListBox();
-					}
-				}
-				else
+				if (!selectedElementId.empty())
 				{
 					simulationElement = simulation->getElement(selectedElementId);
-					const std::string elementId = simulationElement->getUniqueName();
+					const int numComponents = static_cast<int>(simulationElement->getComponentList().size());
+					listBoxHeight = std::min(lineHeight * static_cast<float>(numComponents), 8 * lineHeight);
+
 					ImGui::Text("Select component");
-					if (ImGui::BeginListBox("##Component list", { 250.0f, 200.0f }))
+					if (ImGui::BeginListBox("##Component list", ImVec2(-1, listBoxHeight)))
 					{
-						for (int n = 0; n < static_cast<int>(simulationElement->getComponentList().size()); n++)
+						for (int n = 0; n < numComponents; n++)
 						{
 							const bool isSelected = (currentComponentIdx == n);
 							if (ImGui::Selectable(simulationElement->getComponentList()[n].c_str(), isSelected))
@@ -160,16 +174,17 @@ namespace dnf_composer
 					}
 				}
 
-				// Reset columns
+				// Reset columns to 1
 				ImGui::Columns(1);
 
-				if (ImGui::Button("Add", { 100.0f, 30.0f }))
+				if (ImGui::Button("Add", ImVec2(100.0f, 30.0f)))
 				{
 					visualization->addPlottingData(selectedElementId, simulationElement->getComponentList()[currentComponentIdx]);
 				}
 			}
-			//ImGui::End();
 		}
+
+
 
 		void PlotWindow::configure(const PlotDimensions& dimensions)
 		{

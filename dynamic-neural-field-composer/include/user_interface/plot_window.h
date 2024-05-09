@@ -73,6 +73,7 @@ namespace dnf_composer
 			~PlotWindow() override = default;
 		private:
 			void createPlot(PlotParameters& parameters);
+			void editPlotParameters(PlotParameters& parameters);
 			//void renderPlotControl();
 			void renderPlot(const PlotParameters& parameters) const;
 			void renderElementSelector(const PlotParameters& parameters) const;
