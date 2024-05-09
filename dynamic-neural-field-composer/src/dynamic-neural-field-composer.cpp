@@ -11,15 +11,7 @@ int main(int argc, char* argv[])
 	try
 	{
 		const auto simulation = dnf_composer::createSimulation( "run sim with gui example", 5, 0, 0 );
-
-		const imgui_kit::WindowParameters winParams{ "Dynamic Neural Field Composer", 2560, 1600 };
-		const imgui_kit::FontParameters fontParams{ "../../../resources/fonts/Lexend-Light.ttf", 22 };
-		const imgui_kit::StyleParameters styleParams{ ImVec4(0.2f, 0.2f, 0.2f, 0.8f) };
-		const imgui_kit::IconParameters iconParams{ "../../../resources/icons/win_icon.ico" };
-		const imgui_kit::BackgroundImageParameters bgParams{};
-		imgui_kit::UserInterfaceParameters uiParameters{ winParams, fontParams, styleParams, iconParams, bgParams };
-		dnf_composer::ApplicationParameters appParameters{ uiParameters };
-		dnf_composer::Application app{ simulation, appParameters };
+		const dnf_composer::Application app{ simulation };
 
 		app.addWindow<imgui_kit::LogWindow>();
 		app.addWindow<dnf_composer::user_interface::SimulationWindow>();
@@ -32,6 +24,7 @@ int main(int argc, char* argv[])
 		app.addWindow<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters);
 
 		app.init();
+
 
 		bool userRequestClose = false;
 		while (!userRequestClose)

@@ -39,9 +39,11 @@ namespace dnf_composer
 			private:
 				LogLevel logLevel;
 				LogOutputMode outputMode;
+				static LogLevel minLogLevel;
 			public:
 				Logger(LogLevel level, LogOutputMode mode = ALL);
 				void log(const std::string& message) const;
+				static void setMinLogLevel(LogLevel level) { minLogLevel = level; }
 			private:
 				static std::string getLogLevelColorCode(LogLevel level);
 				static std::string getLogLevelText(LogLevel level);

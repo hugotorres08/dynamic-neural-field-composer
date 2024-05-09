@@ -11,12 +11,17 @@ namespace dnf_composer
     {
         namespace logger
         {
+        	LogLevel Logger::minLogLevel = LogLevel::DEBUG; 
+
             Logger::Logger(LogLevel level, LogOutputMode mode)
                 : logLevel(level), outputMode(mode)
             {}
 
             void Logger::log(const std::string& message) const
             {
+                if (logLevel < Logger::minLogLevel)
+                    return;
+
                 const auto now = std::chrono::system_clock::now();
                 const auto in_time_t = std::chrono::system_clock::to_time_t(now);
 
@@ -25,6 +30,7 @@ namespace dnf_composer
                     throw dnf_composer::Exception(dnf_composer::ErrorCode::LOG_LOCAL_TIME_ERROR);
 
                 const std::string levelStr = getLogLevelText(logLevel);
+                const std::string prefixStr = "[DNF COMPOSER] " + levelStr;
                 std::ostringstream oss;
                 const std::string finalMessage = oss.str();
                 std::string colorCode;
@@ -33,19 +39,19 @@ namespace dnf_composer
                 {
                 case LogOutputMode::ALL:
                     colorCode = getLogLevelColorCode(logLevel);
-                    oss << colorCode << levelStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
+                    oss << colorCode << prefixStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
                     log_cmd(oss.str());
                     std::ostringstream().swap(oss); // swap m with a default constructed stringstream
-                    oss << levelStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
+                    oss << prefixStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
                     log_ui(oss.str());
                     break;
                 case LogOutputMode::CONSOLE:
                     colorCode = getLogLevelColorCode(logLevel);
-                    oss << colorCode << levelStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
+                    oss << colorCode << prefixStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
                     log_cmd(oss.str());
                     break;
                 case LogOutputMode::GUI:
-                    oss << levelStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
+                    oss << prefixStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
                     log_ui(oss.str());
                     break;
                 default:
@@ -72,6 +78,7 @@ namespace dnf_composer
                 if (level == LogLevel::DEBUG)
                     return;
 #endif
+
                 logger = Logger(level, mode);
                 logger.log(message);
             }
