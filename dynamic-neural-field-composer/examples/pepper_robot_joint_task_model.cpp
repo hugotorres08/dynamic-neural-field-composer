@@ -181,7 +181,7 @@ int main(int argc, char* argv[])
 		app.addWindow<imgui_kit::LogWindow>();
 		app.addWindow<user_interface::SimulationWindow>();
 		app.addWindow<user_interface::ElementWindow>();
-		app.addWindow<user_interface::CentroidMonitoringWindow>();
+		app.addWindow<user_interface::FieldMetricsWindow>();
 
 		constexpr int yMax = 10;
 		constexpr int yMin = 8;

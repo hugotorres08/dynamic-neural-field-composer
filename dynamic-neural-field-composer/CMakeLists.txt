@@ -83,7 +83,7 @@ set(exceptions_headers
     "include/exceptions/exception.h"
 )
 set(user_interface_headers
-    "include/user_interface/centroid_monitoring_window.h"
+    "include/user_interface/field_metrics_window.h"
     "include/user_interface/element_window.h"
     "include/user_interface/plot_control_window.h"
     "include/user_interface/plot_window.h"
@@ -136,7 +136,7 @@ set(src
     "src/user_interface/plot_window.cpp"
     "src/user_interface/plot_control_window.cpp"
     "src/user_interface/simulation_window.cpp"
-    "src/user_interface/centroid_monitoring_window.cpp"
+    "src/user_interface/field_metrics_window.cpp"
     "src/user_interface/element_window.cpp"
 
     "src/wizards/learning_wizard.cpp"
