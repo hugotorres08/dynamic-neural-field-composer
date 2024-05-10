@@ -29,8 +29,7 @@ namespace dnf_composer
 			updateInput();
 			calculateActivation(t, deltaT);
 			calculateOutput();
-			calculateCentroid();
-			checkStability();
+			updateState();
 		}
 
 		void NeuralField::close()
@@ -71,11 +70,11 @@ namespace dnf_composer
 			logStream << "Tau: " << parameters.tau << std::endl;
 
 			//logStream << "ActivationFunctionParameters: ";
-			////logStream << "Type: " << ActivationFunctionTypeToString.at(parameters.activationFunctionParameters.type) << " | ";
+			//logStream << "Type: " << ActivationFunctionTypeToString.at(parameters.activationFunctionParameters.type) << " | ";
 			//logStream << "Steepness: " << parameters.activationFunction. << " | ";
 			//logStream << "XShift: " << parameters.activationFunctionParameters.xShift << " | ";
 
-			logStream << std::endl << "Current centroid value: " << getCentroid();// << std::endl;
+			logStream << std::endl << "Current centroid value: " << getCentroid();
 
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
@@ -83,7 +82,6 @@ namespace dnf_composer
 		std::shared_ptr<Element> NeuralField::clone() const
 		{
 			auto cloned = std::make_shared<NeuralField>(*this);
-			// If there are deep copy specifics that the copy constructor doesn't handle, do them here.
 			return cloned;
 		}
 
@@ -141,10 +139,17 @@ namespace dnf_composer
 			else
 			{
 				state.centroid = -1.0;
-				return;
 			}
-			//state.centroid += 1;
 		}
+
+		void NeuralField::updateState()
+		{
+			calculateCentroid();
+			checkStability();
+			updateMinMaxActivation();
+			updateBumps();
+		}
+
 
 		void NeuralField::checkStability()
 		{
@@ -181,5 +186,90 @@ namespace dnf_composer
 			std::ranges::fill(components["resting level"], parameters.startingRestingLevel);
 			calculateOutput();
 		}
+
+		void NeuralField::updateMinMaxActivation()
+		{
+			if (components["activation"].empty())
+				return;
+			state.lowestActivation = *std::ranges::min_element(components["activation"]);
+			state.highestActivation = *std::ranges::max_element(components["activation"]);
+		}
+
+		void NeuralField::updateBumps()
+		{
+			state.bumps.clear();
+
+			constexpr double activationThreshold = 0.00001; // Define a threshold for what counts as a 'bump'
+			bool inBump = false;
+			NeuralFieldBump currentBump(0, 0, 0, 0, 0);
+
+			for (int i = 0; i < commonParameters.dimensionParameters.size; ++i)
+			{
+				double activation = components["activation"][i];
+				if (activation > activationThreshold && !inBump)
+				{
+					// Start of a new bump
+					inBump = true;
+					currentBump.startPosition = (i + 1) * commonParameters.dimensionParameters.d_x;
+					currentBump.amplitude = activation;
+					currentBump.width = 1;
+				}
+				else if (activation > activationThreshold && inBump)
+				{
+					// Continue the current bump
+					currentBump.amplitude = std::max(currentBump.amplitude, activation);
+					currentBump.width++;
+				}
+				else if (inBump)
+				{
+					// End of current bump
+					currentBump.width -= 1;
+					currentBump.width *= commonParameters.dimensionParameters.d_x;
+					currentBump.endPosition = i * commonParameters.dimensionParameters.d_x;
+					currentBump.centroid = ((currentBump.startPosition + currentBump.endPosition) / 2);
+					state.bumps.push_back(currentBump);
+					inBump = false;
+				}
+			}
+
+			// If the last element ended in a bump
+			if (inBump)
+			{
+				state.bumps.push_back(currentBump);
+			}
+
+			// Check if the first and last bumps are connected (wrap-around)
+			if (!state.bumps.empty() && components["activation"].front() > activationThreshold && components["activation"].back() > activationThreshold)
+			{
+				// Get the first and the last bump
+				const auto& firstBump = state.bumps.front();
+				const auto& lastBump = state.bumps.back();
+
+				// Only merge if they are different bumps
+				if (&firstBump != &lastBump)
+				{
+					// Create a new bump that combines the properties of the first and last bump
+					NeuralFieldBump newBump;
+					newBump.startPosition = lastBump.startPosition;
+					newBump.endPosition = firstBump.endPosition;
+					newBump.amplitude = std::max(firstBump.amplitude, lastBump.amplitude);
+					newBump.width = commonParameters.dimensionParameters.x_max -(newBump.startPosition - newBump.endPosition);
+					newBump.centroid = fmod(
+						((newBump.startPosition + newBump.endPosition + commonParameters.dimensionParameters.x_max) / 2.0), 
+						commonParameters.dimensionParameters.x_max);
+
+					// Remove the first and last bump
+					state.bumps.pop_back(); // remove last
+					state.bumps.erase(state.bumps.begin()); // remove first
+
+					// Add the new merged bump
+					state.bumps.push_back(newBump);
+				}
+			}
+
+		}
+
+		
+
 	}
 }

@@ -48,6 +48,31 @@ namespace dnf_composer
 			}
 		};
 
+		struct NeuralFieldBump
+		{
+			double centroid;
+			double startPosition;
+			double endPosition;
+			double amplitude;
+			double width;
+			double speed;
+			double decay;
+
+			NeuralFieldBump(double centroid = 0.0,
+				double startPosition = 0.0,
+				double endPosition = 0.0,
+				double amplitude = 0.0, 
+				double width = 0.0, 
+				double speed = 0.0, 
+				double decay = 0.0)
+				: centroid(centroid),
+			startPosition(startPosition),
+			endPosition(endPosition),
+			amplitude(amplitude),
+			width(width), speed(speed), decay(decay)
+			{}
+		};
+
 		struct NeuralFieldState
 		{
 			double centroid;
@@ -55,9 +80,16 @@ namespace dnf_composer
 			double prevActivationAvg;
 			double prevActivationNorm;
 			bool stable;
+			std::vector<NeuralFieldBump> bumps;
+			// bool selfStabilizing;
+			// bool selfSustained;
+			double lowestActivation;
+			double highestActivation;
 
 			NeuralFieldState()
-				:centroid(0.0), prevActivationSum(0.0), prevActivationAvg(0.0), prevActivationNorm(0.0), stable(false)
+				:centroid(0.0), prevActivationSum(0.0), prevActivationAvg(0.0),
+					prevActivationNorm(0.0), stable(false),
+					lowestActivation(0.0), highestActivation(0.0)
 			{}
 		};
 
@@ -80,6 +112,9 @@ namespace dnf_composer
 			NeuralFieldParameters getParameters() const;
 		    double getCentroid() const;
 			bool isStable() const;
+			double getLowestActivation() const { return state.lowestActivation; }
+			double getHighestActivation() const { return state.highestActivation; }
+			std::vector<NeuralFieldBump> getBumps() const { return state.bumps; }
 
 			~NeuralField() override = default;
 
@@ -87,8 +122,11 @@ namespace dnf_composer
 			void calculateActivation(double t, double deltaT);
 			void calculateOutput();
 			void calculateCentroid();
+			void updateState();
 			void checkStability();
 			void updateParameters();
+			void updateMinMaxActivation();
+			void updateBumps();
 		};
 	}
 }

@@ -18,30 +18,34 @@ int main(int argc, char* argv[])
 		const Application app{ simulation, activateUserInterface };
 
 		element::ElementFactory factory;
+		const element::ElementSpatialDimensionParameters esdp = { 100, 1.0 };
 
 		element::GaussStimulusParameters gsp = { 5, 5, 50 };
-		const auto stimulus = factory.createElement(element::GAUSS_STIMULUS, { "stimulus", {100, 1.0} }, { gsp });
+		const auto stimulus = factory.createElement(element::GAUSS_STIMULUS, { "stimulus", esdp }, { gsp });
 		simulation->addElement(stimulus);
+
+		const auto stimulus_a = factory.createElement(element::GAUSS_STIMULUS, { "stimulus_a", esdp }, { gsp });
+		simulation->addElement(stimulus_a);
 
 		element::SigmoidFunction af = { 0.0, 10.0 };
 		element::NeuralFieldParameters nfp = { 20, -5, af };
-		const auto neural_field = factory.createElement(element::NEURAL_FIELD, { "field", {100, 1.0} }, { nfp });
+		const auto neural_field = factory.createElement(element::NEURAL_FIELD, { "field", esdp }, { nfp });
 		simulation->addElement(neural_field);
 
 		element::GaussKernelParameters gkp = { 3, 5 };
-		const auto gauss_kernel = factory.createElement(element::GAUSS_KERNEL, { "gauss kernel", {100, 1.0} }, { gkp });
+		const auto gauss_kernel = factory.createElement(element::GAUSS_KERNEL, { "gauss kernel", esdp }, { gkp });
 		simulation->addElement(gauss_kernel);
 
 		element::MexicanHatKernelParameters mhkp = { 5, 10, 2, 8 };
-		const auto mexican_hat_kernel = factory.createElement(element::MEXICAN_HAT_KERNEL, { "mexican hat kernel", {100, 1.0} }, { mhkp });
+		const auto mexican_hat_kernel = factory.createElement(element::MEXICAN_HAT_KERNEL, { "mexican hat kernel", esdp }, { mhkp });
 		simulation->addElement(mexican_hat_kernel);
 
 		element::LateralInteractionsParameters lip = { 5, 10, 2, 8, -0.1 };
-		const auto lateral_interactions = factory.createElement(element::LATERAL_INTERACTIONS, { "lateral int. kernel", {100, 1.0} }, { lip });
+		const auto lateral_interactions = factory.createElement(element::LATERAL_INTERACTIONS, { "lateral int. kernel", esdp }, { lip });
 		simulation->addElement(lateral_interactions);
 
 		element::NormalNoiseParameters nnp = { 0.01 };
-		const auto normal_noise = factory.createElement(element::NORMAL_NOISE, { "normal noise", {100, 1.0} }, nnp);
+		const auto normal_noise = factory.createElement(element::NORMAL_NOISE, { "normal noise", esdp }, nnp);
 		simulation->addElement(normal_noise);
 
 		// Here you can obviously use addInput() or createInteraction() methods
@@ -54,10 +58,11 @@ int main(int argc, char* argv[])
 		app.addWindow<imgui_kit::LogWindow>();
 		app.addWindow<user_interface::SimulationWindow>();
 		app.addWindow<user_interface::ElementWindow>();
+		app.addWindow<user_interface::CentroidMonitoringWindow>();
 
 		user_interface::PlotParameters plotParameters;
 		plotParameters.annotations = { "Element factory example", "Spatial dimension", "Amplitude" };
-		plotParameters.dimensions = { 0, 100, -20, 50, 1.0};
+		plotParameters.dimensions = { 0, esdp.x_max, -20, 50, esdp.d_x};
 		auto visualization = createVisualization(simulation);
 		visualization->addPlottingData("field", "activation");
 		visualization->addPlottingData("field", "input");
