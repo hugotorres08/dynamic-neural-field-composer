@@ -3,6 +3,11 @@
 #include "element.h"
 #include "activation_function.h"
 
+#include "simulation/simulation.h"
+#include "elements/kernel.h"
+#include "elements/gauss_stimulus.h"
+#include "elements/normal_noise.h"
+
 namespace dnf_composer
 {
 	namespace element
@@ -81,14 +86,15 @@ namespace dnf_composer
 			double prevActivationNorm;
 			bool stable;
 			std::vector<NeuralFieldBump> bumps;
-			// bool selfStabilizing;
-			// bool selfSustained;
+			bool selfStabilized;
+			bool selfSustained;
 			double lowestActivation;
 			double highestActivation;
 
 			NeuralFieldState()
 				:centroid(0.0), prevActivationSum(0.0), prevActivationAvg(0.0),
-					prevActivationNorm(0.0), stable(false),
+					prevActivationNorm(0.0), stable(false), bumps(),
+					selfStabilized(false), selfSustained(false),
 					lowestActivation(0.0), highestActivation(0.0)
 			{}
 		};
@@ -115,6 +121,9 @@ namespace dnf_composer
 			double getLowestActivation() const { return state.lowestActivation; }
 			double getHighestActivation() const { return state.highestActivation; }
 			std::vector<NeuralFieldBump> getBumps() const { return state.bumps; }
+			std::shared_ptr<Kernel> getSelfExcitationKernel() const;
+			//bool isSelfStabilized() const { return state.selfStabilized; }
+			//bool isSelfSustained() const { return state.selfSustained; }
 
 			~NeuralField() override = default;
 
@@ -127,6 +136,8 @@ namespace dnf_composer
 			void updateParameters();
 			void updateMinMaxActivation();
 			void updateBumps();
+			//void checkSelfStabilization();
+			//void checkSelfSustained();
 		};
 	}
 }

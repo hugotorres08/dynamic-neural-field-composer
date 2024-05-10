@@ -18,7 +18,7 @@ namespace dnf_composer
 		: uniqueIdentifier(std::move(identifier)), deltaT(deltaT), tZero(tZero), t(t)
 	{
 		if (deltaT <= 0 || tZero > t)
-			throw Exception(ErrorCode::SIM_INVALID_PARAMETER, "Invalid parameters for Simulation constructor");
+			throw Exception(ErrorCode::SIM_INVALID_PARAMETER);
 
 		initialized = false;
 		paused = false;

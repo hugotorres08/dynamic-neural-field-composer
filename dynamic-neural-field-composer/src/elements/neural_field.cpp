@@ -4,6 +4,7 @@
 
 #include "elements/neural_field.h"
 
+
 namespace dnf_composer
 {
 	namespace element
@@ -57,6 +58,25 @@ namespace dnf_composer
 			if (state.stable)
 				return true;
 			return false;
+		}
+
+		std::shared_ptr<Kernel> NeuralField::getSelfExcitationKernel() const
+		{
+			for (const auto& input : inputs)
+			{
+				if (input.first->getLabel() == ElementLabel::GAUSS_KERNEL ||
+					input.first->getLabel() == ElementLabel::MEXICAN_HAT_KERNEL ||
+					input.first->getLabel() == ElementLabel::LATERAL_INTERACTIONS)
+				{
+					auto kernel = std::dynamic_pointer_cast<Kernel>(input.first);
+					for (const auto& kernelInput : kernel->getInputs())
+					{
+						if (kernelInput->getUniqueName() == commonParameters.identifiers.uniqueName)
+							return kernel;
+					}
+				}
+			}
+			return nullptr;
 		}
 
 		void NeuralField::printParameters()
@@ -148,8 +168,8 @@ namespace dnf_composer
 			checkStability();
 			updateMinMaxActivation();
 			updateBumps();
+			//checkSelfStabilization();
 		}
-
 
 		void NeuralField::checkStability()
 		{
@@ -269,7 +289,49 @@ namespace dnf_composer
 
 		}
 
-		
+		//void NeuralField::checkSelfStabilization()
+		//{
+		//	// A self - stabilized dynamic field is one that can recover and maintain a stable state
+		//	// after perturbations or disturbances.It has the ability to resist external influences
+		//	// and return to a stable configuration.
 
+		//	const auto simulation = 
+		//		createSimulation("selfStabilizationCheck", 25.0, 0.0, 0.0);
+		//	const auto neuralFieldCopy = this->clone();
+		//	const auto selfExcitationKernelCopy = getSelfExcitationKernel();
+		//	simulation->addElement(neuralFieldCopy);
+		//	simulation->addElement(selfExcitationKernelCopy);
+		//	neuralFieldCopy->addInput(selfExcitationKernelCopy);
+		//	selfExcitationKernelCopy->addInput(neuralFieldCopy);
+		//	GaussStimulusParameters gsp{ 5, 20, static_cast<double>(commonParameters.dimensionParameters.x_max) / 2};
+		//	ElementCommonParameters ecpgs{ "gaussianStimulus",  commonParameters.dimensionParameters };
+		//	const auto gaussianStimulus = std::make_shared<GaussStimulus>(ecpgs, gsp);
+		//	simulation->addElement(gaussianStimulus);
+		//	neuralFieldCopy->addInput(gaussianStimulus);
+
+		//	simulation->init();
+		//	static constexpr int simulationTime = 1000;
+		//	for (int i = 0; i < simulationTime; i++)
+		//		simulation->step();
+		//	const double prePerturbationCentroid = std::dynamic_pointer_cast<NeuralField>(neuralFieldCopy)->getCentroid();
+		//	simulation->close();
+
+		//	ElementCommonParameters ecpn{ "normalNoise", commonParameters.dimensionParameters };
+		//	const auto noise = std::make_shared<NormalNoise>(ecpn, NormalNoiseParameters{1.0});
+		//	simulation->addElement(noise);
+		//	neuralFieldCopy->addInput(noise);
+		//	simulation->init();
+		//	for (int i = 0; i < simulationTime; i++)
+		//		simulation->step();
+		//	simulation->removeElement(noise->getUniqueName());
+		//	for (int i = 0; i < simulationTime; i++)
+		//		simulation->step();
+		//	const double postPerturbationCentroid = std::dynamic_pointer_cast<NeuralField>(neuralFieldCopy)->getCentroid();
+
+		//	if (std::abs(prePerturbationCentroid - postPerturbationCentroid) < 0.1)
+		//		state.selfStabilized = true;
+		//	else
+		//		state.selfStabilized = false;
+		//}
 	}
 }

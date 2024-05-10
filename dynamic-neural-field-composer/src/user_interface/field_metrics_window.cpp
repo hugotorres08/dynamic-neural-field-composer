@@ -49,12 +49,16 @@ namespace dnf_composer
 			const double lowestActivation = neuralField->getLowestActivation();
 			const double highestActivation = neuralField->getHighestActivation();
 			const std::vector<element::NeuralFieldBump> bumps = neuralField->getBumps();
+			//const double selfStabilized = neuralField->isSelfStabilized();
+			//const double selfSustained = neuralField->isSelfSustained();
 
 			ImGui::Text("Cumulative centroid: %.2f", centroid);
 			ImGui::TextColored(stable ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), "Stability: %s", stable ? "Stable" : "Unstable");
 			ImGui::Text("Lowest Activation: %.2f", lowestActivation);
 			ImGui::Text("Highest Activation: %.2f", highestActivation);
 			ImGui::Text("Number of Bumps: %d", static_cast<int>(bumps.size()));
+			//ImGui::Text(selfStabilized ? "Self-stabilized" : "Not self-stabilized");
+			//ImGui::Text(selfSustained ? "Self-sustained" : "Not self-sustained");
 			ImGui::Separator();
 
 			for (int j = 0; j < bumps.size(); j++)
