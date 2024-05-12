@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 		const imgui_kit::FontParameters fontParams{ std::string(PROJECT_DIR) + "/resources/fonts/Lexend-Light.ttf", 22 };
 		const imgui_kit::StyleParameters styleParams{ ImVec4(0.2f, 0.2f, 0.2f, 0.8f) };
 		const imgui_kit::IconParameters iconParams{ std::string(PROJECT_DIR) + "/resources/icons/icon.ico" };
-		const imgui_kit::BackgroundImageParameters bgParams{ std::string(PROJECT_DIR) + "/resources/images/background.png", 0.2};
+		const imgui_kit::BackgroundImageParameters bgParams{ std::string(PROJECT_DIR) + "/resources/images/background.png", 0.4};
 		imgui_kit::UserInterfaceParameters uiParameters{ winParams, fontParams, styleParams, iconParams, bgParams};
 		dnf_composer::ApplicationParameters appParameters{ uiParameters };
 		dnf_composer::Application app{ simulation, appParameters };
