@@ -30,29 +30,30 @@ namespace dnf_composer
                     throw Exception(ErrorCode::LOG_LOCAL_TIME_ERROR);
 
                 const std::string levelStr = getLogLevelText(logLevel);
-                const std::string prefixStr = levelStr + "[DNF COMPOSER] ";
+                const std::string prefixStr = "<dnf-composer> " + levelStr;
                 std::ostringstream oss;
                 const std::string finalMessage = oss.str();
                 std::string colorCode;
 
+                const ImVec4 color = getLogLevelColorCodeGui(logLevel);
                 switch (outputMode)
                 {
                 case LogOutputMode::ALL:
-                    colorCode = getLogLevelColorCode(logLevel);
-                    oss << colorCode << prefixStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
+                    colorCode = getLogLevelColorCodeCmd(logLevel);
+                    oss << colorCode << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] "<< prefixStr << " " << message;
                     log_cmd(oss.str());
                     std::ostringstream().swap(oss); // swap m with a default constructed stringstream
-                    oss << prefixStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
-                    log_ui(oss.str());
+                    oss << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] "<< prefixStr << " "  << " " << message;
+                    log_ui(color, oss.str());
                     break;
                 case LogOutputMode::CONSOLE:
-                    colorCode = getLogLevelColorCode(logLevel);
-                    oss << colorCode << prefixStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
+                    colorCode = getLogLevelColorCodeCmd(logLevel);
+                    oss << colorCode << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] " << prefixStr << " " << message;
                     log_cmd(oss.str());
                     break;
                 case LogOutputMode::GUI:
-                    oss << prefixStr << " " << std::put_time(&buf, "%Y-%m-%d %X") << " " << message;
-                    log_ui(oss.str());
+                    oss << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] " << prefixStr << " " <<  " " << message;
+                    log_ui(color, oss.str());
                     break;
                 default:
                     break;
@@ -66,11 +67,10 @@ namespace dnf_composer
                 std::cout << finalMessage_cmd << std::endl;
             }
 
-            void Logger::log_ui(const std::string& message)
+            void Logger::log_ui(ImVec4 color, const std::string& message)
             {
-                imgui_kit::LogWindow::addLog(message.c_str());
+                imgui_kit::LogWindow::addLog(color, message.c_str());
             }
-
 
             void log(LogLevel level, const std::string& message, LogOutputMode mode)
             {
@@ -83,22 +83,29 @@ namespace dnf_composer
                 logger.log(message);
             }
 
-
-            std::string Logger::getLogLevelColorCode(LogLevel level)
+            std::string Logger::getLogLevelColorCodeCmd(LogLevel level)
             {
                 switch (level)
                 {
-                case DEBUG:
-                    return "\033[92m";   // Green
-                case INFO:
-                    return"\033[97m";   // White
-                case WARNING:
-                    return"\033[93m"; // Yellow
+                case DEBUG:     return "\033[92m"; // Green
+                case INFO:      return"\033[97m";  // White
+                case WARNING:   return"\033[93m";  // Yellow
                 case ERROR:
-                case FATAL:
-                    return"\033[91m"; // Red
-                default:
-                    return"";
+                case FATAL:     return"\033[91m";  // Red
+                default:        return "\033[97m"; // White
+                }
+            }
+
+            ImVec4 Logger::getLogLevelColorCodeGui(LogLevel level)
+            {
+                switch (level)
+                {
+                case DEBUG:     return imgui_kit::colours::Green;  // Green
+                case INFO:      return imgui_kit::colours::White;  // White
+                case WARNING:   return imgui_kit::colours::Yellow; // Yellow
+                case ERROR:
+                case FATAL:     return imgui_kit::colours::Red;    // Red
+                default:        return imgui_kit::colours::White;  // White
                 }
             }
 
@@ -106,12 +113,12 @@ namespace dnf_composer
             {
                 switch (level)
                 {
-                case DEBUG: return      "[DEBUG]   ";
-                case INFO: return       "[INFO]    ";
-                case WARNING: return    "[WARNING] ";
-                case ERROR: return      "[ERROR]   ";
-                case FATAL: return      "[FATAL]   ";
-                default: return "";
+                case DEBUG: return      "DEBUG   ";
+                case INFO: return       "INFO    ";
+                case WARNING: return    "WARNING ";
+                case ERROR: return      "ERROR   ";
+                case FATAL: return      "FATAL   ";
+                default: return         "UNKNOWN ";
                 }
             }
         }

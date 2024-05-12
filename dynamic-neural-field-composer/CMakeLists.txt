@@ -145,10 +145,10 @@ set(src
 # Define library target
 add_library(${CMAKE_PROJECT_NAME} ${header} ${src})
 target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC 
-     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> 
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    #$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> 
     $<INSTALL_INTERFACE:${DNF_COMPOSER_INC_INSTALL_DIR}> 
-    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include 
+    #PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include 
 )
 
 # Setup imgui
@@ -187,7 +187,7 @@ install(TARGETS ${CMAKE_PROJECT_NAME} EXPORT ${CMAKE_PROJECT_NAME}Targets
 
 ## Install the headers
 #install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-#        DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf-composer
+#        DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer
 #        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
 
 # Package version configuration
@@ -198,7 +198,7 @@ write_basic_package_version_file(${version_file}
     COMPATIBILITY AnyNewerVersion
 )
 
-# Install configuration-specific headers (debug/release)
+# Install the headers
 install(FILES ${simulation_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/simulation)
 install(FILES ${application_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/application)
 install(FILES ${elements_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/elements)
@@ -206,8 +206,6 @@ install(FILES ${tools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/tools
 install(FILES ${exceptions_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/exceptions)
 install(FILES ${user_interface_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/user_interface)
 install(FILES ${wizards_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/wizards)
-install(FILES ${resources_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/resources)
-
 
 install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CONFIG_INSTALL_DIR}
     FILE ${CMAKE_PROJECT_NAME}-config.cmake
