@@ -52,6 +52,7 @@ namespace dnf_composer
 
 		void setUniqueIdentifier(const std::string& id);
 
+		std::vector<std::shared_ptr<element::Element>> getElements() const;
 		std::string getUniqueIdentifier() const;
 		std::shared_ptr<element::Element> getElement(const std::string& id) const;
 		std::shared_ptr<element::Element> getElement(int index) const;

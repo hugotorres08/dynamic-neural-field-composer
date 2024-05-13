@@ -358,5 +358,10 @@ namespace dnf_composer
 
 	}
 
+	std::vector<std::shared_ptr<element::Element>> Simulation::getElements() const
+	{
+		return elements;
+	}
+
 }
 
