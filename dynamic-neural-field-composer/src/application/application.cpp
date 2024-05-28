@@ -12,7 +12,7 @@ namespace dnf_composer
 	{
 		using namespace imgui_kit;
 		const WindowParameters winParams{ "Dynamic Neural Field Composer" };
-		const FontParameters fontParams{ std::string(PROJECT_DIR) + "/resources/fonts/Lexend-Light.ttf", 22 };
+		const FontParameters fontParams{ std::string(PROJECT_DIR) + "/resources/fonts/Lexend-Light.ttf", 18 };
 		const StyleParameters styleParams{ ImVec4(0.3f, 0.3f, 0.3f, 0.6f), colours::White };
 		const IconParameters iconParams{ std::string(PROJECT_DIR) + "/resources/icons/icon.ico" };
 		const BackgroundImageParameters bgParams{ std::string(PROJECT_DIR) + "/resources/images/background.png", 0.4};
@@ -21,7 +21,8 @@ namespace dnf_composer
 
 	ApplicationParameters::ApplicationParameters(imgui_kit::UserInterfaceParameters userInterfaceParameters)
 		:uiParameters(std::move(userInterfaceParameters)), uiActive(true)
-	{}
+	{
+	}
 
 	Application::Application(const std::shared_ptr<Simulation>& simulation, bool activateUserInterface)
 		:simulation(simulation)
