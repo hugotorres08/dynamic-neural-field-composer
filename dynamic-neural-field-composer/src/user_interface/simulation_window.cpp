@@ -30,17 +30,17 @@ namespace dnf_composer
 
 		void SimulationWindow::renderStartSimulationButton() const
 		{
-			if (ImGui::Button("Start simulation", { 200.00f, 35.00f }))
+			if (ImGui::Button("Start simulation"))
 				simulation->init();
 
 			ImGui::SameLine();
 
-			if (ImGui::Button("Pause simulation", { 200.00f, 35.00f }))
+			if (ImGui::Button("Pause simulation"))
 				simulation->pause();
 
 			ImGui::SameLine();
 
-			if (ImGui::Button("Resume simulation", { 200.00f, 35.00f }))
+			if (ImGui::Button("Resume simulation"))
 				simulation->resume();
 		}
 
