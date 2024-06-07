@@ -21,7 +21,8 @@ namespace dnf_composer
 
 	ApplicationParameters::ApplicationParameters(imgui_kit::UserInterfaceParameters userInterfaceParameters)
 		:uiParameters(std::move(userInterfaceParameters)), uiActive(true)
-	{}
+	{
+	}
 
 	Application::Application(const std::shared_ptr<Simulation>& simulation, bool activateUserInterface)
 		:simulation(simulation)
