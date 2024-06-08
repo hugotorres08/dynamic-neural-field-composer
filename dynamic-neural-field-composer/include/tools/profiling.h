@@ -3,6 +3,7 @@
 #include <chrono>
 #include <string>
 #include <iostream>
+#include <mutex>
 
 namespace dnf_composer
 {
@@ -23,12 +24,14 @@ namespace dnf_composer
 			class Timer
 			{
 			public:
-				Timer(std::string sig = "something that takes time");
+				Timer(std::string signature = "something that takes time", std::ostream& outStream = std::cout);
 				~Timer();
 			private:
 				void stop() const;
+			private:
 				std::chrono::time_point<std::chrono::high_resolution_clock> startTimepoint;
-				std::string sig;
+				std::string signature;
+				std::ostream& outStream;
 			};
 		}
 	}

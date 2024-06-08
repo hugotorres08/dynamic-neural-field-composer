@@ -11,10 +11,11 @@ namespace dnf_composer
 	{
 		namespace profiling
 		{
-			Timer::Timer(std::string sig)
-				: startTimepoint(std::chrono::high_resolution_clock::now()), sig(std::move(sig))
-			{
-			}
+			Timer::Timer(std::string signature, std::ostream& outStream)
+				: startTimepoint(std::chrono::high_resolution_clock::now()),
+					signature(std::move(signature)),
+					outStream(outStream)
+			{}
 
 			Timer::~Timer()
 			{
@@ -27,7 +28,10 @@ namespace dnf_composer
 				const auto start = std::chrono::time_point_cast<std::chrono::microseconds>(startTimepoint).time_since_epoch();
 				const auto end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch();
 				const auto duration = end - start;
-				std::cout << "Signature: " << sig << " Duration: " << duration << std::endl;
+				outStream << "Signature: " << signature
+					<< " Duration (us): " << duration
+				    //<< " Duration (ms): " << static_cast<double>(duration.count()) * 0.001
+					<< std::endl;
 			}
 		}
 	}

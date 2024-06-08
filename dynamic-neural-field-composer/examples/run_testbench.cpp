@@ -84,35 +84,60 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		// After defining the simulation, we can create the application.
-		const auto simulation = getExperimentSimulation();
-		const dnf_composer::Application app{ simulation };
+		using namespace dnf_composer;
+		const auto simulation = std::make_shared<Simulation>("test sim", 25, 0, 0);
+		tools::logger::Logger::setMinLogLevel(tools::logger::LogLevel::DEBUG);
 
-		// After creating the application, we can add the windows we want to display.
-		app.addWindow<imgui_kit::LogWindow>();
-		app.addWindow<dnf_composer::user_interface::SimulationWindow>();
-		app.addWindow<dnf_composer::user_interface::ElementWindow>();
+		std::ofstream logFile(std::string(OUTPUT_DIRECTORY) + "/profilling/simulation-setup-with-logs.txt");
 
-		// To add plots with data already loaded you need to use a Visualization object.
-		dnf_composer::user_interface::PlotParameters plotParameters;
-		plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
-		plotParameters.dimensions = { 0, fieldDimensions.x_max, -15, 14, fieldDimensions.d_x };
-		auto visualization = createVisualization(simulation);
-		visualization->addPlottingData("neural field 1", "activation");
-		visualization->addPlottingData("neural field 2", "activation");
-		visualization->addPlottingData("neural field 3", "activation");
-
-		app.addWindow<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters);
-
-		app.init();
-		
-		bool userRequestClose = false;
-		while (!userRequestClose)
+		if (!logFile.is_open())
 		{
-			app.step();
-			userRequestClose = app.hasUIBeenClosed();
+			std::cerr << "Failed to open log file!" << std::endl;
+			return 1;
 		}
-		app.close();
+
+		for (int i = 0; i < 1000; i++)
+		{
+			tools::profiling::Timer timer{"Simulation setup with logs", logFile};
+			const element::NeuralField field{ { "field", fieldDimensions}, {25, -10, element::HeavisideFunction{0}} };
+			const element::GaussStimulus stimulus{ { "stimulus", fieldDimensions }, {5, 10, 50} };
+			simulation->addElement(std::make_shared<element::NeuralField>(field));
+			simulation->addElement(std::make_shared<element::GaussStimulus>(stimulus));
+			simulation->createInteraction("stimulus", "output", "field");
+			simulation->step();
+			simulation->removeElement("field");
+			simulation->removeElement("stimulus");
+		}
+
+		//// After defining the simulation, we can create the application.
+		//const auto simulation = getExperimentSimulation();
+		//const dnf_composer::Application app{ simulation };
+
+		//// After creating the application, we can add the windows we want to display.
+		//app.addWindow<imgui_kit::LogWindow>();
+		//app.addWindow<dnf_composer::user_interface::SimulationWindow>();
+		//app.addWindow<dnf_composer::user_interface::ElementWindow>();
+
+		//// To add plots with data already loaded you need to use a Visualization object.
+		//dnf_composer::user_interface::PlotParameters plotParameters;
+		//plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
+		//plotParameters.dimensions = { 0, fieldDimensions.x_max, -15, 14, fieldDimensions.d_x };
+		//auto visualization = createVisualization(simulation);
+		//visualization->addPlottingData("neural field 1", "activation");
+		//visualization->addPlottingData("neural field 2", "activation");
+		//visualization->addPlottingData("neural field 3", "activation");
+
+		//app.addWindow<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters);
+
+		//app.init();
+		//
+		//bool userRequestClose = false;
+		//while (!userRequestClose)
+		//{
+		//	app.step();
+		//	userRequestClose = app.hasUIBeenClosed();
+		//}
+		//app.close();
 		return 0;
 	}
 	catch (const dnf_composer::Exception& ex)
