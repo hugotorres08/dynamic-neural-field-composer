@@ -1,4 +1,4 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
+ // This is a personal academic project. Dear PVS-Studio, please check it.
 
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
@@ -85,30 +85,58 @@ int main(int argc, char* argv[])
 	try
 	{
 		using namespace dnf_composer;
-		const auto simulation = std::make_shared<Simulation>("test sim", 25, 0, 0);
+		const auto simulation = std::make_shared<Simulation>("test sim", 5, 0, 0);
 		tools::logger::Logger::setMinLogLevel(tools::logger::LogLevel::DEBUG);
 
-		std::ofstream logFile(std::string(OUTPUT_DIRECTORY) + "/profiling/simulation-setup-with-logs.txt");
 
-		if (!logFile.is_open())
-		{
-			std::cerr << "Failed to open log file!" << std::endl;
-			return 1;
-		}
+		const element::NeuralField field{ { "field", fieldDimensions}, {25, -10, element::HeavisideFunction{0}} };
+		const element::GaussStimulus stimulus{ { "stimulus", fieldDimensions }, {5, 25, 50} };
 
-		for (int i = 0; i < 1000; i++)
+		simulation->addElement(std::make_shared<element::NeuralField>(field));
+		simulation->addElement(std::make_shared<element::GaussStimulus>(stimulus));
+		simulation->createInteraction("stimulus", "output", "field");
+
+		simulation->init();
+		double highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
+		std::cout << "Highest activation: " << highestActivation << std::endl;
+		simulation->run(10);
+		highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
+		std::cout << "Highest activation: " << highestActivation << std::endl;
+		simulation->close();
+		simulation->init();
+		highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
+		std::cout << "Highest activation: " << highestActivation << std::endl;
+		std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->setThresholdForStability(0.0001);
+		uint16_t steps = 0;
+		do
 		{
-			tools::profiling::Timer timer{"Simulation setup with logs", logFile};
-			const element::NeuralField field{ { "field", fieldDimensions}, {25, -10, element::HeavisideFunction{0}} };
-			const element::GaussStimulus stimulus{ { "stimulus", fieldDimensions }, {5, 10, 50} };
-			simulation->addElement(std::make_shared<element::NeuralField>(field));
-			simulation->addElement(std::make_shared<element::GaussStimulus>(stimulus));
-			simulation->createInteraction("stimulus", "output", "field");
+			steps++;
 			simulation->step();
-			simulation->close();
-			simulation->removeElement("field");
-			simulation->removeElement("stimulus");
-		}
+		} while (!std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->isStable());
+		highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
+		std::cout << "Highest activation: " << highestActivation << " in " << steps << " steps." << std::endl;
+
+		//std::ofstream logFile(std::string(OUTPUT_DIRECTORY) + "/profiling/simulation-setup-with-logs.txt");
+
+		//if (!logFile.is_open())
+		//{
+		//	std::cerr << "Failed to open log file!" << std::endl;
+		//	return 1;
+		//}
+
+		//for (int i = 0; i < 1000; i++)
+		//{
+		//	tools::profiling::Timer timer{"Simulation setup with logs", logFile};
+		//	const element::NeuralField field{ { "field", fieldDimensions}, {25, -10, element::HeavisideFunction{0}} };
+		//	const element::GaussStimulus stimulus{ { "stimulus", fieldDimensions }, {5, 10, 50} };
+		//	simulation->addElement(std::make_shared<element::NeuralField>(field));
+		//	simulation->addElement(std::make_shared<element::GaussStimulus>(stimulus));
+		//	simulation->createInteraction("stimulus", "output", "field");
+		//	simulation->step();
+		//	simulation->close();
+		//	simulation->removeElement("field");
+		//	simulation->removeElement("stimulus");
+		//}
 
 		//// After defining the simulation, we can create the application.
 		//const auto simulation = getExperimentSimulation();

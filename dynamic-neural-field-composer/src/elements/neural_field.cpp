@@ -162,25 +162,24 @@ namespace dnf_composer
 		void NeuralField::updateState()
 		{
 			calculateCentroid();
-			checkStability();
 			updateMinMaxActivation();
 			updateBumps();
+			checkStability();
 		}
 
 		void NeuralField::checkStability()
 		{
-			static constexpr double threshold = 0.15; //ideally this threshold should be a calculation?
 			const double currentActivationSum = tools::math::calculateVectorSum(components["activation"]);
 			const double currentActivationAvg = tools::math::calculateVectorAvg(components["activation"]);
 			const double currentActivationNorm = tools::math::calculateVectorNorm(components["activation"]);
 
 			// this function is done like this, instead of comparing to a previously saved vector of activation,
 			// because it is simply faster and takes up less memory.
-			if (std::abs(currentActivationSum - state.prevActivationSum) < threshold)
+			if (std::abs(currentActivationSum - state.prevActivationSum) < state.thresholdForStability)
 			{
-				if (std::abs(currentActivationAvg - state.prevActivationAvg) < threshold)
+				if (std::abs(currentActivationAvg - state.prevActivationAvg) < state.thresholdForStability)
 				{
-					if(std::abs(currentActivationNorm - state.prevActivationNorm) < threshold)
+					if(std::abs(currentActivationNorm - state.prevActivationNorm) < state.thresholdForStability)
 					{
 						state.prevActivationSum = currentActivationSum;
 						state.prevActivationAvg = currentActivationAvg;
@@ -195,6 +194,14 @@ namespace dnf_composer
 			state.prevActivationAvg = currentActivationAvg;
 			state.prevActivationNorm = currentActivationNorm;
 			state.stable = false;
+
+			// also valid and simpler approach
+			/*static double previousHighestActivation = 0.0;
+			if (std::fabs(state.highestActivation - previousHighestActivation) < state.thresholdForStability)
+				state.stable = true;
+			else
+				state.stable = false;
+			previousHighestActivation = state.highestActivation;*/
 		}
 
 		void NeuralField::updateMinMaxActivation()

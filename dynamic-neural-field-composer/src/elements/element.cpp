@@ -24,8 +24,10 @@ namespace dnf_composer
 
 		void Element::close()
 		{
-			components.clear();
+			/*components.clear();
 			inputs.clear();
+			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size);
+			components["input"] = std::vector<double>(commonParameters.dimensionParameters.size);*/
 		}
 
 		void Element::addInput(const std::shared_ptr<Element>& inputElement, const std::string& inputComponent)

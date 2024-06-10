@@ -88,12 +88,14 @@ namespace dnf_composer
 			bool selfSustained;
 			double lowestActivation;
 			double highestActivation;
+			double thresholdForStability;
 
 			NeuralFieldState()
 				:centroid(0.0), prevActivationSum(0.0), prevActivationAvg(0.0),
 					prevActivationNorm(0.0), stable(false), bumps({}),
 					selfStabilized(false), selfSustained(false),
-					lowestActivation(0.0), highestActivation(0.0)
+					lowestActivation(0.0), highestActivation(0.0),
+					thresholdForStability(0.0)
 			{}
 		};
 
@@ -110,7 +112,7 @@ namespace dnf_composer
 			void printParameters() override;
 			std::shared_ptr<Element> clone() const override;
 
-
+			void setThresholdForStability(double threshold) { state.thresholdForStability = threshold; }
 			void setParameters(const NeuralFieldParameters& parameters);
 			NeuralFieldParameters getParameters() const;
 		    double getCentroid() const;
