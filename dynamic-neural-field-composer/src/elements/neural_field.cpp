@@ -20,8 +20,8 @@ namespace dnf_composer
 
 		void NeuralField::init()
 		{
-			std::ranges::fill(components["activation"], parameters.startingRestingLevel);
-			std::ranges::fill(components["input"], 0.0);
+			//std::ranges::fill(components["activation"], parameters.startingRestingLevel);
+			//std::ranges::fill(components["input"], 0.0);
 			std::ranges::fill(components["resting level"], parameters.startingRestingLevel);
 			calculateOutput();
 		}
@@ -37,7 +37,7 @@ namespace dnf_composer
 		void NeuralField::setParameters(const NeuralFieldParameters& neuralFieldParameters)
 		{
 			parameters = neuralFieldParameters;
-			updateParameters();
+			init();
 		}
 
 		NeuralFieldParameters NeuralField::getParameters() const
@@ -195,12 +195,6 @@ namespace dnf_composer
 			state.prevActivationAvg = currentActivationAvg;
 			state.prevActivationNorm = currentActivationNorm;
 			state.stable = false;
-		}
-
-		void NeuralField::updateParameters()
-		{
-			std::ranges::fill(components["resting level"], parameters.startingRestingLevel);
-			calculateOutput();
 		}
 
 		void NeuralField::updateMinMaxActivation()

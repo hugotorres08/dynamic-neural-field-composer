@@ -6,6 +6,7 @@
 #include <memory>
 #include <ranges>
 #include <algorithm>
+#include <numeric>
 
 #include "exceptions/exception.h"
 #include "tools/logger.h"

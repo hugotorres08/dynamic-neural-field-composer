@@ -80,9 +80,8 @@ namespace dnf_composer
 			}
 		}
 
-		void ElementWindow::modifyElementNeuralField(const std::shared_ptr<element::Element>& element) 
+		void ElementWindow::modifyElementNeuralField(const std::shared_ptr<element::Element>& element)
 		{
-
 			const auto neuralField = std::dynamic_pointer_cast<element::NeuralField>(element);
 			element::NeuralFieldParameters nfp = neuralField->getParameters();
 
@@ -92,9 +91,12 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &restingLevel, -30, 0);
 			ImGui::SameLine(); ImGui::Text("Resting level");
 
-			nfp.startingRestingLevel = restingLevel;
-
-			neuralField->setParameters(nfp);
+			static constexpr double epsilon = 1e-6;
+			if (std::abs(restingLevel - static_cast<float>(nfp.startingRestingLevel)) > epsilon) 
+			{
+				nfp.startingRestingLevel = restingLevel;
+				neuralField->setParameters(nfp);
+			}
 		}
 
 		void ElementWindow::modifyElementGaussStimulus(const std::shared_ptr<element::Element>& element) 
@@ -119,12 +121,16 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &position, 0, static_cast<float>(stimulus->getElementCommonParameters().dimensionParameters.x_max));
 			ImGui::SameLine(); ImGui::Text("Position");
 
-			gsp.amplitude = amplitude;
-			gsp.width = width;
-			gsp.position = position;
-
-			stimulus->setParameters(gsp);
-
+			static constexpr double epsilon = 1e-6;
+			if (std::abs(amplitude - static_cast<float>(gsp.amplitude)) > epsilon ||
+				std::abs(width - static_cast<float>(gsp.width)) > epsilon ||
+				std::abs(position - static_cast<float>(gsp.position)) > epsilon)
+			{
+				gsp.amplitude = amplitude;
+				gsp.width = width;
+				gsp.position = position;
+				stimulus->setParameters(gsp);
+			}
 		}
 
 		void ElementWindow::modifyElementFieldCoupling(const std::shared_ptr<element::Element>& element) 
@@ -138,9 +144,13 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &scalar, 0, 2);
 			ImGui::SameLine(); ImGui::Text("Scalar");
 
-			fcp.scalar = scalar;
+			static constexpr double epsilon = 1e-6;
+			if (std::abs(scalar - static_cast<float>(fcp.scalar)) > epsilon)
+			{
+				fcp.scalar = scalar;
+				fieldCoupling->setParameters(fcp);
+			}
 
-			fieldCoupling->setParameters(fcp);
 		}
 
 		void ElementWindow::modifyElementGaussKernel(const std::shared_ptr<element::Element>& element) 
@@ -159,10 +169,14 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &width, 0, 30);
 			ImGui::SameLine(); ImGui::Text("Width");
 
-			gkp.amplitude = amplitude;
-			gkp.width = width;
-
-			kernel->setParameters(gkp);
+			static constexpr double epsilon = 1e-6;
+			if (std::abs(amplitude - static_cast<float>(gkp.amplitude)) > epsilon ||
+				std::abs(width - static_cast<float>(gkp.width)) > epsilon)
+			{
+				gkp.amplitude = amplitude;
+				gkp.width = width;
+				kernel->setParameters(gkp);
+			}
 		}
 
 		void ElementWindow::modifyElementMexicanHatKernel(const std::shared_ptr<element::Element>& element) 
@@ -191,12 +205,19 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &widthInh, 0, 30);
 			ImGui::SameLine(); ImGui::Text("Width inh.");
 
-			mhkp.amplitudeExc = amplitudeExc;
-			mhkp.widthExc = widthExc;
-			mhkp.amplitudeInh = amplitudeInh;
-			mhkp.widthInh = widthInh;
+			static constexpr double epsilon = 1e-6;
+			if(std::abs(amplitudeExc - static_cast<float>(mhkp.amplitudeExc)) > epsilon ||
+				std::abs(widthExc - static_cast<float>(mhkp.widthExc)) > epsilon ||
+				std::abs(amplitudeInh - static_cast<float>(mhkp.amplitudeInh)) > epsilon ||
+				std::abs(widthInh - static_cast<float>(mhkp.widthInh)) > epsilon)
+			{
+				mhkp.amplitudeExc = amplitudeExc;
+				mhkp.widthExc = widthExc;
+				mhkp.amplitudeInh = amplitudeInh;
+				mhkp.widthInh = widthInh;
 
-			kernel->setParameters(mhkp);
+				kernel->setParameters(mhkp);
+			}
 		}
 
 		void ElementWindow::modifyElementNormalNoise(const std::shared_ptr<element::Element>& element) 
@@ -210,9 +231,12 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &amplitude, 0, 5);
 			ImGui::SameLine(); ImGui::Text("Amplitude");
 
-			nnp.amplitude = amplitude;
-
-			normalNoise->setParameters(nnp);
+			static constexpr double epsilon = 1e-6;
+			if (std::abs(amplitude - static_cast<float>(nnp.amplitude)) > epsilon)
+			{
+				nnp.amplitude = amplitude;
+				normalNoise->setParameters(nnp);
+			}
 		}
 
 		void ElementWindow::modifyElementGaussFieldCoupling(const std::shared_ptr<element::Element>& element)
@@ -268,13 +292,21 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -5.0, 0.0);
 			ImGui::SameLine(); ImGui::Text("Amplitude global");
 
-			lip.amplitudeExc = amplitudeExc;
-			lip.widthExc = widthExc;
-			lip.amplitudeInh = amplitudeInh;
-			lip.widthInh = widthInh;
-			lip.amplitudeGlobal = amplitudeGlobal;
+			static constexpr double epsilon = 1e-6;
+			if (std::abs(amplitudeExc - static_cast<float>(lip.amplitudeExc)) > epsilon ||
+				std::abs(widthExc - static_cast<float>(lip.widthExc)) > epsilon ||
+				std::abs(amplitudeInh - static_cast<float>(lip.amplitudeInh)) > epsilon ||
+				std::abs(widthInh - static_cast<float>(lip.widthInh)) > epsilon ||
+				std::abs(amplitudeGlobal - static_cast<float>(lip.amplitudeGlobal)) > epsilon)
+			{
+				lip.amplitudeExc = amplitudeExc;
+				lip.widthExc = widthExc;
+				lip.amplitudeInh = amplitudeInh;
+				lip.widthInh = widthInh;
+				lip.amplitudeGlobal = amplitudeGlobal;
 
-			kernel->setParameters(lip);
+				kernel->setParameters(lip);
+			}
 		}
 	}
 

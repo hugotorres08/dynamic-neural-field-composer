@@ -103,17 +103,12 @@ namespace dnf_composer
 		void LateralInteractions::setParameters(const LateralInteractionsParameters& li_parameters)
 		{
 			parameters = li_parameters;
-			updateParameters();
+			init();
 		}
 
 		LateralInteractionsParameters LateralInteractions::getParameters() const
 		{
 			return parameters;
-		}
-
-		void LateralInteractions::updateParameters()
-		{
-			init();
 		}
 	}
 }
