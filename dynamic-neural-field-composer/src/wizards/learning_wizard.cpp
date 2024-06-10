@@ -36,18 +36,18 @@ namespace dnf_composer
 
     void LearningWizard::simulateAssociation()
     {
-        constexpr int timeSteps = 25; // this value is hardcoded and depends on the fields timescale...
+        static constexpr int timeSteps = 25; // this value is hardcoded and depends on the fields timescale...
 
         for (int i = 0; i < static_cast<int>(targetPeakLocationsForNeuralFieldPre.size()); i++)
         {
             // Create Gaussian stimuli in the input field
-            for (int j = 0; j < static_cast<int>(targetPeakLocationsForNeuralFieldPre[i].size()); j++)
+            for (int j = 0; j < targetPeakLocationsForNeuralFieldPre[i].size(); j++)
             {
                 auto kernel = std::dynamic_pointer_cast<dnf_composer::element::GaussKernel>(simulation->getElement("per - per"));
-                auto kernel_width = kernel->getParameters().sigma;
+                auto kernel_width = kernel->getParameters().width;
                 auto kernel_amplitude = kernel->getParameters().amplitude;
                 gaussStimulusParameters.amplitude = kernel_amplitude;
-                gaussStimulusParameters.sigma = kernel_width;
+                gaussStimulusParameters.width = kernel_width;
 
                 const std::string stimulusName = "Input Gaussian Stimulus " + std::to_string(i + 1) + std::to_string(j + 1);
                 const element::ElementIdentifiers stimulusIdentifiers{ stimulusName };
@@ -68,13 +68,13 @@ namespace dnf_composer
             }
 
             // Create Gaussian stimuli in the output field
-            for (int j = 0; j < targetPeakLocationsForNeuralFieldPost[i].size(); j++)
+            for (size_t j = 0; j < targetPeakLocationsForNeuralFieldPost[i].size(); j++)
             {
                 auto kernel = std::dynamic_pointer_cast<dnf_composer::element::GaussKernel>(simulation->getElement("out - out"));
-                auto kernel_width = kernel->getParameters().sigma;
+                auto kernel_width = kernel->getParameters().width;
                 auto kernel_amplitude = kernel->getParameters().amplitude;
                 gaussStimulusParameters.amplitude = kernel_amplitude;
-                gaussStimulusParameters.sigma = kernel_width;
+                gaussStimulusParameters.width = kernel_width;
 
                 const std::string stimulusName = "Output Gaussian Stimulus " + std::to_string(i + 1) + std::to_string(j + 1);
                 const element::ElementIdentifiers stimulusIdentifiers{ stimulusName };
@@ -96,7 +96,7 @@ namespace dnf_composer
             }
 
             // Remove gaussian stimuli from the input field
-            for (int j = 0; j < targetPeakLocationsForNeuralFieldPre[i].size(); j++)
+            for (size_t j = 0; j < targetPeakLocationsForNeuralFieldPre[i].size(); j++)
             {
                 std::string stimulusName = "Input Gaussian Stimulus " + std::to_string(i + 1) + std::to_string(j + 1);
                 simulation->removeElement(stimulusName);
@@ -119,7 +119,7 @@ namespace dnf_composer
             saveFieldActivation(output, pathToFieldActivationPost);
 
             // Remove gaussian stimuli from the output field
-            for (int j = 0; j < targetPeakLocationsForNeuralFieldPost[i].size(); j++)
+            for (size_t j = 0; j < targetPeakLocationsForNeuralFieldPost[i].size(); j++)
             {
                 std::string stimulusName = "Output Gaussian Stimulus " + std::to_string(i + 1) + std::to_string(j + 1);
                 simulation->removeElement(stimulusName);

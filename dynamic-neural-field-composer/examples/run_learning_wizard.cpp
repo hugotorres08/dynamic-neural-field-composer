@@ -35,13 +35,13 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	// create interactions and add them to the simulation
 	dnf_composer::element::GaussKernelParameters gkp1;
 	gkp1.amplitude = 10;  
-	gkp1.sigma = 5;
+	gkp1.width = 5;
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_per_per(new dnf_composer::element::GaussKernel({ "per - per", perceptualFieldSpatialDimensionParameters}, gkp1));
 	simulation->addElement(k_per_per);
 
 	dnf_composer::element::GaussKernelParameters gkp2;
 	gkp2.amplitude = 5;  
-	gkp2.sigma = 3;
+	gkp2.width = 3;
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_out_out(new dnf_composer::element::GaussKernel({ "out - out", outputFieldSpatialDimensionParameters }, gkp2)); // self-excitation v-v
 	simulation->addElement(k_out_out);
 

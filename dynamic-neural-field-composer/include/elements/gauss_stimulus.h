@@ -13,13 +13,13 @@ namespace dnf_composer
 		struct GaussStimulusParameters : ElementSpecificParameters
 		{
 
-			GaussStimulusParameters(double sigma = 5.0, double amplitude = 15.0, 
+			GaussStimulusParameters(double width = 5.0, double amplitude = 15.0, 
 				double position = 0.0, bool circular = true, bool normalized = false)
-				: sigma(sigma), amplitude(amplitude), position(position),
+				: width(width), amplitude(amplitude), position(position),
 					circular(circular), normalized(normalized)
 			{}
 
-			double sigma;
+			double width;
 			double amplitude;
 			double position;
 			bool circular;
@@ -29,7 +29,7 @@ namespace dnf_composer
 			{
 				constexpr double epsilon = 1e-6;
 
-				return std::abs(sigma - other.sigma) < epsilon &&
+				return std::abs(width - other.width) < epsilon &&
 					std::abs(position - other.position) < epsilon &&
 					std::abs(amplitude - other.amplitude) < epsilon &&
 					circular == other.circular &&

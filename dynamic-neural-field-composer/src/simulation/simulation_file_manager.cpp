@@ -134,7 +134,7 @@ namespace dnf_composer
         {
             const auto kernel = std::dynamic_pointer_cast<element::GaussKernel>(element);
             const auto kernelParameters = kernel->getParameters();
-            elementJson["sigma"] = kernelParameters.sigma;
+            elementJson["width"] = kernelParameters.width;
             elementJson["amplitude"] = kernelParameters.amplitude;
         }
         break;
@@ -142,9 +142,9 @@ namespace dnf_composer
         {
             const auto kernel = std::dynamic_pointer_cast<element::MexicanHatKernel>(element);
             const auto kernelParameters = kernel->getParameters();
-            elementJson["sigmaExc"] = kernelParameters.sigmaExc;
+            elementJson["widthExc"] = kernelParameters.widthExc;
             elementJson["amplitudeExc"] = kernelParameters.amplitudeExc;
-            elementJson["sigmaInh"] = kernelParameters.sigmaInh;
+            elementJson["widthInh"] = kernelParameters.widthInh;
             elementJson["amplitudeInh"] = kernelParameters.amplitudeInh;
         }
         break;
@@ -152,9 +152,9 @@ namespace dnf_composer
         {
             const auto kernel = std::dynamic_pointer_cast<element::LateralInteractions>(element);
             const auto kernelParameters = kernel->getParameters();
-            elementJson["sigmaExc"] = kernelParameters.sigmaExc;
+            elementJson["widthExc"] = kernelParameters.widthExc;
             elementJson["amplitudeExc"] = kernelParameters.amplitudeExc;
-            elementJson["sigmaInh"] = kernelParameters.sigmaInh;
+            elementJson["widthInh"] = kernelParameters.widthInh;
             elementJson["amplitudeInh"] = kernelParameters.amplitudeInh;
             elementJson["amplitudeGlobal"] = kernelParameters.amplitudeGlobal;
         }
@@ -174,7 +174,7 @@ namespace dnf_composer
             elementJson["circular"] = gaussStimulusParameters.circular;
             elementJson["normalized"] = gaussStimulusParameters.normalized;
             elementJson["position"] = gaussStimulusParameters.position;
-            elementJson["sigma"] = gaussStimulusParameters.sigma;
+            elementJson["width"] = gaussStimulusParameters.width;
         }
         break;
         case element::FIELD_COUPLING:
@@ -255,11 +255,11 @@ namespace dnf_composer
 	        case element::GAUSS_KERNEL:
             {
                 const double amplitude = elementJson["amplitude"];
-                const double sigma = elementJson["sigma"];
+                const double width = elementJson["width"];
 
                 auto kernel = std::make_shared<element::GaussKernel>(
                     element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::GaussKernelParameters(sigma, amplitude)
+                    element::GaussKernelParameters(width, amplitude)
                 );
                 simulation->addElement(kernel);
             }
@@ -267,13 +267,13 @@ namespace dnf_composer
 	        case element::MEXICAN_HAT_KERNEL:
             {
                 const double amplitudeExc = elementJson["amplitudeExc"];
-                const double sigmaExc = elementJson["sigmaExc"];
+                const double widthExc = elementJson["widthExc"];
                 const double amplitudeInh = elementJson["amplitudeInh"];
-                const double sigmaInh = elementJson["sigmaInh"];
+                const double widthInh = elementJson["widthInh"];
 
                 auto kernel = std::make_shared<element::MexicanHatKernel>(
                     element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::MexicanHatKernelParameters(sigmaExc, amplitudeExc, sigmaInh, amplitudeInh)
+                    element::MexicanHatKernelParameters(widthExc, amplitudeExc, widthInh, amplitudeInh)
                 );
                 simulation->addElement(kernel);
             }
@@ -281,14 +281,14 @@ namespace dnf_composer
             case element::LATERAL_INTERACTIONS:
             {
                 const double amplitudeExc = elementJson["amplitudeExc"];
-                const double sigmaExc = elementJson["sigmaExc"];
+                const double widthExc = elementJson["widthExc"];
                 const double amplitudeInh = elementJson["amplitudeInh"];
-                const double sigmaInh = elementJson["sigmaInh"];
+                const double widthInh = elementJson["widthInh"];
                 const double amplitudeGlobal = elementJson["amplitudeGlobal"];
 
                 auto kernel = std::make_shared<element::LateralInteractions>(
                     element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::LateralInteractionsParameters(sigmaExc, amplitudeExc, sigmaInh, amplitudeInh, amplitudeGlobal)
+                    element::LateralInteractionsParameters(widthExc, amplitudeExc, widthInh, amplitudeInh, amplitudeGlobal)
                 );
                 simulation->addElement(kernel);
             }
@@ -296,14 +296,14 @@ namespace dnf_composer
 	        case element::GAUSS_STIMULUS:
             {
                 const double amplitude = elementJson["amplitude"];
-                const double sigma = elementJson["sigma"];
+                const double width = elementJson["width"];
                 const double position = elementJson["position"];
                 const bool circular = elementJson["circular"];
                 const bool normalized = elementJson["normalized"];
 
                 auto stimulus = std::make_shared<element::GaussStimulus>(
                     element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::GaussStimulusParameters(sigma, amplitude, position, circular, normalized)
+                    element::GaussStimulusParameters(width, amplitude, position, circular, normalized)
                 );
                 simulation->addElement(stimulus);
             }

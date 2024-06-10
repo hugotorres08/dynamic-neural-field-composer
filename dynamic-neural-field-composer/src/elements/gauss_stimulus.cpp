@@ -25,11 +25,11 @@ namespace dnf_composer
 
 			if (parameters.circular)
 				g = tools::math::circularGauss(commonParameters.dimensionParameters.size, 
-												parameters.sigma, 
+												parameters.width, 
 												parameters.position / commonParameters.dimensionParameters.d_x);
 			else
 				g = tools::math::gauss(commonParameters.dimensionParameters.size, 
-					parameters.sigma, parameters.position / commonParameters.dimensionParameters.d_x);
+					parameters.width, parameters.position / commonParameters.dimensionParameters.d_x);
 
 			if (!parameters.normalized)
 				for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
@@ -67,7 +67,7 @@ namespace dnf_composer
 
 			logStream << "Logging specific element parameters" << std::endl;
 			logStream << "Amplitude: " << parameters.amplitude << std::endl;
-			logStream << "Sigma: " << parameters.sigma << std::endl;
+			logStream << "Width: " << parameters.width << std::endl;
 			logStream << "Position: " << parameters.position << std::endl;
 			logStream << "Circular: " << parameters.circular << std::endl;
 			logStream << "Normalized: " << parameters.normalized;

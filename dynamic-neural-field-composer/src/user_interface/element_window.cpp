@@ -103,7 +103,7 @@ namespace dnf_composer
 			element::GaussStimulusParameters gsp = stimulus->getParameters();
 
 			auto amplitude = static_cast<float>(gsp.amplitude);
-			auto sigma = static_cast<float>(gsp.sigma);
+			auto width = static_cast<float>(gsp.width);
 			auto position = static_cast<float>(gsp.position);
 
 
@@ -111,16 +111,16 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &amplitude, 0, 30);
 			ImGui::SameLine(); ImGui::Text("Amplitude");
 
-			label = "##" + element->getUniqueName() + "Sigma";
-			ImGui::SliderFloat(label.c_str(), &sigma, 0, 30);
-			ImGui::SameLine(); ImGui::Text("Sigma");
+			label = "##" + element->getUniqueName() + "Width";
+			ImGui::SliderFloat(label.c_str(), &width, 0, 30);
+			ImGui::SameLine(); ImGui::Text("Width");
 
 			label = "##" + element->getUniqueName() + "Position";
 			ImGui::SliderFloat(label.c_str(), &position, 0, static_cast<float>(stimulus->getElementCommonParameters().dimensionParameters.x_max));
 			ImGui::SameLine(); ImGui::Text("Position");
 
 			gsp.amplitude = amplitude;
-			gsp.sigma = sigma;
+			gsp.width = width;
 			gsp.position = position;
 
 			stimulus->setParameters(gsp);
@@ -149,18 +149,18 @@ namespace dnf_composer
 			element::GaussKernelParameters gkp = kernel->getParameters();
 
 			auto amplitude = static_cast<float>(gkp.amplitude);
-			auto sigma = static_cast<float>(gkp.sigma);
+			auto width = static_cast<float>(gkp.width);
 
 			std::string label = "##" + element->getUniqueName() + "Amplitude.";
 			ImGui::SliderFloat(label.c_str(), &amplitude, 0, 100);
 			ImGui::SameLine(); ImGui::Text("Amplitude.");
 
-			label = "##" + element->getUniqueName() + "Sigma.";
-			ImGui::SliderFloat(label.c_str(), &sigma, 0, 30);
-			ImGui::SameLine(); ImGui::Text("Sigma");
+			label = "##" + element->getUniqueName() + "Width.";
+			ImGui::SliderFloat(label.c_str(), &width, 0, 30);
+			ImGui::SameLine(); ImGui::Text("Width");
 
 			gkp.amplitude = amplitude;
-			gkp.sigma = sigma;
+			gkp.width = width;
 
 			kernel->setParameters(gkp);
 		}
@@ -171,30 +171,30 @@ namespace dnf_composer
 			element::MexicanHatKernelParameters mhkp = kernel->getParameters();
 
 			auto amplitudeExc = static_cast<float>(mhkp.amplitudeExc);
-			auto sigmaExc = static_cast<float>(mhkp.sigmaExc);
+			auto widthExc = static_cast<float>(mhkp.widthExc);
 			auto amplitudeInh = static_cast<float>(mhkp.amplitudeInh);
-			auto sigmaInh = static_cast<float>(mhkp.sigmaInh);
+			auto widthInh = static_cast<float>(mhkp.widthInh);
 
 			std::string label = "##" + element->getUniqueName() + "Amplitude exc.";
 			ImGui::SliderFloat(label.c_str(), &amplitudeExc, 0, 100);
 			ImGui::SameLine(); ImGui::Text("Amplitude exc.");
 
-			label = "##" + element->getUniqueName() + "Sigma exc.";
-			ImGui::SliderFloat(label.c_str(), &sigmaExc, 0, 30);
-			ImGui::SameLine(); ImGui::Text("Sigma exc.");
+			label = "##" + element->getUniqueName() + "Width exc.";
+			ImGui::SliderFloat(label.c_str(), &widthExc, 0, 30);
+			ImGui::SameLine(); ImGui::Text("Width exc.");
 
 			label = "##" + element->getUniqueName() + "Amplitude inh.";
 			ImGui::SliderFloat(label.c_str(), &amplitudeInh, 0, 100);
 			ImGui::SameLine(); ImGui::Text("Amplitude inh.");
 
-			label = "##" + element->getUniqueName() + "Sigma inh.";
-			ImGui::SliderFloat(label.c_str(), &sigmaInh, 0, 30);
-			ImGui::SameLine(); ImGui::Text("Sigma inh.");
+			label = "##" + element->getUniqueName() + "Width inh.";
+			ImGui::SliderFloat(label.c_str(), &widthInh, 0, 30);
+			ImGui::SameLine(); ImGui::Text("Width inh.");
 
 			mhkp.amplitudeExc = amplitudeExc;
-			mhkp.sigmaExc = sigmaExc;
+			mhkp.widthExc = widthExc;
 			mhkp.amplitudeInh = amplitudeInh;
-			mhkp.sigmaInh = sigmaInh;
+			mhkp.widthInh = widthInh;
 
 			kernel->setParameters(mhkp);
 		}
@@ -243,35 +243,35 @@ namespace dnf_composer
 			element::LateralInteractionsParameters lip = kernel->getParameters();
 
 			auto amplitudeExc = static_cast<float>(lip.amplitudeExc);
-			auto sigmaExc = static_cast<float>(lip.sigmaExc);
+			auto widthExc = static_cast<float>(lip.widthExc);
 			auto amplitudeInh = static_cast<float>(lip.amplitudeInh);
-			auto sigmaInh = static_cast<float>(lip.sigmaInh);
+			auto widthInh = static_cast<float>(lip.widthInh);
 			auto amplitudeGlobal = static_cast<float>(lip.amplitudeGlobal);
 
 			std::string label = "##" + element->getUniqueName() + "Amplitude exc.";
 			ImGui::SliderFloat(label.c_str(), &amplitudeExc, 0, 100);
 			ImGui::SameLine(); ImGui::Text("Amplitude exc.");
 
-			label = "##" + element->getUniqueName() + "Sigma exc.";
-			ImGui::SliderFloat(label.c_str(), &sigmaExc, 0, 30);
-			ImGui::SameLine(); ImGui::Text("Sigma exc.");
+			label = "##" + element->getUniqueName() + "Width exc.";
+			ImGui::SliderFloat(label.c_str(), &widthExc, 0, 30);
+			ImGui::SameLine(); ImGui::Text("Width exc.");
 
 			label = "##" + element->getUniqueName() + "Amplitude inh.";
 			ImGui::SliderFloat(label.c_str(), &amplitudeInh, 0, 100);
 			ImGui::SameLine(); ImGui::Text("Amplitude inh.");
 
-			label = "##" + element->getUniqueName() + "Sigma inh.";
-			ImGui::SliderFloat(label.c_str(), &sigmaInh, 0, 30);
-			ImGui::SameLine(); ImGui::Text("Sigma inh.");
+			label = "##" + element->getUniqueName() + "Width inh.";
+			ImGui::SliderFloat(label.c_str(), &widthInh, 0, 30);
+			ImGui::SameLine(); ImGui::Text("Width inh.");
 
 			label = "##" + element->getUniqueName() + "Amplitude global";
 			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -5.0, 0.0);
 			ImGui::SameLine(); ImGui::Text("Amplitude global");
 
 			lip.amplitudeExc = amplitudeExc;
-			lip.sigmaExc = sigmaExc;
+			lip.widthExc = widthExc;
 			lip.amplitudeInh = amplitudeInh;
-			lip.sigmaInh = sigmaInh;
+			lip.widthInh = widthInh;
 			lip.amplitudeGlobal = amplitudeGlobal;
 
 			kernel->setParameters(lip);
