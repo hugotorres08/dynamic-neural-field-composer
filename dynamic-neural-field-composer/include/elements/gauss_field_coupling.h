@@ -16,7 +16,7 @@ namespace dnf_composer
 		struct GaussFieldCouplingParameters : ElementSpecificParameters
 		{
 			int inputFieldSize = 0;
-			double sigma = 0.0;
+			double width = 0.0;
 			std::vector<WeightedCoupling> couplings;
 
 			void addCoupling(const WeightedCoupling& coupling)
@@ -30,19 +30,17 @@ namespace dnf_composer
 		private:
 			GaussFieldCouplingParameters parameters;
 		public:
-			GaussFieldCoupling(const ElementCommonParameters& elementCommonParameters, const GaussFieldCouplingParameters& gfc_parameters);
+			GaussFieldCoupling(const ElementCommonParameters& elementCommonParameters, 
+				const GaussFieldCouplingParameters& gfc_parameters);
 
 			void addCoupling(const WeightedCoupling& coupling);
 
 			void init() override;
 			void step(double t, double deltaT) override;
-			void close() override;
 			void printParameters() override;
 			std::shared_ptr<Element> clone() const override;
 
 			GaussFieldCouplingParameters getParameters() const;
-
-			~GaussFieldCoupling() override = default;
 		private:
 			void updateOutput();
 		};

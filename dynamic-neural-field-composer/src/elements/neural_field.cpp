@@ -9,7 +9,8 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		NeuralField::NeuralField(const ElementCommonParameters& elementCommonParameters, const NeuralFieldParameters& parameters)
+		NeuralField::NeuralField(const ElementCommonParameters& elementCommonParameters, 
+			const NeuralFieldParameters& parameters)
 			: Element(elementCommonParameters), parameters(parameters)
 		{
 			commonParameters.identifiers.label = ElementLabel::NEURAL_FIELD;
@@ -31,10 +32,6 @@ namespace dnf_composer
 			calculateActivation(t, deltaT);
 			calculateOutput();
 			updateState();
-		}
-
-		void NeuralField::close()
-		{
 		}
 
 		void NeuralField::setParameters(const NeuralFieldParameters& neuralFieldParameters)
@@ -168,7 +165,6 @@ namespace dnf_composer
 			checkStability();
 			updateMinMaxActivation();
 			updateBumps();
-			//checkSelfStabilization();
 		}
 
 		void NeuralField::checkStability()
@@ -254,12 +250,11 @@ namespace dnf_composer
 
 			// If the last element ended in a bump
 			if (inBump)
-			{
 				state.bumps.push_back(currentBump);
-			}
 
 			// Check if the first and last bumps are connected (wrap-around)
-			if (!state.bumps.empty() && components["activation"].front() > activationThreshold && components["activation"].back() > activationThreshold)
+			if (!state.bumps.empty() && components["activation"].front() > 
+				activationThreshold && components["activation"].back() > activationThreshold)
 			{
 				// Get the first and the last bump
 				const auto& firstBump = state.bumps.front();
@@ -273,10 +268,12 @@ namespace dnf_composer
 					newBump.startPosition = lastBump.startPosition;
 					newBump.endPosition = firstBump.endPosition;
 					newBump.amplitude = std::max(firstBump.amplitude, lastBump.amplitude);
-					newBump.width = commonParameters.dimensionParameters.x_max -(newBump.startPosition - newBump.endPosition);
+					newBump.width = commonParameters.dimensionParameters.x_max - 
+						(newBump.startPosition - newBump.endPosition);
 					newBump.centroid = fmod(
-						((newBump.startPosition + newBump.endPosition + commonParameters.dimensionParameters.x_max) / 2.0), 
-						commonParameters.dimensionParameters.x_max);
+						((newBump.startPosition + newBump.endPosition + 
+							commonParameters.dimensionParameters.x_max) / 2.0), 
+							commonParameters.dimensionParameters.x_max);
 
 					// Remove the first and last bump
 					state.bumps.pop_back(); // remove last
@@ -288,50 +285,5 @@ namespace dnf_composer
 			}
 
 		}
-
-		//void NeuralField::checkSelfStabilization()
-		//{
-		//	// A self - stabilized dynamic field is one that can recover and maintain a stable state
-		//	// after perturbations or disturbances.It has the ability to resist external influences
-		//	// and return to a stable configuration.
-
-		//	const auto simulation = 
-		//		createSimulation("selfStabilizationCheck", 25.0, 0.0, 0.0);
-		//	const auto neuralFieldCopy = this->clone();
-		//	const auto selfExcitationKernelCopy = getSelfExcitationKernel();
-		//	simulation->addElement(neuralFieldCopy);
-		//	simulation->addElement(selfExcitationKernelCopy);
-		//	neuralFieldCopy->addInput(selfExcitationKernelCopy);
-		//	selfExcitationKernelCopy->addInput(neuralFieldCopy);
-		//	GaussStimulusParameters gsp{ 5, 20, static_cast<double>(commonParameters.dimensionParameters.x_max) / 2};
-		//	ElementCommonParameters ecpgs{ "gaussianStimulus",  commonParameters.dimensionParameters };
-		//	const auto gaussianStimulus = std::make_shared<GaussStimulus>(ecpgs, gsp);
-		//	simulation->addElement(gaussianStimulus);
-		//	neuralFieldCopy->addInput(gaussianStimulus);
-
-		//	simulation->init();
-		//	static constexpr int simulationTime = 1000;
-		//	for (int i = 0; i < simulationTime; i++)
-		//		simulation->step();
-		//	const double prePerturbationCentroid = std::dynamic_pointer_cast<NeuralField>(neuralFieldCopy)->getCentroid();
-		//	simulation->close();
-
-		//	ElementCommonParameters ecpn{ "normalNoise", commonParameters.dimensionParameters };
-		//	const auto noise = std::make_shared<NormalNoise>(ecpn, NormalNoiseParameters{1.0});
-		//	simulation->addElement(noise);
-		//	neuralFieldCopy->addInput(noise);
-		//	simulation->init();
-		//	for (int i = 0; i < simulationTime; i++)
-		//		simulation->step();
-		//	simulation->removeElement(noise->getUniqueName());
-		//	for (int i = 0; i < simulationTime; i++)
-		//		simulation->step();
-		//	const double postPerturbationCentroid = std::dynamic_pointer_cast<NeuralField>(neuralFieldCopy)->getCentroid();
-
-		//	if (std::abs(prePerturbationCentroid - postPerturbationCentroid) < 0.1)
-		//		state.selfStabilized = true;
-		//	else
-		//		state.selfStabilized = false;
-		//}
 	}
 }

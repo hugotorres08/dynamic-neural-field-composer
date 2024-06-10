@@ -8,11 +8,13 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		GaussStimulus::GaussStimulus(const ElementCommonParameters& elementCommonParameters, const GaussStimulusParameters& parameters)
+		GaussStimulus::GaussStimulus(const ElementCommonParameters& elementCommonParameters, 
+			const GaussStimulusParameters& parameters)
 			: Element(elementCommonParameters), parameters(parameters)
 		{
 			if (parameters.position < 0 || parameters.position >= elementCommonParameters.dimensionParameters.x_max)
-				throw Exception(ErrorCode::GAUSS_STIMULUS_POSITION_OUT_OF_RANGE, elementCommonParameters.identifiers.uniqueName);
+				throw Exception(ErrorCode::GAUSS_STIMULUS_POSITION_OUT_OF_RANGE, 
+					elementCommonParameters.identifiers.uniqueName);
 
 			this->commonParameters.identifiers.label = ElementLabel::GAUSS_STIMULUS;
 		}
@@ -22,9 +24,12 @@ namespace dnf_composer
 			std::vector<double> g(commonParameters.dimensionParameters.size);
 
 			if (parameters.circular)
-				g = tools::math::circularGauss(commonParameters.dimensionParameters.size, parameters.sigma, parameters.position / commonParameters.dimensionParameters.d_x);
+				g = tools::math::circularGauss(commonParameters.dimensionParameters.size, 
+												parameters.sigma, 
+												parameters.position / commonParameters.dimensionParameters.d_x);
 			else
-				g = tools::math::gauss(commonParameters.dimensionParameters.size, parameters.sigma, parameters.position / commonParameters.dimensionParameters.d_x);
+				g = tools::math::gauss(commonParameters.dimensionParameters.size, 
+					parameters.sigma, parameters.position / commonParameters.dimensionParameters.d_x);
 
 			if (!parameters.normalized)
 				for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
@@ -37,7 +42,9 @@ namespace dnf_composer
 						components["output"][i] = parameters.amplitude * g[i] / sum;
 				else
 				{
-					const std::string message = "Tried to initialize a normalized Gaussian stimulus '" + this->getUniqueName() + "'. With the sum of the output vector equal to zero that is impossible! ";
+					const std::string message = "Tried to initialize a normalized Gaussian stimulus '"
+						+ this->getUniqueName() + "'. With the sum of the output vector equal "
+								"to zero that is impossible! ";
 					log(tools::logger::LogLevel::ERROR, message);
 				}
 			}
@@ -49,10 +56,6 @@ namespace dnf_composer
 		}
 
 		void GaussStimulus::step(double t, double deltaT)
-		{
-		}
-
-		void GaussStimulus::close()
 		{
 		}
 

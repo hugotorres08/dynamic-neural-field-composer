@@ -26,8 +26,10 @@ namespace dnf_composer
 			double learningRate;
 			LearningRule learningRule;
 
-			FieldCouplingParameters(int inputFieldSize, double scalar, double learningRate, LearningRule learningRule)
-			: inputFieldSize(inputFieldSize), scalar(scalar), learningRate(learningRate), learningRule(learningRule)
+			FieldCouplingParameters(int inputFieldSize, double scalar, double learningRate,
+				LearningRule learningRule)
+			: inputFieldSize(inputFieldSize), scalar(scalar), learningRate(learningRate),
+				learningRule(learningRule)
 			{}
 		};
 
@@ -40,11 +42,14 @@ namespace dnf_composer
 			bool updateAllWeights;
 			std::string weightsFilePath;
 		public:
-			FieldCoupling(const ElementCommonParameters& elementCommonParameters, const FieldCouplingParameters& fc_parameters);
+			FieldCoupling(const ElementCommonParameters& elementCommonParameters, 
+				const FieldCouplingParameters& fc_parameters);
 
 			void init() override;
 			void step(double t, double deltaT) override;
-			void close() override;
+			// close() used to be a pure virtual function in Element
+			// and was implemented in FieldCoupling.cpp
+			// resetWeights() used to be called here
 			void printParameters() override;
 			std::shared_ptr<Element> clone() const override;
 
@@ -61,9 +66,6 @@ namespace dnf_composer
 
 			const std::vector<std::vector<double>>& getWeights() const;
 			FieldCouplingParameters getParameters() const;
-
-			~FieldCoupling() override = default;
-
 		protected:
 			void getInputFunction();
 			void computeOutput();

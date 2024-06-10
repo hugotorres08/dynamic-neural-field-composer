@@ -18,7 +18,7 @@ namespace dnf_composer
 
 		void GaussKernel::init()
 		{
-			kernelRange = tools::math::computeKernelRange(parameters.sigma, cutOfFactor, commonParameters.dimensionParameters.size, parameters.circular);
+			kernelRange = tools::math::computeKernelRange(parameters.width, cutOfFactor, commonParameters.dimensionParameters.size, parameters.circular);
 
 			if (parameters.circular)
 			{
@@ -37,9 +37,9 @@ namespace dnf_composer
 			std::iota(rangeX.begin(), rangeX.end(), -startingValue);
 			std::vector<double> gauss(commonParameters.dimensionParameters.size);
 			if (parameters.normalized)
-				gauss = tools::math::gaussNorm(rangeX, 0.0, parameters.sigma);
+				gauss = tools::math::gaussNorm(rangeX, 0.0, parameters.width);
 			else
-				gauss = tools::math::gauss(rangeX, 0.0, parameters.sigma);
+				gauss = tools::math::gauss(rangeX, 0.0, parameters.width);
 
 			components["kernel"].resize(rangeX.size());
 			for (int i = 0; i < components["kernel"].size(); i++)
@@ -65,10 +65,6 @@ namespace dnf_composer
 				components["output"][i] = convolution[i];
 		}
 
-		void GaussKernel::close()
-		{
-		}
-
 		void GaussKernel::printParameters()
 		{
 			printCommonParameters();
@@ -77,7 +73,7 @@ namespace dnf_composer
 
 			logStream << "Logging specific element parameters" << std::endl;
 			logStream << "Amplitude: " << parameters.amplitude << std::endl;
-			logStream << "Sigma: " << parameters.sigma << std::endl;
+			logStream << "Width: " << parameters.width << std::endl;
 			logStream << "Cut-Off Factor: " << cutOfFactor << std::endl;
 			logStream << "Circular: " << parameters.circular << std::endl;
 			logStream << "Normalized: " << parameters.normalized;

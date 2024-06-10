@@ -28,7 +28,8 @@ namespace dnf_composer
 		{}
 
 		ElementIdentifiers::ElementIdentifiers(std::string elementName)
-			: uniqueIdentifier(uniqueIdentifierCounter++), uniqueName(std::move(elementName)), label(ElementLabel::UNINITIALIZED)
+			: uniqueIdentifier(uniqueIdentifierCounter++), uniqueName(std::move(elementName)),
+				label(ElementLabel::UNINITIALIZED)
 		{}
 
 		void ElementIdentifiers::print() const
@@ -53,11 +54,13 @@ namespace dnf_composer
 			: identifiers(elementName), dimensionParameters(x_max)
 		{}
 
-		ElementCommonParameters::ElementCommonParameters(const std::string& elementName, const ElementSpatialDimensionParameters& dimensionParameters)
+		ElementCommonParameters::ElementCommonParameters(const std::string& elementName, 
+			const ElementSpatialDimensionParameters& dimensionParameters)
 			: identifiers(elementName), dimensionParameters(dimensionParameters)
 		{}
 
-		ElementCommonParameters::ElementCommonParameters(ElementIdentifiers identifiers, const ElementSpatialDimensionParameters& dimensionParameters)
+		ElementCommonParameters::ElementCommonParameters(ElementIdentifiers identifiers, 
+			const ElementSpatialDimensionParameters& dimensionParameters)
 			: identifiers(std::move(identifiers)), dimensionParameters(dimensionParameters)
 		{}
 

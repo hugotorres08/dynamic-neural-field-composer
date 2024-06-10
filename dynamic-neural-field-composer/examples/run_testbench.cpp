@@ -88,7 +88,7 @@ int main(int argc, char* argv[])
 		const auto simulation = std::make_shared<Simulation>("test sim", 25, 0, 0);
 		tools::logger::Logger::setMinLogLevel(tools::logger::LogLevel::DEBUG);
 
-		std::ofstream logFile(std::string(OUTPUT_DIRECTORY) + "/profilling/simulation-setup-with-logs.txt");
+		std::ofstream logFile(std::string(OUTPUT_DIRECTORY) + "/profiling/simulation-setup-with-logs.txt");
 
 		if (!logFile.is_open())
 		{
@@ -105,6 +105,7 @@ int main(int argc, char* argv[])
 			simulation->addElement(std::make_shared<element::GaussStimulus>(stimulus));
 			simulation->createInteraction("stimulus", "output", "field");
 			simulation->step();
+			simulation->close();
 			simulation->removeElement("field");
 			simulation->removeElement("stimulus");
 		}

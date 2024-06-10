@@ -17,9 +17,10 @@ namespace dnf_composer
 
 		void LateralInteractions::init()
 		{
-			const double maxSigma = std::max((parameters.amplitudeExc != 0.0) ? parameters.sigmaExc : 0,
-				(parameters.amplitudeInh != 0.0) ? parameters.sigmaInh : 0);
-			kernelRange = tools::math::computeKernelRange(maxSigma, cutOfFactor, commonParameters.dimensionParameters.size, parameters.circular);
+			const double maxWidth = std::max((parameters.amplitudeExc != 0.0) ? parameters.widthExc : 0,
+				(parameters.amplitudeInh != 0.0) ? parameters.widthInh : 0);
+			kernelRange = tools::math::computeKernelRange(maxWidth, cutOfFactor, 
+				commonParameters.dimensionParameters.size, parameters.circular);
 
 			if (parameters.circular)
 				extIndex = tools::math::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
@@ -35,19 +36,20 @@ namespace dnf_composer
 			std::vector<double> gaussInh(commonParameters.dimensionParameters.size);
 			if (parameters.normalized)
 			{
-				gaussExc = tools::math::gaussNorm(rangeX, 0.0, parameters.sigmaExc);
-				gaussInh = tools::math::gaussNorm(rangeX, 0.0, parameters.sigmaInh);
+				gaussExc = tools::math::gaussNorm(rangeX, 0.0, parameters.widthExc);
+				gaussInh = tools::math::gaussNorm(rangeX, 0.0, parameters.widthInh);
 			}
 			else
 			{
 
-				gaussExc = tools::math::gauss(rangeX, 0.0, parameters.sigmaExc);
-				gaussInh = tools::math::gauss(rangeX, 0.0, parameters.sigmaInh);
+				gaussExc = tools::math::gauss(rangeX, 0.0, parameters.widthExc);
+				gaussInh = tools::math::gauss(rangeX, 0.0, parameters.widthInh);
 			}
 
 			components["kernel"].resize(rangeX.size());
 			for (int i = 0; i < components["kernel"].size(); i++)
-				components["kernel"][i] = parameters.amplitudeExc * gaussExc[i] - parameters.amplitudeInh * gaussInh[i];
+				components["kernel"][i] = parameters.amplitudeExc * gaussExc[i] - 
+				parameters.amplitudeInh * gaussInh[i];
 
 			fullSum = 0;
 			std::ranges::fill(components["input"], 0.0);
@@ -57,10 +59,12 @@ namespace dnf_composer
 		{
 			updateInput();
 
-			fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
+			fullSum = std::accumulate(components["input"].begin(), components["input"].end(), 
+				(double)0.0);
 
 			std::vector<double> convolution(commonParameters.dimensionParameters.size);
-			const std::vector<double> subDataInput = tools::math::obtainCircularVector(extIndex, components["input"]);
+			const std::vector<double> subDataInput = tools::math::obtainCircularVector(extIndex, 
+				components["input"]);
 
 			if (parameters.circular)
 				convolution = tools::math::conv_valid(subDataInput, components["kernel"]);
@@ -71,10 +75,6 @@ namespace dnf_composer
 				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
 		}
 
-		void LateralInteractions::close()
-		{
-		}
-
 		void LateralInteractions::printParameters()
 		{
 			printCommonParameters();
@@ -83,9 +83,9 @@ namespace dnf_composer
 
 			logStream << "Logging specific element parameters" << std::endl;
 			logStream << "AmplitudeExc: " << parameters.amplitudeExc << std::endl;
-			logStream << "SigmaExc: " << parameters.sigmaExc << std::endl;
+			logStream << "WidthExc: " << parameters.widthExc << std::endl;
 			logStream << "AmplitudeInh: " << parameters.amplitudeInh << std::endl;
-			logStream << "SigmaInh: " << parameters.sigmaInh << std::endl;
+			logStream << "WidthInh: " << parameters.widthInh << std::endl;
 			logStream << "AmplitudeGlobal: " << parameters.amplitudeGlobal << std::endl;
 			logStream << "CutOffFactor: " << cutOfFactor << std::endl;
 			logStream << "Normalized: " << parameters.normalized << std::endl;

@@ -31,14 +31,11 @@ namespace dnf_composer
 
 			void init() override;
 			void step(double t, double deltaT) override;
-			void close() override {}
 			void printParameters() override;
 			std::shared_ptr<Element> clone() const override;
 
 			void setParameters(NormalNoiseParameters parameters);
 			NormalNoiseParameters getParameters() const;
-
-			~NormalNoise() override = default;
 		};
 	}
 }

@@ -9,7 +9,7 @@ namespace dnf_composer
 	namespace element
 	{
 		NormalNoise::NormalNoise(const ElementCommonParameters& elementCommonParameters, NormalNoiseParameters parameters)
-			: Element(elementCommonParameters), parameters(parameters)
+			: Element(elementCommonParameters), parameters(std::move(parameters))
 		{
 			 commonParameters.identifiers.label = ElementLabel::NORMAL_NOISE;
 		}
@@ -34,7 +34,7 @@ namespace dnf_composer
 			std::ostringstream logStream;
 
 			logStream << "Logging specific element parameters" << std::endl;
-			logStream << "Amplitude: " << parameters.amplitude;// << std::endl;
+			logStream << "Amplitude: " << parameters.amplitude;
 
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
@@ -42,7 +42,6 @@ namespace dnf_composer
 		std::shared_ptr<Element> NormalNoise::clone() const
 		{
 			auto cloned = std::make_shared<NormalNoise>(*this);
-			// If there are deep copy specifics that the copy constructor doesn't handle, do them here.
 			return cloned;
 		}
 

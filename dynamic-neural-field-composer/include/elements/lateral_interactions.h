@@ -10,25 +10,31 @@ namespace dnf_composer
 	{
 		struct LateralInteractionsParameters : ElementSpecificParameters
 		{
-			double sigmaExc;
+			double widthExc;
 			double amplitudeExc;
-			double sigmaInh;
+			double widthInh;
 			double amplitudeInh;
 			double amplitudeGlobal;
 			bool circular;
 			bool normalized;
 
-			LateralInteractionsParameters(double sigmaExc, double amplitudeExc, double sigmaInh, double amplitudeInh, double amplitudeGlobal, bool circular = true, bool normalized = true)
-				: sigmaExc(sigmaExc), amplitudeExc(amplitudeExc), sigmaInh(sigmaInh), amplitudeInh(amplitudeInh), amplitudeGlobal(amplitudeGlobal), circular(circular), normalized(normalized)
+			LateralInteractionsParameters(double widthExc, double amplitudeExc, 
+				double widthInh, double amplitudeInh, 
+				double amplitudeGlobal, 
+				bool circular = true, bool normalized = true)
+				: widthExc(widthExc), amplitudeExc(amplitudeExc),
+					widthInh(widthInh), amplitudeInh(amplitudeInh),
+					amplitudeGlobal(amplitudeGlobal),
+					circular(circular), normalized(normalized)
 			{}
 
 			bool operator==(const LateralInteractionsParameters& other) const
 			{
 				constexpr double epsilon = 1e-6;
 
-				return std::abs(sigmaExc - other.sigmaExc) < epsilon &&
+				return std::abs(widthExc - other.widthExc) < epsilon &&
 					std::abs(amplitudeExc - other.amplitudeExc) < epsilon &&
-					std::abs(sigmaInh - other.sigmaInh) < epsilon &&
+					std::abs(widthInh - other.widthInh) < epsilon &&
 					std::abs(amplitudeInh - other.amplitudeInh) < epsilon &&
 					std::abs(amplitudeGlobal - other.amplitudeGlobal) < epsilon &&
 					circular == other.circular &&
@@ -41,11 +47,11 @@ namespace dnf_composer
 		private:
 			LateralInteractionsParameters parameters;
 		public:
-			LateralInteractions(const ElementCommonParameters& elementCommonParameters, LateralInteractionsParameters li_parameters);
+			LateralInteractions(const ElementCommonParameters& elementCommonParameters, 
+				LateralInteractionsParameters li_parameters);
 
 			void init() override;
 			void step(double t, double deltaT) override;
-			void close() override;
 			void printParameters() override;
 			std::shared_ptr<Element> clone() const override;
 

@@ -5,8 +5,6 @@
 
 #include "simulation/simulation.h"
 #include "elements/kernel.h"
-#include "elements/gauss_stimulus.h"
-#include "elements/normal_noise.h"
 
 namespace dnf_composer
 {
@@ -20,16 +18,14 @@ namespace dnf_composer
 
 			NeuralFieldParameters& operator=(const NeuralFieldParameters& other)
 			{
-				if (this != &other) // Check for self-assignment
+				if (this != &other)
 				{
 					tau = other.tau;
 					startingRestingLevel = other.startingRestingLevel;
-
-					// Ensure that activationFunction is properly cloned
 					if (other.activationFunction)
 						activationFunction = other.activationFunction->clone();
 					else
-						activationFunction.reset(); // Reset to nullptr if other has a nullptr
+						activationFunction.reset();
 				}
 				return *this;
 			}
@@ -38,8 +34,10 @@ namespace dnf_composer
 				:tau(0), startingRestingLevel(0), activationFunction(nullptr)
 			{}
 
-			NeuralFieldParameters(double tau, double restingLevel, const ActivationFunction& activationFunction)
-				: tau(tau), startingRestingLevel(restingLevel), activationFunction(activationFunction.clone())
+			NeuralFieldParameters(double tau, double restingLevel, 
+				const ActivationFunction& activationFunction)
+				: tau(tau), startingRestingLevel(restingLevel),
+					activationFunction(activationFunction.clone())
 			{ }
 
 			NeuralFieldParameters(const NeuralFieldParameters& other)
@@ -93,7 +91,7 @@ namespace dnf_composer
 
 			NeuralFieldState()
 				:centroid(0.0), prevActivationSum(0.0), prevActivationAvg(0.0),
-					prevActivationNorm(0.0), stable(false), bumps(),
+					prevActivationNorm(0.0), stable(false), bumps({}),
 					selfStabilized(false), selfSustained(false),
 					lowestActivation(0.0), highestActivation(0.0)
 			{}
@@ -109,7 +107,6 @@ namespace dnf_composer
 
 			void init() override;
 			void step(double t, double deltaT) override;
-			void close() override;
 			void printParameters() override;
 			std::shared_ptr<Element> clone() const override;
 
@@ -122,11 +119,6 @@ namespace dnf_composer
 			double getHighestActivation() const { return state.highestActivation; }
 			std::vector<NeuralFieldBump> getBumps() const { return state.bumps; }
 			std::shared_ptr<Kernel> getSelfExcitationKernel() const;
-			//bool isSelfStabilized() const { return state.selfStabilized; }
-			//bool isSelfSustained() const { return state.selfSustained; }
-
-			~NeuralField() override = default;
-
 		protected:
 			void calculateActivation(double t, double deltaT);
 			void calculateOutput();
@@ -136,8 +128,6 @@ namespace dnf_composer
 			void updateParameters();
 			void updateMinMaxActivation();
 			void updateBumps();
-			//void checkSelfStabilization();
-			//void checkSelfSustained();
 		};
 	}
 }

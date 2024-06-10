@@ -8,7 +8,8 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		GaussFieldCoupling::GaussFieldCoupling(const ElementCommonParameters& elementCommonParameters, const GaussFieldCouplingParameters& gfc_parameters)
+		GaussFieldCoupling::GaussFieldCoupling(const ElementCommonParameters& elementCommonParameters, 
+			const GaussFieldCouplingParameters& gfc_parameters)
 			: Element(elementCommonParameters), parameters(gfc_parameters)
 		{
 
@@ -30,10 +31,6 @@ namespace dnf_composer
 			updateOutput();
 		}
 
-		void GaussFieldCoupling::close()
-		{
-		}
-
 		void GaussFieldCoupling::printParameters()
 		{
 			printCommonParameters();
@@ -42,12 +39,13 @@ namespace dnf_composer
 
 			logStream << "Logging specific element parameters" << std::endl;
 			logStream << "Input Field Size: " << parameters.inputFieldSize << std::endl;
-			logStream << "Sigma: " << parameters.sigma << std::endl;
+			logStream << "Sigma: " << parameters.width << std::endl;
 
 			logStream << "Couplings: ";
 			for (const auto& coupling : parameters.couplings)
 			{
-				logStream << "x_i: " << coupling.x_i << ", x_j: " << coupling.x_j << ", w_i_j: " << coupling.w_i_j << " | ";
+				logStream << "x_i: " << coupling.x_i << ", x_j: " << coupling.x_j << ", w_i_j: "
+				<< coupling.w_i_j << " | ";
 			}
 
 			log(tools::logger::LogLevel::INFO, logStream.str());
@@ -69,7 +67,8 @@ namespace dnf_composer
 				const auto activationAtx_i = components["input"][static_cast<int>(coupling.x_i)];
 				if (activationAtx_i > 0.0)
 				{
-					std::vector<double> gauss = tools::math::circularGauss(commonParameters.dimensionParameters.size, parameters.sigma, coupling.x_j);
+					std::vector<double> gauss = tools::math::circularGauss(commonParameters.dimensionParameters.size,
+						parameters.width, coupling.x_j);
 					for (auto& element : gauss)
 						element *= coupling.w_i_j * activationAtx_i * element;
 

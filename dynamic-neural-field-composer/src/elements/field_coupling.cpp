@@ -10,7 +10,8 @@ namespace dnf_composer
 	namespace element
 	{
 
-		FieldCoupling::FieldCoupling(const ElementCommonParameters& elementCommonParameters, const FieldCouplingParameters& parameters)
+		FieldCoupling::FieldCoupling(const ElementCommonParameters& elementCommonParameters, 
+			const FieldCouplingParameters& parameters)
 			: Element(elementCommonParameters), parameters(parameters)
 		{
 			if (parameters.inputFieldSize <= 0)
@@ -19,11 +20,13 @@ namespace dnf_composer
 			commonParameters.identifiers.label = ElementLabel::FIELD_COUPLING;
 
 			components["input"] = std::vector<double>(parameters.inputFieldSize);
-			tools::utils::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
+			tools::utils::resizeMatrix(weights, static_cast<int>(components["input"].size()),
+				static_cast<int>(components["output"].size()));
 
 			tools::utils::fillMatrixWithRandomValues(weights, -1, 1);
 
-			weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" + commonParameters.identifiers.uniqueName + "_weights.txt";
+			weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" + 
+				commonParameters.identifiers.uniqueName + "_weights.txt";
 
 			updateAllWeights = true;
 			trained = false;
@@ -45,13 +48,6 @@ namespace dnf_composer
 			getInputFunction();
 			computeOutput();
 			scaleOutput();
-		}
-
-		void FieldCoupling::close()
-		{
-			std::ranges::fill(components["input"], 0);
-			std::ranges::fill(components["output"], 0);
-			resetWeights();
 		}
 
 		void FieldCoupling::printParameters()
@@ -127,7 +123,6 @@ namespace dnf_composer
 		void FieldCoupling::setParameters(const FieldCouplingParameters& fcp)
 		{
 			parameters = fcp;
-
 		}
 
 		void FieldCoupling::updateWeights(const std::vector<double>& input, const std::vector<double>& output)
@@ -138,10 +133,12 @@ namespace dnf_composer
 				weights = tools::math::hebbLearningRule(weights, input, output, parameters.learningRate);
 				break;
 			case LearningRule::DELTA_WIDROW_HOFF:
-				weights = tools::math::deltaLearningRuleWidrowHoff(weights, input, output, parameters.learningRate);
+				weights = tools::math::deltaLearningRuleWidrowHoff(weights, input, output,
+					parameters.learningRate);
 				break;
 			case LearningRule::DELTA_KROGH_HERTZ:
-				weights = tools::math::deltaLearningRuleKroghHertz(weights, input, output, parameters.learningRate);
+				weights = tools::math::deltaLearningRuleKroghHertz(weights, input, output, 
+					parameters.learningRate);
 			case LearningRule::OJA:
 				weights = tools::math::ojaLearningRule(weights, input, output, parameters.learningRate);
 				break;
@@ -167,7 +164,8 @@ namespace dnf_composer
 		{
 			std::ifstream file(weightsFilePath);
 
-			const std::tuple<int, int> initialWeightsSize = std::make_tuple( static_cast<int>(weights.size()), static_cast<int>(weights[0].size()) );
+			const std::tuple<int, int> initialWeightsSize = std::make_tuple( static_cast<int>(weights.size()), 
+				static_cast<int>(weights[0].size()) );
 			std::tuple<int, int> readWeightsSize = std::make_tuple(0, 0);
 
 			if (file.is_open()) {
@@ -184,19 +182,23 @@ namespace dnf_composer
 					}
 				}
 				file.close();
-				const std::string message = "Weights '" + this->getUniqueName() + "' read successfully from: " + weightsFilePath + ".";
+				const std::string message = "Weights '" + this->getUniqueName() + "' read successfully from: " +
+					weightsFilePath + ".";
 				log(tools::logger::LogLevel::INFO, message);
 
-				readWeightsSize = std::make_tuple(static_cast<int>(weights.size()), static_cast<int>(weights[0].size()));
+				readWeightsSize = std::make_tuple(static_cast<int>(weights.size()), 
+					static_cast<int>(weights[0].size()));
 				if(initialWeightsSize != readWeightsSize)
 				{
-					log(tools::logger::LogLevel::ERROR, "Weight matrix read from file has a different dimensionality compared to the actual matrix size! ");
+					log(tools::logger::LogLevel::ERROR, "Weight matrix read from file has a different "
+										 "dimensionality compared to the actual matrix size! ");
 					return false;
 				}
 				return true;	
 			}
 
-			const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " + weightsFilePath + ". ";
+			const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " +
+				weightsFilePath + ". ";
 			log(tools::logger::LogLevel::ERROR, message);
 			
 			return false;
@@ -219,14 +221,16 @@ namespace dnf_composer
 			}
 			else
 			{
-				const std::string message = "Failed to saved weights '" + this->getUniqueName() + "' to: " + weightsFilePath + ". ";
+				const std::string message = "Failed to saved weights '" + this->getUniqueName() + "' to: " + 
+					weightsFilePath + ". ";
 				log(tools::logger::LogLevel::ERROR, message);
 			}
 		}
 
 		void FieldCoupling::fillWeightsRandomly()
 		{
-			tools::utils::resizeMatrix(weights, static_cast<int>(components["input"].size()), static_cast<int>(components["output"].size()));
+			tools::utils::resizeMatrix(weights, static_cast<int>(components["input"].size()),
+				static_cast<int>(components["output"].size()));
 			tools::utils::fillMatrixWithRandomValues(weights, 0.0, 0.0);
 			log(tools::logger::LogLevel::INFO, "Filling the weight matrix with random values.");
 			trained = false;

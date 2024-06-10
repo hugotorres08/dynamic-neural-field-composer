@@ -13,15 +13,17 @@ namespace dnf_composer
 		struct GaussStimulusParameters : ElementSpecificParameters
 		{
 
-			GaussStimulusParameters(double sigma = 5.0, double amplitude = 15.0, double position = 0.0, bool circular = true, bool normalized = false)
-				: sigma(sigma), amplitude(amplitude), position(position), circular(circular), normalized(normalized)
+			GaussStimulusParameters(double sigma = 5.0, double amplitude = 15.0, 
+				double position = 0.0, bool circular = true, bool normalized = false)
+				: sigma(sigma), amplitude(amplitude), position(position),
+					circular(circular), normalized(normalized)
 			{}
 
 			double sigma;
 			double amplitude;
 			double position;
-			bool circular; // by default true
-			bool normalized; // by default false
+			bool circular;
+			bool normalized;
 
 			bool operator==(const GaussStimulusParameters& other) const
 			{
@@ -45,13 +47,11 @@ namespace dnf_composer
 
 			void init() override;
 			void step(double t, double deltaT) override;
-			void close() override;
 			void printParameters() override;
 			std::shared_ptr<Element> clone() const override;
 
 			void setParameters(const GaussStimulusParameters& parameters);
 			GaussStimulusParameters getParameters() const;
-			~GaussStimulus() override = default;
 		private:
 			void updateParameters();
 		};

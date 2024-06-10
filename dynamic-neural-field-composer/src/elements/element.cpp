@@ -12,7 +12,8 @@ namespace dnf_composer
 		{
 			if(parameters.dimensionParameters.size <= 0)
 			{
-				const std::string logMessage = "Element '" + parameters.identifiers.uniqueName + "' has an invalid size. Thus, Element constructor halted. ";
+				const std::string logMessage = "Element '" + parameters.identifiers.uniqueName + 
+					"' has an invalid size.";
 				log(tools::logger::LogLevel::ERROR, logMessage);
 				return;
 			}
@@ -21,11 +22,17 @@ namespace dnf_composer
 			components["input"] = std::vector<double>(commonParameters.dimensionParameters.size);
 		}
 
+		void Element::close()
+		{
+			components.clear();
+			inputs.clear();
+		}
+
 		void Element::addInput(const std::shared_ptr<Element>& inputElement, const std::string& inputComponent)
 		{
 			if (!inputElement)
 			{
-				const std::string logMessage = "Input is null. Thus, addInput() method halted. ";
+				const std::string logMessage = "Input is null.";
 				log(tools::logger::LogLevel::ERROR, logMessage);
 				return;
 			}
@@ -33,7 +40,7 @@ namespace dnf_composer
 			const auto existingInput = inputs.find(inputElement);
 			if (existingInput != inputs.end())
 			{
-				const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' already exists. Thus, addInput() method halted. ";
+				const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' already exists. ";
 				log(tools::logger::LogLevel::ERROR, logMessage);
 				return;
 			}
@@ -42,7 +49,8 @@ namespace dnf_composer
 			{
 				if (inputElement->getComponentPtr("output")->size() != this->getSize())
 				{
-					const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' has a different size than '" + this->getUniqueName() + "'. Thus, addInput() method halted. ";
+					const std::string logMessage = "Input '" + inputElement->getUniqueName() + "' has a different size than '"
+						+ this->getUniqueName() + "'.";
 					log(tools::logger::LogLevel::ERROR, logMessage);
 					return;
 				}
@@ -50,7 +58,7 @@ namespace dnf_composer
 
 			inputs[inputElement] = inputComponent;
 
-			const std::string logMessage = "Input '" + inputElement->getUniqueName() +"' added successfully to '" +  this->getUniqueName() + ". ";
+			const std::string logMessage = "Input '" + inputElement->getUniqueName() +"' added successfully to '" +  this->getUniqueName() + ".";
 			log(tools::logger::LogLevel::INFO, logMessage);
 		}
 
@@ -60,7 +68,8 @@ namespace dnf_composer
 			{
 				if (key->commonParameters.identifiers.uniqueName == inputElementId) {
 					inputs.erase(key);
-					log(tools::logger::LogLevel::INFO, "Input '" + inputElementId + "' removed successfully from '" + this->getUniqueName() + ". ");
+					log(tools::logger::LogLevel::INFO, "Input '" + inputElementId + "' removed successfully from '" 
+						+ this->getUniqueName() + ". ");
 					return;
 				}
 			}
@@ -72,7 +81,8 @@ namespace dnf_composer
 			{
 				if (key->commonParameters.identifiers.uniqueIdentifier == uniqueId) {
 					inputs.erase(key);
-					log(tools::logger::LogLevel::INFO, "Input '" + std::to_string(uniqueId) + "' removed successfully from '" + this->getUniqueName() + ".");
+					log(tools::logger::LogLevel::INFO, "Input '" + std::to_string(uniqueId) + "' removed successfully from '" 
+						+ this->getUniqueName() + ".");
 					return;
 				}
 			}
@@ -104,16 +114,15 @@ namespace dnf_composer
 		{
 			std::ranges::fill(components["input"], 0);
 
-			for (const auto& input_pair : inputs) {
+			for (const auto& input_pair : inputs) 
+			{
 				const auto inputElement = input_pair.first;
 				auto inputElementComponent = input_pair.second;
 				auto& inputElementComponents = inputElement->components;
 				const auto& inputElementComponentValue = inputElementComponents.at(inputElementComponent);
 
-				for (int i = 0; i < inputElementComponentValue.size(); i++)
-				{
+				for (size_t i = 0; i < inputElementComponentValue.size(); i++)
 					components["input"][i] += inputElementComponentValue[i];
-				}
 			}
 		}
 
@@ -179,7 +188,6 @@ namespace dnf_composer
 			}
 
 			return componentNames;
-		
 		}
 
 		std::vector<std::shared_ptr<Element>> Element::getInputs()
@@ -225,6 +233,5 @@ namespace dnf_composer
 
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
-
 	}
 }
