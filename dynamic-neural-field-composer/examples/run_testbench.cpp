@@ -103,6 +103,7 @@ int main(int argc, char* argv[])
 		highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
 		std::cout << "Highest activation: " << highestActivation << std::endl;
 		simulation->close();
+		simulation->step();
 		simulation->init();
 		highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
 		std::cout << "Highest activation: " << highestActivation << std::endl;

@@ -24,10 +24,11 @@ namespace dnf_composer
 
 		void Element::close()
 		{
-			/*components.clear();
-			inputs.clear();
-			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size);
-			components["input"] = std::vector<double>(commonParameters.dimensionParameters.size);*/
+			for (auto& pair : components)
+			{
+				auto& component = pair.second;
+				std::ranges::fill(component, 0);
+			}
 		}
 
 		void Element::addInput(const std::shared_ptr<Element>& inputElement, const std::string& inputComponent)

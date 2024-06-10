@@ -52,8 +52,6 @@ namespace dnf_composer
 
 			void setParameters(const GaussStimulusParameters& parameters);
 			GaussStimulusParameters getParameters() const;
-		private:
-			void updateParameters();
 		};
 	}
 }

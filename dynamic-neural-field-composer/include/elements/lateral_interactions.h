@@ -57,8 +57,6 @@ namespace dnf_composer
 
 			void setParameters(const LateralInteractionsParameters& li_parameters);
 			LateralInteractionsParameters getParameters() const;
-		private:
-			void updateParameters();
 		};
 	}
 }

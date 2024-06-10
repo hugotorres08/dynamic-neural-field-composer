@@ -95,7 +95,7 @@ namespace dnf_composer
 					prevActivationNorm(0.0), stable(false), bumps({}),
 					selfStabilized(false), selfSustained(false),
 					lowestActivation(0.0), highestActivation(0.0),
-					thresholdForStability(0.0)
+					thresholdForStability(0.035)
 			{}
 		};
 
@@ -127,7 +127,6 @@ namespace dnf_composer
 			void calculateCentroid();
 			void updateState();
 			void checkStability();
-			void updateParameters();
 			void updateMinMaxActivation();
 			void updateBumps();
 		};

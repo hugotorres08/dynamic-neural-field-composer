@@ -63,8 +63,6 @@ namespace dnf_composer
 
 			void setParameters(const MexicanHatKernelParameters& mhk_parameters);
 			MexicanHatKernelParameters getParameters() const;
-		private:
-			void updateParameters();
 		};
 	}
 }
