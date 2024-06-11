@@ -14,3 +14,4 @@
 #include "user_interface/field_metrics_window.h"
 #include "elements/lateral_interactions.h"
 #include "user_interface/element_window.h"
+#include "user_interface/node_graph_window.h"
