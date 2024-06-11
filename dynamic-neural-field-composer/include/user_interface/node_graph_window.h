@@ -26,6 +26,10 @@ namespace dnf_composer
 			~NodeGraphWindow() override = default;
 		private:
 			void renderElementNodes();
+			void renderElementNode(const std::shared_ptr<element::Element>& element);
+			void renderElementCommonParameters(const std::shared_ptr<element::Element>& element);
+			void renderElementSpecificParameters(const std::shared_ptr<element::Element>& element);
+			void renderElementNodeConnections(const std::shared_ptr<element::Element>& element);
 		};
 	}
 }
