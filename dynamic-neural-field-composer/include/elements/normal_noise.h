@@ -20,6 +20,19 @@ namespace dnf_composer
 				constexpr double epsilon = 1e-6; // Set an appropriate epsilon value
 				return std::abs(amplitude - other.amplitude) < epsilon;
 			}
+			std::string toString() const override
+			{
+				std::string result;
+				result += "Normal noise parameters\n";
+				result += "Amplitude: ";
+				return result;
+			}
+			void print() const override
+			{
+				std::ostringstream logStream;
+				logStream << "Amplitude: " << amplitude;
+				log(tools::logger::LogLevel::INFO, logStream.str());
+			}
 		};
 
 		class NormalNoise : public Element
@@ -31,8 +44,9 @@ namespace dnf_composer
 
 			void init() override;
 			void step(double t, double deltaT) override;
-			void printParameters() override;
+			void print() override;
 			std::shared_ptr<Element> clone() const override;
+			std::string toString() const override;
 
 			void setParameters(NormalNoiseParameters parameters);
 			NormalNoiseParameters getParameters() const;

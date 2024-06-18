@@ -27,15 +27,12 @@ namespace dnf_composer
 				components["output"][i] = parameters.amplitude / sqrt(deltaT) * rand[i];
 		}
 
-		void NormalNoise::printParameters()
+		void NormalNoise::print()
 		{
 			printCommonParameters();
-
 			std::ostringstream logStream;
-
 			logStream << "Logging specific element parameters" << std::endl;
-			logStream << "Amplitude: " << parameters.amplitude;
-
+			parameters.print();
 			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 
@@ -43,6 +40,17 @@ namespace dnf_composer
 		{
 			auto cloned = std::make_shared<NormalNoise>(*this);
 			return cloned;
+		}
+
+		std::string NormalNoise::toString() const
+		{
+			std::string result;
+			result += "Normal noise element\n";
+			result += "Common parameters\n";
+			result += commonParameters.toString();
+			result += "Specific parameters\n";
+			result += parameters.toString();
+			return result;
 		}
 
 		void NormalNoise::setParameters(NormalNoiseParameters normalNoiseParameters)

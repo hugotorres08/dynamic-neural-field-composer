@@ -17,10 +17,21 @@ namespace dnf_composer
 		{
 			std::ostringstream logStream;
 			logStream << std::left;
+			logStream << "Element spatial dimension parameters" << std::endl;
 			logStream << "Maximum spatial dimension size: " << x_max << std::endl;
 			logStream << "Spatial dimension step size: " << d_x << std::endl;
 			logStream << "Number of samples in spatial dimension: " << size;
 			log(tools::logger::LogLevel::INFO, logStream.str());
+		}
+
+		std::string ElementSpatialDimensionParameters::toString() const
+		{
+			std::string result;
+			result += "Element spatial dimension parameters\n";
+			result += std::format("Maximum spatial dimension size: {}\n", x_max);
+			result += std::format("Spatial dimension step size: {}\n", d_x);
+			result += std::format("Number of samples in spatial dimension: {}\n", size);
+			return result;
 		}
 
 		ElementIdentifiers::ElementIdentifiers()
@@ -36,10 +47,21 @@ namespace dnf_composer
 		{
 			std::ostringstream logStream;
 			logStream << std::left;
+			logStream << "Element identifiers" << std::endl;
 			logStream << "Unique identifier: " << uniqueIdentifier << std::endl;
 			logStream << "Unique name: " << uniqueName << std::endl;
 			logStream << "Label: " << ElementLabelToString.at(label);
 			log(tools::logger::LogLevel::INFO, logStream.str());
+		}
+
+		std::string ElementIdentifiers::toString() const
+		{
+			std::string result;
+			result += "Element identifiers\n";
+			result += std::format("Unique identifier: {}\n", uniqueIdentifier);
+			result += std::format("Unique name: {}\n", uniqueName);
+			result += std::format("Label: {}\n", ElementLabelToString.at(label));
+			return result;
 		}
 
 		ElementCommonParameters::ElementCommonParameters()
@@ -68,10 +90,18 @@ namespace dnf_composer
 		{
 			std::ostringstream logStream;
 			logStream << std::left;
-			logStream << "Element common parameters:" << std::endl;
+			logStream << "Element common parameters" << std::endl;
+			log(tools::logger::LogLevel::INFO, logStream.str());
 			identifiers.print();
 			dimensionParameters.print();
-			log(tools::logger::LogLevel::INFO, logStream.str());
+		}
+		std::string ElementCommonParameters::toString() const
+		{
+			std::string result;
+			result += "Element common parameters\n";
+			result += identifiers.toString();
+			result += dimensionParameters.toString();
+			return result;
 		}
 	}
 }

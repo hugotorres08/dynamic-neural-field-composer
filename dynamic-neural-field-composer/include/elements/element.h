@@ -28,9 +28,10 @@ namespace dnf_composer
 			virtual void init() = 0;
 			virtual void step(double t, double deltaT) = 0;
 			void close();
-			virtual void printParameters() = 0;
+			virtual void print() = 0;
 			virtual std::shared_ptr<Element> clone() const = 0;
 			virtual ~Element() = default;
+			virtual std::string toString() const = 0;
 
 			void addInput(const std::shared_ptr<Element>& inputElement, 
 				const std::string& inputComponent = "output");
