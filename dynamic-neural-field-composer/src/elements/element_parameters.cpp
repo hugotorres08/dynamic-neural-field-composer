@@ -15,13 +15,7 @@ namespace dnf_composer
 
 		void ElementSpatialDimensionParameters::print() const
 		{
-			std::ostringstream logStream;
-			logStream << std::left;
-			logStream << "Element spatial dimension parameters" << std::endl;
-			logStream << "Maximum spatial dimension size: " << x_max << std::endl;
-			logStream << "Spatial dimension step size: " << d_x << std::endl;
-			logStream << "Number of samples in spatial dimension: " << size;
-			log(tools::logger::LogLevel::INFO, logStream.str());
+			tools::logger::log(tools::logger::LogLevel::INFO, toString());
 		}
 
 		std::string ElementSpatialDimensionParameters::toString() const
@@ -45,13 +39,7 @@ namespace dnf_composer
 
 		void ElementIdentifiers::print() const
 		{
-			std::ostringstream logStream;
-			logStream << std::left;
-			logStream << "Element identifiers" << std::endl;
-			logStream << "Unique identifier: " << uniqueIdentifier << std::endl;
-			logStream << "Unique name: " << uniqueName << std::endl;
-			logStream << "Label: " << ElementLabelToString.at(label);
-			log(tools::logger::LogLevel::INFO, logStream.str());
+			tools::logger::log(tools::logger::LogLevel::INFO, toString());
 		}
 
 		std::string ElementIdentifiers::toString() const
@@ -88,13 +76,9 @@ namespace dnf_composer
 
 		void ElementCommonParameters::print() const
 		{
-			std::ostringstream logStream;
-			logStream << std::left;
-			logStream << "Element common parameters" << std::endl;
-			log(tools::logger::LogLevel::INFO, logStream.str());
-			identifiers.print();
-			dimensionParameters.print();
+			tools::logger::log(tools::logger::LogLevel::INFO, toString());
 		}
+
 		std::string ElementCommonParameters::toString() const
 		{
 			std::string result;
@@ -103,5 +87,11 @@ namespace dnf_composer
 			result += dimensionParameters.toString();
 			return result;
 		}
+
+		void ElementSpecificParameters::print() const
+		{
+			log(tools::logger::LogLevel::INFO, toString());
+		}
+
 	}
 }

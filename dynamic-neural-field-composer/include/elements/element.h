@@ -27,11 +27,11 @@ namespace dnf_composer
 
 			virtual void init() = 0;
 			virtual void step(double t, double deltaT) = 0;
-			void close();
-			virtual void print() = 0;
 			virtual std::shared_ptr<Element> clone() const = 0;
 			virtual ~Element() = default;
 			virtual std::string toString() const = 0;
+			void close();
+			void print() const;
 
 			void addInput(const std::shared_ptr<Element>& inputElement, 
 				const std::string& inputComponent = "output");
@@ -55,9 +55,6 @@ namespace dnf_composer
 
 			std::vector<std::shared_ptr<Element>> getInputs();
 			std::unordered_map<std::shared_ptr<Element>, std::string> getInputsAndComponents();
-
-		protected:
-			void printCommonParameters() const;
 		};
 	}
 }

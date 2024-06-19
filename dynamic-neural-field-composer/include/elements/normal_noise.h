@@ -27,12 +27,6 @@ namespace dnf_composer
 				result += "Amplitude: ";
 				return result;
 			}
-			void print() const override
-			{
-				std::ostringstream logStream;
-				logStream << "Amplitude: " << amplitude;
-				log(tools::logger::LogLevel::INFO, logStream.str());
-			}
 		};
 
 		class NormalNoise : public Element
@@ -40,11 +34,11 @@ namespace dnf_composer
 		private:
 			NormalNoiseParameters parameters;
 		public:
-			NormalNoise(const ElementCommonParameters& elementCommonParameters, NormalNoiseParameters parameters);
+			NormalNoise(const ElementCommonParameters& elementCommonParameters, 
+				NormalNoiseParameters parameters);
 
 			void init() override;
 			void step(double t, double deltaT) override;
-			void print() override;
 			std::shared_ptr<Element> clone() const override;
 			std::string toString() const override;
 

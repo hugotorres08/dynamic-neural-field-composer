@@ -1,8 +1,11 @@
+
 // This is a personal academic project. Dear PVS-Studio, please check it.
 
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "./elements/activation_function.h"
+
+
 
 namespace dnf_composer
 {
@@ -19,9 +22,33 @@ namespace dnf_composer
 			return tools::math::sigmoid(input, steepness, x_shift);
 		}
 
+		bool SigmoidFunction::operator==(const ActivationFunction& other) const
+		{
+			if (type == other.type)
+			{
+				auto& other_casted = dynamic_cast<const SigmoidFunction&>(other);
+				return x_shift == other_casted.getXShift() && steepness == other_casted.getSteepness();
+			}
+			return false;
+		}
+
 		std::unique_ptr<ActivationFunction> SigmoidFunction::clone() const 
 		{
 			return std::make_unique<SigmoidFunction>(*this);
+		}
+
+		std::string SigmoidFunction::toString() const
+		{
+			std::string result = "SigmoidFunction(";
+			result += "x_shift = " + std::to_string(x_shift) + ", ";
+			result += "steepness = " + std::to_string(steepness) + ")";
+			return result;
+		}
+
+		void SigmoidFunction::print() const
+		{
+			const std::string result = toString();
+			tools::logger::log(tools::logger::LogLevel::INFO, result);
 		}
 
 		double SigmoidFunction::getSteepness() const
@@ -45,9 +72,32 @@ namespace dnf_composer
 			return tools::math::heaviside(input, x_shift);
 		}
 
+		bool HeavisideFunction::operator==(const ActivationFunction& other) const
+		{
+			if (type == other.type)
+			{
+				auto& other_casted = dynamic_cast<const HeavisideFunction&>(other);
+				return x_shift == other_casted.getXShift();
+			}
+			return false;
+		}
+
 		std::unique_ptr<ActivationFunction> HeavisideFunction::clone() const 
 		{
 			return std::make_unique<HeavisideFunction>(*this);
+		}
+
+		std::string HeavisideFunction::toString() const
+		{
+			std::string result = "HeavisideFunction(";
+			result += "x_shift = " + std::to_string(x_shift) + ")";
+			return result;
+		}
+
+		void HeavisideFunction::print() const
+		{
+			const std::string result = toString();
+			tools::logger::log(tools::logger::LogLevel::INFO, result);
 		}
 
 		double HeavisideFunction::getXShift() const

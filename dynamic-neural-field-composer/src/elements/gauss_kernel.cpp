@@ -65,20 +65,12 @@ namespace dnf_composer
 				components["output"][i] = convolution[i];
 		}
 
-		void GaussKernel::printParameters()
+		std::string GaussKernel::toString() const
 		{
-			printCommonParameters();
-
-			std::ostringstream logStream;
-
-			logStream << "Logging specific element parameters" << std::endl;
-			logStream << "Amplitude: " << parameters.amplitude << std::endl;
-			logStream << "Width: " << parameters.width << std::endl;
-			logStream << "Cut-Off Factor: " << cutOfFactor << std::endl;
-			logStream << "Circular: " << parameters.circular << std::endl;
-			logStream << "Normalized: " << parameters.normalized;
-
-			log(tools::logger::LogLevel::INFO, logStream.str());
+			std::string result = "Gauss kernel element\n";
+			result += commonParameters.toString();
+			result += parameters.toString();
+			return result;
 		}
 
 		std::shared_ptr<Element> GaussKernel::clone() const

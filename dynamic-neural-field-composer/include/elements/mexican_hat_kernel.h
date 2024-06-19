@@ -46,6 +46,18 @@ namespace dnf_composer
 					circular == other.circular &&
 					normalized == other.normalized;
 			}
+
+			std::string toString() const override
+			{
+				std::string result = "Mexican-hat kernel parameters\n";
+				result += "Width exc: " + std::to_string(widthExc) + "\n";
+				result += "Amplitude exc: " + std::to_string(amplitudeExc) + "\n";
+				result += "Width inh: " + std::to_string(widthInh) + "\n";
+				result += "Amplitude inh: " + std::to_string(amplitudeInh) + "\n";
+				result += "Circular: " + std::to_string(circular) + "\n";
+				result += "Normalized: " + std::to_string(normalized) + "\n";
+				return result;
+			}
 		};
 
 		class MexicanHatKernel : public Kernel
@@ -58,7 +70,7 @@ namespace dnf_composer
 
 			void init() override;
 			void step(double t, double deltaT) override;
-			void printParameters() override;
+			std::string toString() const override;
 			std::shared_ptr<Element> clone() const override;
 
 			void setParameters(const MexicanHatKernelParameters& mhk_parameters);

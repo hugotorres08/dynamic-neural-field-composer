@@ -40,6 +40,20 @@ namespace dnf_composer
 					circular == other.circular &&
 					normalized == other.normalized;
 			}
+
+			std::string toString() const override
+			{
+				std::string result = "Lateral interactions kernel parameters\n";
+				result += "Width excitation: " + std::to_string(widthExc) + "\n";
+				result += "Amplitude excitation: " + std::to_string(amplitudeExc) + "\n";
+				result += "Width inhibition: " + std::to_string(widthInh) + "\n";
+				result += "Amplitude inhibition: " + std::to_string(amplitudeInh) + "\n";
+				result += "Amplitude global: " + std::to_string(amplitudeGlobal) + "\n";
+				result += "Circular: " + std::to_string(circular) + "\n";
+				result += "Normalized: " + std::to_string(normalized) + "\n";
+				return result;
+			}
+
 		};
 
 		class LateralInteractions : public Kernel
@@ -52,7 +66,7 @@ namespace dnf_composer
 
 			void init() override;
 			void step(double t, double deltaT) override;
-			void printParameters() override;
+			std::string toString() const override;
 			std::shared_ptr<Element> clone() const override;
 
 			void setParameters(const LateralInteractionsParameters& li_parameters);

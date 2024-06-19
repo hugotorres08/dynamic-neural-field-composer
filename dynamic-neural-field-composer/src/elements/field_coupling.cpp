@@ -50,33 +50,12 @@ namespace dnf_composer
 			scaleOutput();
 		}
 
-		void FieldCoupling::printParameters()
+		std::string FieldCoupling::toString() const
 		{
-			printCommonParameters();
-
-			std::ostringstream logStream;
-
-			logStream << "Logging specific element parameters" << std::endl;
-			logStream << "Input Field Size: " << parameters.inputFieldSize << std::endl;
-			logStream << "Scalar: " << parameters.scalar << std::endl;
-			logStream << "Learning Rate: " << parameters.learningRate << std::endl;
-			logStream << "Learning Rule: ";
-			switch (parameters.learningRule)
-			{
-			case LearningRule::HEBBIAN:
-				logStream << "Hebbian learning rule" << std::endl;;
-				break;
-			case LearningRule::DELTA_WIDROW_HOFF:
-				logStream << "Delta learning rule Widrow Hoff variation" << std::endl;;
-				break;
-			case LearningRule::DELTA_KROGH_HERTZ:
-				logStream << "Delta learning rule Krogh and Hertz variation" << std::endl;
-			case LearningRule::OJA:
-				logStream << "Oja learning rule" << std::endl;
-				break;
-			}
-
-			log(tools::logger::LogLevel::INFO, logStream.str());
+			std::string result = "Field coupling element\n";
+			result += commonParameters.toString();
+			result += parameters.toString();
+			return result;
 		}
 
 		std::shared_ptr<Element> FieldCoupling::clone() const

@@ -1,6 +1,9 @@
 #pragma once
 
-#include "../tools/math.h"
+#include <string>
+
+#include "tools/logger.h"
+#include "tools/math.h"
 
 namespace dnf_composer
 {
@@ -19,7 +22,10 @@ namespace dnf_composer
 			ActivationFunction(const ActivationFunction&) = default;
 			ActivationFunction& operator=(const ActivationFunction&) = delete;
 			virtual std::vector<double> operator()(const std::vector<double>& input) = 0;
+			virtual bool operator==(const ActivationFunction& other) const = 0;
 			virtual std::unique_ptr<ActivationFunction> clone() const = 0;
+			virtual std::string toString() const = 0;
+			virtual void print() const = 0;
 			virtual ~ActivationFunction() = default;
 
 		};
@@ -32,7 +38,10 @@ namespace dnf_composer
 			SigmoidFunction(double x_shift, double steepness);
 
 			std::vector<double> operator()(const std::vector<double>& input) override;
+			bool operator==(const ActivationFunction& other) const override;
 			std::unique_ptr<ActivationFunction> clone() const override;
+			std::string toString() const override;
+			void print() const override;
 
 			double getSteepness() const;
 			double getXShift() const;
@@ -49,7 +58,10 @@ namespace dnf_composer
 			HeavisideFunction(double x_shift);
 
 			std::vector<double> operator()(const std::vector<double>& input) override;
+			bool operator==(const ActivationFunction& other) const override;
 			std::unique_ptr<ActivationFunction> clone() const override;
+			std::string toString() const override;
+			void print() const override;
 
 			double getXShift() const;
 

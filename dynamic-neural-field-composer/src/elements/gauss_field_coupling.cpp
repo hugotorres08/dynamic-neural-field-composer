@@ -31,24 +31,12 @@ namespace dnf_composer
 			updateOutput();
 		}
 
-		void GaussFieldCoupling::printParameters()
+		std::string GaussFieldCoupling::toString() const
 		{
-			printCommonParameters();
-
-			std::ostringstream logStream;
-
-			logStream << "Logging specific element parameters" << std::endl;
-			logStream << "Input Field Size: " << parameters.inputFieldSize << std::endl;
-			logStream << "Sigma: " << parameters.width << std::endl;
-
-			logStream << "Couplings: ";
-			for (const auto& coupling : parameters.couplings)
-			{
-				logStream << "x_i: " << coupling.x_i << ", x_j: " << coupling.x_j << ", w_i_j: "
-				<< coupling.w_i_j << " | ";
-			}
-
-			log(tools::logger::LogLevel::INFO, logStream.str());
+			std::string result = "Gauss field coupling element\n";
+			result += commonParameters.toString();
+			result += parameters.toString();
+			return result;
 		}
 
 		std::shared_ptr<Element> GaussFieldCoupling::clone() const

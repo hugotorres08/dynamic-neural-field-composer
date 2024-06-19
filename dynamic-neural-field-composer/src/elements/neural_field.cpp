@@ -45,10 +45,10 @@ namespace dnf_composer
 			return parameters;
 		}
 
-		double NeuralField::getCentroid() const
+		/*double NeuralField::getCentroid() const
 		{
 			return state.centroid;
-		}
+		}*/
 
 		bool NeuralField::isStable() const
 		{
@@ -76,24 +76,13 @@ namespace dnf_composer
 			return nullptr;
 		}
 
-		void NeuralField::printParameters()
+		std::string NeuralField::toString() const
 		{
-			printCommonParameters();
-
-			std::ostringstream logStream;
-
-			logStream << "Logging specific element parameters" << std::endl;
-			logStream << "StartingRestingLevel: " << parameters.startingRestingLevel << std::endl;
-			logStream << "Tau: " << parameters.tau << std::endl;
-
-			//logStream << "ActivationFunctionParameters: ";
-			//logStream << "Type: " << ActivationFunctionTypeToString.at(parameters.activationFunctionParameters.type) << " | ";
-			//logStream << "Steepness: " << parameters.activationFunction. << " | ";
-			//logStream << "XShift: " << parameters.activationFunctionParameters.xShift << " | ";
-
-			logStream << std::endl << "Current centroid value: " << getCentroid();
-
-			log(tools::logger::LogLevel::INFO, logStream.str());
+			std::string result = "Neural field element\n";
+			result += commonParameters.toString();
+			result += parameters.toString();
+			result += state.toString();
+			return result;
 		}
 
 		std::shared_ptr<Element> NeuralField::clone() const
@@ -116,52 +105,52 @@ namespace dnf_composer
 			components["output"] = parameters.activationFunction->operator()(components["activation"]);
 		}
 
-		void NeuralField::calculateCentroid()
-		{
-			const std::vector<double> f_output = tools::math::heaviside(components["activation"], 0.1);
+		//void NeuralField::calculateCentroid()
+		//{
+		//	const std::vector<double> f_output = tools::math::heaviside(components["activation"], 0.1);
 
-			if (*std::ranges::max_element(f_output) > 0)
-			{
-				const bool isAtLimits = (f_output[0] > 0) || (f_output[commonParameters.dimensionParameters.size - 1] > 0);
+		//	if (*std::ranges::max_element(f_output) > 0)
+		//	{
+		//		const bool isAtLimits = (f_output[0] > 0) || (f_output[commonParameters.dimensionParameters.size - 1] > 0);
 
-				double sumActivation = 0.0;
-				double sumWeightedPositions = 0.0;
+		//		double sumActivation = 0.0;
+		//		double sumWeightedPositions = 0.0;
 
-				for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
-				{
-					const double activation = f_output[i];
+		//		for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
+		//		{
+		//			const double activation = f_output[i];
 
-					sumActivation += activation;
+		//			sumActivation += activation;
 
-					// Calculate the circular distance from the midpoint to the position
-					double distance = 0.0;
-					if (isAtLimits)
-						distance = fmod(static_cast<double>(i) - static_cast<double>(commonParameters.dimensionParameters.size) * 0.5 
-							+ static_cast<double>(commonParameters.dimensionParameters.size) * 10, static_cast<double>(commonParameters.dimensionParameters.size));
-					else
-						distance = fmod(static_cast<double>(i) - static_cast<double>(commonParameters.dimensionParameters.size) * 0.5, static_cast<double>(commonParameters.dimensionParameters.size));
-					sumWeightedPositions += distance * activation;
-				}
+		//			// Calculate the circular distance from the midpoint to the position
+		//			double distance = 0.0;
+		//			if (isAtLimits)
+		//				distance = fmod(static_cast<double>(i) - static_cast<double>(commonParameters.dimensionParameters.size) * 0.5 
+		//					+ static_cast<double>(commonParameters.dimensionParameters.size) * 10, static_cast<double>(commonParameters.dimensionParameters.size));
+		//			else
+		//				distance = fmod(static_cast<double>(i) - static_cast<double>(commonParameters.dimensionParameters.size) * 0.5, static_cast<double>(commonParameters.dimensionParameters.size));
+		//			sumWeightedPositions += distance * activation;
+		//		}
 
-				static constexpr double epsilon = 1e-6;
-				if (std::fabs(sumActivation) > epsilon)
-				{
-					// Shift the centroid back to the circular field
-					state.centroid = fmod(static_cast<double>(commonParameters.dimensionParameters.size) * 0.5 + sumWeightedPositions / sumActivation, static_cast<double>(commonParameters.dimensionParameters.size));
-					if (isAtLimits)
-						state.centroid = (state.centroid >= 0 ? state.centroid : state.centroid + static_cast<double>(commonParameters.dimensionParameters.size));
-				}
-				state.centroid = state.centroid * commonParameters.dimensionParameters.d_x + commonParameters.dimensionParameters.d_x;
-			}
-			else
-			{
-				state.centroid = -1.0;
-			}
-		}
+		//		static constexpr double epsilon = 1e-6;
+		//		if (std::fabs(sumActivation) > epsilon)
+		//		{
+		//			// Shift the centroid back to the circular field
+		//			state.centroid = fmod(static_cast<double>(commonParameters.dimensionParameters.size) * 0.5 + sumWeightedPositions / sumActivation, static_cast<double>(commonParameters.dimensionParameters.size));
+		//			if (isAtLimits)
+		//				state.centroid = (state.centroid >= 0 ? state.centroid : state.centroid + static_cast<double>(commonParameters.dimensionParameters.size));
+		//		}
+		//		state.centroid = state.centroid * commonParameters.dimensionParameters.d_x + commonParameters.dimensionParameters.d_x;
+		//	}
+		//	else
+		//	{
+		//		state.centroid = -1.0;
+		//	}
+		//}
 
 		void NeuralField::updateState()
 		{
-			calculateCentroid();
+			//calculateCentroid();
 			updateMinMaxActivation();
 			updateBumps();
 			checkStability();
@@ -169,30 +158,33 @@ namespace dnf_composer
 
 		void NeuralField::checkStability()
 		{
+			static double previousActivationSum = 0.0;
+			static double previousActivationAvg = 0.0;
+			static double previousActivationNorm = 0.0;
 			const double currentActivationSum = tools::math::calculateVectorSum(components["activation"]);
 			const double currentActivationAvg = tools::math::calculateVectorAvg(components["activation"]);
 			const double currentActivationNorm = tools::math::calculateVectorNorm(components["activation"]);
 
 			// this function is done like this, instead of comparing to a previously saved vector of activation,
 			// because it is simply faster and takes up less memory.
-			if (std::abs(currentActivationSum - state.prevActivationSum) < state.thresholdForStability)
+			if (std::abs(currentActivationSum - previousActivationSum) < state.thresholdForStability)
 			{
-				if (std::abs(currentActivationAvg - state.prevActivationAvg) < state.thresholdForStability)
+				if (std::abs(currentActivationAvg - previousActivationAvg) < state.thresholdForStability)
 				{
-					if(std::abs(currentActivationNorm - state.prevActivationNorm) < state.thresholdForStability)
+					if(std::abs(currentActivationNorm - previousActivationNorm) < state.thresholdForStability)
 					{
-						state.prevActivationSum = currentActivationSum;
-						state.prevActivationAvg = currentActivationAvg;
-						state.prevActivationNorm = currentActivationNorm;
+						previousActivationSum = currentActivationSum;
+						previousActivationAvg = currentActivationAvg;
+						previousActivationNorm = currentActivationNorm;
 						state.stable = true;
 						return;
 					}
 				}
 			}
 
-			state.prevActivationSum = currentActivationSum;
-			state.prevActivationAvg = currentActivationAvg;
-			state.prevActivationNorm = currentActivationNorm;
+			previousActivationSum = currentActivationSum;
+			previousActivationAvg = currentActivationAvg;
+			previousActivationNorm = currentActivationNorm;
 			state.stable = false;
 
 			// also valid and simpler approach

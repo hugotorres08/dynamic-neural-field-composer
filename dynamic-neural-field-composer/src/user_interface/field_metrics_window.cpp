@@ -44,7 +44,7 @@ namespace dnf_composer
 
 		void FieldMetricsWindow::renderNeuralFieldDetails(const std::shared_ptr<element::NeuralField>& neuralField)
 		{
-			const double centroid = neuralField->getCentroid();
+			//const double centroid = neuralField->getCentroid();
 			const bool stable = neuralField->isStable();
 			const double lowestActivation = neuralField->getLowestActivation();
 			const double highestActivation = neuralField->getHighestActivation();
@@ -52,7 +52,7 @@ namespace dnf_composer
 			//const double selfStabilized = neuralField->isSelfStabilized();
 			//const double selfSustained = neuralField->isSelfSustained();
 
-			ImGui::Text("Cumulative centroid: %.2f", centroid);
+			//ImGui::Text("Cumulative centroid: %.2f", centroid);
 			ImGui::TextColored(stable ? ImVec4(0, 1, 0, 1) : ImVec4(1, 0, 0, 1), "Stability: %s", stable ? "Stable" : "Unstable");
 			ImGui::Text("Lowest Activation: %.2f", lowestActivation);
 			ImGui::Text("Highest Activation: %.2f", highestActivation);
@@ -61,7 +61,7 @@ namespace dnf_composer
 			//ImGui::Text(selfSustained ? "Self-sustained" : "Not self-sustained");
 			ImGui::Separator();
 
-			for (int j = 0; j < bumps.size(); j++)
+			for (size_t j = 0; j < bumps.size(); j++)
 			{
 				const element::NeuralFieldBump& bump = bumps[j];
 				ImGui::Text("Bump %d: Start %.2f, End %.2f, Amplitude %.2f, Width %.2f, Position %.2f", j, bump.startPosition, bump.endPosition, bump.amplitude, bump.width, bump.centroid);

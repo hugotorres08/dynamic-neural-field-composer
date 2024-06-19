@@ -35,6 +35,17 @@ namespace dnf_composer
 					circular == other.circular &&
 					normalized == other.normalized;
 			}
+
+			std::string toString() const override
+			{
+				std::string result = "Gaussian stimulus parameters\n";
+				result += "Width = " + std::to_string(width) + ", ";
+				result += "Amplitude = " + std::to_string(amplitude) + ", ";
+				result += "Position = " + std::to_string(position) + ", ";
+				result += "Circular = " + std::to_string(circular) + ", ";
+				result += "Normalized = " + std::to_string(normalized) + ", ";
+				return result;
+			}
 		};
 
 		class GaussStimulus : public Element
@@ -47,7 +58,7 @@ namespace dnf_composer
 
 			void init() override;
 			void step(double t, double deltaT) override;
-			void printParameters() override;
+			std::string toString() const override;
 			std::shared_ptr<Element> clone() const override;
 
 			void setParameters(const GaussStimulusParameters& parameters);

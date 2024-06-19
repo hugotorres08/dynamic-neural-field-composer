@@ -176,7 +176,7 @@ namespace dnf_composer
 					{
 						if (ImGui::Button("Log", { 100.0f, 30.0f }))
 						{
-							simulationElement->printParameters();
+							simulationElement->print();
 						}
 						ImGui::TreePop();
 					}

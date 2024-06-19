@@ -30,6 +30,16 @@ namespace dnf_composer
 					circular == other.circular &&
 					normalized == other.normalized;
 			}
+
+			std::string toString() const override
+			{
+				std::string result = "Gauss kernel parameters\n";
+				result += "Width: " + std::to_string(width) + "\n";
+				result += "Amplitude: " + std::to_string(amplitude) + "\n";
+				result += "Circular: " + std::to_string(circular) + "\n";
+				result += "Normalized: " + std::to_string(normalized) + "\n";
+				return result;
+			}
 		};
 
 		class GaussKernel : public Kernel
@@ -41,7 +51,7 @@ namespace dnf_composer
 
 			void init() override;
 			void step( double t,  double deltaT) override;
-			void printParameters() override;
+			std::string toString() const override;
 			std::shared_ptr<Element> clone() const override;
 
 			void setParameters(const GaussKernelParameters& gk_parameters);

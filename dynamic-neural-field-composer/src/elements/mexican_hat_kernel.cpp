@@ -68,22 +68,12 @@ namespace dnf_composer
 				components["output"][i] = convolution[i];
 		}
 
-		void MexicanHatKernel::printParameters()
+		std::string MexicanHatKernel::toString() const
 		{
-			printCommonParameters();
-
-			std::ostringstream logStream;
-
-			logStream << "Logging specific element parameters" << std::endl;
-			logStream << "AmplitudeExc: " << parameters.amplitudeExc << std::endl;
-			logStream << "WidthExc: " << parameters.widthExc << std::endl;
-			logStream << "AmplitudeInh: " << parameters.amplitudeInh << std::endl;
-			logStream << "WidthInh: " << parameters.widthInh << std::endl;
-			logStream << "CutOffFactor: " << cutOfFactor << std::endl;
-			logStream << "Normalized: " << parameters.normalized << std::endl;
-			logStream << "Circularity: " << parameters.circular;
-
-			log(tools::logger::LogLevel::INFO, logStream.str());
+			std::string result = "Mexican hat kernel element\n";
+			result += commonParameters.toString();
+			result += parameters.toString();
+			return result;
 		}
 
 		std::shared_ptr<Element> MexicanHatKernel::clone() const

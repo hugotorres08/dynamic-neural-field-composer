@@ -14,7 +14,7 @@ namespace dnf_composer
 		HEBBIAN = 0,
 		OJA,
 		DELTA_WIDROW_HOFF,
-		DELTA_KROGH_HERTZ,
+		DELTA_KROGH_HERTZ
 	};
 
 	namespace element
@@ -31,6 +31,15 @@ namespace dnf_composer
 			: inputFieldSize(inputFieldSize), scalar(scalar), learningRate(learningRate),
 				learningRule(learningRule)
 			{}
+
+			std::string toString() const override
+			{
+				std::string result = "Field coupling parameters\n";
+				result += "Input field size: " + std::to_string(inputFieldSize) + "\n";
+				result += "Scalar: " + std::to_string(scalar) + "\n";
+				result += "Learning rate: " + std::to_string(learningRate) + "\n";
+				return result;
+			}
 		};
 
 		class FieldCoupling : public Element
@@ -47,10 +56,10 @@ namespace dnf_composer
 
 			void init() override;
 			void step(double t, double deltaT) override;
+			std::string toString() const override;
 			// close() used to be a pure virtual function in Element
 			// and was implemented in FieldCoupling.cpp
 			// resetWeights() used to be called here
-			void printParameters() override;
 			std::shared_ptr<Element> clone() const override;
 
 

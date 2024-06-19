@@ -31,6 +31,11 @@ namespace dnf_composer
 			}
 		}
 
+		void Element::print() const
+		{
+			log(tools::logger::LogLevel::INFO, toString());
+		}
+
 		void Element::addInput(const std::shared_ptr<Element>& inputElement, const std::string& inputComponent)
 		{
 			if (!inputElement)
@@ -207,34 +212,6 @@ namespace dnf_composer
 		std::unordered_map<std::shared_ptr<Element>, std::string> Element::getInputsAndComponents()
 		{
 			return inputs;
-		}
-
-		void Element::printCommonParameters() const
-		{
-			std::ostringstream logStream;
-			logStream << std::left;
-			logStream << "Logging element '" << commonParameters.identifiers.uniqueName << "' parameters:" << std::endl;
-			commonParameters.print();
-
-			logStream << "Components: ";
-			for (const auto& pair : components)
-			{
-				const std::string& componentName = pair.first;
-				const std::vector<double>& componentValues = pair.second;
-
-				logStream << componentName << " | ";
-			}
-
-			logStream << std::endl << "Inputs: ";
-			for (const auto& inputPair : inputs)
-			{
-				const std::shared_ptr<Element>& inputElement = inputPair.first;
-				const std::string& inputComponent = inputPair.second;
-
-				logStream << inputElement->getUniqueName() << "->" << inputComponent << " | ";
-			}
-
-			log(tools::logger::LogLevel::INFO, logStream.str());
 		}
 	}
 }

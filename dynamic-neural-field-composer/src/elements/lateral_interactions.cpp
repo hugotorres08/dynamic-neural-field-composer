@@ -75,23 +75,12 @@ namespace dnf_composer
 				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
 		}
 
-		void LateralInteractions::printParameters()
+		std::string LateralInteractions::toString() const
 		{
-			printCommonParameters();
-
-			std::ostringstream logStream;
-
-			logStream << "Logging specific element parameters" << std::endl;
-			logStream << "AmplitudeExc: " << parameters.amplitudeExc << std::endl;
-			logStream << "WidthExc: " << parameters.widthExc << std::endl;
-			logStream << "AmplitudeInh: " << parameters.amplitudeInh << std::endl;
-			logStream << "WidthInh: " << parameters.widthInh << std::endl;
-			logStream << "AmplitudeGlobal: " << parameters.amplitudeGlobal << std::endl;
-			logStream << "CutOffFactor: " << cutOfFactor << std::endl;
-			logStream << "Normalized: " << parameters.normalized << std::endl;
-			logStream << "Circularity: " << parameters.circular;
-
-			log(tools::logger::LogLevel::INFO, logStream.str());
+			std::string result = "Lateral interactions kernel element\n";
+			result += commonParameters.toString();
+			result += parameters.toString();
+			return result;
 		}
 
 		std::shared_ptr<Element> LateralInteractions::clone() const

@@ -77,8 +77,8 @@ namespace dnf_composer
 		{
 			ElementSpecificParameters() = default;
 			virtual ~ElementSpecificParameters() = default;
-			virtual void print() const = 0;
 			virtual std::string toString() const = 0;
+			void print() const;
 		};
 	}
 }
