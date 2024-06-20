@@ -29,10 +29,10 @@ namespace dnf_composer
 			bool circular;
 			bool normalized;
 
-			MexicanHatKernelParameters(double widthExc, double amplitudeExc, double widthInh, 
+			MexicanHatKernelParameters(double widthExc, double amplitudeExc, double widthInh,
 				double amplitudeInh, bool circular = true, bool normalized = true)
 				: widthExc(widthExc), amplitudeExc(amplitudeExc), widthInh(widthInh),
-					amplitudeInh(amplitudeInh), circular(circular), normalized(normalized)
+				amplitudeInh(amplitudeInh), circular(circular), normalized(normalized)
 			{}
 
 			bool operator==(const MexicanHatKernelParameters& other) const
@@ -65,7 +65,7 @@ namespace dnf_composer
 		private:
 			MexicanHatKernelParameters parameters;
 		public:
-			MexicanHatKernel(const ElementCommonParameters& elementCommonParameters, 
+			MexicanHatKernel(const ElementCommonParameters& elementCommonParameters,
 				MexicanHatKernelParameters mhk_parameters);
 
 			void init() override;

@@ -13,10 +13,10 @@ namespace dnf_composer
 		struct GaussStimulusParameters : ElementSpecificParameters
 		{
 
-			GaussStimulusParameters(double width = 5.0, double amplitude = 15.0, 
+			GaussStimulusParameters(double width = 5.0, double amplitude = 15.0,
 				double position = 0.0, bool circular = true, bool normalized = false)
 				: width(width), amplitude(amplitude), position(position),
-					circular(circular), normalized(normalized)
+				circular(circular), normalized(normalized)
 			{}
 
 			double width;

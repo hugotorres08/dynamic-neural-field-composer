@@ -17,13 +17,13 @@ namespace dnf_composer
 			bool circular;
 			bool normalized;
 
-			GaussKernelParameters(double width = 5.0, double amp = 10.0, 
+			GaussKernelParameters(double width = 5.0, double amp = 10.0,
 				bool circular = true, bool normalized = true)
 				: width(width), amplitude(amp), circular(circular), normalized(normalized)
 			{}
 
 			bool operator==(const GaussKernelParameters& other) const {
-				constexpr double epsilon = 1e-6; 
+				constexpr double epsilon = 1e-6;
 
 				return std::abs(width - other.width) < epsilon &&
 					std::abs(amplitude - other.amplitude) < epsilon &&
@@ -50,7 +50,7 @@ namespace dnf_composer
 			GaussKernel(const ElementCommonParameters& elementCommonParameters, GaussKernelParameters parameters);
 
 			void init() override;
-			void step( double t,  double deltaT) override;
+			void step(double t, double deltaT) override;
 			std::string toString() const override;
 			std::shared_ptr<Element> clone() const override;
 

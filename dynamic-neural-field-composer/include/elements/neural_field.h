@@ -2,9 +2,9 @@
 
 #include "element.h"
 #include "activation_function.h"
-
 #include "simulation/simulation.h"
 #include "elements/kernel.h"
+#include "tools/logger.h"
 
 namespace dnf_composer
 {
@@ -12,8 +12,8 @@ namespace dnf_composer
 	{
 		struct NeuralFieldParameters : ElementSpecificParameters
 		{
-		    double tau;
-		    double startingRestingLevel;
+			double tau;
+			double startingRestingLevel;
 			std::unique_ptr<ActivationFunction> activationFunction;
 
 			NeuralFieldParameters& operator=(const NeuralFieldParameters& other)
@@ -42,10 +42,10 @@ namespace dnf_composer
 				:tau(0.0), startingRestingLevel(0.0), activationFunction(nullptr)
 			{}
 
-			NeuralFieldParameters(double tau, double restingLevel, 
+			NeuralFieldParameters(double tau, double restingLevel,
 				const ActivationFunction& activationFunction)
 				: tau(tau), startingRestingLevel(restingLevel),
-					activationFunction(activationFunction.clone())
+				activationFunction(activationFunction.clone())
 			{ }
 
 			NeuralFieldParameters(const NeuralFieldParameters& other)
@@ -80,13 +80,13 @@ namespace dnf_composer
 			NeuralFieldBump(double centroid = 0.0,
 				double startPosition = 0.0,
 				double endPosition = 0.0,
-				double amplitude = 0.0, 
+				double amplitude = 0.0,
 				double width = 0.0)
-					: centroid(centroid),
-					startPosition(startPosition),
-					endPosition(endPosition),
-					amplitude(amplitude),
-					width(width)
+				: centroid(centroid),
+				startPosition(startPosition),
+				endPosition(endPosition),
+				amplitude(amplitude),
+				width(width)
 			{}
 
 			std::string toString() const
@@ -100,11 +100,8 @@ namespace dnf_composer
 				return str;
 			}
 
-			void print() const
-			{
-				const std::string str = toString();
-				tools::logger::log(tools::logger::LogLevel::INFO, str);
-			}
+			void print() const;
+			
 		};
 
 		struct NeuralFieldState
@@ -117,7 +114,7 @@ namespace dnf_composer
 
 			NeuralFieldState()
 				:bumps({}), stable(false), lowestActivation(0.0),
-					highestActivation(0.0), thresholdForStability(0.035)
+				highestActivation(0.0), thresholdForStability(0.035)
 			{}
 
 			std::string toString() const
@@ -133,11 +130,8 @@ namespace dnf_composer
 				return str;
 			}
 
-			void print() const
-			{
-				const std::string str = toString();
-				tools::logger::log(tools::logger::LogLevel::INFO, str);
-			}
+			void print() const;
+
 		};
 
 		class NeuralField : public Element
@@ -146,7 +140,7 @@ namespace dnf_composer
 			NeuralFieldParameters parameters;
 			NeuralFieldState state;
 		public:
-			NeuralField(const ElementCommonParameters& elementCommonParameters, 
+			NeuralField(const ElementCommonParameters& elementCommonParameters,
 				const NeuralFieldParameters& parameters);
 
 			void init() override;
@@ -157,7 +151,7 @@ namespace dnf_composer
 			void setThresholdForStability(double threshold) { state.thresholdForStability = threshold; }
 			void setParameters(const NeuralFieldParameters& parameters);
 			NeuralFieldParameters getParameters() const;
-		    //double getCentroid() const;
+			//double getCentroid() const;
 			bool isStable() const;
 			double getLowestActivation() const { return state.lowestActivation; }
 			double getHighestActivation() const { return state.highestActivation; }

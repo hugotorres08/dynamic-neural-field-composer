@@ -9,6 +9,19 @@ namespace dnf_composer
 {
 	namespace element
 	{
+		void NeuralFieldBump::print() const
+		{
+			const std::string str = toString();
+			dnf_composer::tools::logger::log(dnf_composer::tools::logger::LogLevel::INFO, str);
+		}
+
+		void NeuralFieldState::print() const
+		{
+			const std::string str = toString();
+			dnf_composer::tools::logger::log(dnf_composer::tools::logger::LogLevel::INFO, str);
+		}
+		
+
 		NeuralField::NeuralField(const ElementCommonParameters& elementCommonParameters, 
 			const NeuralFieldParameters& parameters)
 			: Element(elementCommonParameters), parameters(parameters)

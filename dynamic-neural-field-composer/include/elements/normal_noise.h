@@ -4,6 +4,7 @@
 #include "tools/math.h"
 
 #include "element.h"
+//#include "element_parameters/normal_noise_parameters.h"
 
 
 namespace dnf_composer
@@ -34,7 +35,7 @@ namespace dnf_composer
 		private:
 			NormalNoiseParameters parameters;
 		public:
-			NormalNoise(const ElementCommonParameters& elementCommonParameters, 
+			NormalNoise(const ElementCommonParameters& elementCommonParameters,
 				NormalNoiseParameters parameters);
 
 			void init() override;

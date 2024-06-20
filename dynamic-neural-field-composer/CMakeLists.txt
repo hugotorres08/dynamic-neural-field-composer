@@ -61,7 +61,6 @@ set(elements_headers
     "include/elements/activation_function.h"
     "include/elements/element.h"
     "include/elements/element_factory.h"
-    "include/elements/element_parameters.h"
     "include/elements/field_coupling.h"
     "include/elements/gauss_field_coupling.h"
     "include/elements/gauss_kernel.h"
@@ -71,8 +70,19 @@ set(elements_headers
     "include/elements/mexican_hat_kernel.h"
     "include/elements/neural_field.h"
     "include/elements/normal_noise.h"
-
 )
+set(element_parameters_headers
+"include/element_parameters/element_parameters.h"
+#"include/element_parameters/field_coupling_parameters.h"
+##"include/element_parameters/gauss_field_coupling_parameters.h"
+#"include/element_parameters/gauss_kernel_parameters.h"
+#"include/element_parameters/gauss_stimulus_parameters.h"
+#"include/element_parameters/lateral_interactions_parameters.h"
+#"include/element_parameters/mexican_hat_kernel_parameters.h"
+#"include/element_parameters/neural_field_parameters.h"
+#"include/element_parameters/normal_noise_parameters.h"
+)
+
 set(tools_headers
     "include/tools/logger.h"
     "include/tools/math.h"
@@ -98,6 +108,7 @@ set(header
     ${simulation_headers}
     ${application_headers}
     ${elements_headers}
+    ${element_parameters_headers}
     ${tools_headers}
     ${exceptions_headers}
     ${user_interface_headers}
@@ -116,7 +127,6 @@ set(src
     "src/elements/activation_function.cpp"
     "src/elements/element.cpp"
     "src/elements/element_factory.cpp"
-    "src/elements/element_parameters.cpp"
     "src/elements/field_coupling.cpp"
     "src/elements/gauss_field_coupling.cpp" 
     "src/elements/gauss_kernel.cpp"
@@ -126,7 +136,17 @@ set(src
     "src/elements/mexican_hat_kernel.cpp"
     "src/elements/neural_field.cpp" 
     "src/elements/normal_noise.cpp"
-    
+
+    "src/element_parameters/element_parameters.cpp"
+#"src/element_parameters/field_coupling_parameters.cpp"
+##"include/element_parameters/gauss_field_coupling_parameters.h"
+#"src/element_parameters/gauss_kernel_parameters.cpp"
+#"src/element_parameters/gauss_stimulus_parameters.cpp"
+#"src/element_parameters/lateral_interactions_parameters.cpp"
+#"src/element_parameters/mexican_hat_kernel_parameters.cpp"
+#"src/element_parameters/neural_field_parameters.cpp"
+#"src/element_parameters/normal_noise_parameters.cpp"
+
     "src/tools/math.cpp"
     "src/tools/profiling.cpp"
     "src/tools/utils.cpp"
@@ -211,6 +231,8 @@ install(FILES ${tools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/tools
 install(FILES ${exceptions_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/exceptions)
 install(FILES ${user_interface_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/user_interface)
 install(FILES ${wizards_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/wizards)
+install(FILES ${element_parameters_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/element_parameters)
+
 
 install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CONFIG_INSTALL_DIR}
     FILE ${CMAKE_PROJECT_NAME}-config.cmake
@@ -225,77 +247,77 @@ imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})
 
-# Add executable example project run_sim
-set(EXE_PROJECT_EXAMPLE_RUN_SIM ${CMAKE_PROJECT_NAME}-example-run_sim)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM} "examples/run_sim.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Add executable example project run_sim_headless
-set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_headless)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headless.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Add executable example project run_learning_wizard
-set(EXE_PROJECT_EXAMPLE_LEARNING_WIZARD ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
-add_executable(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} "examples/run_learning_wizard.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Add executable example project run_sim_read_write
-set(EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE ${CMAKE_PROJECT_NAME}-example-run_sim_read_write)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} "examples/run_sim_read_write.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Add executable example project run_testbench
-set(EXE_PROJECT_EXAMPLE_RUN_TESTBENCH ${CMAKE_PROJECT_NAME}-example-run_testbench)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} "examples/run_testbench.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Add executable example project run_element_factory
-set(EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_element_factory)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} "examples/run_element_factory.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Add executable example project pepper_robot_joint_task_model
-set(EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-pepper-joint_task_model)
-add_executable(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} "examples/pepper_robot_joint_task_model.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Add executable example project panda_joint_task_model
-set(EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-panda_joint_task_model)
-add_executable(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} "examples/panda_robot_joint_task_model.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
+## Add executable example project run_sim
+#set(EXE_PROJECT_EXAMPLE_RUN_SIM ${CMAKE_PROJECT_NAME}-example-run_sim)
+#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM} "examples/run_sim.cpp")
+#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Add executable example project run_sim_headless
+#set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_headless)
+#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headless.cpp")
+#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Add executable example project run_learning_wizard
+#set(EXE_PROJECT_EXAMPLE_LEARNING_WIZARD ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
+#add_executable(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} "examples/run_learning_wizard.cpp")
+#target_include_directories(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Add executable example project run_sim_read_write
+#set(EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE ${CMAKE_PROJECT_NAME}-example-run_sim_read_write)
+#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} "examples/run_sim_read_write.cpp")
+#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Add executable example project run_testbench
+#set(EXE_PROJECT_EXAMPLE_RUN_TESTBENCH ${CMAKE_PROJECT_NAME}-example-run_testbench)
+#add_executable(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} "examples/run_testbench.cpp")
+#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Add executable example project run_element_factory
+#set(EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_element_factory)
+#add_executable(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} "examples/run_element_factory.cpp")
+#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Add executable example project pepper_robot_joint_task_model
+#set(EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-pepper-joint_task_model)
+#add_executable(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} "examples/pepper_robot_joint_task_model.cpp")
+#target_include_directories(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Add executable example project panda_joint_task_model
+#set(EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-panda_joint_task_model)
+#add_executable(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} "examples/panda_robot_joint_task_model.cpp")
+#target_include_directories(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
 
 # Setup Catch2
 #enable_testing()

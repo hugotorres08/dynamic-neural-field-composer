@@ -5,6 +5,7 @@
 
 #include "elements/lateral_interactions.h"
 
+
 namespace dnf_composer
 {
 	namespace element

@@ -3,7 +3,7 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 
-#include "elements/element_parameters.h"
+#include "element_parameters/element_parameters.h"
 
 namespace dnf_composer
 {
@@ -12,6 +12,12 @@ namespace dnf_composer
 		ElementSpatialDimensionParameters::ElementSpatialDimensionParameters(int x_max, double d_x)
 			: x_max(x_max), size(static_cast<int>(std::round(x_max / d_x))), d_x(d_x)
 		{}
+
+		bool ElementSpatialDimensionParameters::operator==(const ElementSpatialDimensionParameters& other) const
+		{
+			constexpr double epsilon = 1e-6;
+			return x_max == other.x_max && std::abs(d_x - other.d_x) < epsilon;
+		}
 
 		void ElementSpatialDimensionParameters::print() const
 		{
@@ -36,6 +42,12 @@ namespace dnf_composer
 			: uniqueIdentifier(uniqueIdentifierCounter++), uniqueName(std::move(elementName)),
 				label(ElementLabel::UNINITIALIZED)
 		{}
+
+		bool ElementIdentifiers::operator==(const ElementIdentifiers& other) const
+		{
+			return uniqueIdentifier == other.uniqueIdentifier && uniqueName == other.uniqueName &&
+				label == other.label;
+		}
 
 		void ElementIdentifiers::print() const
 		{
@@ -73,6 +85,11 @@ namespace dnf_composer
 			const ElementSpatialDimensionParameters& dimensionParameters)
 			: identifiers(std::move(identifiers)), dimensionParameters(dimensionParameters)
 		{}
+
+		bool ElementCommonParameters::operator==(const ElementCommonParameters& other) const
+		{
+			return identifiers == other.identifiers && dimensionParameters == other.dimensionParameters;
+		}
 
 		void ElementCommonParameters::print() const
 		{

@@ -18,14 +18,14 @@ namespace dnf_composer
 			bool circular;
 			bool normalized;
 
-			LateralInteractionsParameters(double widthExc, double amplitudeExc, 
-				double widthInh, double amplitudeInh, 
-				double amplitudeGlobal, 
+			LateralInteractionsParameters(double widthExc, double amplitudeExc,
+				double widthInh, double amplitudeInh,
+				double amplitudeGlobal,
 				bool circular = true, bool normalized = true)
 				: widthExc(widthExc), amplitudeExc(amplitudeExc),
-					widthInh(widthInh), amplitudeInh(amplitudeInh),
-					amplitudeGlobal(amplitudeGlobal),
-					circular(circular), normalized(normalized)
+				widthInh(widthInh), amplitudeInh(amplitudeInh),
+				amplitudeGlobal(amplitudeGlobal),
+				circular(circular), normalized(normalized)
 			{}
 
 			bool operator==(const LateralInteractionsParameters& other) const
@@ -61,7 +61,7 @@ namespace dnf_composer
 		private:
 			LateralInteractionsParameters parameters;
 		public:
-			LateralInteractions(const ElementCommonParameters& elementCommonParameters, 
+			LateralInteractions(const ElementCommonParameters& elementCommonParameters,
 				LateralInteractionsParameters li_parameters);
 
 			void init() override;
