@@ -337,6 +337,13 @@ namespace dnf_composer
 					[](T a, T b) { return a + b * b; });
 				return std::sqrt(sum_of_squares);
 			}
+
+			inline double normalize(const double value, const double min, const double max)
+			{
+				if (value < min) return 0.0;
+				if (value > max) return 1.0;
+				return (value - min) / (max - min);
+			}
 		}
 	}
 

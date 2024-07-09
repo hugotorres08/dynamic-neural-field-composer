@@ -5,39 +5,40 @@
 #include "dynamic-neural-field-composer.h"
 #include "tools/profiling.h"
 
-const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 100, 1.0 };
+const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 50, 1.0 };
 
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
 	auto simulation = dnf_composer::createSimulation("test sim", 25, 0, 0);
 	constexpr bool circularity = false;
-	constexpr bool normalization = false;
+	constexpr bool normalization = true;
 
-	const dnf_composer::element::GaussStimulusParameters gcp_a = { 5, 10, 50, circularity, normalization};
+	const dnf_composer::element::GaussStimulusParameters gcp_a = { 3, 14, 24, circularity, false};
 	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus
 		(new dnf_composer::element::GaussStimulus({ "gauss stimulus", fieldDimensions }, gcp_a));
 	simulation->addElement(gauss_stimulus);
 
-	const dnf_composer::element::GaussStimulusParameters gcp_b = { 5, 10, 25, circularity, normalization };
-	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus_b
-	(new dnf_composer::element::GaussStimulus({ "gauss stimulus b", fieldDimensions }, gcp_b));
-	simulation->addElement(gauss_stimulus_b);
+	//const dnf_composer::element::GaussStimulusParameters gcp_b = { 5, 10, 25, circularity, normalization };
+	//const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus_b
+	//(new dnf_composer::element::GaussStimulus({ "gauss stimulus b", fieldDimensions }, gcp_b));
+	//simulation->addElement(gauss_stimulus_b);
 
-	const dnf_composer::element::LateralInteractionsParameters lip1 = { 5.3,7.4,6,6, -0.55, circularity, normalization};
-	const std::shared_ptr<dnf_composer::element::LateralInteractions> k_3
-	(new dnf_composer::element::LateralInteractions({ "k 3", fieldDimensions }, lip1));
-	simulation->addElement(k_3);
+	//const dnf_composer::element::LateralInteractionsParameters lip1 = { 5.3,7.4,6,6, -0.55, circularity, normalization};
+	//const std::shared_ptr<dnf_composer::element::LateralInteractions> k_3
+	//(new dnf_composer::element::LateralInteractions({ "k 3", fieldDimensions }, lip1));
+	//simulation->addElement(k_3);
 
-	const dnf_composer::element::NormalNoiseParameters nnp = {0.3};
+	const dnf_composer::element::NormalNoiseParameters nnp = {0.01};
 	const std::shared_ptr<dnf_composer::element::NormalNoise> noise(new dnf_composer::element::NormalNoise({ "noise", fieldDimensions }, nnp));
 	simulation->addElement(noise);
 
-	const dnf_composer::element::GaussKernelParameters gkp1 = { 2, 1, circularity, normalization };
+	const dnf_composer::element::GaussKernelParameters gkp1 = { 3.0, 3.5, circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1
 		(new dnf_composer::element::GaussKernel({ "k 1", fieldDimensions }, gkp1));
 	simulation->addElement(k_1);
+	const dnf_composer::element::GaussKernelParameters gkp2 = { 3.0, 1.0, circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_2
-	(new dnf_composer::element::GaussKernel({ "k 2", fieldDimensions }, gkp1));
+	(new dnf_composer::element::GaussKernel({ "k 2", fieldDimensions }, gkp2));
 	simulation->addElement(k_2);
 
 	//const dnf_composer::element::MexicanHatKernelParameters mhkp1 = { 6.8, 4.1, 8.9, 3.4};
@@ -46,36 +47,38 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	//simulation->addElement(k_1);
 
 	const dnf_composer::element::HeavisideFunction activationFunction{ 0};
-	const dnf_composer::element::NeuralFieldParameters nfp1 = { 25, -10 , activationFunction };
+
+	const dnf_composer::element::NeuralFieldParameters nfp1 = { 100, -5 , activationFunction };
 	const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_1(new dnf_composer::element::NeuralField({ "neural field 1", fieldDimensions }, nfp1));
 	simulation->addElement(neural_field_1);
 	const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_2(new dnf_composer::element::NeuralField({ "neural field 2", fieldDimensions }, nfp1));
 	simulation->addElement(neural_field_2);
-	const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_3(new dnf_composer::element::NeuralField({ "neural field 3", fieldDimensions }, nfp1));
-	simulation->addElement(neural_field_3);
+	//const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_3(new dnf_composer::element::NeuralField({ "neural field 3", fieldDimensions }, nfp1));
+	//simulation->addElement(neural_field_3);
 
 	neural_field_1->addInput(k_1);
 	neural_field_1->addInput(gauss_stimulus);
-	neural_field_1->addInput(noise);
+	//neural_field_1->addInput(noise);
 	k_1->addInput(neural_field_1);
 
 	neural_field_2->addInput(k_2);
 	k_2->addInput(neural_field_2);
 
-	neural_field_3->addInput(k_3);
-	k_3->addInput(neural_field_3);
+	//neural_field_3->addInput(k_3);
+	//k_3->addInput(neural_field_3);
 
+	const dnf_composer::element::GaussKernelParameters gkp12 = { 3, 8.5, circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1_2
-	(new dnf_composer::element::GaussKernel({ "k 1 2", fieldDimensions }, gkp1));
+	(new dnf_composer::element::GaussKernel({ "k 1 2", fieldDimensions }, gkp12));
 	simulation->addElement(k_1_2);
-	const std::shared_ptr<dnf_composer::element::GaussKernel> k_2_3
-	(new dnf_composer::element::GaussKernel({ "k 2 3", fieldDimensions }, gkp1));
-	simulation->addElement(k_2_3);
+	//const std::shared_ptr<dnf_composer::element::GaussKernel> k_2_3
+	//(new dnf_composer::element::GaussKernel({ "k 2 3", fieldDimensions }, gkp1));
+	//simulation->addElement(k_2_3);
 
 	k_1_2->addInput(neural_field_1);
 	neural_field_2->addInput(k_1_2);
-	k_2_3->addInput(neural_field_2);
-	neural_field_3->addInput(k_2_3);
+	//k_2_3->addInput(neural_field_2);
+	//neural_field_3->addInput(k_2_3);
 
 	return simulation;
 }
@@ -85,37 +88,37 @@ int main(int argc, char* argv[])
 	try
 	{
 		using namespace dnf_composer;
-		const auto simulation = std::make_shared<Simulation>("test sim", 5, 0, 0);
-		tools::logger::Logger::setMinLogLevel(tools::logger::LogLevel::DEBUG);
+		//const auto simulation = std::make_shared<Simulation>("test sim", 5, 0, 0);
+		//tools::logger::Logger::setMinLogLevel(tools::logger::LogLevel::DEBUG);
 
 
-		const element::NeuralField field{ { "field", fieldDimensions}, {25, -10, element::HeavisideFunction{0}} };
-		const element::GaussStimulus stimulus{ { "stimulus", fieldDimensions }, {5, 25, 50} };
+		//const element::NeuralField field{ { "field", fieldDimensions}, {25, -10, element::HeavisideFunction{0}} };
+		//const element::GaussStimulus stimulus{ { "stimulus", fieldDimensions }, {5, 25, 50} };
 
-		simulation->addElement(std::make_shared<element::NeuralField>(field));
-		simulation->addElement(std::make_shared<element::GaussStimulus>(stimulus));
-		simulation->createInteraction("stimulus", "output", "field");
+		//simulation->addElement(std::make_shared<element::NeuralField>(field));
+		//simulation->addElement(std::make_shared<element::GaussStimulus>(stimulus));
+		//simulation->createInteraction("stimulus", "output", "field");
 
-		simulation->init();
-		double highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
-		std::cout << "Highest activation: " << highestActivation << std::endl;
-		simulation->run(10);
-		highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
-		std::cout << "Highest activation: " << highestActivation << std::endl;
-		simulation->close();
-		simulation->step();
-		simulation->init();
-		highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
-		std::cout << "Highest activation: " << highestActivation << std::endl;
-		std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->setThresholdForStability(0.0001);
-		uint16_t steps = 0;
-		do
-		{
-			steps++;
-			simulation->step();
-		} while (!std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->isStable());
-		highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
-		std::cout << "Highest activation: " << highestActivation << " in " << steps << " steps." << std::endl;
+		//simulation->init();
+		//double highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
+		//std::cout << "Highest activation: " << highestActivation << std::endl;
+		//simulation->run(10);
+		//highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
+		//std::cout << "Highest activation: " << highestActivation << std::endl;
+		//simulation->close();
+		//simulation->step();
+		//simulation->init();
+		//highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
+		//std::cout << "Highest activation: " << highestActivation << std::endl;
+		//std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->setThresholdForStability(0.0001);
+		//uint16_t steps = 0;
+		//do
+		//{
+		//	steps++;
+		//	simulation->step();
+		//} while (!std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->isStable());
+		//highestActivation = std::dynamic_pointer_cast<element::NeuralField>(simulation->getElement("field"))->getHighestActivation();
+		//std::cout << "Highest activation: " << highestActivation << " in " << steps << " steps." << std::endl;
 
 		//std::ofstream logFile(std::string(OUTPUT_DIRECTORY) + "/profiling/simulation-setup-with-logs.txt");
 
@@ -139,35 +142,44 @@ int main(int argc, char* argv[])
 		//	simulation->removeElement("stimulus");
 		//}
 
-		//// After defining the simulation, we can create the application.
-		//const auto simulation = getExperimentSimulation();
-		//const dnf_composer::Application app{ simulation };
+		// After defining the simulation, we can create the application.
+		//const auto simulation = std::make_shared<dnf_composer::Simulation>("test", 25, 0, 0);
+		//simulation->read("C:/dev-files/dynamic-neural-field-composer/dynamic-neural-field-composer/data/simulations/[neat-dnfs] self-sustained-single-bump.json");
+		const auto simulation = getExperimentSimulation();
+		const dnf_composer::Application app{ simulation };
 
-		//// After creating the application, we can add the windows we want to display.
-		//app.addWindow<imgui_kit::LogWindow>();
-		//app.addWindow<dnf_composer::user_interface::SimulationWindow>();
-		//app.addWindow<dnf_composer::user_interface::ElementWindow>();
+		// After creating the application, we can add the windows we want to display.
+		app.addWindow<imgui_kit::LogWindow>();
+		app.addWindow<dnf_composer::user_interface::SimulationWindow>();
+		app.addWindow<dnf_composer::user_interface::ElementWindow>();
 
-		//// To add plots with data already loaded you need to use a Visualization object.
-		//dnf_composer::user_interface::PlotParameters plotParameters;
-		//plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
-		//plotParameters.dimensions = { 0, fieldDimensions.x_max, -15, 14, fieldDimensions.d_x };
-		//auto visualization = createVisualization(simulation);
-		//visualization->addPlottingData("neural field 1", "activation");
-		//visualization->addPlottingData("neural field 2", "activation");
-		//visualization->addPlottingData("neural field 3", "activation");
+		// To add plots with data already loaded you need to use a Visualization object.
+		dnf_composer::user_interface::PlotParameters plotParameters;
+		plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
+		plotParameters.dimensions = { 0, fieldDimensions.x_max, -15, 40, fieldDimensions.d_x };
+		auto visualization = createVisualization(simulation);
+		visualization->addPlottingData("neural field 1", "activation");
+		visualization->addPlottingData("neural field 2", "activation");
+		visualization->addPlottingData("k 1", "kernel");
+		visualization->addPlottingData("k 1", "output");
+		visualization->addPlottingData("k 2", "kernel");
+		visualization->addPlottingData("k 2", "output");
+		visualization->addPlottingData("k 1 2", "kernel");
+		visualization->addPlottingData("k 1 2", "output");
 
-		//app.addWindow<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters);
+		app.addWindow<user_interface::PlotWindow>(visualization, plotParameters);
+		app.addWindow<user_interface::NodeGraphWindow>();
+		app.addWindow<user_interface::FieldMetricsWindow>();
 
-		//app.init();
-		//
-		//bool userRequestClose = false;
-		//while (!userRequestClose)
-		//{
-		//	app.step();
-		//	userRequestClose = app.hasUIBeenClosed();
-		//}
-		//app.close();
+		app.init();
+		
+		bool userRequestClose = false;
+		while (!userRequestClose)
+		{
+			app.step();
+			userRequestClose = app.hasUIBeenClosed();
+		}
+		app.close();
 		return 0;
 	}
 	catch (const dnf_composer::Exception& ex)

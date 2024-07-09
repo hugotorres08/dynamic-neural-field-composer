@@ -111,6 +111,9 @@ namespace dnf_composer
 			double lowestActivation;
 			double highestActivation;
 			double thresholdForStability;
+			double previousActivationSum = 0.0;
+			double previousActivationAvg = 0.0;
+			double previousActivationNorm = 0.0;
 
 			NeuralFieldState()
 				:bumps({}), stable(false), lowestActivation(0.0),

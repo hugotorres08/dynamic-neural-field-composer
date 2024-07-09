@@ -36,6 +36,7 @@ namespace dnf_composer
 			const int startingValue = static_cast<int>(kernelRange[0]);
 			std::iota(rangeX.begin(), rangeX.end(), -startingValue);
 			std::vector<double> gauss(commonParameters.dimensionParameters.size);
+
 			if (parameters.normalized)
 				gauss = tools::math::gaussNorm(rangeX, 0.0, parameters.width);
 			else

@@ -171,7 +171,7 @@ namespace dnf_composer
 
 			static constexpr double epsilon = 1e-6;
 			if (std::abs(amplitude - static_cast<float>(gkp.amplitude)) > epsilon ||
-				std::abs(width - static_cast<float>(gkp.width)) > epsilon)
+				std::abs(width - static_cast<float>(gkp.width)) > epsilon )
 			{
 				gkp.amplitude = amplitude;
 				gkp.width = width;

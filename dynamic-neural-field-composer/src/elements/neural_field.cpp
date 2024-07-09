@@ -171,33 +171,30 @@ namespace dnf_composer
 
 		void NeuralField::checkStability()
 		{
-			static double previousActivationSum = 0.0;
-			static double previousActivationAvg = 0.0;
-			static double previousActivationNorm = 0.0;
 			const double currentActivationSum = tools::math::calculateVectorSum(components["activation"]);
 			const double currentActivationAvg = tools::math::calculateVectorAvg(components["activation"]);
 			const double currentActivationNorm = tools::math::calculateVectorNorm(components["activation"]);
 
 			// this function is done like this, instead of comparing to a previously saved vector of activation,
 			// because it is simply faster and takes up less memory.
-			if (std::abs(currentActivationSum - previousActivationSum) < state.thresholdForStability)
+			if (std::abs(currentActivationSum - state.previousActivationSum) < state.thresholdForStability)
 			{
-				if (std::abs(currentActivationAvg - previousActivationAvg) < state.thresholdForStability)
+				if (std::abs(currentActivationAvg - state.previousActivationAvg) < state.thresholdForStability)
 				{
-					if(std::abs(currentActivationNorm - previousActivationNorm) < state.thresholdForStability)
+					if(std::abs(currentActivationNorm - state.previousActivationNorm) < state.thresholdForStability)
 					{
-						previousActivationSum = currentActivationSum;
-						previousActivationAvg = currentActivationAvg;
-						previousActivationNorm = currentActivationNorm;
+						state.previousActivationSum = currentActivationSum;
+						state.previousActivationAvg = currentActivationAvg;
+						state.previousActivationNorm = currentActivationNorm;
 						state.stable = true;
 						return;
 					}
 				}
 			}
 
-			previousActivationSum = currentActivationSum;
-			previousActivationAvg = currentActivationAvg;
-			previousActivationNorm = currentActivationNorm;
+			state.previousActivationSum = currentActivationSum;
+			state.previousActivationAvg = currentActivationAvg;
+			state.previousActivationNorm = currentActivationNorm;
 			state.stable = false;
 
 			// also valid and simpler approach

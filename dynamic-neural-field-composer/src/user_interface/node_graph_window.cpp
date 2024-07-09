@@ -8,8 +8,8 @@ namespace dnf_composer
 		NodeGraphWindow::NodeGraphWindow(const std::shared_ptr<Simulation>& simulation)
 			: simulation(simulation)
 		{
-			config.SettingsFile = "dnf_composer_node_graph_window.json";
-			context = ImNodeEditor::CreateEditor(&config);
+			config.SettingsFile = "imnode-window.json";
+			context = ImNodeEditor::CreateEditor();
 		}
 
 		void NodeGraphWindow::render()
@@ -21,11 +21,13 @@ namespace dnf_composer
 			{
 				ImNodeEditor::SetCurrentEditor(context);
 				const auto& io = ImGui::GetIO();
+				ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 255, 255, 255)); // Set text color to white
 				ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
 				ImNodeEditor::Begin("My Node ImNodeEditor");
 					renderElementNodes();
 				ImNodeEditor::End();
 				ImNodeEditor::SetCurrentEditor(nullptr);
+				ImGui::PopStyleColor();
 			}
 			ImGui::End();
 		}
@@ -205,7 +207,7 @@ namespace dnf_composer
 			{
 				const std::string linkId = std::to_string(element->getUniqueIdentifier())
 					+ std::to_string(connection->getUniqueIdentifier());
-				const size_t link = stoi(linkId) + startingLinkId;
+				const size_t link = stoull(linkId) + startingLinkId;
 				ImNodeEditor::Link(link,
 					connection->getUniqueIdentifier() + startingOutputPinId, 
 					element->getUniqueIdentifier() + startingInputPinId,
