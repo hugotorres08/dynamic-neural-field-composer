@@ -75,8 +75,7 @@ namespace dnf_composer
 			for (const auto& input : inputs)
 			{
 				if (input.first->getLabel() == ElementLabel::GAUSS_KERNEL ||
-					input.first->getLabel() == ElementLabel::MEXICAN_HAT_KERNEL ||
-					input.first->getLabel() == ElementLabel::LATERAL_INTERACTIONS)
+					input.first->getLabel() == ElementLabel::MEXICAN_HAT_KERNEL)
 				{
 					auto kernel = std::dynamic_pointer_cast<Kernel>(input.first);
 					for (const auto& kernelInput : kernel->getInputs())

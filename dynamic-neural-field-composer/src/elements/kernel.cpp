@@ -15,7 +15,7 @@ namespace dnf_composer
 			kernelRange = { 0, 0 };
 			extIndex = {};
 			fullSum = 0.0;
-			cutOfFactor = 5; // do not change this
+			cutOfFactor = 5;
 			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size);
 		}
 

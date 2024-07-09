@@ -150,9 +150,6 @@ namespace dnf_composer
 				case element::ElementLabel::GAUSS_FIELD_COUPLING:
 					addElementGaussFieldCoupling();
 					break;
-				case element::ElementLabel::LATERAL_INTERACTIONS:
-					addElementLateralInteractions();
-					break;
 				default:
 					log(tools::logger::LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.");
 					break;
@@ -258,11 +255,14 @@ namespace dnf_composer
 			ImGui::InputDouble("amplitude", &amplitude, 1.0f, 10.0f, "%.2f");
 			static double position = 50;
 			ImGui::InputDouble("position", &position, 1.0f, 10.0f, "%.2f");
-
+			static bool normalized = false;
+			ImGui::Checkbox("normalized", &normalized);
+			static bool circular = false;
+			ImGui::Checkbox("circular", &circular);
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
-				const element::GaussStimulusParameters gsp = { sigma, amplitude, position };
+				const element::GaussStimulusParameters gsp = { sigma, amplitude, position, circular, normalized};
 				const element::ElementSpatialDimensionParameters dimensions{ x_max, d_x };
 				const std::shared_ptr<element::GaussStimulus> gaussStimulus(new element::GaussStimulus ({id, dimensions}, gsp));
 				simulation->addElement(gaussStimulus);
@@ -314,10 +314,16 @@ namespace dnf_composer
 			ImGui::InputDouble("sigma", &sigma, 1.0f, 10.0f, "%.2f");
 			static double amplitude = 2;
 			ImGui::InputDouble("amplitude", &amplitude, 1.0f, 10.0f, "%.2f");
+			static double amplitudeGlobal = -0.01;
+			ImGui::InputDouble("amplitudeGlobal", &amplitudeGlobal, -0.01f, -0.1f, "%.2f");
+			static bool normalized = true;
+			ImGui::Checkbox("normalized", &normalized);
+			static bool circular = false;
+			ImGui::Checkbox("circular", &circular);
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
-				const element::GaussKernelParameters gkp = { sigma, amplitude };
+				const element::GaussKernelParameters gkp = { sigma, amplitude, amplitudeGlobal, circular, normalized};
 				const element::ElementSpatialDimensionParameters dimensions{ x_max, d_x };
 				const std::shared_ptr<element::GaussKernel> gaussKernel(new element::GaussKernel({ id, dimensions }, gkp));
 				simulation->addElement(gaussKernel);
@@ -340,41 +346,20 @@ namespace dnf_composer
 			ImGui::InputDouble("sigmaInh", &sigmaInh, 1.0f, 10.0f, "%.2f");
 			static double amplitudeInh = 15;
 			ImGui::InputDouble("amplitudeInh", &amplitudeInh, 1.0f, 10.0f, "%.2f");
+			static double amplitudeGlobal = -0.01;
+			ImGui::InputDouble("amplitudeGlobal", &amplitudeGlobal, -0.01f, -0.1f, "%.2f");
+			static bool normalized = true;
+			ImGui::Checkbox("normalized", &normalized);
+			static bool circular = false;
+			ImGui::Checkbox("circular", &circular);
+
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
-				const element::MexicanHatKernelParameters mhkp = { sigmaExc, amplitudeExc, sigmaInh, amplitudeInh };
+				const element::MexicanHatKernelParameters mhkp = { sigmaExc, amplitudeExc, sigmaInh, amplitudeInh , amplitudeGlobal, circular, normalized};
 				const element::ElementSpatialDimensionParameters dimensions{ x_max, d_x };
 				const std::shared_ptr<element::MexicanHatKernel> mexicanHatKernel(new element::MexicanHatKernel({ id, dimensions }, mhkp));
 				simulation->addElement(mexicanHatKernel);
-			}
-		}
-
-		void SimulationWindow::addElementLateralInteractions() const
-		{
-			static char id[CHAR_SIZE] = "lateral interactions u -> u";
-			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
-			static int x_max = 100;
-			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
-			static double d_x = 0.1;
-			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
-			static double sigmaExc = 5;
-			ImGui::InputDouble("sigmaExc", &sigmaExc, 1.0f, 10.0f, "%.2f");
-			static double amplitudeExc = 15;
-			ImGui::InputDouble("amplitudeExc", &amplitudeExc, 1.0f, 10.0f, "%.2f");
-			static double sigmaInh = 10;
-			ImGui::InputDouble("sigmaInh", &sigmaInh, 1.0f, 10.0f, "%.2f");
-			static double amplitudeInh = 15;
-			ImGui::InputDouble("amplitudeInh", &amplitudeInh, 1.0f, 10.0f, "%.2f");
-			static double amplitudeGlobal = -0.1;
-			ImGui::InputDouble("amplitudeGlobal", &amplitudeGlobal, -1.0f, -10.0f, "%.2f");
-
-			if (ImGui::Button("Add", { 100.0f, 30.0f }))
-			{
-				const element::LateralInteractionsParameters lip = { sigmaExc, amplitudeExc, sigmaInh, amplitudeInh , amplitudeGlobal};
-				const element::ElementSpatialDimensionParameters dimensions{ x_max, d_x };
-				const std::shared_ptr<element::LateralInteractions> lateralInteractions(new element::LateralInteractions({ id, dimensions }, lip));
-				simulation->addElement(lateralInteractions);
 			}
 		}
 

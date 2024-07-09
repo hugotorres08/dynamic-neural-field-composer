@@ -53,9 +53,11 @@ namespace dnf_composer
 		{
 			updateInput();
 
+			fullSum = std::accumulate(components["input"].begin(), components["input"].end(),
+				(double)0.0);
+
 			std::vector<double> convolution(commonParameters.dimensionParameters.size);
 			const std::vector<double> subDataInput = tools::math::obtainCircularVector(extIndex, components["input"]);
-
 
 			if (parameters.circular)
 				convolution = tools::math::conv_valid(subDataInput, components["kernel"]);
@@ -63,7 +65,7 @@ namespace dnf_composer
 				convolution = tools::math::conv_same(components["input"], components["kernel"]);
 
 			for (int i = 0; i < components["output"].size(); i++)
-				components["output"][i] = convolution[i];
+				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
 		}
 
 		std::string GaussKernel::toString() const

@@ -5,7 +5,10 @@
 #include "simulation/simulation.h"
 #include "elements/gauss_stimulus.h"
 #include "elements/neural_field.h"
-
+#include "elements/field_coupling.h"
+#include "elements/gauss_kernel.h"
+#include "elements/mexican_hat_kernel.h"
+#include "elements/normal_noise.h"
 
 namespace dnf_composer
 {
@@ -45,8 +48,6 @@ namespace dnf_composer
 			static void modifyElementMexicanHatKernel(const std::shared_ptr<element::Element>& element);
 			static void modifyElementNormalNoise(const std::shared_ptr<element::Element>& element);
 			static void modifyElementGaussFieldCoupling(const std::shared_ptr<element::Element>& element);
-			static void modifyElementLateralInteractions(const std::shared_ptr<element::Element>& element);
-
 		};
 	}
 }

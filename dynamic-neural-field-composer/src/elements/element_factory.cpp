@@ -58,12 +58,6 @@ namespace dnf_composer
 					const auto params = dynamic_cast<const FieldCouplingParameters*>(&elementSpecificParameters);
 					return std::make_shared<FieldCoupling>(elementCommonParameters, *params);
 				};
-
-			elementCreators[ElementLabel::LATERAL_INTERACTIONS] = [](const ElementCommonParameters& elementCommonParameters, const ElementSpecificParameters& elementSpecificParameters)
-				{
-					const auto params = dynamic_cast<const LateralInteractionsParameters*>(&elementSpecificParameters);
-					return std::make_shared<LateralInteractions>(elementCommonParameters, *params);
-				};
 		}
 
 		std::shared_ptr<Element> ElementFactory::createElement(ElementLabel type, const ElementCommonParameters& elementCommonParameters, const ElementSpecificParameters& elementSpecificParameters)

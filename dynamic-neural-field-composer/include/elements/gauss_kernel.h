@@ -14,12 +14,14 @@ namespace dnf_composer
 		{
 			double width;
 			double amplitude;
+			double amplitudeGlobal;
 			bool circular;
 			bool normalized;
 
-			GaussKernelParameters(double width = 5.0, double amp = 10.0,
+			GaussKernelParameters(double width = 3.0, double amp = 3.0, double ampGlobal = -0.01,
 				bool circular = true, bool normalized = true)
-				: width(width), amplitude(amp), circular(circular), normalized(normalized)
+				: width(width), amplitude(amp), amplitudeGlobal(ampGlobal),
+					circular(circular), normalized(normalized)
 			{}
 
 			bool operator==(const GaussKernelParameters& other) const {
@@ -27,6 +29,7 @@ namespace dnf_composer
 
 				return std::abs(width - other.width) < epsilon &&
 					std::abs(amplitude - other.amplitude) < epsilon &&
+					std::abs(amplitudeGlobal - other.amplitudeGlobal) < epsilon &&
 					circular == other.circular &&
 					normalized == other.normalized;
 			}
@@ -36,6 +39,7 @@ namespace dnf_composer
 				std::string result = "Gauss kernel parameters\n";
 				result += "Width: " + std::to_string(width) + "\n";
 				result += "Amplitude: " + std::to_string(amplitude) + "\n";
+				result += "Amplitude global: " + std::to_string(amplitudeGlobal) + "\n";
 				result += "Circular: " + std::to_string(circular) + "\n";
 				result += "Normalized: " + std::to_string(normalized) + "\n";
 				return result;

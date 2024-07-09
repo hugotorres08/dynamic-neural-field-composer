@@ -4,10 +4,7 @@
 
 #include "user_interface/element_window.h"
 
-#include "elements/field_coupling.h"
-#include "elements/gauss_kernel.h"
-#include "elements/lateral_interactions.h"
-#include "elements/normal_noise.h"
+
 
 namespace dnf_composer
 {
@@ -70,9 +67,6 @@ namespace dnf_composer
 				break;
 			case element::ElementLabel::GAUSS_FIELD_COUPLING:
 				modifyElementGaussFieldCoupling(element);
-				break;
-			case element::ElementLabel::LATERAL_INTERACTIONS:
-				modifyElementLateralInteractions(element);
 				break;
 			default:
 				log(tools::logger::LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.");
@@ -160,6 +154,7 @@ namespace dnf_composer
 
 			auto amplitude = static_cast<float>(gkp.amplitude);
 			auto width = static_cast<float>(gkp.width);
+			auto amplitudeGlobal = static_cast<float>(gkp.amplitudeGlobal);
 
 			std::string label = "##" + element->getUniqueName() + "Amplitude.";
 			ImGui::SliderFloat(label.c_str(), &amplitude, 0, 100);
@@ -169,12 +164,18 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &width, 0, 30);
 			ImGui::SameLine(); ImGui::Text("Width");
 
+			label = "##" + element->getUniqueName() + "Amplitude global.";
+			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 10);
+			ImGui::SameLine(); ImGui::Text("Amplitude global");
+
 			static constexpr double epsilon = 1e-6;
 			if (std::abs(amplitude - static_cast<float>(gkp.amplitude)) > epsilon ||
-				std::abs(width - static_cast<float>(gkp.width)) > epsilon )
+				std::abs(width - static_cast<float>(gkp.width)) > epsilon ||
+				std::abs(amplitudeGlobal - static_cast<float>(gkp.amplitudeGlobal)) > epsilon)
 			{
 				gkp.amplitude = amplitude;
 				gkp.width = width;
+				gkp.amplitudeGlobal = amplitudeGlobal;
 				kernel->setParameters(gkp);
 			}
 		}
@@ -188,6 +189,7 @@ namespace dnf_composer
 			auto widthExc = static_cast<float>(mhkp.widthExc);
 			auto amplitudeInh = static_cast<float>(mhkp.amplitudeInh);
 			auto widthInh = static_cast<float>(mhkp.widthInh);
+			auto amplitudeGlobal = static_cast<float>(mhkp.amplitudeGlobal);
 
 			std::string label = "##" + element->getUniqueName() + "Amplitude exc.";
 			ImGui::SliderFloat(label.c_str(), &amplitudeExc, 0, 100);
@@ -205,16 +207,22 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &widthInh, 0, 30);
 			ImGui::SameLine(); ImGui::Text("Width inh.");
 
+			label = "##" + element->getUniqueName() + "Amplitude global.";
+			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 10);
+			ImGui::SameLine(); ImGui::Text("Amplitude global");
+
 			static constexpr double epsilon = 1e-6;
 			if(std::abs(amplitudeExc - static_cast<float>(mhkp.amplitudeExc)) > epsilon ||
 				std::abs(widthExc - static_cast<float>(mhkp.widthExc)) > epsilon ||
 				std::abs(amplitudeInh - static_cast<float>(mhkp.amplitudeInh)) > epsilon ||
-				std::abs(widthInh - static_cast<float>(mhkp.widthInh)) > epsilon)
+				std::abs(widthInh - static_cast<float>(mhkp.widthInh)) > epsilon ||
+				std::abs(amplitudeGlobal - static_cast<float>(mhkp.amplitudeGlobal)) > epsilon)
 			{
 				mhkp.amplitudeExc = amplitudeExc;
 				mhkp.widthExc = widthExc;
 				mhkp.amplitudeInh = amplitudeInh;
 				mhkp.widthInh = widthInh;
+				mhkp.amplitudeGlobal = amplitudeGlobal;
 
 				kernel->setParameters(mhkp);
 			}
@@ -260,55 +268,6 @@ namespace dnf_composer
 			//                                                                                                     `--`                      
 
 		}
-
-		void ElementWindow::modifyElementLateralInteractions(const std::shared_ptr<element::Element>& element)
-		{
-			const auto kernel = std::dynamic_pointer_cast<element::LateralInteractions>(element);
-			element::LateralInteractionsParameters lip = kernel->getParameters();
-
-			auto amplitudeExc = static_cast<float>(lip.amplitudeExc);
-			auto widthExc = static_cast<float>(lip.widthExc);
-			auto amplitudeInh = static_cast<float>(lip.amplitudeInh);
-			auto widthInh = static_cast<float>(lip.widthInh);
-			auto amplitudeGlobal = static_cast<float>(lip.amplitudeGlobal);
-
-			std::string label = "##" + element->getUniqueName() + "Amplitude exc.";
-			ImGui::SliderFloat(label.c_str(), &amplitudeExc, 0, 100);
-			ImGui::SameLine(); ImGui::Text("Amplitude exc.");
-
-			label = "##" + element->getUniqueName() + "Width exc.";
-			ImGui::SliderFloat(label.c_str(), &widthExc, 0, 30);
-			ImGui::SameLine(); ImGui::Text("Width exc.");
-
-			label = "##" + element->getUniqueName() + "Amplitude inh.";
-			ImGui::SliderFloat(label.c_str(), &amplitudeInh, 0, 100);
-			ImGui::SameLine(); ImGui::Text("Amplitude inh.");
-
-			label = "##" + element->getUniqueName() + "Width inh.";
-			ImGui::SliderFloat(label.c_str(), &widthInh, 0, 30);
-			ImGui::SameLine(); ImGui::Text("Width inh.");
-
-			label = "##" + element->getUniqueName() + "Amplitude global";
-			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -5.0, 0.0);
-			ImGui::SameLine(); ImGui::Text("Amplitude global");
-
-			static constexpr double epsilon = 1e-6;
-			if (std::abs(amplitudeExc - static_cast<float>(lip.amplitudeExc)) > epsilon ||
-				std::abs(widthExc - static_cast<float>(lip.widthExc)) > epsilon ||
-				std::abs(amplitudeInh - static_cast<float>(lip.amplitudeInh)) > epsilon ||
-				std::abs(widthInh - static_cast<float>(lip.widthInh)) > epsilon ||
-				std::abs(amplitudeGlobal - static_cast<float>(lip.amplitudeGlobal)) > epsilon)
-			{
-				lip.amplitudeExc = amplitudeExc;
-				lip.widthExc = widthExc;
-				lip.amplitudeInh = amplitudeInh;
-				lip.widthInh = widthInh;
-				lip.amplitudeGlobal = amplitudeGlobal;
-
-				kernel->setParameters(lip);
-			}
-		}
+		
 	}
-
-
 }

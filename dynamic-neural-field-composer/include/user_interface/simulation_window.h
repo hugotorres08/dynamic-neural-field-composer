@@ -5,7 +5,6 @@
 
 #include "wizards/learning_wizard.h"
 #include "simulation/simulation.h"
-#include "elements/lateral_interactions.h"
 #include "elements/element_factory.h"
 
 enum CharSize : size_t
@@ -57,7 +56,6 @@ namespace dnf_composer
 			void addElementMexicanHatKernel() const;
 			void addElementNormalNoise() const;
 			void addElementGaussFieldCoupling() const;
-			void addElementLateralInteractions() const;
 		};
 	}
 }

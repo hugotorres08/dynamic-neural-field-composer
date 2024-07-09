@@ -148,17 +148,6 @@ namespace dnf_composer
             elementJson["amplitudeInh"] = kernelParameters.amplitudeInh;
         }
         break;
-        case element::LATERAL_INTERACTIONS:
-        {
-            const auto kernel = std::dynamic_pointer_cast<element::LateralInteractions>(element);
-            const auto kernelParameters = kernel->getParameters();
-            elementJson["widthExc"] = kernelParameters.widthExc;
-            elementJson["amplitudeExc"] = kernelParameters.amplitudeExc;
-            elementJson["widthInh"] = kernelParameters.widthInh;
-            elementJson["amplitudeInh"] = kernelParameters.amplitudeInh;
-            elementJson["amplitudeGlobal"] = kernelParameters.amplitudeGlobal;
-        }
-        break;
         case element::NORMAL_NOISE:
         {
             const auto normalNoise = std::dynamic_pointer_cast<element::NormalNoise>(element);
@@ -270,25 +259,11 @@ namespace dnf_composer
                 const double widthExc = elementJson["widthExc"];
                 const double amplitudeInh = elementJson["amplitudeInh"];
                 const double widthInh = elementJson["widthInh"];
+                const double amplitudeGlobal = elementJson["amplitudeGlobal"];
 
                 auto kernel = std::make_shared<element::MexicanHatKernel>(
                     element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::MexicanHatKernelParameters(widthExc, amplitudeExc, widthInh, amplitudeInh)
-                );
-                simulation->addElement(kernel);
-            }
-            break;
-            case element::LATERAL_INTERACTIONS:
-            {
-                const double amplitudeExc = elementJson["amplitudeExc"];
-                const double widthExc = elementJson["widthExc"];
-                const double amplitudeInh = elementJson["amplitudeInh"];
-                const double widthInh = elementJson["widthInh"];
-                const double amplitudeGlobal = elementJson["amplitudeGlobal"];
-
-                auto kernel = std::make_shared<element::LateralInteractions>(
-                    element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::LateralInteractionsParameters(widthExc, amplitudeExc, widthInh, amplitudeInh, amplitudeGlobal)
+                    element::MexicanHatKernelParameters(widthExc, amplitudeExc, widthInh, amplitudeInh, amplitudeGlobal)
                 );
                 simulation->addElement(kernel);
             }

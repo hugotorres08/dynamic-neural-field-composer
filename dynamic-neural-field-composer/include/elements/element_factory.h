@@ -9,7 +9,6 @@
 #include "elements/gauss_field_coupling.h"
 #include "elements/field_coupling.h"
 #include "simulation/simulation.h"
-#include "elements/lateral_interactions.h"
 
 namespace dnf_composer
 {

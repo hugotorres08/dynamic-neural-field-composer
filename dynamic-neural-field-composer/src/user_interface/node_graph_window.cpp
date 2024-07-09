@@ -1,6 +1,7 @@
 #include "user_interface/node_graph_window.h"
 
 
+
 namespace dnf_composer
 {
 	namespace user_interface
@@ -140,19 +141,6 @@ namespace dnf_composer
 				ImGui::Text("Amplitude: %.2f", parameters.amplitude);
 				ImGui::Text("Center: %.2f", parameters.position);
 				ImGui::Text("Width: %.2f", parameters.width);
-				ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
-				ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
-			}
-			break;
-			case element::ElementLabel::LATERAL_INTERACTIONS:
-			{
-				const auto lateralInteractions = std::dynamic_pointer_cast<element::LateralInteractions>(element);
-				const element::LateralInteractionsParameters parameters = lateralInteractions->getParameters();
-				ImGui::Text("Amplitude exc: %.2f", parameters.amplitudeExc);
-				ImGui::Text("Amplitude inh: %.2f", parameters.amplitudeInh);
-				ImGui::Text("Width exc: %.2f", parameters.widthExc);
-				ImGui::Text("Width inh: %.2f", parameters.widthInh);
-				ImGui::Text("Amplitude global: %.2f", parameters.amplitudeGlobal);
 				ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
 				ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
 			}

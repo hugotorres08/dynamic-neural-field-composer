@@ -18,13 +18,14 @@ namespace dnf_composer
 		{
 			const double maxWidth = std::max((parameters.amplitudeExc != 0.0) ? parameters.widthExc : 0,
 				(parameters.amplitudeInh != 0.0) ? parameters.widthInh : 0);
-			kernelRange = tools::math::computeKernelRange(maxWidth, cutOfFactor, 
+			kernelRange = tools::math::computeKernelRange(maxWidth, cutOfFactor,
 				commonParameters.dimensionParameters.size, parameters.circular);
 
 			if (parameters.circular)
 				extIndex = tools::math::createExtendedIndex(commonParameters.dimensionParameters.size, kernelRange);
 			else
 				extIndex = {};
+
 
 			int rangeXsize = kernelRange[0] + kernelRange[1] + 1;
 			std::vector<int> rangeX(rangeXsize);
@@ -39,15 +40,17 @@ namespace dnf_composer
 			}
 			else
 			{
+
 				gaussExc = tools::math::gauss(rangeX, 0.0, parameters.widthExc);
 				gaussInh = tools::math::gauss(rangeX, 0.0, parameters.widthInh);
 			}
 
 			components["kernel"].resize(rangeX.size());
 			for (int i = 0; i < components["kernel"].size(); i++)
-				components["kernel"][i] = parameters.amplitudeExc * gaussExc[i] - 
+				components["kernel"][i] = parameters.amplitudeExc * gaussExc[i] -
 				parameters.amplitudeInh * gaussInh[i];
 
+			fullSum = 0;
 			std::ranges::fill(components["input"], 0.0);
 		}
 
@@ -55,8 +58,11 @@ namespace dnf_composer
 		{
 			updateInput();
 
+			fullSum = std::accumulate(components["input"].begin(), components["input"].end(),
+				(double)0.0);
+
 			std::vector<double> convolution(commonParameters.dimensionParameters.size);
-			const std::vector<double> subDataInput = tools::math::obtainCircularVector(extIndex, 
+			const std::vector<double> subDataInput = tools::math::obtainCircularVector(extIndex,
 				components["input"]);
 
 			if (parameters.circular)
@@ -64,8 +70,8 @@ namespace dnf_composer
 			else
 				convolution = tools::math::conv_same(components["input"], components["kernel"]);
 
-			for (size_t i = 0; i < components["output"].size(); i++)
-				components["output"][i] = convolution[i];
+			for (int i = 0; i < components["output"].size(); i++)
+				components["output"][i] = convolution[i] + parameters.amplitudeGlobal * fullSum;
 		}
 
 		std::string MexicanHatKernel::toString() const
