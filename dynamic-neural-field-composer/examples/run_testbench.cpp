@@ -13,7 +13,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	constexpr bool circularity = false;
 	constexpr bool normalization = true;
 
-	const dnf_composer::element::GaussStimulusParameters gcp_a = { 3, 14, 24, circularity, false};
+	const dnf_composer::element::GaussStimulusParameters gcp_a = { 3, 10, 25, circularity, false};
 	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus
 		(new dnf_composer::element::GaussStimulus({ "gauss stimulus", fieldDimensions }, gcp_a));
 	simulation->addElement(gauss_stimulus);
@@ -32,11 +32,11 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	const std::shared_ptr<dnf_composer::element::NormalNoise> noise(new dnf_composer::element::NormalNoise({ "noise", fieldDimensions }, nnp));
 	simulation->addElement(noise);
 
-	const dnf_composer::element::GaussKernelParameters gkp1 = { 3.0, 3.5, circularity, normalization };
+	const dnf_composer::element::GaussKernelParameters gkp1 = { 3.0, 3.0, circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1
 		(new dnf_composer::element::GaussKernel({ "k 1", fieldDimensions }, gkp1));
 	simulation->addElement(k_1);
-	const dnf_composer::element::GaussKernelParameters gkp2 = { 3.0, 1.0, circularity, normalization };
+	const dnf_composer::element::GaussKernelParameters gkp2 = { 3.0, 3.0, circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_2
 	(new dnf_composer::element::GaussKernel({ "k 2", fieldDimensions }, gkp2));
 	simulation->addElement(k_2);
@@ -67,7 +67,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	//neural_field_3->addInput(k_3);
 	//k_3->addInput(neural_field_3);
 
-	const dnf_composer::element::GaussKernelParameters gkp12 = { 3, 8.5, circularity, normalization };
+	const dnf_composer::element::GaussKernelParameters gkp12 = { 3.0, 6.0, circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1_2
 	(new dnf_composer::element::GaussKernel({ "k 1 2", fieldDimensions }, gkp12));
 	simulation->addElement(k_1_2);
