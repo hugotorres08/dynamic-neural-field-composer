@@ -9,6 +9,7 @@
 #include "elements/gauss_kernel.h"
 #include "elements/mexican_hat_kernel.h"
 #include "elements/normal_noise.h"
+#include "elements/gauss_field_coupling.h"
 
 namespace dnf_composer
 {
@@ -31,16 +32,6 @@ namespace dnf_composer
 		private:
 			void renderModifyElementParameters() const;
 			static void switchElementToModify(const std::shared_ptr<element::Element>& element);
-			// unfortunately, these functions need to be here like this
-			//                .=-.-.   _ __    
-			//    .-.,.---.  /==/_ /.-`.' ,`.  
-			//   /==/  `   \|==|, |/==/, -   \ 
-			//  |==|-, .=., |==|  |==| _ .=. | 
-			//  |==|   '='  /==|- |==| , '=',| 
-			//  |==|- ,   .'|==| ,|==|-  '..'  
-			//  |==|_  . ,'.|==|- |==|,  |     
-			//  /==/  /\ ,  )==/. /==/ - |     
-			//  `--`-`--`--'`--`-``--`---'     
 			static void modifyElementNeuralField(const std::shared_ptr<element::Element>& element) ;
 			static void modifyElementGaussStimulus(const std::shared_ptr<element::Element>& element);
 			static void modifyElementFieldCoupling(const std::shared_ptr<element::Element>& element);

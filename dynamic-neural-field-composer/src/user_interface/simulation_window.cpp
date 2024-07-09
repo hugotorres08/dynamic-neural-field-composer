@@ -299,7 +299,33 @@ namespace dnf_composer
 
 		void SimulationWindow::addElementGaussFieldCoupling() const
 		{
-			log(tools::logger::LogLevel::ERROR, "This is still not done, I'm sorry! :(.");
+			static char id[CHAR_SIZE] = "gauss field coupling u -> v";
+			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
+			static int x_max = 100;
+			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
+			static double d_x = 0.1;
+			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
+			static double x_i = 1;
+			ImGui::InputDouble("x_i", &x_i, 1.0f, 10.0f, "%.2f");
+			static double x_j = 1;
+			ImGui::InputDouble("x_j", &x_j, 1.0f, 10.0f, "%.2f");
+			static double amplitude = 5;
+			ImGui::InputDouble("amplitude", &amplitude, 1.0f, 10.0f, "%.2f");
+			static double width = 5;
+			ImGui::InputDouble("width", &width, 1.0f, 10.0f, "%.2f");
+			static bool normalized = true;
+			ImGui::Checkbox("normalized", &normalized);
+			static bool circular = false;
+			ImGui::Checkbox("circular", &circular);
+
+			if (ImGui::Button("Add", { 100.0f, 30.0f }))
+			{
+				const element::GaussFieldCouplingParameters gfcp = { normalized, circular, {{x_i, x_j, amplitude, width}} };
+				const element::ElementSpatialDimensionParameters dimensions{ x_max, d_x };
+				const std::shared_ptr<element::GaussFieldCoupling> gaussCoupling(new element::GaussFieldCoupling({ id, dimensions }, gfcp));
+				simulation->addElement(gaussCoupling);
+			}
+
 		}
 
 		void SimulationWindow::addElementGaussKernel() const

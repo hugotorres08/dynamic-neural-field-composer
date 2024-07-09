@@ -139,6 +139,22 @@ namespace dnf_composer
 			}
 
 			template<typename T>
+			std::vector<T> nonCircularGauss(uint32_t size, const T& sigma, const T& position)
+			{
+				std::vector<T> g(size);
+				std::vector<T> xRange(size);
+				std::iota(xRange.begin(), xRange.end(), static_cast<T>(1));
+
+				for (uint32_t i = 0; i < size; i++)
+				{
+					T distance = static_cast<T>(i + 1) - position;
+					g[i] = std::exp(-0.5 * std::pow(distance, 2) / std::pow(sigma, 2));
+				}
+
+				return g;
+			}
+
+			template<typename T>
 			std::vector<T> circularGauss(uint32_t size, const T& sigma, const T& position)
 			{
 				uint32_t l = size - 2 * 1 + 2;

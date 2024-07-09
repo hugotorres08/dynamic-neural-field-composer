@@ -249,24 +249,71 @@ namespace dnf_composer
 
 		void ElementWindow::modifyElementGaussFieldCoupling(const std::shared_ptr<element::Element>& element)
 		{
+			const auto gfc = std::dynamic_pointer_cast<element::GaussFieldCoupling>(element);
+			element::GaussFieldCouplingParameters gfcp = gfc->getParameters();
+			const int size = gfc->getMaxSpatialDimension();
+			const auto other_size = gfc->getComponent("output").size();
 
-			//                                                                                                                               
-			//           ,--.                                                                                                                
-			//         ,--.'|              ___                                                                                       ___     
-			//     ,--,:  : |            ,--.'|_                ,---,                                                              ,--.'|_   
-			//  ,`--.'`|  ' :   ,---.    |  | :,'             ,---.'|   ,---.        ,---,                                         |  | :,'  
-			//  |   :  :  | |  '   ,'\   :  : ' :             |   | :  '   ,'\   ,-+-. /  |                                        :  : ' :  
-			//  :   |   \ | : /   /   |.;__,'  /              |   | | /   /   | ,--.'|'   |   ,---.                .--,   ,---.  .;__,'  /   
-			//  |   : '  '; |.   ; ,. :|  |   |             ,--.__| |.   ; ,. :|   |  ,"' |  /     \             /_ ./|  /     \ |  |   |    
-			//  '   ' ;.    ;'   | |: ::__,'| :            /   ,'   |'   | |: :|   | /  | | /    /  |         , ' , ' : /    /  |:__,'| :    
-			//  |   | | \   |'   | .; :  '  : |__         .   '  /  |'   | .; :|   | |  | |.    ' / |        /___/ \: |.    ' / |  '  : |__  
-			//  '   : |  ; .'|   :    |  |  | '.'|        '   ; |:  ||   :    ||   | |  |/ '   ;   /|         .  \  ' |'   ;   /|  |  | '.'| 
-			//  |   | '`--'   \   \  /   ;  :    ;        |   | '/  ' \   \  / |   | |--'  '   |  / |          \  ;   :'   |  / |  ;  :    ; 
-			//  '   : |        `----'    |  ,   /         |   :    :|  `----'  |   |/      |   :    |           \  \  ;|   :    |  |  ,   /  
-			//  ;   |.'                   ---`-'           \   \  /            '---'        \   \  /             :  \  \\   \  /    ---`-'   
-			//  '---'                                       `----'                           `----'               \  ' ; `----'              
-			//                                                                                                     `--`                      
+			bool normalized = gfcp.normalized;
+			bool circular = gfcp.circular;
 
+			std::string label = "##" + element->getUniqueName() + "Normalized";
+			ImGui::Checkbox(label.c_str(), &normalized);
+			std::string text = "Normalized";
+			ImGui::SameLine(); ImGui::Text(text.c_str());
+
+			label = "##" + element->getUniqueName() + "Circular";
+			ImGui::Checkbox(label.c_str(), &circular);
+			text = "Circular";
+			ImGui::SameLine(); ImGui::Text(text.c_str());
+
+			for (size_t couplingIndex = 0; couplingIndex < gfcp.couplings.size(); ++couplingIndex)
+			{
+				auto& coupling = gfcp.couplings[couplingIndex];
+
+				auto x_i = static_cast<float>(coupling.x_i);
+				auto x_j = static_cast<float>(coupling.x_j);
+				auto amplitude = static_cast<float>(coupling.amplitude);
+				auto width = static_cast<float>(coupling.width);
+
+				label = "##" + element->getUniqueName() + "x_i" + std::to_string(couplingIndex);
+				ImGui::SliderFloat(label.c_str(), &x_i, 0, static_cast<float>(size));
+				text = "x_i " + std::to_string(couplingIndex);
+				ImGui::SameLine(); ImGui::Text(text.c_str());
+
+				label = "##" + element->getUniqueName() + "x_j" + std::to_string(couplingIndex);
+				ImGui::SliderFloat(label.c_str(), &x_j, 0, static_cast<float>(other_size));
+				text = "x_j " + std::to_string(couplingIndex);
+				ImGui::SameLine(); ImGui::Text(text.c_str());
+
+				label = "##" + element->getUniqueName() + "Amplitude" + std::to_string(couplingIndex);
+				ImGui::SliderFloat(label.c_str(), &amplitude, 0, 100);
+				text = "Amplitude " + std::to_string(couplingIndex);
+				ImGui::SameLine(); ImGui::Text(text.c_str());
+
+				label = "##" + element->getUniqueName() + "Width" + std::to_string(couplingIndex);
+				ImGui::SliderFloat(label.c_str(), &width, 1, 30);
+				text = "Width " + std::to_string(couplingIndex);
+				ImGui::SameLine(); ImGui::Text(text.c_str());
+
+				static constexpr double epsilon = 1e-6;
+				if (std::abs(x_i - static_cast<float>(coupling.x_i)) > epsilon ||
+					std::abs(x_j - static_cast<float>(coupling.x_j)) > epsilon ||
+					std::abs(amplitude - static_cast<float>(coupling.amplitude)) > epsilon ||
+					std::abs(width - static_cast<float>(coupling.width)) > epsilon ||
+					normalized != gfcp.normalized ||
+					circular != gfcp.circular)
+				{
+					gfcp.normalized = normalized;
+					gfcp.circular = circular;
+					coupling.x_i = x_i;
+					coupling.x_j = x_j;
+					coupling.amplitude = amplitude;
+					coupling.width = width;
+					gfc->setParameters(gfcp);
+				}
+			}
+			
 		}
 		
 	}

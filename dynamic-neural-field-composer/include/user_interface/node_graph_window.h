@@ -8,6 +8,7 @@
 #include "elements/neural_field.h"
 #include "elements/normal_noise.h"
 #include "elements/mexican_hat_kernel.h"
+#include "elements/gauss_field_coupling.h"
 
 namespace dnf_composer
 {

@@ -6,20 +6,58 @@
 
 namespace dnf_composer
 {
-	struct WeightedCoupling
-	{
-		double x_i, x_j, w_i_j;
-	};
-
 	namespace element
 	{
+		struct GaussCoupling
+		{
+			double x_i, x_j, amplitude, width;
+
+			GaussCoupling(double x_i, double x_j, double amplitude, double width)
+				: x_i(x_i), x_j(x_j), amplitude(amplitude), width(width)
+			{
+				if (x_i <= 0.0 || x_j <= 0.0 || amplitude <= 0.0 || width <= 0.0)
+					throw Exception(ErrorCode::ELEM_INVALID_PARAMETER, "GaussCoupling");
+			}
+
+			bool operator==(const GaussCoupling& other) const
+			{
+				constexpr double epsilon = 1e-6;
+
+				return std::abs(x_i - other.x_i) < epsilon &&
+					std::abs(x_j - other.x_j) < epsilon &&
+					std::abs(amplitude - other.amplitude) < epsilon &&
+					std::abs(width - other.width) < epsilon;
+			}
+
+			std::string toString() const
+			{
+				std::string result = "Gauss coupling [";
+				result += "x_i: " + std::to_string(x_i) + " ";
+				result += "x_j: " + std::to_string(x_j) + " ";
+				result += "a: " + std::to_string(amplitude) + " ";
+				result += "w: " + std::to_string(width) + "]\n";
+				return result;
+			}
+
+			void print() const
+			{
+				tools::logger::log(tools::logger::INFO, toString());
+			}
+		};
+
+
 		struct GaussFieldCouplingParameters : ElementSpecificParameters
 		{
-			int inputFieldSize = 0;
-			double width = 0.0;
-			std::vector<WeightedCoupling> couplings;
+			bool normalized = true;
+			bool circular = false;
+			std::vector<GaussCoupling> couplings;
 
-			void addCoupling(const WeightedCoupling& coupling)
+			GaussFieldCouplingParameters(bool normalized = true, bool circular = false,
+				const std::vector<GaussCoupling>& couplings = {})
+				: normalized(normalized), circular(circular), couplings(couplings)
+			{}
+
+			void addCoupling(const GaussCoupling& coupling)
 			{
 				couplings.emplace_back(coupling);
 			}
@@ -27,13 +65,12 @@ namespace dnf_composer
 			std::string toString() const override
 			{
 				std::string result = "Gauss field coupling parameters:\n";
-				result += "inputFieldSize: " + std::to_string(inputFieldSize) + "\n";
-				result += "width: " + std::to_string(width) + "\n";
+				result += "Normalized: " + std::to_string(normalized) + "\n";
+				result += "Circular: " + std::to_string(circular) + "\n";
+
 				for (const auto& coupling : couplings)
-				{
-					result += "Coupling: x_i: " + std::to_string(coupling.x_i) + 
-						" x_j: " + std::to_string(coupling.x_j) + " w_i_j: " + std::to_string(coupling.w_i_j) + "\n";
-				}
+					result += coupling.toString();
+
 				return result;
 			}
 		};
@@ -46,7 +83,7 @@ namespace dnf_composer
 			GaussFieldCoupling(const ElementCommonParameters& elementCommonParameters, 
 				const GaussFieldCouplingParameters& gfc_parameters);
 
-			void addCoupling(const WeightedCoupling& coupling);
+			void addCoupling(const GaussCoupling& coupling);
 
 			void init() override;
 			void step(double t, double deltaT) override;
@@ -54,6 +91,7 @@ namespace dnf_composer
 			std::shared_ptr<Element> clone() const override;
 
 			GaussFieldCouplingParameters getParameters() const;
+			void setParameters(const GaussFieldCouplingParameters& gfc_parameters);
 		private:
 			void updateOutput();
 		};

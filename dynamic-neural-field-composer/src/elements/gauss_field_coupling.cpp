@@ -12,12 +12,7 @@ namespace dnf_composer
 			const GaussFieldCouplingParameters& gfc_parameters)
 			: Element(elementCommonParameters), parameters(gfc_parameters)
 		{
-
-			if (gfc_parameters.inputFieldSize <= 0)
-				throw Exception(ErrorCode::ELEM_SIZE_NOT_ALLOWED, commonParameters.identifiers.uniqueName);
-
 			commonParameters.identifiers.label = ElementLabel::GAUSS_FIELD_COUPLING;
-			components["input"] = std::vector<double>(gfc_parameters.inputFieldSize);
 		}
 
 		void GaussFieldCoupling::init()
@@ -48,6 +43,7 @@ namespace dnf_composer
 		void GaussFieldCoupling::updateOutput()
 		{
 			std::vector<double> summedGaussians(commonParameters.dimensionParameters.size);
+			std::vector<double> gauss(commonParameters.dimensionParameters.size);
 			std::ranges::fill(summedGaussians, 0.0);
 
 			for (const auto& coupling : parameters.couplings)
@@ -55,11 +51,17 @@ namespace dnf_composer
 				const auto activationAtx_i = components["input"][static_cast<int>(coupling.x_i)];
 				if (activationAtx_i > 0.0)
 				{
-					std::vector<double> gauss = tools::math::circularGauss(commonParameters.dimensionParameters.size,
-						parameters.width, coupling.x_j);
+					double amplitude = coupling.amplitude;
+					if (parameters.normalized)
+						amplitude /= sqrt(2 * std::numbers::pi * std::pow(coupling.width, 2));
+					if (parameters.circular)
+						gauss = tools::math::circularGauss(commonParameters.dimensionParameters.size,
+														coupling.width, coupling.x_j);
+					else
+						gauss = tools::math::nonCircularGauss(commonParameters.dimensionParameters.size,
+													coupling.width, coupling.x_j);
 					for (auto& element : gauss)
-						element *= coupling.w_i_j * activationAtx_i * element;
-
+						element *= amplitude * activationAtx_i * element;
 					for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
 						summedGaussians[i] += gauss[i];
 				}
@@ -68,7 +70,7 @@ namespace dnf_composer
 			components["output"] = std::move(summedGaussians);
 		}
 
-		void GaussFieldCoupling::addCoupling(const WeightedCoupling& coupling)
+		void GaussFieldCoupling::addCoupling(const GaussCoupling& coupling)
 		{
 			parameters.couplings.emplace_back(coupling);
 		}
@@ -76,6 +78,11 @@ namespace dnf_composer
 		GaussFieldCouplingParameters GaussFieldCoupling::getParameters() const
 		{
 			return parameters;
+		}
+
+		void GaussFieldCoupling::setParameters(const GaussFieldCouplingParameters& gfc_parameters)
+		{
+			parameters = gfc_parameters;
 		}
 	}
 }

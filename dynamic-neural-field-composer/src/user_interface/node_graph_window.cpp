@@ -1,7 +1,6 @@
 #include "user_interface/node_graph_window.h"
 
 
-
 namespace dnf_composer
 {
 	namespace user_interface
@@ -155,6 +154,24 @@ namespace dnf_composer
 				ImGui::Text("Width inh: %.2f", parameters.widthInh);
 				ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
 				ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
+			}
+			break;
+			case element::ElementLabel::GAUSS_FIELD_COUPLING:
+			{
+				const auto gfc = std::dynamic_pointer_cast<element::GaussFieldCoupling>(element);
+				const element::GaussFieldCouplingParameters parameters = gfc->getParameters();
+
+				ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
+				ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
+
+				ImGui::Text("Couplings:");
+				for (const auto& coupling : parameters.couplings)
+				{
+					ImGui::Text("x_i: %.2f", coupling.x_i); ImGui::SameLine();
+					ImGui::Text("x_j: %.2f", coupling.x_j); ImGui::SameLine();
+					ImGui::Text("A: %.2f", coupling.amplitude); ImGui::SameLine();
+					ImGui::Text("W: %.2f", coupling.width);
+				}
 			}
 			break;
 			default:
