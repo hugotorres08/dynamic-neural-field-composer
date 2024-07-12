@@ -97,6 +97,7 @@ set(user_interface_headers
     "include/user_interface/plot_window.h"
     "include/user_interface/simulation_window.h"
     "include/user_interface/node_graph_window.h"
+    "include/user_interface/2dplot_window.h"
 )
 set(wizards_headers
     "include/wizards/learning_wizard.h"
@@ -157,6 +158,7 @@ set(src
     "src/user_interface/field_metrics_window.cpp"
     "src/user_interface/element_window.cpp"
     "src/user_interface/node_graph_window.cpp"
+    "src/user_interface/2dplot_window.cpp"
 
     "src/wizards/learning_wizard.cpp"
 )
@@ -263,13 +265,13 @@ ${CMAKE_PROJECT_NAME})
 #${CMAKE_PROJECT_NAME})
 #
 ## Add executable example project run_learning_wizard
-#set(EXE_PROJECT_EXAMPLE_LEARNING_WIZARD ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
-#add_executable(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} "examples/run_learning_wizard.cpp")
-#target_include_directories(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
+set(EXE_PROJECT_EXAMPLE_LEARNING_WIZARD ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
+add_executable(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} "examples/run_learning_wizard.cpp")
+target_include_directories(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE include)
+target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
 #
 ## Add executable example project run_sim_read_write
 #set(EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE ${CMAKE_PROJECT_NAME}-example-run_sim_read_write)

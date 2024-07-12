@@ -3,9 +3,9 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "dynamic-neural-field-composer.h"
-#include "tools/profiling.h"
 
-const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 50, 1.0 };
+
+ const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 50, 0.5 };
 
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
@@ -32,11 +32,11 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	const std::shared_ptr<dnf_composer::element::NormalNoise> noise(new dnf_composer::element::NormalNoise({ "noise", fieldDimensions }, nnp));
 	simulation->addElement(noise);
 
-	const dnf_composer::element::GaussKernelParameters gkp1 = { 3.0, 3.0, circularity, normalization };
+	const dnf_composer::element::GaussKernelParameters gkp1 = { 3.0, 3.0, -0.0, circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1
 	(new dnf_composer::element::GaussKernel({ "k 1", fieldDimensions }, gkp1));
 	simulation->addElement(k_1);
-	const dnf_composer::element::GaussKernelParameters gkp2 = { 3.0, 3.0, circularity, normalization };
+	const dnf_composer::element::GaussKernelParameters gkp2 = { 3.0, 3.0, -0.0,circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_2
 	(new dnf_composer::element::GaussKernel({ "k 2", fieldDimensions }, gkp2));
 	simulation->addElement(k_2);
@@ -67,7 +67,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	//neural_field_3->addInput(k_3);
 	//k_3->addInput(neural_field_3);
 
-	const dnf_composer::element::GaussKernelParameters gkp12 = { 3.0, 6.0, circularity, normalization };
+	const dnf_composer::element::GaussKernelParameters gkp12 = { 3.0, 6.0, 0.0, circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1_2
 	(new dnf_composer::element::GaussKernel({ "k 1 2", fieldDimensions }, gkp12));
 	simulation->addElement(k_1_2);
@@ -76,7 +76,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	//simulation->addElement(k_2_3);
 
 	const std::shared_ptr < dnf_composer::element::GaussFieldCoupling> gfc (new dnf_composer::element::GaussFieldCoupling({ "gfc 1 - 2", fieldDimensions }, {{}}));
-	gfc->addCoupling({ 25.0, 35.0, 2.0, 3.0 });
+	gfc->addCoupling({ 25.0, 35.0, 6.0, 3.0 });
 	simulation->addElement(gfc);
 
 	gfc->addInput(neural_field_1);
@@ -163,7 +163,7 @@ int main(int argc, char* argv[])
 		// To add plots with data already loaded you need to use a Visualization object.
 		dnf_composer::user_interface::PlotParameters plotParameters;
 		plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
-		plotParameters.dimensions = { 0, fieldDimensions.x_max, -15, 40, fieldDimensions.d_x };
+		plotParameters.dimensions = { 0, fieldDimensions.x_max, -8, 8, fieldDimensions.d_x };
 		auto visualization = createVisualization(simulation);
 		visualization->addPlottingData("neural field 1", "activation");
 		visualization->addPlottingData("neural field 2", "activation");
@@ -177,6 +177,7 @@ int main(int argc, char* argv[])
 		app.addWindow<user_interface::PlotWindow>(visualization, plotParameters);
 		app.addWindow<user_interface::NodeGraphWindow>();
 		app.addWindow<user_interface::FieldMetricsWindow>();
+		app.addWindow<user_interface::PlotWindow2D>();
 
 		app.init();
 		

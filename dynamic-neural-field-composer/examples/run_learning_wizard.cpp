@@ -126,7 +126,7 @@ int main(int argc, char* argv[])
 
 		user_interface::PlotParameters perceptualFieldPlotParams;
 		perceptualFieldPlotParams.annotations = { "Perceptual field", "Spatial dimension", "Amplitude" };
-		perceptualFieldPlotParams.dimensions = { 0, 360, -20, 50, 0.5};
+		perceptualFieldPlotParams.dimensions = { 0, 360, -12, 20, 0.5};
 		auto perceptualFieldVisualization = createVisualization(simulation);
 		perceptualFieldVisualization->addPlottingData("perceptual field", "activation");
 		perceptualFieldVisualization->addPlottingData("perceptual field", "input");
@@ -135,7 +135,7 @@ int main(int argc, char* argv[])
 
 		user_interface::PlotParameters outputFieldPlotParams;
 		outputFieldPlotParams.annotations = { "Output field", "Spatial dimension", "Amplitude" };
-		outputFieldPlotParams.dimensions = { 0, 180, -20, 50, 0.5};
+		outputFieldPlotParams.dimensions = { 0, 180, -12, 20, 0.5};
 		auto outputFieldVisualization = createVisualization(simulation);
 		outputFieldVisualization->addPlottingData("output field", "activation");
 		outputFieldVisualization->addPlottingData("output field", "input");

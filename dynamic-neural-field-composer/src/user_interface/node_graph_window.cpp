@@ -131,6 +131,9 @@ namespace dnf_composer
 				const element::GaussKernelParameters parameters = gaussKernel->getParameters();
 				ImGui::Text("Width: %.2f", parameters.width);
 				ImGui::Text("Amplitude: %.2f", parameters.amplitude);
+				ImGui::Text("Amplitude global: %.2f", parameters.amplitudeGlobal);
+				ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
+				ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
 			}
 			break;
 			case element::ElementLabel::GAUSS_STIMULUS:
@@ -140,6 +143,7 @@ namespace dnf_composer
 				ImGui::Text("Amplitude: %.2f", parameters.amplitude);
 				ImGui::Text("Center: %.2f", parameters.position);
 				ImGui::Text("Width: %.2f", parameters.width);
+
 				ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
 				ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
 			}
@@ -152,6 +156,7 @@ namespace dnf_composer
 				ImGui::Text("Amplitude inh: %.2f", parameters.amplitudeInh);
 				ImGui::Text("Width exc: %.2f", parameters.widthExc);
 				ImGui::Text("Width inh: %.2f", parameters.widthInh);
+				ImGui::Text("Amplitude global: %.2f", parameters.amplitudeGlobal);
 				ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
 				ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
 			}

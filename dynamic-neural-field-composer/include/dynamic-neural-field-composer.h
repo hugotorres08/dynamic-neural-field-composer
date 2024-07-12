@@ -11,3 +11,5 @@
 #include "user_interface/element_window.h"
 #include "user_interface/plot_window.h"
 #include "user_interface/field_metrics_window.h"
+#include "user_interface/2dplot_window.h"
+#include "tools/profiling.h"

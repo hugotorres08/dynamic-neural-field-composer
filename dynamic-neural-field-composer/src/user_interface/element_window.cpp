@@ -101,7 +101,8 @@ namespace dnf_composer
 			auto amplitude = static_cast<float>(gsp.amplitude);
 			auto width = static_cast<float>(gsp.width);
 			auto position = static_cast<float>(gsp.position);
-
+			bool circular = gsp.circular;
+			bool normalized = gsp.normalized;
 
 			std::string label = "##" + element->getUniqueName() + "Amplitude";
 			ImGui::SliderFloat(label.c_str(), &amplitude, 0, 30);
@@ -115,14 +116,26 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &position, 0, static_cast<float>(stimulus->getElementCommonParameters().dimensionParameters.x_max));
 			ImGui::SameLine(); ImGui::Text("Position");
 
+			label = "##" + element->getUniqueName() + "Circular";
+			ImGui::Checkbox(label.c_str(), &circular);
+			ImGui::SameLine(); ImGui::Text("Circular");
+
+			label = "##" + element->getUniqueName() + "Normalized";
+			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &normalized);
+			ImGui::SameLine(); ImGui::Text("Normalized");
+
 			static constexpr double epsilon = 1e-6;
 			if (std::abs(amplitude - static_cast<float>(gsp.amplitude)) > epsilon ||
 				std::abs(width - static_cast<float>(gsp.width)) > epsilon ||
-				std::abs(position - static_cast<float>(gsp.position)) > epsilon)
+				std::abs(position - static_cast<float>(gsp.position)) > epsilon ||
+				circular != gsp.circular ||
+				normalized != gsp.normalized)
 			{
 				gsp.amplitude = amplitude;
 				gsp.width = width;
 				gsp.position = position;
+				gsp.circular = circular;
+				gsp.normalized = normalized;
 				stimulus->setParameters(gsp);
 			}
 		}
@@ -155,6 +168,8 @@ namespace dnf_composer
 			auto amplitude = static_cast<float>(gkp.amplitude);
 			auto width = static_cast<float>(gkp.width);
 			auto amplitudeGlobal = static_cast<float>(gkp.amplitudeGlobal);
+			bool circular = gkp.circular;
+			bool normalized = gkp.normalized;
 
 			std::string label = "##" + element->getUniqueName() + "Amplitude.";
 			ImGui::SliderFloat(label.c_str(), &amplitude, 0, 100);
@@ -168,14 +183,26 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 10);
 			ImGui::SameLine(); ImGui::Text("Amplitude global");
 
+			label = "##" + element->getUniqueName() + "Circular";
+			ImGui::Checkbox(label.c_str(), &circular);
+			ImGui::SameLine(); ImGui::Text("Circular");
+
+			label = "##" + element->getUniqueName() + "Normalized";
+			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &normalized);
+			ImGui::SameLine(); ImGui::Text("Normalized");
+
 			static constexpr double epsilon = 1e-6;
 			if (std::abs(amplitude - static_cast<float>(gkp.amplitude)) > epsilon ||
 				std::abs(width - static_cast<float>(gkp.width)) > epsilon ||
-				std::abs(amplitudeGlobal - static_cast<float>(gkp.amplitudeGlobal)) > epsilon)
+				std::abs(amplitudeGlobal - static_cast<float>(gkp.amplitudeGlobal)) > epsilon ||
+				circular != gkp.circular ||
+				normalized != gkp.normalized)
 			{
 				gkp.amplitude = amplitude;
 				gkp.width = width;
 				gkp.amplitudeGlobal = amplitudeGlobal;
+				gkp.circular = circular;
+				gkp.normalized = normalized;
 				kernel->setParameters(gkp);
 			}
 		}
@@ -190,6 +217,8 @@ namespace dnf_composer
 			auto amplitudeInh = static_cast<float>(mhkp.amplitudeInh);
 			auto widthInh = static_cast<float>(mhkp.widthInh);
 			auto amplitudeGlobal = static_cast<float>(mhkp.amplitudeGlobal);
+			bool circular = mhkp.circular;
+			bool normalized = mhkp.normalized;
 
 			std::string label = "##" + element->getUniqueName() + "Amplitude exc.";
 			ImGui::SliderFloat(label.c_str(), &amplitudeExc, 0, 100);
@@ -211,19 +240,31 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 10);
 			ImGui::SameLine(); ImGui::Text("Amplitude global");
 
+			label = "##" + element->getUniqueName() + "Circular";
+			ImGui::Checkbox(label.c_str(), &circular);
+			ImGui::SameLine(); ImGui::Text("Circular");
+
+			label = "##" + element->getUniqueName() + "Normalized";
+			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &normalized);
+			ImGui::SameLine(); ImGui::Text("Normalized");
+
+
 			static constexpr double epsilon = 1e-6;
 			if(std::abs(amplitudeExc - static_cast<float>(mhkp.amplitudeExc)) > epsilon ||
 				std::abs(widthExc - static_cast<float>(mhkp.widthExc)) > epsilon ||
 				std::abs(amplitudeInh - static_cast<float>(mhkp.amplitudeInh)) > epsilon ||
 				std::abs(widthInh - static_cast<float>(mhkp.widthInh)) > epsilon ||
-				std::abs(amplitudeGlobal - static_cast<float>(mhkp.amplitudeGlobal)) > epsilon)
+				std::abs(amplitudeGlobal - static_cast<float>(mhkp.amplitudeGlobal)) > epsilon ||
+				circular != mhkp.circular ||
+				normalized != mhkp.normalized)
 			{
 				mhkp.amplitudeExc = amplitudeExc;
 				mhkp.widthExc = widthExc;
 				mhkp.amplitudeInh = amplitudeInh;
 				mhkp.widthInh = widthInh;
 				mhkp.amplitudeGlobal = amplitudeGlobal;
-
+				mhkp.circular = circular;
+				mhkp.normalized = normalized;
 				kernel->setParameters(mhkp);
 			}
 		}
@@ -263,7 +304,7 @@ namespace dnf_composer
 			ImGui::SameLine(); ImGui::Text(text.c_str());
 
 			label = "##" + element->getUniqueName() + "Circular";
-			ImGui::Checkbox(label.c_str(), &circular);
+			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &circular);
 			text = "Circular";
 			ImGui::SameLine(); ImGui::Text(text.c_str());
 

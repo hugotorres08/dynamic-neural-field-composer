@@ -360,6 +360,23 @@ namespace dnf_composer
 				if (value > max) return 1.0;
 				return (value - min) / (max - min);
 			}
+
+			inline double gaussian_2d(double x, double y, double mu_x, double mu_y, double sigma_x, double sigma_y, double A) {
+				const double exponent = -((std::pow(x - mu_x, 2) / (2 * std::pow(sigma_x, 2))) + (std::pow(y - mu_y, 2) / (2 * std::pow(sigma_y, 2))));
+				return A * std::exp(exponent);
+			}
+
+			template <typename T>
+			std::vector<T> flattenMatrix(const std::vector<std::vector<T>>& matrix)
+			{
+				const int rows = matrix.size();
+				const int cols = matrix[0].size();
+				std::vector<T> flat_matrix(rows * cols);
+				for (int i = 0; i < rows; ++i)
+					for (int j = 0; j < cols; ++j)
+						flat_matrix[i * cols + j] = static_cast<T>(matrix[i][j]);
+				return flat_matrix;
+			}
 		}
 	}
 
