@@ -50,6 +50,7 @@ namespace dnf_composer
 		{
 			bool normalized = true;
 			bool circular = false;
+			ElementSpatialDimensionParameters inputFieldDimensions;
 			std::vector<GaussCoupling> couplings;
 
 			GaussFieldCouplingParameters(bool normalized = true, bool circular = false,
@@ -67,6 +68,7 @@ namespace dnf_composer
 				std::string result = "Gauss field coupling parameters:\n";
 				result += "Normalized: " + std::to_string(normalized) + "\n";
 				result += "Circular: " + std::to_string(circular) + "\n";
+				result += "Input field dimensions: " + inputFieldDimensions.toString() + "\n";
 
 				for (const auto& coupling : couplings)
 					result += coupling.toString();
@@ -92,8 +94,10 @@ namespace dnf_composer
 
 			GaussFieldCouplingParameters getParameters() const;
 			void setParameters(const GaussFieldCouplingParameters& gfc_parameters);
+			ElementSpatialDimensionParameters getInputFieldDimensions() const;
 		private:
 			void updateOutput();
+			void updateInputFieldDimensions();
 		};
 
 	}

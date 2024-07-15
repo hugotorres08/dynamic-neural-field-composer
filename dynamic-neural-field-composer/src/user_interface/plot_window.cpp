@@ -74,9 +74,11 @@ namespace dnf_composer
 
 			static constexpr ImPlotFlags flags = ImPlotFlags_Crosshairs | ImPlotFlags_Equal;
 
+
 			if (ImPlot::BeginPlot(parameters.annotations.title.c_str(), plotSize, flags))
 			{
-				ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str());
+				ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str(),
+					ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
 				ImPlot::SetupLegend(ImPlotLocation_South, ImPlotLegendFlags_Horizontal);
 
 				const int numOfPlots = visualization->getNumberOfPlots();
@@ -88,7 +90,7 @@ namespace dnf_composer
 					// Shift x-values by 1 unit and scale
 					std::vector<double> shiftedXValues(data.size());
 					for (int i = 0; i < data.size(); ++i) 
-						shiftedXValues[i] = (i + 1) * 1.0;
+						shiftedXValues[i] = (i + 1) * parameters.dimensions.dx;
 
 					ImPlot::PlotLine(label.c_str(), shiftedXValues.data(), data.data(), static_cast<int>(data.size()));
 				}
@@ -182,16 +184,10 @@ namespace dnf_composer
 
 		void PlotWindow::configure(const PlotDimensions& dimensions)
 		{
-			if (dimensions.isNull())
-			{
-				ImPlot::SetNextAxesToFit();
-			}
-			else
-			{
-				constexpr static int safeMargin = 1;
-				ImPlot::SetNextAxesLimits(dimensions.xMin - safeMargin, dimensions.xMax + safeMargin,
-				dimensions.yMin - safeMargin, dimensions.yMax + safeMargin);
-			}
+			constexpr static int safeMargin = 1;
+			ImPlot::SetNextAxesLimits(dimensions.xMin - safeMargin, dimensions.xMax + safeMargin,
+			dimensions.yMin - safeMargin, dimensions.yMax + safeMargin);
+
 			ImPlotStyle& style = ImPlot::GetStyle();
 			style.LineWeight = 3.0f;
 		}

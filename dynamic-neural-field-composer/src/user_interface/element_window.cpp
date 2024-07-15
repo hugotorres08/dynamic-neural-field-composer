@@ -293,19 +293,19 @@ namespace dnf_composer
 			const auto gfc = std::dynamic_pointer_cast<element::GaussFieldCoupling>(element);
 			element::GaussFieldCouplingParameters gfcp = gfc->getParameters();
 			const int size = gfc->getMaxSpatialDimension();
-			const auto other_size = gfc->getComponent("output").size();
+			const auto other_size = gfc->getInputFieldDimensions().x_max;
 
 			bool normalized = gfcp.normalized;
 			bool circular = gfcp.circular;
 
-			std::string label = "##" + element->getUniqueName() + "Normalized";
-			ImGui::Checkbox(label.c_str(), &normalized);
-			std::string text = "Normalized";
+			std::string label = "##" + element->getUniqueName() + "Circular";
+			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &circular);
+			std::string text = "Circular";
 			ImGui::SameLine(); ImGui::Text(text.c_str());
 
-			label = "##" + element->getUniqueName() + "Circular";
-			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &circular);
-			text = "Circular";
+			label = "##" + element->getUniqueName() + "Normalized";
+			ImGui::Checkbox(label.c_str(), &normalized);
+			text = "Normalized";
 			ImGui::SameLine(); ImGui::Text(text.c_str());
 
 			for (size_t couplingIndex = 0; couplingIndex < gfcp.couplings.size(); ++couplingIndex)

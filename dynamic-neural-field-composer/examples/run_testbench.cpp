@@ -5,7 +5,7 @@
 #include "dynamic-neural-field-composer.h"
 
 
- const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 50, 1.0 };
+ const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 50, 0.5 };
 
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
@@ -75,7 +75,8 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	//(new dnf_composer::element::GaussKernel({ "k 2 3", fieldDimensions }, gkp1));
 	//simulation->addElement(k_2_3);
 
-	const std::shared_ptr < dnf_composer::element::GaussFieldCoupling> gfc (new dnf_composer::element::GaussFieldCoupling({ "gfc 1 - 2", fieldDimensions }, {{}}));
+	const dnf_composer::element::GaussFieldCouplingParameters gfcp = { normalization, circularity };
+	const std::shared_ptr < dnf_composer::element::GaussFieldCoupling> gfc (new dnf_composer::element::GaussFieldCoupling({ "gfc 1 - 2", fieldDimensions }, gfcp));
 	gfc->addCoupling({ 25.0, 35.0, 6.0, 3.0 });
 	simulation->addElement(gfc);
 
@@ -163,7 +164,7 @@ int main(int argc, char* argv[])
 		// To add plots with data already loaded you need to use a Visualization object.
 		dnf_composer::user_interface::PlotParameters plotParameters;
 		plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
-		//plotParameters.dimensions = { 0, fieldDimensions.x_max, -8, 8, fieldDimensions.d_x };
+		plotParameters.dimensions = { 0, fieldDimensions.x_max, -8, 8, fieldDimensions.d_x };
 		auto visualization = createVisualization(simulation);
 		visualization->addPlottingData("neural field 1", "activation");
 		visualization->addPlottingData("neural field 2", "activation");

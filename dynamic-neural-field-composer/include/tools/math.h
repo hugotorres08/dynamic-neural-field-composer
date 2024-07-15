@@ -366,6 +366,25 @@ namespace dnf_composer
 				return A * std::exp(exponent);
 			}
 
+			inline double circular_gaussian_2d(double x, double y, double mu_x, double mu_y, double sigma, double A) {
+				const double exponent = -((std::pow(x - mu_x, 2) + std::pow(y - mu_y, 2)) / (2 * std::pow(sigma, 2)));
+				return A * std::exp(exponent);
+			}
+
+			inline double wrap(double value, double max_value) {
+				if (value < 0) return value + max_value;
+				if (value >= max_value) return value - max_value;
+				return value;
+			}
+
+			inline double gaussian_2d_periodic(double x, double y, double mu_x, double mu_y, double sigma, double A, double max_x, double max_y) {
+				double dx = std::min(std::abs(x - mu_x), max_x - std::abs(x - mu_x));
+				double dy = std::min(std::abs(y - mu_y), max_y - std::abs(y - mu_y));
+				const double exponent = -((std::pow(dx, 2) + std::pow(dy, 2)) / (2 * std::pow(sigma, 2)));
+				return A * std::exp(exponent);
+			}
+
+
 			template <typename T>
 			std::vector<T> flattenMatrix(const std::vector<std::vector<T>>& matrix)
 			{
