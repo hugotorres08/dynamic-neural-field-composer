@@ -21,8 +21,9 @@ namespace dnf_composer
 		{
 			std::ranges::fill(components["output"], 0.0);
 
-			static constexpr int rows = 100;
-			static constexpr int cols = 100;
+			static const int rows = commonParameters.dimensionParameters.size;
+			static const int cols = commonParameters.dimensionParameters.size;
+
 
 			for (unsigned int x = 0; x < rows; x++)
 			{
@@ -31,7 +32,10 @@ namespace dnf_composer
 				{
 					double value = 0.0;
 					for (const auto& coupling : parameters.couplings)
-						value += tools::math::gaussian_2d(x, y, coupling.x_i, coupling.x_j, coupling.width, coupling.width, coupling.amplitude);
+					{
+						const double amplitude = coupling.amplitude / sqrt(2 * std::numbers::pi * std::pow(coupling.width, 2));
+						value += tools::math::gaussian_2d(x, y, coupling.x_i, coupling.x_j, coupling.width, coupling.width, amplitude);
+					}
 					components["kernel"][x * cols + y] = value;
 				}
 			}
@@ -59,33 +63,16 @@ namespace dnf_composer
 
 		void GaussFieldCoupling::updateOutput()
 		{
-			std::vector<double> summedGaussians(commonParameters.dimensionParameters.size);
-			std::vector<double> gauss(commonParameters.dimensionParameters.size);
+			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size, 0.0);
 
-			for (const auto& coupling : parameters.couplings)
+			for (unsigned int x = 0; x < commonParameters.dimensionParameters.size; x++)
 			{
-				const double x_i = static_cast<int>(coupling.x_i/commonParameters.dimensionParameters.d_x);
-				const double x_j = static_cast<int>(coupling.x_j / commonParameters.dimensionParameters.d_x);
-				const auto activationAtx_i = components["input"][static_cast<int>(x_i)];
-				if (activationAtx_i > 0.0)
+				for (unsigned int y = 0; y < commonParameters.dimensionParameters.size; y++)
 				{
-					double amplitude = coupling.amplitude;
-					if (parameters.normalized)
-						amplitude /= sqrt(2 * std::numbers::pi * std::pow(coupling.width, 2));
-					if (parameters.circular)
-						gauss = tools::math::circularGauss(commonParameters.dimensionParameters.size,
-														coupling.width, x_j);
-					else
-						gauss = tools::math::nonCircularGauss(commonParameters.dimensionParameters.size,
-													coupling.width, x_j);
-					for (auto& element : gauss)
-						element *= amplitude * element;
-					for (int i = 0; i < commonParameters.dimensionParameters.size; i++)
-						summedGaussians[i] += gauss[i];
+					components["output"][y] += components["kernel"][x * commonParameters.dimensionParameters.size + y]
+																		* components["input"][x];
 				}
 			}
-
-			components["output"] = std::move(summedGaussians);
 		}
 
 		void GaussFieldCoupling::addCoupling(const GaussCoupling& coupling)

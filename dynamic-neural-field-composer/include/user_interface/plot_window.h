@@ -24,6 +24,11 @@ namespace dnf_composer
 			PlotDimensions(int xMin, int xMax, int yMin, int yMax, double dx)
 				: xMin(xMin), xMax(xMax), yMin(yMin), yMax(yMax), dx(dx)
 			{}
+
+			bool isNull() const
+			{
+					return xMin == 0 && xMax == 0 && yMin == 0 && yMax == 0 && dx == 0.0;
+			}
 		};
 
 		struct PlotAnnotations
@@ -52,10 +57,6 @@ namespace dnf_composer
 			PlotParameters(const PlotDimensions& dimensions, PlotAnnotations annotations)
 				: id(0), dimensions(dimensions), annotations(std::move(annotations))
 			{}
-
-			PlotParameters(const PlotDimensions& dimensions, PlotAnnotations annotations, bool renderElementSelector)
-				: id(0), dimensions(dimensions), annotations(std::move(annotations))
-			{}
 		};
 
 		class PlotWindow : public imgui_kit::UserInterfaceWindow
@@ -73,8 +74,6 @@ namespace dnf_composer
 			~PlotWindow() override = default;
 		private:
 			void createPlot(PlotParameters& parameters);
-			void editPlotParameters(PlotParameters& parameters);
-			//void renderPlotControl();
 			void renderPlot(const PlotParameters& parameters) const;
 			void renderElementSelector(const PlotParameters& parameters) const;
 			static void configure(const PlotDimensions& dimensions);

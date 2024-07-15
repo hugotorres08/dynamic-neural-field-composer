@@ -97,7 +97,7 @@ set(user_interface_headers
     "include/user_interface/plot_window.h"
     "include/user_interface/simulation_window.h"
     "include/user_interface/node_graph_window.h"
-    "include/user_interface/2dplot_window.h"
+    "include/user_interface/heatmap_window.h"
 )
 set(wizards_headers
     "include/wizards/learning_wizard.h"
@@ -158,7 +158,7 @@ set(src
     "src/user_interface/field_metrics_window.cpp"
     "src/user_interface/element_window.cpp"
     "src/user_interface/node_graph_window.cpp"
-    "src/user_interface/2dplot_window.cpp"
+    "src/user_interface/heatmap_window.cpp"
 
     "src/wizards/learning_wizard.cpp"
 )

@@ -12,7 +12,6 @@ namespace dnf_composer
 			: visualization(visualization)
 		{
 			PlotParameters parameters;
-			parameters.dimensions = { 0, 100, -30, 40, 1.0 };
 			parameters.annotations.title = "Plot window ";
 			parameters.annotations.x_label = "Spatial dimension";
 			parameters.annotations.y_label = "Amplitude";
@@ -69,37 +68,33 @@ namespace dnf_composer
 		{
 			configure(parameters.dimensions);
 
-			//const std::string plotWindowTitle = parameters.annotations.title + " window";
+			ImVec2 plotSize = ImGui::GetContentRegionAvail();  // Get available size in the ImGui window
+			plotSize.x -= 5.0f; // Subtract some padding
+			plotSize.y -= 5.0f; // Subtract some padding
 
-			//if (ImGui::Begin(plotWindowTitle.c_str()))
-			//{
-				ImVec2 plotSize = ImGui::GetContentRegionAvail();  // Get available size in the ImGui window
-				plotSize.x -= 5.0f; // Subtract some padding
-				plotSize.y -= 5.0f; // Subtract some padding
+			static constexpr ImPlotFlags flags = ImPlotFlags_Crosshairs | ImPlotFlags_Equal;
 
-				if (ImPlot::BeginPlot(parameters.annotations.title.c_str(), plotSize))
+			if (ImPlot::BeginPlot(parameters.annotations.title.c_str(), plotSize, flags))
+			{
+				ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str());
+				ImPlot::SetupLegend(ImPlotLocation_South, ImPlotLegendFlags_Horizontal);
+
+				const int numOfPlots = visualization->getNumberOfPlots();
+				for (int j = 0; j < numOfPlots; j++)
 				{
-					ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str());
-					ImPlot::SetupLegend(ImPlotLocation_NorthEast, ImPlotLegendFlags_Outside);
+					std::string label = visualization->getPlottingLabel(j);
+					std::vector<double> data = *visualization->getPlottingData(j);
 
-					const int numOfPlots = visualization->getNumberOfPlots();
-					for (int j = 0; j < numOfPlots; j++)
-					{
-						std::string label = visualization->getPlottingLabel(j);
-						std::vector<double> data = *visualization->getPlottingData(j);
+					// Shift x-values by 1 unit and scale
+					std::vector<double> shiftedXValues(data.size());
+					for (int i = 0; i < data.size(); ++i) 
+						shiftedXValues[i] = (i + 1) * 1.0;
 
-						// Shift x-values by 1 unit and scale
-						std::vector<double> shiftedXValues(data.size());
-						for (int i = 0; i < data.size(); ++i) 
-							shiftedXValues[i] = (i + 1) * parameters.dimensions.dx;
-
-						ImPlot::PlotLine(label.c_str(), shiftedXValues.data(), data.data(), static_cast<int>(data.size()));
-					}
-
+					ImPlot::PlotLine(label.c_str(), shiftedXValues.data(), data.data(), static_cast<int>(data.size()));
 				}
-				ImPlot::EndPlot();
-			//}
-			//ImGui::End();
+
+			}
+			ImPlot::EndPlot();
 		}
 
 		void PlotWindow::renderElementSelector(const PlotParameters& parameters) const
@@ -185,12 +180,18 @@ namespace dnf_composer
 		}
 
 
-
 		void PlotWindow::configure(const PlotDimensions& dimensions)
 		{
-			constexpr static int safeMargin = 1;
-			ImPlot::SetNextAxesLimits(dimensions.xMin - safeMargin, dimensions.xMax + safeMargin,
+			if (dimensions.isNull())
+			{
+				ImPlot::SetNextAxesToFit();
+			}
+			else
+			{
+				constexpr static int safeMargin = 1;
+				ImPlot::SetNextAxesLimits(dimensions.xMin - safeMargin, dimensions.xMax + safeMargin,
 				dimensions.yMin - safeMargin, dimensions.yMax + safeMargin);
+			}
 			ImPlotStyle& style = ImPlot::GetStyle();
 			style.LineWeight = 3.0f;
 		}
