@@ -1,11 +1,17 @@
- // This is a personal academic project. Dear PVS-Studio, please check it.
+// This is a personal academic project. Dear PVS-Studio, please check it.
 
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "dynamic-neural-field-composer.h"
 
 
- const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 50, 0.5 };
+const dnf_composer::element::ElementSpatialDimensionParameters fieldDimensions{ 50, 1.0 };
+
+void printMaxValueOfElementComponent(const std::shared_ptr<dnf_composer::Simulation>& simulation, const std::string& elementName, const std::string& componentName)
+{
+	auto component = simulation->getComponent(elementName, componentName);
+	std::cout << "Max value of " << elementName << " " << componentName << " component: " << *std::ranges::max_element(component.begin(), component.end()) << std::endl;
+}
 
 std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 {
@@ -13,7 +19,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	constexpr bool circularity = false;
 	constexpr bool normalization = true;
 
-	const dnf_composer::element::GaussStimulusParameters gcp_a = { 3, 10, 25, circularity, false };
+	const dnf_composer::element::GaussStimulusParameters gcp_a = { 3, 8, 25, circularity, false };
 	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus
 	(new dnf_composer::element::GaussStimulus({ "gauss stimulus", fieldDimensions }, gcp_a));
 	simulation->addElement(gauss_stimulus);
@@ -28,15 +34,15 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	//(new dnf_composer::element::LateralInteractions({ "k 3", fieldDimensions }, lip1));
 	//simulation->addElement(k_3);
 
-	const dnf_composer::element::NormalNoiseParameters nnp = { 0.01 };
+	/*const dnf_composer::element::NormalNoiseParameters nnp = { 0.01 };
 	const std::shared_ptr<dnf_composer::element::NormalNoise> noise(new dnf_composer::element::NormalNoise({ "noise", fieldDimensions }, nnp));
-	simulation->addElement(noise);
+	simulation->addElement(noise);*/
 
-	const dnf_composer::element::GaussKernelParameters gkp1 = { 3.0, 3.0, -0.0, circularity, normalization };
+	const dnf_composer::element::GaussKernelParameters gkp1 = { 3.0, 2.0, -0.0, circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1
 	(new dnf_composer::element::GaussKernel({ "k 1", fieldDimensions }, gkp1));
 	simulation->addElement(k_1);
-	const dnf_composer::element::GaussKernelParameters gkp2 = { 3.0, 3.0, -0.0,circularity, normalization };
+	const dnf_composer::element::GaussKernelParameters gkp2 = { 3.0, 2.0, -0.0,circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_2
 	(new dnf_composer::element::GaussKernel({ "k 2", fieldDimensions }, gkp2));
 	simulation->addElement(k_2);
@@ -67,7 +73,7 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	//neural_field_3->addInput(k_3);
 	//k_3->addInput(neural_field_3);
 
-	const dnf_composer::element::GaussKernelParameters gkp12 = { 3.0, 6.0, 0.0, circularity, normalization };
+	const dnf_composer::element::GaussKernelParameters gkp12 = { 3.0, 7.0, 0.0, circularity, normalization };
 	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1_2
 	(new dnf_composer::element::GaussKernel({ "k 1 2", fieldDimensions }, gkp12));
 	simulation->addElement(k_1_2);
@@ -77,7 +83,9 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 
 	const dnf_composer::element::GaussFieldCouplingParameters gfcp = { normalization, circularity };
 	const std::shared_ptr < dnf_composer::element::GaussFieldCoupling> gfc (new dnf_composer::element::GaussFieldCoupling({ "gfc 1 - 2", fieldDimensions }, gfcp));
-	gfc->addCoupling({ 25.0, 35.0, 6.0, 3.0 });
+	gfc->addCoupling({ 10.00, 40.0, 6.0, 3.0 });
+	gfc->addCoupling({ 25.0, 30.0, 10.0, 6.0 });
+	gfc->addCoupling({ 35.0, 10.0, 8.0, 3.0 });
 	simulation->addElement(gfc);
 
 	gfc->addInput(neural_field_1);
@@ -164,15 +172,13 @@ int main(int argc, char* argv[])
 		// To add plots with data already loaded you need to use a Visualization object.
 		dnf_composer::user_interface::PlotParameters plotParameters;
 		plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
-		plotParameters.dimensions = { 0, fieldDimensions.x_max, -8, 8, fieldDimensions.d_x };
+		plotParameters.dimensions = { 0, fieldDimensions.x_max, -8, 5, fieldDimensions.d_x };
 		auto visualization = createVisualization(simulation);
+		visualization->addPlottingData("gauss stimulus", "output");
 		visualization->addPlottingData("neural field 1", "activation");
 		visualization->addPlottingData("neural field 2", "activation");
 		visualization->addPlottingData("k 1", "kernel");
-		visualization->addPlottingData("k 1", "output");
 		visualization->addPlottingData("k 2", "kernel");
-		visualization->addPlottingData("k 2", "output");
-		visualization->addPlottingData("k 1 2", "kernel");
 		visualization->addPlottingData("k 1 2", "output");
 
 		app.addWindow<user_interface::PlotWindow>(visualization, plotParameters);
@@ -181,12 +187,19 @@ int main(int argc, char* argv[])
 		app.addWindow<user_interface::HeatmapWindow>();
 
 		app.init();
-		
+
 		bool userRequestClose = false;
 		while (!userRequestClose)
 		{
 			app.step();
 			userRequestClose = app.hasUIBeenClosed();
+			std::this_thread::sleep_for(std::chrono::milliseconds(10));
+			//printMaxValueOfElementComponent(simulation, "gauss stimulus", "output");
+			//printMaxValueOfElementComponent(simulation, "neural field 1", "activation");
+			//printMaxValueOfElementComponent(simulation, "neural field 2", "activation");
+			//printMaxValueOfElementComponent(simulation, "k 1", "kernel");
+			//printMaxValueOfElementComponent(simulation, "k 2", "kernel");
+			//printMaxValueOfElementComponent(simulation, "k 1 2", "output");
 		}
 		app.close();
 		return 0;

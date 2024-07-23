@@ -299,12 +299,12 @@ namespace dnf_composer
 			bool circular = gfcp.circular;
 
 			std::string label = "##" + element->getUniqueName() + "Circular";
-			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &circular);
+			ImGui::Checkbox(label.c_str(), &circular);
 			std::string text = "Circular";
 			ImGui::SameLine(); ImGui::Text(text.c_str());
 
 			label = "##" + element->getUniqueName() + "Normalized";
-			ImGui::Checkbox(label.c_str(), &normalized);
+			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &normalized);
 			text = "Normalized";
 			ImGui::SameLine(); ImGui::Text(text.c_str());
 
