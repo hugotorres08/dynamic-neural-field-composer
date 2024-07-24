@@ -41,6 +41,7 @@ namespace dnf_composer
 		void close();
 		void pause();
 		void resume();
+		void clean();
 		void save(const std::string& savePath = {});
 		void read(const std::string& readPath = {});
 

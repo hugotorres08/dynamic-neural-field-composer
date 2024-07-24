@@ -12,4 +12,5 @@
 #include "user_interface/plot_window.h"
 #include "user_interface/field_metrics_window.h"
 #include "user_interface/heatmap_window.h"
+#include "user_interface/main_window.h"
 #include "tools/profiling.h"

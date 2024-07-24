@@ -4,6 +4,7 @@
 
 #include "dynamic-neural-field-composer.h"
 
+
 // This .cpp file is an example of how you can use the library to create your own DNF simulation.
 
 int main(int argc, char* argv[])
@@ -13,6 +14,7 @@ int main(int argc, char* argv[])
 		const auto simulation = dnf_composer::createSimulation( "run sim with gui example", 5, 0, 0 );
 		const dnf_composer::Application app{ simulation };
 
+		app.addWindow<dnf_composer::user_interface::MainWindow>();
 		app.addWindow<imgui_kit::LogWindow>();
 		app.addWindow<dnf_composer::user_interface::SimulationWindow>();
 		app.addWindow<dnf_composer::user_interface::ElementWindow>();
@@ -22,6 +24,7 @@ int main(int argc, char* argv[])
 		plotParameters.dimensions = { 0, 100, -30, 40 , 1.0 };
 		auto visualization = dnf_composer::createVisualization(simulation);
 		app.addWindow<dnf_composer::user_interface::PlotWindow>(visualization, plotParameters);
+
 
 		app.init();
 

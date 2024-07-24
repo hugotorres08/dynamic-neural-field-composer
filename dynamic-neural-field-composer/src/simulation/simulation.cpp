@@ -151,6 +151,16 @@ namespace dnf_composer
 		log(tools::logger::LogLevel::INFO, "Simulation resumed.");
 	}
 
+	void Simulation::clean()
+	{
+		elements.clear();
+		initialized = false;
+		paused = false;
+		t = tZero;
+		uniqueIdentifier = "new default name";
+		log(tools::logger::LogLevel::INFO, "Simulation cleaned.");
+	}
+
 	void Simulation::save(const std::string& savePath)  
 	{
 		const SimulationFileManager sfm{ shared_from_this(), savePath };
