@@ -11,7 +11,7 @@ int main(int argc, char* argv[])
 {
 	try
 	{
-		const auto simulation = dnf_composer::createSimulation( "run sim with gui example", 5, 0, 0 );
+		const auto simulation = dnf_composer::createSimulation();
 		const dnf_composer::Application app{ simulation };
 
 		app.addWindow<dnf_composer::user_interface::MainWindow>();

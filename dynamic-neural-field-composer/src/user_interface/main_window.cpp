@@ -4,7 +4,8 @@ namespace dnf_composer::user_interface
 {
 	MainWindow::MainWindow(const std::shared_ptr<Simulation>& simulation)
 	: simulation{ simulation }
-	{
+    {
+	
 	}
 
 	void MainWindow::render()
@@ -18,7 +19,8 @@ namespace dnf_composer::user_interface
         style.FrameBorderSize = 1.0f;
 
         renderFullscreenWindow();
-        renderMainMenuBar();
+		renderMainMenuBar();
+        renderFileWindows();
         renderAdvancedSettingsWindows();
 	}
 
@@ -53,7 +55,9 @@ namespace dnf_composer::user_interface
                 }
                 if (ImGui::MenuItem("Open", "Ctrl+O"))
                 {
-                    
+                    FileDialog::file_dialog_open = true;
+                    fileFlags.showOpenFileDialog = true;
+                    FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
                 }
                 if (ImGui::MenuItem("Save", "Ctrl+S"))
                 {
@@ -61,9 +65,17 @@ namespace dnf_composer::user_interface
                 }
                 if (ImGui::MenuItem("Save As", "Ctrl+Shift+S"))
                 {
-                    
+                    FileDialog::file_dialog_open = true;
+                    fileFlags.showSaveFileDialog = true;
+                    FileDialog::file_dialog_open_type = FileDialog::FileDialogType::SelectFolder;
                 }
-                if (ImGui::MenuItem("Quit", "Alt+F4")) {}
+                if (ImGui::MenuItem("Quit", "Alt+F4"))
+                {
+                    simulation->save();
+	                simulation->close();
+					simulation->clean();
+                    // somehow close the window
+                }
                 ImGui::EndMenu();
             }
 
@@ -76,9 +88,9 @@ namespace dnf_composer::user_interface
             {
                 if (ImGui::MenuItem("Start", "Ctrl+Space"))
                     simulation->init();
-                if (ImGui::MenuItem("Stop", "Ctrl+Space"))
+                if (ImGui::MenuItem("Stop", "Ctrl+S"))
                     simulation->close();
-                if (ImGui::MenuItem("Pause", "Ctrl+Space"))
+                if (ImGui::MenuItem("Pause", "Ctrl+P"))
                     simulation->pause();
                 ImGui::EndMenu();
             }
@@ -98,6 +110,36 @@ namespace dnf_composer::user_interface
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
+        }
+    }
+
+    void MainWindow::renderFileWindows()
+    {
+        static char path[500] = "";
+        static char* file_dialog_buffer = path;
+        
+        if (FileDialog::file_dialog_open) 
+        {
+            FileDialog::ShowFileDialog(&FileDialog::file_dialog_open, file_dialog_buffer,
+                sizeof(file_dialog_buffer), FileDialog::file_dialog_open_type);
+        }
+        else
+        {
+            if (strlen(path) > 0)
+			{
+                if( fileFlags.showSaveFileDialog)
+				{
+					simulation->save(path);
+                    fileFlags.showSaveFileDialog = false;
+					strcpy_s(path, "");
+				}
+                else if (fileFlags.showOpenFileDialog)
+                {
+                    simulation->read(path);
+                    fileFlags.showOpenFileDialog = false;
+                    strcpy_s(path, "");
+                }
+			}
         }
     }
 

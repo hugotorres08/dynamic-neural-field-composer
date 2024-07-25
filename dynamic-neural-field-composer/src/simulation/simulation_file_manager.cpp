@@ -9,8 +9,8 @@ namespace dnf_composer
 		: simulation(simulation), filePath(filePath)
 	{
         if (filePath.empty())
-            this->filePath = std::string(OUTPUT_DIRECTORY) + "/simulations/simulation_" + simulation->getUniqueIdentifier() + ".json";
-        log(tools::logger::INFO, "Simulation file manager will read and write data from and to: " + this->filePath + ".");
+            this->filePath = std::string(OUTPUT_DIRECTORY) + "/simulations/";
+        //log(tools::logger::INFO, "Simulation file manager will read and write data from and to: " + this->filePath + ".");
 	}
 
 	void SimulationFileManager::saveElementsToJson() const
@@ -28,13 +28,13 @@ namespace dnf_composer
         }
 
         // Write the JSON to a file
-        std::ofstream file(filePath);
+        std::ofstream file(filePath + simulation->getUniqueIdentifier() + ".json");
         if (file.is_open()) {
             file << elementsJson.dump(4); // Add indentation for readability
-            log(tools::logger::INFO, "Elements saved to: " + filePath + ".");
+            log(tools::logger::INFO, "Elements saved to: " + filePath + simulation->getUniqueIdentifier() + ".json.");
         }
         else {
-            log(tools::logger::ERROR, "Unable to open file to save elements: " + filePath + ".");
+            log(tools::logger::ERROR, "Unable to open file to save elements: " + filePath + simulation->getUniqueIdentifier() + ".json.");
         }
 	}
 
@@ -57,7 +57,7 @@ namespace dnf_composer
             return;
         }
 
-        log(tools::logger::INFO, "Elements loaded from: " + filePath + ".");
+        log(tools::logger::INFO, "Elements loaded from: " + filePath);
 
         jsonToElements(elementsJson);
 

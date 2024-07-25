@@ -86,6 +86,7 @@ set(tools_headers
     "include/tools/math.h"
     "include/tools/profiling.h"
     "include/tools/utils.h"
+    "include/tools/file_dialog.h"
 )
 set(exceptions_headers
     "include/exceptions/exception.h"
@@ -150,6 +151,7 @@ set(src
     "src/tools/profiling.cpp"
     "src/tools/utils.cpp"
     "src/tools/logger.cpp"
+    
 
     "src/exceptions/exception.cpp"
     
@@ -173,6 +175,10 @@ target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
     $<INSTALL_INTERFACE:${DNF_COMPOSER_INC_INSTALL_DIR}> 
     #PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include 
 )
+
+
+#find_package(directx-headers CONFIG REQUIRED)
+#target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Microsoft::DirectX-Guids Microsoft::DirectX-Headers)
 
 # Setup imgui
 find_package(imgui CONFIG REQUIRED)
@@ -267,40 +273,40 @@ ${CMAKE_PROJECT_NAME})
 #${CMAKE_PROJECT_NAME})
 #
 ## Add executable example project run_learning_wizard
-set(EXE_PROJECT_EXAMPLE_LEARNING_WIZARD ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
-add_executable(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} "examples/run_learning_wizard.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-#
-## Add executable example project run_sim_read_write
-#set(EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE ${CMAKE_PROJECT_NAME}-example-run_sim_read_write)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} "examples/run_sim_read_write.cpp")
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE 
+#set(EXE_PROJECT_EXAMPLE_LEARNING_WIZARD ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
+#add_executable(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} "examples/run_learning_wizard.cpp")
+#target_include_directories(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE 
 #imgui::imgui
 #imgui-platform-kit 
 #${CMAKE_PROJECT_NAME})
-#
-# Add executable example project run_testbench
-set(EXE_PROJECT_EXAMPLE_RUN_TESTBENCH ${CMAKE_PROJECT_NAME}-example-run_testbench)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} "examples/run_testbench.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-#
-# Add executable example project run_element_factory
-set(EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_element_factory)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} "examples/run_element_factory.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
+##
+### Add executable example project run_sim_read_write
+##set(EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE ${CMAKE_PROJECT_NAME}-example-run_sim_read_write)
+##add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} "examples/run_sim_read_write.cpp")
+##target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE include)
+##target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE 
+##imgui::imgui
+##imgui-platform-kit 
+##${CMAKE_PROJECT_NAME})
+##
+## Add executable example project run_testbench
+#set(EXE_PROJECT_EXAMPLE_RUN_TESTBENCH ${CMAKE_PROJECT_NAME}-example-run_testbench)
+#add_executable(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} "examples/run_testbench.cpp")
+#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+##
+## Add executable example project run_element_factory
+#set(EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_element_factory)
+#add_executable(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} "examples/run_element_factory.cpp")
+#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
 #
 ## Add executable example project pepper_robot_joint_task_model
 #set(EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-pepper-joint_task_model)

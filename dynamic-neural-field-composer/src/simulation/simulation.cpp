@@ -14,12 +14,14 @@ namespace dnf_composer
 		return std::make_shared<Simulation>(identifier, deltaT, tZero, t);
 	}
 
-	Simulation::Simulation(std::string identifier, double deltaT, double tZero, double t)
-		: uniqueIdentifier(std::move(identifier)), deltaT(deltaT), tZero(tZero), t(t)
+	Simulation::Simulation(const std::string& identifier, double deltaT, double tZero, double t)
+		: uniqueIdentifier(identifier), deltaT(deltaT), tZero(tZero), t(t)
 	{
 		if (deltaT <= 0 || tZero > t)
 			throw Exception(ErrorCode::SIM_INVALID_PARAMETER);
 
+		if (identifier.empty())
+			generateUniqueIdentifier();
 		initialized = false;
 		paused = false;
 		elements = {};
@@ -118,7 +120,11 @@ namespace dnf_composer
 			element->init();
 
 		initialized = true;
-		log(tools::logger::LogLevel::INFO, "Simulation initialized.");
+		std::ostringstream oss;
+		oss << "Simulation " << uniqueIdentifier << " initialized. "
+			<< "With parameters [dt:" << std::fixed << std::setprecision(2) << deltaT
+			<< "s, t0:" << tZero << "s].";
+		tools::logger::log(tools::logger::LogLevel::INFO, oss.str());
 	}
 
 	void Simulation::step()
@@ -157,7 +163,7 @@ namespace dnf_composer
 		initialized = false;
 		paused = false;
 		t = tZero;
-		uniqueIdentifier = "new default name";
+		generateUniqueIdentifier();
 		log(tools::logger::LogLevel::INFO, "Simulation cleaned.");
 	}
 
@@ -169,6 +175,7 @@ namespace dnf_composer
 
 	void Simulation::read(const std::string& readPath)
 	{
+		clean();
 		const SimulationFileManager sfm{ shared_from_this(), readPath };
 		sfm.loadElementsFromJson();
 	}
@@ -262,7 +269,6 @@ namespace dnf_composer
 			const std::string logMessage = "Element '" + stimulusElementId + "' was not found and consequently no interaction was created.";
 			log(tools::logger::LogLevel::FATAL, logMessage);
 			return;
-			//throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, stimulusElementId);
 		}
 
 		if (!receivingElement)
@@ -270,7 +276,6 @@ namespace dnf_composer
 			const std::string logMessage = "Element '" + receivingElementId + "' was not found and consequently no interaction was created.";
 			log(tools::logger::LogLevel::FATAL, logMessage);
 			return;
-			//throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, receivingElementId);
 		}
 
 		receivingElement->addInput(stimulusElement, stimulusComponent);
@@ -339,6 +344,18 @@ namespace dnf_composer
 	bool Simulation::isInitialized() const
 	{
 		return initialized;
+	}
+
+	void Simulation::generateUniqueIdentifier()
+	{
+		const std::time_t now = std::time(nullptr);
+		std::tm local_time;
+		const errno_t error = localtime_s(&local_time, &now);
+		if (error != 0)
+			throw Exception(ErrorCode::SIM_INVALID_PARAMETER);
+		std::ostringstream oss;
+		oss << std::put_time(&local_time, "[%Y-%m-%d] [%H-%M-%S] default");
+		uniqueIdentifier = oss.str();
 	}
 
 	void Simulation::exportComponentToFile(const std::string& id, const std::string& componentName) const

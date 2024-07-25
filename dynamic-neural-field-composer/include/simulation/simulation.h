@@ -14,7 +14,7 @@
 namespace dnf_composer
 {
 	class Simulation;
-	std::shared_ptr<Simulation> createSimulation(const std::string& identifier, double deltaT, double tZero, double t);
+	std::shared_ptr<Simulation> createSimulation(const std::string& identifier = "", double deltaT = 1, double tZero = 0, double t = 0);
 
 	class Simulation : public std::enable_shared_from_this<Simulation>
 	{
@@ -29,7 +29,7 @@ namespace dnf_composer
 		double t;
 	public:
 
-		Simulation(std::string identifier = "default name", double deltaT = 1, double tZero = 0, double t = 0);
+		Simulation(const std::string& identifier = "", double deltaT = 1, double tZero = 0, double t = 0);
 		Simulation(const Simulation& other);
 		Simulation& operator=(const Simulation& other);
 		Simulation(Simulation&& other) noexcept;
@@ -68,5 +68,7 @@ namespace dnf_composer
 		bool isInitialized() const;
 
 		~Simulation() = default;
+	private:
+		void generateUniqueIdentifier();
 	};
 }

@@ -3,9 +3,16 @@
 #include <imgui-platform-kit/user_interface_window.h>
 
 #include "simulation/simulation.h"
+#include "tools/file_dialog.h"
 
 namespace dnf_composer::user_interface
 {
+	struct FileFlags
+	{
+		bool showOpenFileDialog = false;
+		bool showSaveFileDialog = false;
+	};
+
 	struct AdvancedSettingsFlags
 	{
 		bool showToolMetrics = false;
@@ -20,6 +27,7 @@ namespace dnf_composer::user_interface
 	private:
 		std::shared_ptr<Simulation> simulation;
 		AdvancedSettingsFlags advancedSettingsFlags;
+		FileFlags fileFlags;
 	public:
 		MainWindow(const std::shared_ptr<Simulation>& simulation);
 		MainWindow(const MainWindow&) = delete;
@@ -32,6 +40,7 @@ namespace dnf_composer::user_interface
 	private:
 		static void renderFullscreenWindow();
 		void renderMainMenuBar();
+		void renderFileWindows();
 		void renderAdvancedSettingsWindows();
 	};
 }
