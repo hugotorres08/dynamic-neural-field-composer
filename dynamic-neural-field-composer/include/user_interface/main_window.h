@@ -42,5 +42,6 @@ namespace dnf_composer::user_interface
 		void renderMainMenuBar();
 		void renderFileWindows();
 		void renderAdvancedSettingsWindows();
+		void handleShortcuts();
 	};
 }

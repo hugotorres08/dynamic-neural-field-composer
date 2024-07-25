@@ -22,6 +22,7 @@ namespace dnf_composer::user_interface
 		renderMainMenuBar();
         renderFileWindows();
         renderAdvancedSettingsWindows();
+        handleShortcuts();
 	}
 
     void MainWindow::renderFullscreenWindow()
@@ -74,7 +75,7 @@ namespace dnf_composer::user_interface
                     simulation->save();
 	                simulation->close();
 					simulation->clean();
-                    // somehow close the window
+                    std::exit(0);
                 }
                 ImGui::EndMenu();
             }
@@ -88,7 +89,7 @@ namespace dnf_composer::user_interface
             {
                 if (ImGui::MenuItem("Start", "Ctrl+Space"))
                     simulation->init();
-                if (ImGui::MenuItem("Stop", "Ctrl+S"))
+                if (ImGui::MenuItem("Stop", "Ctrl+C"))
                     simulation->close();
                 if (ImGui::MenuItem("Pause", "Ctrl+P"))
                     simulation->pause();
@@ -161,4 +162,36 @@ namespace dnf_composer::user_interface
         if (advancedSettingsFlags.showToolAbout)
 			ImGui::ShowAboutWindow(&advancedSettingsFlags.showToolAbout);
     }
+
+    void MainWindow::handleShortcuts()
+    {
+        const ImGuiIO& io = ImGui::GetIO();
+
+	    if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Space)))
+			simulation->init();
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_C)))
+			simulation->close();
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_P)))
+			simulation->pause();
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_N)))
+		{
+			simulation->close();
+			simulation->clean();
+		}
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_O)))
+		{
+			FileDialog::file_dialog_open = true;
+			fileFlags.showOpenFileDialog = true;
+			FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
+		}
+        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)))
+            simulation->save();
+		if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)))
+		{
+			FileDialog::file_dialog_open = true;
+			fileFlags.showSaveFileDialog = true;
+			FileDialog::file_dialog_open_type = FileDialog::FileDialogType::SelectFolder;
+		}
+    }
+
 }
