@@ -1,6 +1,5 @@
 #include "./simulation/simulation_file_manager.h"
 
-
 namespace dnf_composer
 {
     using json = nlohmann::json;
@@ -10,7 +9,6 @@ namespace dnf_composer
 	{
         if (filePath.empty())
             this->filePath = std::string(OUTPUT_DIRECTORY) + "/simulations/";
-        //log(tools::logger::INFO, "Simulation file manager will read and write data from and to: " + this->filePath + ".");
 	}
 
 	void SimulationFileManager::saveElementsToJson() const
@@ -136,6 +134,9 @@ namespace dnf_composer
             const auto kernelParameters = kernel->getParameters();
             elementJson["width"] = kernelParameters.width;
             elementJson["amplitude"] = kernelParameters.amplitude;
+            elementJson["amplitudeGlobal"] = kernelParameters.amplitudeGlobal;
+            elementJson["circular"] = kernelParameters.circular;
+            elementJson["normalized"] = kernelParameters.normalized;
         }
         break;
         case element::MEXICAN_HAT_KERNEL:
@@ -146,6 +147,9 @@ namespace dnf_composer
             elementJson["amplitudeExc"] = kernelParameters.amplitudeExc;
             elementJson["widthInh"] = kernelParameters.widthInh;
             elementJson["amplitudeInh"] = kernelParameters.amplitudeInh;
+            elementJson["amplitudeGlobal"] = kernelParameters.amplitudeGlobal;
+            elementJson["circular"] = kernelParameters.circular;
+            elementJson["normalized"] = kernelParameters.normalized;
         }
         break;
         case element::NORMAL_NOISE:
@@ -160,10 +164,10 @@ namespace dnf_composer
             const auto gaussStimulus = std::dynamic_pointer_cast<element::GaussStimulus>(element);
             const auto gaussStimulusParameters = gaussStimulus->getParameters();
             elementJson["amplitude"] = gaussStimulusParameters.amplitude;
+            elementJson["width"] = gaussStimulusParameters.width;
+            elementJson["position"] = gaussStimulusParameters.position;
             elementJson["circular"] = gaussStimulusParameters.circular;
             elementJson["normalized"] = gaussStimulusParameters.normalized;
-            elementJson["position"] = gaussStimulusParameters.position;
-            elementJson["width"] = gaussStimulusParameters.width;
         }
         break;
         case element::FIELD_COUPLING:
@@ -177,7 +181,12 @@ namespace dnf_composer
         }
         case element::GAUSS_FIELD_COUPLING:
         {
-            // to do
+            const auto gaussFieldCoupling = std::dynamic_pointer_cast<element::GaussFieldCoupling>(element);
+            const auto gaussFieldCouplingParameters = gaussFieldCoupling->getParameters();
+            elementJson["circular"] = gaussFieldCouplingParameters.circular;
+            elementJson["normalized"] = gaussFieldCouplingParameters.normalized;
+            for (const auto& coupling : gaussFieldCouplingParameters.couplings)
+				elementJson["couplings"] += {coupling.x_i, coupling.x_j};
         }
         break;
         case element::UNINITIALIZED:
@@ -245,10 +254,12 @@ namespace dnf_composer
             {
                 const double amplitude = elementJson["amplitude"];
                 const double width = elementJson["width"];
+                const bool circular = elementJson["circular"];
+                const bool normalized = elementJson["normalized"];
 
                 auto kernel = std::make_shared<element::GaussKernel>(
                     element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::GaussKernelParameters(width, amplitude)
+                    element::GaussKernelParameters(width, amplitude, circular, normalized)
                 );
                 simulation->addElement(kernel);
             }
@@ -260,10 +271,12 @@ namespace dnf_composer
                 const double amplitudeInh = elementJson["amplitudeInh"];
                 const double widthInh = elementJson["widthInh"];
                 const double amplitudeGlobal = elementJson["amplitudeGlobal"];
+                const bool circular = elementJson["circular"];
+                const bool normalized = elementJson["normalized"];
 
                 auto kernel = std::make_shared<element::MexicanHatKernel>(
                     element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::MexicanHatKernelParameters(widthExc, amplitudeExc, widthInh, amplitudeInh, amplitudeGlobal)
+                    element::MexicanHatKernelParameters(widthExc, amplitudeExc, widthInh, amplitudeInh, amplitudeGlobal, circular, normalized)
                 );
                 simulation->addElement(kernel);
             }
@@ -299,7 +312,15 @@ namespace dnf_composer
             break;
 	        case element::GAUSS_FIELD_COUPLING:
             {
-                // to do
+				const bool circular = elementJson["circular"];
+                const bool normalized = elementJson["normalized"];
+                const std::vector<std::pair<double, double>> couplings = elementJson["couplings"];
+
+                auto coupling = std::make_shared<element::GaussFieldCoupling>(
+					element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
+					element::GaussFieldCouplingParameters(circular, normalized)
+				);
+                simulation->addElement(coupling);
             }
             break;
 	        default:

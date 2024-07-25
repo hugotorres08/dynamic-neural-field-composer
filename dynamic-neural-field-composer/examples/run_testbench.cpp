@@ -165,6 +165,7 @@ int main(int argc, char* argv[])
 		const dnf_composer::Application app{ simulation };
 
 		// After creating the application, we can add the windows we want to display.
+		app.addWindow<dnf_composer::user_interface::MainWindow>();
 		app.addWindow<imgui_kit::LogWindow>();
 		app.addWindow<dnf_composer::user_interface::SimulationWindow>();
 		app.addWindow<dnf_composer::user_interface::ElementWindow>();
@@ -172,14 +173,14 @@ int main(int argc, char* argv[])
 		// To add plots with data already loaded you need to use a Visualization object.
 		dnf_composer::user_interface::PlotParameters plotParameters;
 		plotParameters.annotations = { "Neural field monitoring", "Spatial dimension", "Amplitude" };
-		plotParameters.dimensions = { 0, fieldDimensions.x_max, -8, 5, fieldDimensions.d_x };
+		//plotParameters.dimensions = { 0, fieldDimensions.x_max, -8, 5, fieldDimensions.d_x };
 		auto visualization = createVisualization(simulation);
-		visualization->addPlottingData("gauss stimulus", "output");
+		/*visualization->addPlottingData("gauss stimulus", "output");
 		visualization->addPlottingData("neural field 1", "activation");
 		visualization->addPlottingData("neural field 2", "activation");
 		visualization->addPlottingData("k 1", "kernel");
 		visualization->addPlottingData("k 2", "kernel");
-		visualization->addPlottingData("k 1 2", "output");
+		visualization->addPlottingData("k 1 2", "output");*/
 
 		app.addWindow<user_interface::PlotWindow>(visualization, plotParameters);
 		app.addWindow<user_interface::NodeGraphWindow>();

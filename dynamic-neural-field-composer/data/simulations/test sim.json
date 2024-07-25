@@ -1,0 +1,153 @@
+[
+    {
+        "amplitude": 8.0,
+        "circular": false,
+        "d_x": 1.0,
+        "inputs": null,
+        "label": [
+            2,
+            "gauss stimulus"
+        ],
+        "normalized": false,
+        "position": 25.0,
+        "uniqueName": "gauss stimulus",
+        "width": 3.0,
+        "x_max": 50
+    },
+    {
+        "amplitude": 2.0,
+        "amplitudeGlobal": -0.0,
+        "circular": false,
+        "d_x": 1.0,
+        "inputs": [
+            [
+                "neural field 1",
+                "output"
+            ]
+        ],
+        "label": [
+            3,
+            "gauss kernel"
+        ],
+        "normalized": true,
+        "uniqueName": "k 1",
+        "width": 3.0,
+        "x_max": 50
+    },
+    {
+        "amplitude": 2.0,
+        "amplitudeGlobal": -0.0,
+        "circular": false,
+        "d_x": 1.0,
+        "inputs": [
+            [
+                "neural field 2",
+                "output"
+            ]
+        ],
+        "label": [
+            3,
+            "gauss kernel"
+        ],
+        "normalized": true,
+        "uniqueName": "k 2",
+        "width": 3.0,
+        "x_max": 50
+    },
+    {
+        "activationFunction": {
+            "type": "heaviside",
+            "x_shift": 0.0
+        },
+        "d_x": 1.0,
+        "inputs": [
+            [
+                "k 1",
+                "output"
+            ],
+            [
+                "gauss stimulus",
+                "output"
+            ]
+        ],
+        "label": [
+            1,
+            "neural field"
+        ],
+        "restingLevel": -5.0,
+        "tau": 100.0,
+        "uniqueName": "neural field 1",
+        "x_max": 50
+    },
+    {
+        "activationFunction": {
+            "type": "heaviside",
+            "x_shift": 0.0
+        },
+        "d_x": 1.0,
+        "inputs": [
+            [
+                "k 2",
+                "output"
+            ],
+            [
+                "gfc 1 - 2",
+                "output"
+            ]
+        ],
+        "label": [
+            1,
+            "neural field"
+        ],
+        "restingLevel": -5.0,
+        "tau": 100.0,
+        "uniqueName": "neural field 2",
+        "x_max": 50
+    },
+    {
+        "amplitude": 7.0,
+        "amplitudeGlobal": 0.0,
+        "circular": false,
+        "d_x": 1.0,
+        "inputs": null,
+        "label": [
+            3,
+            "gauss kernel"
+        ],
+        "normalized": true,
+        "uniqueName": "k 1 2",
+        "width": 3.0,
+        "x_max": 50
+    },
+    {
+        "circular": false,
+        "couplings": [
+            [
+                10.0,
+                40.0
+            ],
+            [
+                25.0,
+                30.0
+            ],
+            [
+                35.0,
+                10.0
+            ]
+        ],
+        "d_x": 1.0,
+        "inputs": [
+            [
+                "neural field 1",
+                "output"
+            ]
+        ],
+        "label": [
+            7,
+            "gauss field coupling"
+        ],
+        "normalized": true,
+        "uniqueName": "gfc 1 - 2",
+        "x_max": 50
+    }
+]

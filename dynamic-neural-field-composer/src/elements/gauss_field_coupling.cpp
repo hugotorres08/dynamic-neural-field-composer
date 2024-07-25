@@ -13,6 +13,7 @@ namespace dnf_composer
 			: Element(elementCommonParameters), parameters(gfc_parameters)
 		{
 			commonParameters.identifiers.label = ElementLabel::GAUSS_FIELD_COUPLING;
+			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size * parameters.inputFieldDimensions.size);
 			
 		}
 
