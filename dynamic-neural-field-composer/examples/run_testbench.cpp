@@ -185,7 +185,7 @@ int main(int argc, char* argv[])
 		app.addWindow<user_interface::PlotWindow>(visualization, plotParameters);
 		app.addWindow<user_interface::NodeGraphWindow>();
 		app.addWindow<user_interface::FieldMetricsWindow>();
-		app.addWindow<user_interface::HeatmapWindow>();
+		//app.addWindow<user_interface::HeatmapWindow>();
 
 		app.init();
 

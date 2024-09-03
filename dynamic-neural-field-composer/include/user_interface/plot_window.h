@@ -18,7 +18,7 @@ namespace dnf_composer
 			double dx;
 
 			PlotDimensions()
-				: xMin(0), xMax(0), yMin(0), yMax(0), dx(0.0)
+				: xMin(0), xMax(100), yMin(-5), yMax(15), dx(1.0)
 			{}
 
 			PlotDimensions(int xMin, int xMax, int yMin, int yMax, double dx)
