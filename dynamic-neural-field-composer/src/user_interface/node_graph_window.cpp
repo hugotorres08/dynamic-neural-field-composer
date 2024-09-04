@@ -92,6 +92,7 @@ namespace dnf_composer
 			draw_list->AddText(ImVec2(titleBarPos.x + 3.0f, titleBarPos.y), headerTextColor, name.c_str());
 			// Offset the position of the remaining node content to avoid overlapping with the title bar
 			ImGui::Dummy(ImVec2(0, 15));
+			ImGui::PopStyleVar();
 		}
 
 		void NodeGraphWindow::renderElementCommonParameters(const std::shared_ptr<element::Element>& element)

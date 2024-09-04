@@ -22,6 +22,7 @@ namespace FileDialog {
 
 	static bool file_dialog_open = false;
 	static FileDialogType file_dialog_open_type = FileDialogType::OpenFile;
+	static float padding = 10.0;
 
 	inline void ShowFileDialog(bool* open, char* buffer, [[maybe_unused]] unsigned int buffer_size, 
 		FileDialogType type = FileDialogType::OpenFile)
@@ -88,7 +89,7 @@ namespace FileDialog {
 				ImGuiWindowFlags_HorizontalScrollbar);
 
 			if (ImGui::Selectable("..", false, ImGuiSelectableFlags_AllowDoubleClick, 
-				ImVec2(ImGui::GetContentRegionAvail().x, 0))) 
+				ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 			{
 				if (ImGui::IsMouseDoubleClicked(0)) {
 					file_dialog_current_path = std::filesystem::path(file_dialog_current_path).parent_path().string();
@@ -97,7 +98,7 @@ namespace FileDialog {
 			for (int i = 0; i < folders.size(); ++i) {
 				if (ImGui::Selectable(folders[i].path().stem().string().c_str(), 
 					i == file_dialog_folder_select_index, ImGuiSelectableFlags_AllowDoubleClick, 
-					ImVec2(ImGui::GetWindowContentRegionWidth(), 0))) 
+					ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
 					file_dialog_current_file = "";
 					if (ImGui::IsMouseDoubleClicked(0)) {
@@ -222,7 +223,7 @@ namespace FileDialog {
 			for (int i = 0; i < files.size(); ++i) {
 				if (ImGui::Selectable(files[i].path().filename().string().c_str(),
 					i == file_dialog_file_select_index, ImGuiSelectableFlags_AllowDoubleClick, 
-					ImVec2(ImGui::GetWindowContentRegionWidth(), 0))) 
+					ImVec2(ImGui::GetContentRegionAvail().x, 0)))
 				{
 					file_dialog_file_select_index = i;
 					file_dialog_current_file = files[i].path().filename().string();
@@ -322,7 +323,7 @@ namespace FileDialog {
 				ImGui::EndPopup();
 			}
 			ImGui::SameLine();
-			ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 120);
+			ImGui::SetCursorPosX(ImGui::GetWindowWidth() - 130);
 
 			static auto reset_everything = [&]() {
 				file_dialog_file_select_index = 0;
