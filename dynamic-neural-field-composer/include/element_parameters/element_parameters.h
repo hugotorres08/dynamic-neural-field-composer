@@ -78,7 +78,7 @@ namespace dnf_composer
 		{
 			ElementSpecificParameters() = default;
 			virtual ~ElementSpecificParameters() = default;
-			virtual bool operator==(const ElementSpecificParameters& other) const = 0;
+			//virtual bool operator==(const ElementSpecificParameters& other) const = 0;
 			virtual std::string toString() const = 0;
 			void print() const;
 		};
