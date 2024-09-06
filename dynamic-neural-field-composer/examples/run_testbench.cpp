@@ -19,82 +19,157 @@ std::shared_ptr<dnf_composer::Simulation> getExperimentSimulation()
 	constexpr bool circularity = false;
 	constexpr bool normalization = true;
 
-	const dnf_composer::element::GaussStimulusParameters gcp_a = { 3, 8, 25, circularity, false };
-	const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus
-	(new dnf_composer::element::GaussStimulus({ "gauss stimulus", fieldDimensions }, gcp_a));
-	simulation->addElement(gauss_stimulus);
+	//const dnf_composer::element::GaussStimulusParameters gcp_a = { 3, 8, 25, circularity, false };
+	//const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus
+	//(new dnf_composer::element::GaussStimulus({ "gauss stimulus", fieldDimensions }, gcp_a));
+	//simulation->addElement(gauss_stimulus);
 
-	//const dnf_composer::element::GaussStimulusParameters gcp_b = { 5, 10, 25, circularity, normalization };
-	//const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus_b
-	//(new dnf_composer::element::GaussStimulus({ "gauss stimulus b", fieldDimensions }, gcp_b));
-	//simulation->addElement(gauss_stimulus_b);
+	////const dnf_composer::element::GaussStimulusParameters gcp_b = { 5, 10, 25, circularity, normalization };
+	////const std::shared_ptr<dnf_composer::element::GaussStimulus> gauss_stimulus_b
+	////(new dnf_composer::element::GaussStimulus({ "gauss stimulus b", fieldDimensions }, gcp_b));
+	////simulation->addElement(gauss_stimulus_b);
 
-	//const dnf_composer::element::LateralInteractionsParameters lip1 = { 5.3,7.4,6,6, -0.55, circularity, normalization};
-	//const std::shared_ptr<dnf_composer::element::LateralInteractions> k_3
-	//(new dnf_composer::element::LateralInteractions({ "k 3", fieldDimensions }, lip1));
-	//simulation->addElement(k_3);
+	////const dnf_composer::element::LateralInteractionsParameters lip1 = { 5.3,7.4,6,6, -0.55, circularity, normalization};
+	////const std::shared_ptr<dnf_composer::element::LateralInteractions> k_3
+	////(new dnf_composer::element::LateralInteractions({ "k 3", fieldDimensions }, lip1));
+	////simulation->addElement(k_3);
 
-	/*const dnf_composer::element::NormalNoiseParameters nnp = { 0.01 };
-	const std::shared_ptr<dnf_composer::element::NormalNoise> noise(new dnf_composer::element::NormalNoise({ "noise", fieldDimensions }, nnp));
-	simulation->addElement(noise);*/
+	///*const dnf_composer::element::NormalNoiseParameters nnp = { 0.01 };
+	//const std::shared_ptr<dnf_composer::element::NormalNoise> noise(new dnf_composer::element::NormalNoise({ "noise", fieldDimensions }, nnp));
+	//simulation->addElement(noise);*/
 
-	const dnf_composer::element::GaussKernelParameters gkp1 = { 3.0, 2.0, -0.0, circularity, normalization };
-	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1
-	(new dnf_composer::element::GaussKernel({ "k 1", fieldDimensions }, gkp1));
-	simulation->addElement(k_1);
-	const dnf_composer::element::GaussKernelParameters gkp2 = { 3.0, 2.0, -0.0,circularity, normalization };
-	const std::shared_ptr<dnf_composer::element::GaussKernel> k_2
-	(new dnf_composer::element::GaussKernel({ "k 2", fieldDimensions }, gkp2));
-	simulation->addElement(k_2);
-
-	//const dnf_composer::element::MexicanHatKernelParameters mhkp1 = { 6.8, 4.1, 8.9, 3.4};
-	//const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_1
-	//(new dnf_composer::element::MexicanHatKernel({ "k 1", fieldDimensions }, mhkp1));
+	//const dnf_composer::element::GaussKernelParameters gkp1 = { 3.0, 2.0, -0.0, circularity, normalization };
+	//const std::shared_ptr<dnf_composer::element::GaussKernel> k_1
+	//(new dnf_composer::element::GaussKernel({ "k 1", fieldDimensions }, gkp1));
 	//simulation->addElement(k_1);
+	//const dnf_composer::element::GaussKernelParameters gkp2 = { 3.0, 2.0, -0.0,circularity, normalization };
+	//const std::shared_ptr<dnf_composer::element::GaussKernel> k_2
+	//(new dnf_composer::element::GaussKernel({ "k 2", fieldDimensions }, gkp2));
+	//simulation->addElement(k_2);
 
-	const dnf_composer::element::HeavisideFunction activationFunction{ 0 };
+	////const dnf_composer::element::MexicanHatKernelParameters mhkp1 = { 6.8, 4.1, 8.9, 3.4};
+	////const std::shared_ptr<dnf_composer::element::MexicanHatKernel> k_1
+	////(new dnf_composer::element::MexicanHatKernel({ "k 1", fieldDimensions }, mhkp1));
+	////simulation->addElement(k_1);
 
-	const dnf_composer::element::NeuralFieldParameters nfp1 = { 100, -5 , activationFunction };
-	const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_1(new dnf_composer::element::NeuralField({ "neural field 1", fieldDimensions }, nfp1));
-	simulation->addElement(neural_field_1);
-	const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_2(new dnf_composer::element::NeuralField({ "neural field 2", fieldDimensions }, nfp1));
-	simulation->addElement(neural_field_2);
-	//const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_3(new dnf_composer::element::NeuralField({ "neural field 3", fieldDimensions }, nfp1));
-	//simulation->addElement(neural_field_3);
+	//const dnf_composer::element::HeavisideFunction activationFunction{ 0 };
 
-	neural_field_1->addInput(k_1);
-	neural_field_1->addInput(gauss_stimulus);
-	//neural_field_1->addInput(noise);
-	k_1->addInput(neural_field_1);
+	//const dnf_composer::element::NeuralFieldParameters nfp1 = { 100, -5 , activationFunction };
+	//const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_1(new dnf_composer::element::NeuralField({ "neural field 1", fieldDimensions }, nfp1));
+	//simulation->addElement(neural_field_1);
+	//const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_2(new dnf_composer::element::NeuralField({ "neural field 2", fieldDimensions }, nfp1));
+	//simulation->addElement(neural_field_2);
+	////const std::shared_ptr<dnf_composer::element::NeuralField> neural_field_3(new dnf_composer::element::NeuralField({ "neural field 3", fieldDimensions }, nfp1));
+	////simulation->addElement(neural_field_3);
 
-	neural_field_2->addInput(k_2);
-	k_2->addInput(neural_field_2);
+	//neural_field_1->addInput(k_1);
+	//neural_field_1->addInput(gauss_stimulus);
+	////neural_field_1->addInput(noise);
+	//k_1->addInput(neural_field_1);
 
-	//neural_field_3->addInput(k_3);
-	//k_3->addInput(neural_field_3);
+	//neural_field_2->addInput(k_2);
+	//k_2->addInput(neural_field_2);
 
-	const dnf_composer::element::GaussKernelParameters gkp12 = { 3.0, 7.0, 0.0, circularity, normalization };
-	const std::shared_ptr<dnf_composer::element::GaussKernel> k_1_2
-	(new dnf_composer::element::GaussKernel({ "k 1 2", fieldDimensions }, gkp12));
-	simulation->addElement(k_1_2);
-	//const std::shared_ptr<dnf_composer::element::GaussKernel> k_2_3
-	//(new dnf_composer::element::GaussKernel({ "k 2 3", fieldDimensions }, gkp1));
-	//simulation->addElement(k_2_3);
+	////neural_field_3->addInput(k_3);
+	////k_3->addInput(neural_field_3);
 
-	const dnf_composer::element::GaussFieldCouplingParameters gfcp = { normalization, circularity };
-	const std::shared_ptr < dnf_composer::element::GaussFieldCoupling> gfc (new dnf_composer::element::GaussFieldCoupling({ "gfc 1 - 2", fieldDimensions }, gfcp));
-	gfc->addCoupling({ 10.00, 40.0, 6.0, 3.0 });
-	gfc->addCoupling({ 25.0, 30.0, 10.0, 6.0 });
-	gfc->addCoupling({ 35.0, 10.0, 8.0, 3.0 });
-	simulation->addElement(gfc);
+	//const dnf_composer::element::GaussKernelParameters gkp12 = { 3.0, 7.0, 0.0, circularity, normalization };
+	//const std::shared_ptr<dnf_composer::element::GaussKernel> k_1_2
+	//(new dnf_composer::element::GaussKernel({ "k 1 2", fieldDimensions }, gkp12));
+	//simulation->addElement(k_1_2);
+	////const std::shared_ptr<dnf_composer::element::GaussKernel> k_2_3
+	////(new dnf_composer::element::GaussKernel({ "k 2 3", fieldDimensions }, gkp1));
+	////simulation->addElement(k_2_3);
 
-	gfc->addInput(neural_field_1);
-	neural_field_2->addInput(gfc);
+	//const dnf_composer::element::GaussFieldCouplingParameters gfcp = { normalization, circularity };
+	//const std::shared_ptr < dnf_composer::element::GaussFieldCoupling> gfc (new dnf_composer::element::GaussFieldCoupling({ "gfc 1 - 2", fieldDimensions }, gfcp));
+	//gfc->addCoupling({ 10.00, 40.0, 6.0, 3.0 });
+	//gfc->addCoupling({ 25.0, 30.0, 10.0, 6.0 });
+	//gfc->addCoupling({ 35.0, 10.0, 8.0, 3.0 });
+	//simulation->addElement(gfc);
 
-	//k_1_2->addInput(neural_field_1);
-	//neural_field_2->addInput(k_1_2);
-	//k_2_3->addInput(neural_field_2);
-	//neural_field_3->addInput(k_2_3);
+	//gfc->addInput(neural_field_1);
+	//neural_field_2->addInput(gfc);
+
+	////k_1_2->addInput(neural_field_1);
+	////neural_field_2->addInput(k_1_2);
+	////k_2_3->addInput(neural_field_2);
+	////neural_field_3->addInput(k_2_3);
+	///
+	///std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("id", 30, 0, 0);
+
+	// element common parameters
+	dnf_composer::element::ElementSpatialDimensionParameters perceptualFieldSpatialDimensions{ 360, 0.5 };
+	dnf_composer::element::ElementSpatialDimensionParameters outputFieldSpatialDimensions{180, 0.5};
+
+	// create neural field
+	//const dnf_composer::element::HeavisideFunction activationFunction{ 0 };
+	const dnf_composer::element::SigmoidFunction activationFunction{0.0, 10.0};
+	const dnf_composer::element::NeuralFieldParameters nfp1 = { 25, -5 , activationFunction };
+	const dnf_composer::element::NeuralFieldParameters nfp2 = { 25, -5 , activationFunction };
+	const std::shared_ptr<dnf_composer::element::NeuralField> perceptual_field
+		(new dnf_composer::element::NeuralField({ "perceptual field", perceptualFieldSpatialDimensions }, nfp1));
+	const std::shared_ptr<dnf_composer::element::NeuralField> output_field
+		(new dnf_composer::element::NeuralField({ "output field", outputFieldSpatialDimensions }, nfp2));
+
+	simulation->addElement(perceptual_field);
+	simulation->addElement(output_field);
+
+	// create interactions and add them to the simulation
+	dnf_composer::element::GaussKernelParameters gkp1;
+	gkp1.amplitude = 40;  // self-sustained (without input)
+	gkp1.width = 25;
+	gkp1.amplitudeGlobal = -0.08;
+	gkp1.circular = true;
+	gkp1.normalized = true;
+	const std::shared_ptr<dnf_composer::element::GaussKernel> k_per_per
+	(new dnf_composer::element::GaussKernel({ "per - per", perceptualFieldSpatialDimensions }, gkp1)); // self-excitation u-u
+	simulation->addElement(k_per_per);
+
+	dnf_composer::element::GaussKernelParameters gkp2;
+	gkp2.amplitude = 20;  // self-stabilized (with input) //20
+	gkp2.width = 25; // 25
+	gkp2.amplitudeGlobal = -0.10;
+	gkp2.circular = true;
+	gkp2.normalized = true;
+	const std::shared_ptr<dnf_composer::element::GaussKernel> k_out_out
+	(new dnf_composer::element::GaussKernel({ "out - out", outputFieldSpatialDimensions }, gkp2)); // self-excitation v-v
+	simulation->addElement(k_out_out);
+
+	dnf_composer::element::FieldCouplingParameters fcp{ perceptualFieldSpatialDimensions.size, 0.2, 0.01, dnf_composer::LearningRule::DELTA_KROGH_HERTZ };
+	const std::shared_ptr<dnf_composer::element::FieldCoupling> w_per_out(
+		new dnf_composer::element::FieldCoupling({ "per - out", outputFieldSpatialDimensions }, fcp));
+	simulation->addElement(w_per_out);
+
+	// create noise stimulus and noise kernel
+	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_per
+	(new dnf_composer::element::NormalNoise({ "noise per", perceptualFieldSpatialDimensions }, { 0.01 }));
+	const std::shared_ptr<dnf_composer::element::NormalNoise> noise_out
+	(new dnf_composer::element::NormalNoise({ "noise out", outputFieldSpatialDimensions }, { 0.01 }));
+	const std::shared_ptr<dnf_composer::element::GaussKernel> noise_kernel_per
+	(new dnf_composer::element::GaussKernel({ "noise kernel per", perceptualFieldSpatialDimensions }, { 0.25, 0.02, 0.0 }));
+	const std::shared_ptr<dnf_composer::element::GaussKernel> noise_kernel_out
+	(new dnf_composer::element::GaussKernel({ "noise kernel out", outputFieldSpatialDimensions }, { 0.25, 0.02, 0.0 }));
+
+	simulation->addElement(noise_per);
+	simulation->addElement(noise_out);
+	simulation->addElement(noise_kernel_per);
+	simulation->addElement(noise_kernel_out);
+
+	// define the interactions between the elements
+	perceptual_field->addInput(k_per_per); // self-excitation
+	perceptual_field->addInput(noise_kernel_per); // noise
+
+	output_field->addInput(k_out_out); // self-excitation
+	output_field->addInput(noise_kernel_out); // noise
+	output_field->addInput(w_per_out); // coupling
+
+	k_per_per->addInput(perceptual_field);
+	k_out_out->addInput(output_field);
+	w_per_out->addInput(perceptual_field, "activation");
+
+	noise_kernel_per->addInput(noise_per);
+	noise_kernel_out->addInput(noise_out);
 
 	return simulation;
 }
@@ -183,7 +258,7 @@ int main(int argc, char* argv[])
 		visualization->addPlottingData("k 1 2", "output");*/
 
 		app.addWindow<user_interface::PlotWindow>(visualization, plotParameters);
-		app.addWindow<user_interface::NodeGraphWindow>();
+		//app.addWindow<user_interface::NodeGraphWindow>();
 		app.addWindow<user_interface::FieldMetricsWindow>();
 		app.addWindow<user_interface::HeatmapWindow>();
 
