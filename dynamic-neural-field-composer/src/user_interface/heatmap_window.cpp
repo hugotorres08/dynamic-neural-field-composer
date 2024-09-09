@@ -48,21 +48,24 @@ namespace dnf_composer
 
         void HeatmapWindow::renderPlot()
         {
-            std::shared_ptr<element::GaussFieldCoupling> coupling;
+            //std::shared_ptr<element::GaussFieldCoupling> coupling;
+            std::shared_ptr<element::FieldCoupling> coupling;
 
             for (const auto& element : simulation->getElements())
             {
-                if (element->getLabel() == element::GAUSS_FIELD_COUPLING)
+                if (element->getLabel() == element::FIELD_COUPLING)
                 {
-                    coupling = std::dynamic_pointer_cast<element::GaussFieldCoupling>(element);
+                    coupling = std::dynamic_pointer_cast<element::FieldCoupling>(element);
                 }
             }
 
-            const std::vector<double> flattened_matrix = coupling->getComponent("kernel");
-            static const int rows = coupling->getParameters().inputFieldDimensions.size;
+            //const std::vector<double> flattened_matrix = coupling->getComponent("kernel");
+            const std::vector<double> flattened_matrix = dnf_composer::tools::math::flattenMatrix(coupling->getWeights());
+            //static const int rows = coupling->getParameters().inputFieldDimensions.size;
+            static const int rows = 720;
             static const int cols = coupling->getElementCommonParameters().dimensionParameters.size;
             static const int x_max = coupling->getElementCommonParameters().dimensionParameters.x_max;
-            static const int y_max = coupling->getParameters().inputFieldDimensions.x_max;
+            static const int y_max = 360;
 
             static constexpr ImPlotFlags hm_flags = ImPlotFlags_Crosshairs | ImPlotFlags_NoLegend;
             //ImPlot::SetNextAxesToFit();

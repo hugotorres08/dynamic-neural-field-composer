@@ -5,6 +5,7 @@
 
 #include "simulation/simulation.h"
 #include "elements/gauss_field_coupling.h"
+#include "elements/field_coupling.h"
 #include "tools/math.h"
 
 
@@ -17,7 +18,7 @@ namespace dnf_composer
 			float scaleMin, scaleMax;
 
 			HeatmapParameters()
-				: scaleMin(0.0f), scaleMax(1.0f)
+				: scaleMin(0.0f), scaleMax(0.01f)
 			{}
 		};
 

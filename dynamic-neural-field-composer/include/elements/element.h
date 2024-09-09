@@ -10,7 +10,7 @@
 
 #include "exceptions/exception.h"
 #include "tools/logger.h"
-#include "element_parameters.h"
+#include "element_parameters/element_parameters.h"
 
 namespace dnf_composer
 {
