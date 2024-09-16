@@ -62,8 +62,8 @@ namespace dnf_composer
 	void Application::setActivateUserInterfaceAs(bool activateUI)
 	{
 		parameters.uiActive = activateUI;
-		if (parameters.uiActive)
-			ui = std::make_shared<imgui_kit::UserInterface>(parameters.uiParameters);
+		//if (parameters.uiActive)
+		//	ui = std::make_shared<imgui_kit::UserInterface>(parameters.uiParameters);
 	}
 
 	bool Application::hasUIBeenClosed() const
