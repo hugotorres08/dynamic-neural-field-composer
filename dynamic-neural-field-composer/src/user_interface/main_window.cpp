@@ -5,20 +5,20 @@ namespace dnf_composer::user_interface
 	MainWindow::MainWindow(const std::shared_ptr<Simulation>& simulation)
 	: simulation{ simulation }
     {
-	
+        
 	}
 
 	void MainWindow::render()
 	{
         // [Put this elsewhere] Enable Keyboard Controls
         auto io = ImGui::GetIO();
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; 
+        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
         // [Put this elsewhere] Using the light style with borders
         ImGui::StyleColorsLight();
         ImGuiStyle& style = ImGui::GetStyle();
         style.FrameBorderSize = 1.0f;
 
-        renderFullscreenWindow();
+        //renderFullscreenWindow();
 		renderMainMenuBar();
         renderFileWindows();
         renderAdvancedSettingsWindows();

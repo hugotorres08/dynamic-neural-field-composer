@@ -1,22 +1,18 @@
-// This is a personal academic project. Dear PVS-Studio, please check it.
-
-// PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
-
-#include "dynamic-neural-field-composer.h"
-
-// This .cpp file is an example of how you can use the library to create your own DNF simulation.
-// This setup runs the application without a GUI.
+#include "simulation/simulation.h"
+#include "application/application.h"
+#include "tools/logger.h"
+#include "exceptions/exception.h"
+#include "user_interface/main_window.h"
 
 int main(int argc, char* argv[])
 {
 	try
 	{
+		const std::shared_ptr<dnf_composer::Simulation> simulation = std::make_shared<dnf_composer::Simulation>("field coupling example sim", 1.0, 0.0, 0.0);
+		const dnf_composer::Application app{ simulation };
 
-	    // After defining the simulation, we can create the application.
-	    const auto simulation = std::make_shared<dnf_composer::Simulation>("run sim headless example", 5, 0, 0);
-	    // You can run the application without the user interface by setting the second parameter to false.
-	    constexpr bool activateUserInterface = false;
-	    const dnf_composer::Application app{ simulation, activateUserInterface };
+		app.addWindow<dnf_composer::user_interface::MainWindow>();
+		app.addWindow<imgui_kit::LogWindow>();
 
 		app.init();
 

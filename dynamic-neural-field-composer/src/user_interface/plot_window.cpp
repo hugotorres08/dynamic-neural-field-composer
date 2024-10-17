@@ -181,7 +181,6 @@ namespace dnf_composer
 			}
 		}
 
-
 		void PlotWindow::configure(const PlotDimensions& dimensions)
 		{
 			constexpr static int safeMargin = 1;

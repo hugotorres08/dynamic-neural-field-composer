@@ -354,13 +354,12 @@ namespace dnf_composer
 		if (error != 0)
 			throw Exception(ErrorCode::SIM_INVALID_PARAMETER);
 		std::ostringstream oss;
-		oss << std::put_time(&local_time, "[%Y-%m-%d] [%H-%M-%S] default");
+		oss << std::put_time(&local_time, "default sim [%Y-%m-%d] [%H-%M-%S]");
 		uniqueIdentifier = oss.str();
 	}
 
 	void Simulation::exportComponentToFile(const std::string& id, const std::string& componentName) const
 	{
-
 		const std::shared_ptr<element::Element> foundElement = getElement(id);
 		const std::vector<double> component = foundElement->getComponent(componentName);
 
@@ -388,6 +387,5 @@ namespace dnf_composer
 	{
 		return elements;
 	}
-
 }
 
