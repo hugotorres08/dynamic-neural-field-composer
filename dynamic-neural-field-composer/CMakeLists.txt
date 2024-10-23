@@ -51,8 +51,10 @@ add_compile_definitions(OUTPUT_DIRECTORY="${OUTPUT_DIRECTORY}")
 # Set header files grouped by directories
 set(simulation_headers
     "include/simulation/simulation.h"
-    "include/simulation/visualization.h"
     "include/simulation/simulation_file_manager.h"
+)
+set(visualization_headers
+    "include/visualization/visualization.h"
 )
 set(application_headers
     "include/application/application.h"
@@ -107,6 +109,7 @@ set(wizards_headers
 
 set(header 
     ${simulation_headers}
+    ${visualization_headers}
     ${application_headers}
     ${elements_headers}
     ${element_parameters_headers}
@@ -119,11 +122,12 @@ set(header
 
 # Set source files
 set(src 
+    "src/application/application.cpp"
+
     "src/simulation/simulation.cpp"
-    "src/simulation/visualization.cpp"
     "src/simulation/simulation_file_manager.cpp"
 
-    "src/application/application.cpp"
+    "src/visualization/visualization.cpp"
     
     "src/elements/activation_function.cpp"
     "src/elements/element.cpp"
@@ -152,7 +156,6 @@ set(src
     "src/tools/utils.cpp"
     "src/tools/logger.cpp"
     
-
     "src/exceptions/exception.cpp"
     
     "src/user_interface/plot_window.cpp"

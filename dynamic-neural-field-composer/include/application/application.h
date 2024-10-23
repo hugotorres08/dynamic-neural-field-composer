@@ -18,10 +18,13 @@ namespace dnf_composer
 	template<typename T, typename = void>
 	struct has_simulation_constructor : std::false_type {};
 
-	// Specialization for types that do have a matching constructor
+	// Specialization for types that take a Simulation*
 	template<typename T>
 	struct has_simulation_constructor<T, std::void_t<decltype(T(std::declval<std::shared_ptr<Simulation>>()))>> : std::true_type {};
 
+	// Specialization for types that take a Visualization*
+	template<typename T>
+	struct has_simulation_constructor<T, std::void_t<decltype(T(std::declval<std::shared_ptr<Visualization>>()))>> : std::true_type {};
 
 	struct ApplicationParameters
 	{
