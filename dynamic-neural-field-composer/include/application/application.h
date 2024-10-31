@@ -8,9 +8,6 @@
 
 #include "exceptions/exception.h"
 #include "simulation/simulation.h"
-#include "simulation/visualization.h"
-
-
 
 namespace dnf_composer
 {
@@ -21,10 +18,6 @@ namespace dnf_composer
 	// Specialization for types that take a Simulation*
 	template<typename T>
 	struct has_simulation_constructor<T, std::void_t<decltype(T(std::declval<std::shared_ptr<Simulation>>()))>> : std::true_type {};
-
-	// Specialization for types that take a Visualization*
-	template<typename T>
-	struct has_simulation_constructor<T, std::void_t<decltype(T(std::declval<std::shared_ptr<Visualization>>()))>> : std::true_type {};
 
 	struct ApplicationParameters
 	{
@@ -39,15 +32,11 @@ namespace dnf_composer
 	{
 	private:
 		std::shared_ptr<Simulation> simulation;
-		ApplicationParameters parameters;
 		std::shared_ptr<imgui_kit::UserInterface> ui;
+		ApplicationParameters parameters;
 	public:
 		Application(const std::shared_ptr<Simulation>& simulation, bool activateUserInterface = true);
 		Application(const std::shared_ptr<Simulation>& simulation, ApplicationParameters uiParams);
-		Application(const Application&) = delete;             
-		Application& operator=(const Application&) = delete;  
-		Application(Application&&) = delete;                  
-		Application& operator=(Application&&) = delete;       
 
 		void init() const;
 		void step() const;

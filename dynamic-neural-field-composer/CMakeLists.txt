@@ -50,30 +50,31 @@ add_compile_definitions(OUTPUT_DIRECTORY="${OUTPUT_DIRECTORY}")
 
 # Set header files grouped by directories
 set(simulation_headers
-    "include/simulation/simulation.h"
-    "include/simulation/simulation_file_manager.h"
+    #"include/simulation/simulation.h"
+    #"include/simulation/simulation_file_manager.h"
 )
 set(visualization_headers
-    "include/visualization/visualization.h"
+    #"include/visualization/visualization.h"
+    "include/visualization/plot.h"
 )
 set(application_headers
-    "include/application/application.h"
+    #"include/application/application.h"
 )
 set(elements_headers
-    "include/elements/activation_function.h"
-    "include/elements/element.h"
-    "include/elements/element_factory.h"
-    "include/elements/field_coupling.h"
-    "include/elements/gauss_field_coupling.h"
-    "include/elements/gauss_kernel.h"
-    "include/elements/gauss_stimulus.h"
-    "include/elements/kernel.h"
-    "include/elements/mexican_hat_kernel.h"
-    "include/elements/neural_field.h"
-    "include/elements/normal_noise.h"
+    #"include/elements/activation_function.h"
+    #"include/elements/element.h"
+    #"include/elements/element_factory.h"
+    #"include/elements/field_coupling.h"
+    #"include/elements/gauss_field_coupling.h"
+    #"include/elements/gauss_kernel.h"
+    #"include/elements/gauss_stimulus.h"
+    #"include/elements/kernel.h"
+    #"include/elements/mexican_hat_kernel.h"
+    #"include/elements/neural_field.h"
+    #"include/elements/normal_noise.h"
 )
 set(element_parameters_headers
-"include/element_parameters/element_parameters.h"
+    #"include/element_parameters/element_parameters.h"
 #"include/element_parameters/field_coupling_parameters.h"
 ##"include/element_parameters/gauss_field_coupling_parameters.h"
 #"include/element_parameters/gauss_kernel_parameters.h"
@@ -84,27 +85,27 @@ set(element_parameters_headers
 )
 
 set(tools_headers
-    "include/tools/logger.h"
-    "include/tools/math.h"
-    "include/tools/profiling.h"
-    "include/tools/utils.h"
-    "include/tools/file_dialog.h"
+    #"include/tools/logger.h"
+    #"include/tools/math.h"
+    #"include/tools/profiling.h"
+    #"include/tools/utils.h"
+    #"include/tools/file_dialog.h"
 )
 set(exceptions_headers
-    "include/exceptions/exception.h"
+    #"include/exceptions/exception.h"
 )
 set(user_interface_headers
-    "include/user_interface/field_metrics_window.h"
-    "include/user_interface/element_window.h"
-    "include/user_interface/plot_control_window.h"
-    "include/user_interface/plot_window.h"
-    "include/user_interface/simulation_window.h"
-    "include/user_interface/node_graph_window.h"
-    "include/user_interface/heatmap_window.h"
-    "include/user_interface/main_window.h"
+    #"include/user_interface/field_metrics_window.h"
+    #"include/user_interface/element_window.h"
+    #"include/user_interface/plot_control_window.h"
+    #"include/user_interface/plot_window.h"
+    #"include/user_interface/simulation_window.h"
+    #"include/user_interface/node_graph_window.h"
+    #"include/user_interface/heatmap_window.h"
+    #"include/user_interface/main_window.h"
 )
 set(wizards_headers
-    "include/wizards/learning_wizard.h"
+    #"include/wizards/learning_wizard.h"
 )
 
 set(header 
@@ -122,26 +123,27 @@ set(header
 
 # Set source files
 set(src 
-    "src/application/application.cpp"
+    #"src/application/application.cpp"
 
-    "src/simulation/simulation.cpp"
-    "src/simulation/simulation_file_manager.cpp"
+    #"src/simulation/simulation.cpp"
+    #"src/simulation/simulation_file_manager.cpp"
 
-    "src/visualization/visualization.cpp"
+   # "src/visualization/visualization.cpp"
+    "src/visualization/plot.cpp"
     
-    "src/elements/activation_function.cpp"
-    "src/elements/element.cpp"
-    "src/elements/element_factory.cpp"
-    "src/elements/field_coupling.cpp"
-    "src/elements/gauss_field_coupling.cpp" 
-    "src/elements/gauss_kernel.cpp"
-    "src/elements/gauss_stimulus.cpp"  
-    "src/elements/kernel.cpp"
-    "src/elements/mexican_hat_kernel.cpp"
-    "src/elements/neural_field.cpp" 
-    "src/elements/normal_noise.cpp"
-
-    "src/element_parameters/element_parameters.cpp"
+    #"src/elements/activation_function.cpp"
+    #"src/elements/element.cpp"
+    #"src/elements/element_factory.cpp"
+    #"src/elements/field_coupling.cpp"
+    #"src/elements/gauss_field_coupling.cpp" 
+    #"src/elements/gauss_kernel.cpp"
+    #"src/elements/gauss_stimulus.cpp"  
+    #"src/elements/kernel.cpp"
+    #"src/elements/mexican_hat_kernel.cpp"
+    #"src/elements/neural_field.cpp" 
+    #"src/elements/normal_noise.cpp"
+    
+    #"src/element_parameters/element_parameters.cpp"
 #"src/element_parameters/field_coupling_parameters.cpp"
 ##"include/element_parameters/gauss_field_coupling_parameters.h"
 #"src/element_parameters/gauss_kernel_parameters.cpp"
@@ -151,23 +153,23 @@ set(src
 #"src/element_parameters/neural_field_parameters.cpp"
 #"src/element_parameters/normal_noise_parameters.cpp"
 
-    "src/tools/math.cpp"
-    "src/tools/profiling.cpp"
-    "src/tools/utils.cpp"
-    "src/tools/logger.cpp"
+    #"src/tools/math.cpp"
+    #"src/tools/profiling.cpp"
+    #"src/tools/utils.cpp"
+    #"src/tools/logger.cpp"
     
-    "src/exceptions/exception.cpp"
+    #"src/exceptions/exception.cpp"
     
-    "src/user_interface/plot_window.cpp"
-    "src/user_interface/plot_control_window.cpp"
-    "src/user_interface/simulation_window.cpp"
-    "src/user_interface/field_metrics_window.cpp"
-    "src/user_interface/element_window.cpp"
-    "src/user_interface/node_graph_window.cpp"
-    "src/user_interface/heatmap_window.cpp"
-    "src/user_interface/main_window.cpp"
-
-    "src/wizards/learning_wizard.cpp"
+    #"src/user_interface/plot_window.cpp"
+    #"src/user_interface/plot_control_window.cpp"
+    #"src/user_interface/simulation_window.cpp"
+    #"src/user_interface/field_metrics_window.cpp"
+    #"src/user_interface/element_window.cpp"
+    #"src/user_interface/node_graph_window.cpp"
+    #"src/user_interface/heatmap_window.cpp"
+    #"src/user_interface/main_window.cpp"
+    
+    #"src/wizards/learning_wizard.cpp"
 )
 
 # Define library target
@@ -178,10 +180,6 @@ target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
     $<INSTALL_INTERFACE:${DNF_COMPOSER_INC_INSTALL_DIR}> 
     #PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include 
 )
-
-
-#find_package(directx-headers CONFIG REQUIRED)
-#target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Microsoft::DirectX-Guids Microsoft::DirectX-Headers)
 
 # Setup imgui
 find_package(imgui CONFIG REQUIRED)
@@ -199,7 +197,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json
 # Setup imgui-platform-kit
 find_package(imgui-platform-kit REQUIRED)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE imgui-platform-kit)
-
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
     DNF_COMPOSER=1
