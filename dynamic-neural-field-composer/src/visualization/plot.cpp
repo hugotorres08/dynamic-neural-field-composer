@@ -10,11 +10,11 @@ namespace dnf_composer
 		: xMin(xMin), xMax(xMax), yMin(yMin), yMax(yMax), dx(dx)
 	{
 		if (xMin >= xMax)
-			throw std::exception("xMin must be less than xMax");
+			throw std::invalid_argument("xMin must be less than xMax");
 		if (yMin >= yMax)
-			throw std::exception("yMin must be less than yMax");
+			throw std::invalid_argument("yMin must be less than yMax");
 		if (dx <= 0)
-			throw std::exception("dx must be positive");
+			throw std::invalid_argument("dx must be positive");
 	}
 
 	bool PlotDimensions::isNull() const
@@ -38,12 +38,32 @@ namespace dnf_composer
 		: dimensions(dimensions), annotations(std::move(annotations))
 	{}
 
-	Plot::Plot(const PlotParameters& parameters)
+	Plot::Plot(const PlotParameters& parameters, std::vector<std::vector<double>*> data)
 		: uniqueIdentifier(uniqueIdentifierCounter++), parameters(parameters)
-	{}
+	{
+		addPlottingData(data);
+	}
+
+	void Plot::addPlottingData(std::vector<std::vector<double>*> data)
+	{
+		if (data.empty())
+			return;
+
+		for (auto& d : data)
+		{
+			addPlottingData(d);
+		}
+	}
 
 	void Plot::addPlottingData(std::vector<double>* data)
 	{
-		this->data.emplace_back(std::move(data));
+		if (data == nullptr)
+			return;
+
+		auto it = std::find(this->data.begin(), this->data.end(), data);
+		if (it != this->data.end())
+			return;		
+
+		this->data.emplace_back(data);
 	}
 }

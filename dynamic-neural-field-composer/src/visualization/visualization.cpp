@@ -22,19 +22,19 @@ namespace dnf_composer
 
 	void Visualization::plot(std::vector<double>* data)
 	{
-		Plot plot;
-		plot.addPlottingData(data);
-		addPlot(plot);
+		//Plot plot;
+		//plot.addPlottingData(data);
+		//addPlot(plot);
 	}
 
 	void Visualization::plot(std::vector<std::vector<double>*> data)
 	{
-		Plot plot;
-		for (auto& d : data)
-		{
-			plot.addPlottingData(d);
-		}
-		addPlot(plot);
+		//Plot plot;
+		//for (auto& d : data)
+		//{
+		//	plot.addPlottingData(d);
+		//}
+		//addPlot(plot);
 	}
 }
 

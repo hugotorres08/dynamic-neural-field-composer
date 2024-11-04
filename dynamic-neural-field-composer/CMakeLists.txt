@@ -54,7 +54,7 @@ set(simulation_headers
     #"include/simulation/simulation_file_manager.h"
 )
 set(visualization_headers
-    #"include/visualization/visualization.h"
+    "include/visualization/visualization.h"
     "include/visualization/plot.h"
 )
 set(application_headers
@@ -85,14 +85,14 @@ set(element_parameters_headers
 )
 
 set(tools_headers
-    #"include/tools/logger.h"
-    #"include/tools/math.h"
-    #"include/tools/profiling.h"
-    #"include/tools/utils.h"
-    #"include/tools/file_dialog.h"
+    "include/tools/logger.h"
+    "include/tools/math.h"
+    "include/tools/profiling.h"
+    "include/tools/utils.h"
+    "include/tools/file_dialog.h"
 )
 set(exceptions_headers
-    #"include/exceptions/exception.h"
+    "include/exceptions/exception.h"
 )
 set(user_interface_headers
     #"include/user_interface/field_metrics_window.h"
@@ -128,7 +128,7 @@ set(src
     #"src/simulation/simulation.cpp"
     #"src/simulation/simulation_file_manager.cpp"
 
-   # "src/visualization/visualization.cpp"
+    "src/visualization/visualization.cpp"
     "src/visualization/plot.cpp"
     
     #"src/elements/activation_function.cpp"
@@ -153,12 +153,12 @@ set(src
 #"src/element_parameters/neural_field_parameters.cpp"
 #"src/element_parameters/normal_noise_parameters.cpp"
 
-    #"src/tools/math.cpp"
-    #"src/tools/profiling.cpp"
-    #"src/tools/utils.cpp"
-    #"src/tools/logger.cpp"
+    "src/tools/math.cpp"
+    "src/tools/profiling.cpp"
+    "src/tools/utils.cpp"
+    "src/tools/logger.cpp"
     
-    #"src/exceptions/exception.cpp"
+    "src/exceptions/exception.cpp"
     
     #"src/user_interface/plot_window.cpp"
     #"src/user_interface/plot_control_window.cpp"
@@ -246,13 +246,13 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
 )
 
 # Add executable project
-set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
-add_executable(${EXE_PROJECT} "src/dynamic-neural-field-composer.cpp")
-target_include_directories(${EXE_PROJECT} PRIVATE include)
-target_link_libraries(${EXE_PROJECT} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
+#set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
+#add_executable(${EXE_PROJECT} "src/dynamic-neural-field-composer.cpp")
+#target_include_directories(${EXE_PROJECT} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
 
 # Example field_coupling
 set(FIELD_COUPLING_EXAMPLE dnfc-field-coupling-example)

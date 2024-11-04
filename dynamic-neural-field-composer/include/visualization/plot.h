@@ -2,7 +2,9 @@
 
 #include <vector>
 #include <exception>
+#include <stdexcept>
 #include <string>
+#include <algorithm>
 
 namespace dnf_composer
 {
@@ -40,7 +42,9 @@ namespace dnf_composer
 		PlotParameters parameters;
 		std::vector<std::vector<double>*> data;
 	public:
-		Plot(const PlotParameters& parameters);
+		Plot(const PlotParameters& parameters = PlotParameters(), 
+			std::vector<std::vector<double>*> data = {});
+		void addPlottingData(std::vector<std::vector<double>*> data);
 		void addPlottingData(std::vector<double>* data);
 	};
 }
