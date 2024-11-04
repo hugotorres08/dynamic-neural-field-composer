@@ -6,35 +6,74 @@
 
 namespace dnf_composer
 {
-	Visualization::Visualization(std::shared_ptr<Simulation> simulation)
+	Visualization::Visualization(const std::shared_ptr<Simulation>& simulation)
 	{
 		if (simulation == nullptr)
 			throw Exception(ErrorCode::VIS_INVALID_SIM);
 
-		simulation = std::move(simulation);
+		this->simulation = simulation;
 		plots = {};
-	}	
-
-	void Visualization::addPlot(const Plot& plot)
-	{
-		plots.emplace_back(plot);
 	}
 
-	void Visualization::plot(std::vector<double>* data)
+	void Visualization::plot(const std::vector<std::pair<std::string, std::string>>& data)
 	{
-		//Plot plot;
-		//plot.addPlottingData(data);
-		//addPlot(plot);
+		std::vector<std::vector<double>*> allDataToPlotPtr;
+
+		for (const auto& d : data)
+		{
+			const auto singleDataToPlotPtr = simulation->getComponentPtr(d.first, d.second);
+			allDataToPlotPtr.emplace_back(singleDataToPlotPtr);
+		}
+
+		PlotParameters parameters;
+		plots.emplace_back(parameters, allDataToPlotPtr);
 	}
 
-	void Visualization::plot(std::vector<std::vector<double>*> data)
+	void Visualization::plot(const std::string& name, const std::string& component)
 	{
-		//Plot plot;
-		//for (auto& d : data)
-		//{
-		//	plot.addPlottingData(d);
-		//}
-		//addPlot(plot);
+		std::vector<std::pair<std::string, std::string>> data = { {name, component} };
+		plot(data);
+	}
+
+	void Visualization::plot(const PlotParameters& parameters, const std::vector<std::pair<std::string, std::string>>& data)
+	{
+		std::vector<std::vector<double>*> allDataToPlotPtr;
+
+		for (const auto& d : data)
+		{
+			const auto singleDataToPlotPtr = simulation->getComponentPtr(d.first, d.second);
+			allDataToPlotPtr.emplace_back(singleDataToPlotPtr);
+		}
+
+		plots.emplace_back(parameters, allDataToPlotPtr);
+	}
+
+	void Visualization::plot(const PlotParameters& parameters, const std::string& name, const std::string& component)
+	{
+		std::vector<std::pair<std::string, std::string>> dataVec = { {name, component} };
+		plot(parameters, dataVec);
+	}
+
+	void Visualization::plot(int plotId, const std::vector<std::pair<std::string, std::string>>& data)
+	{
+		if (plotId < 0 || plotId >= plots.size())
+			throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
+
+		std::vector<std::vector<double>*> allDataToPlotPtr;
+
+		for (const auto& d : data)
+		{
+			const auto singleDataToPlotPtr = simulation->getComponentPtr(d.first, d.second);
+			allDataToPlotPtr.emplace_back(singleDataToPlotPtr);
+		}
+
+		plots[plotId].addPlottingData(allDataToPlotPtr);
+	}
+
+	void Visualization::plot(int plotId, const std::string& name, const std::string& component)
+	{
+		std::vector<std::pair<std::string, std::string>> dataVec = { {name, component} };
+		plot(plotId, dataVec);
 	}
 }
 

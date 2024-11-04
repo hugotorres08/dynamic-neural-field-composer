@@ -15,18 +15,21 @@ namespace dnf_composer
 		std::shared_ptr<Simulation> simulation;
 		std::vector<Plot> plots;
 	public:
-		Visualization(std::shared_ptr<Simulation> simulation);
+		Visualization(const std::shared_ptr<Simulation>& simulation);
 
-		void plot(std::vector<double>* data);
-		void plot(std::vector<std::vector<double>*> data);
-		void plot(const std::pair<std::string, std::string>& elementComponentPair);
-		void plot(const std::vector<std::pair<std::string, std::string>>& elementComponentPairs);
-		void addPlottingDataToPlot(int PlotId, std::vector<double>* data);
-		void addPlottingDataToPlot(int PlotId, const std::pair<std::string, std::string>& elementComponentPair, Plot& plot);
-		void addPlottingDataToPlot(int PlotId, const std::vector<std::pair<std::string, std::string>>& elementComponentPairs, Plot& plot);
-	
-	private:
-		void addPlot(const Plot& plot);
+		void plot(const std::vector<std::pair<std::string, std::string>>& data);
+		void plot(const std::string& name, const std::string& component);
+
+		void plot(const PlotParameters& parameters, const std::vector<std::pair<std::string, std::string>>& data);
+		void plot(const PlotParameters& parameters, const std::string& name, const std::string& component);
+
+		void plot(int plotId, const std::vector<std::pair<std::string, std::string>>& data);
+		void plot(int plotId, const std::string& name, const std::string& component);
+
+		void changePlotParameters(int plotId, const PlotParameters& parameters);
+		void removePlot(int plotId);
+		void removeAllPlots();
+		void removePlottingDataFromPlot(int plotId, std::pair<std::string, std::string>& data);
 	};
 }
 

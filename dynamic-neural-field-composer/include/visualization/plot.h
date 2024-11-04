@@ -46,5 +46,10 @@ namespace dnf_composer
 			std::vector<std::vector<double>*> data = {});
 		void addPlottingData(std::vector<std::vector<double>*> data);
 		void addPlottingData(std::vector<double>* data);
+		void removePlottingData(std::vector<double>* data);
+		void setParameters(const PlotParameters& parameters);
+		int getUniqueIdentifier() const;
+		PlotParameters getParameters() const;
+		std::vector<std::vector<double>*> getData() const;
 	};
 }

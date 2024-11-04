@@ -36,7 +36,9 @@ namespace dnf_composer
 
 		ElementIdentifiers::ElementIdentifiers()
 			: uniqueIdentifier(uniqueIdentifierCounter++), label(ElementLabel::UNINITIALIZED)
-		{}
+		{
+			uniqueName = "Element " + std::to_string(uniqueIdentifier);
+		}
 
 		ElementIdentifiers::ElementIdentifiers(std::string elementName)
 			: uniqueIdentifier(uniqueIdentifierCounter++), uniqueName(std::move(elementName)),

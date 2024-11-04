@@ -50,8 +50,8 @@ add_compile_definitions(OUTPUT_DIRECTORY="${OUTPUT_DIRECTORY}")
 
 # Set header files grouped by directories
 set(simulation_headers
-    #"include/simulation/simulation.h"
-    #"include/simulation/simulation_file_manager.h"
+    "include/simulation/simulation.h"
+    "include/simulation/simulation_file_manager.h"
 )
 set(visualization_headers
     "include/visualization/visualization.h"
@@ -61,20 +61,20 @@ set(application_headers
     #"include/application/application.h"
 )
 set(elements_headers
-    #"include/elements/activation_function.h"
-    #"include/elements/element.h"
-    #"include/elements/element_factory.h"
-    #"include/elements/field_coupling.h"
-    #"include/elements/gauss_field_coupling.h"
-    #"include/elements/gauss_kernel.h"
-    #"include/elements/gauss_stimulus.h"
-    #"include/elements/kernel.h"
-    #"include/elements/mexican_hat_kernel.h"
-    #"include/elements/neural_field.h"
-    #"include/elements/normal_noise.h"
+    "include/elements/activation_function.h"
+    "include/elements/element.h"
+    "include/elements/element_factory.h"
+    "include/elements/field_coupling.h"
+    "include/elements/gauss_field_coupling.h"
+    "include/elements/gauss_kernel.h"
+    "include/elements/gauss_stimulus.h"
+    "include/elements/kernel.h"
+    "include/elements/mexican_hat_kernel.h"
+    "include/elements/neural_field.h"
+    "include/elements/normal_noise.h"
 )
 set(element_parameters_headers
-    #"include/element_parameters/element_parameters.h"
+    "include/element_parameters/element_parameters.h"
 #"include/element_parameters/field_coupling_parameters.h"
 ##"include/element_parameters/gauss_field_coupling_parameters.h"
 #"include/element_parameters/gauss_kernel_parameters.h"
@@ -125,25 +125,25 @@ set(header
 set(src 
     #"src/application/application.cpp"
 
-    #"src/simulation/simulation.cpp"
-    #"src/simulation/simulation_file_manager.cpp"
+    "src/simulation/simulation.cpp"
+    "src/simulation/simulation_file_manager.cpp"
 
     "src/visualization/visualization.cpp"
     "src/visualization/plot.cpp"
     
-    #"src/elements/activation_function.cpp"
-    #"src/elements/element.cpp"
-    #"src/elements/element_factory.cpp"
-    #"src/elements/field_coupling.cpp"
-    #"src/elements/gauss_field_coupling.cpp" 
-    #"src/elements/gauss_kernel.cpp"
-    #"src/elements/gauss_stimulus.cpp"  
-    #"src/elements/kernel.cpp"
-    #"src/elements/mexican_hat_kernel.cpp"
-    #"src/elements/neural_field.cpp" 
-    #"src/elements/normal_noise.cpp"
+    "src/elements/activation_function.cpp"
+    "src/elements/element.cpp"
+    "src/elements/element_factory.cpp"
+    "src/elements/field_coupling.cpp"
+    "src/elements/gauss_field_coupling.cpp" 
+    "src/elements/gauss_kernel.cpp"
+    "src/elements/gauss_stimulus.cpp"  
+    "src/elements/kernel.cpp"
+    "src/elements/mexican_hat_kernel.cpp"
+    "src/elements/neural_field.cpp" 
+    "src/elements/normal_noise.cpp"
     
-    #"src/element_parameters/element_parameters.cpp"
+    "src/element_parameters/element_parameters.cpp"
 #"src/element_parameters/field_coupling_parameters.cpp"
 ##"include/element_parameters/gauss_field_coupling_parameters.h"
 #"src/element_parameters/gauss_kernel_parameters.cpp"
@@ -254,11 +254,20 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
 #imgui-platform-kit 
 #${CMAKE_PROJECT_NAME})
 
-# Example field_coupling
-set(FIELD_COUPLING_EXAMPLE dnfc-field-coupling-example)
-add_executable(${FIELD_COUPLING_EXAMPLE} "examples/field_coupling.cpp")
-target_include_directories(${FIELD_COUPLING_EXAMPLE} PRIVATE include)
-target_link_libraries(${FIELD_COUPLING_EXAMPLE} PRIVATE 
+# Example test_plot
+set(TEST_PLOT_EXAMPLE t-plot-example)
+add_executable(${TEST_PLOT_EXAMPLE} "examples/test_plot.cpp")
+target_include_directories(${TEST_PLOT_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_PLOT_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+# Example test_visualization
+set(TEST_VISUALIZATION_EXAMPLE t-vis-example)
+add_executable(${TEST_VISUALIZATION_EXAMPLE} "examples/test_visualization.cpp")
+target_include_directories(${TEST_VISUALIZATION_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_VISUALIZATION_EXAMPLE} PRIVATE 
 imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})
