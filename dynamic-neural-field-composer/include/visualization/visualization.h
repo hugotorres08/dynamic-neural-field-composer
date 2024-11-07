@@ -31,6 +31,8 @@ namespace dnf_composer
 		void removePlot(int plotId);
 		void removeAllPlots();
 		void removePlottingDataFromPlot(int plotId, const std::pair<std::string, std::string>& data);
+
+		std::shared_ptr<Simulation> getSimulation() const { return simulation; }
 	};
 }
 

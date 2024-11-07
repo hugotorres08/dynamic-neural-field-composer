@@ -25,6 +25,11 @@ namespace dnf_composer
 		initialized = false;
 		paused = false;
 		elements = {};
+		std::ostringstream oss;
+		oss << "Simulation '" << uniqueIdentifier << "' created. "
+			<< "With parameters [dt:" << std::fixed << std::setprecision(2) << deltaT
+			<< "s, t0:" << tZero << "s].";
+		tools::logger::log(tools::logger::LogLevel::INFO, oss.str());
 	}
 
 	Simulation::Simulation(const Simulation& other)
@@ -120,11 +125,7 @@ namespace dnf_composer
 			element->init();
 
 		initialized = true;
-		std::ostringstream oss;
-		oss << "Simulation " << uniqueIdentifier << " initialized. "
-			<< "With parameters [dt:" << std::fixed << std::setprecision(2) << deltaT
-			<< "s, t0:" << tZero << "s].";
-		tools::logger::log(tools::logger::LogLevel::INFO, oss.str());
+		tools::logger::log(tools::logger::LogLevel::INFO, "Simulation initialized.");
 	}
 
 	void Simulation::step()

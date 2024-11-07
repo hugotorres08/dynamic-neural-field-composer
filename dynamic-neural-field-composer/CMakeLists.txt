@@ -58,7 +58,7 @@ set(visualization_headers
     "include/visualization/plot.h"
 )
 set(application_headers
-    #"include/application/application.h"
+    "include/application/application.h"
 )
 set(elements_headers
     "include/elements/activation_function.h"
@@ -123,7 +123,7 @@ set(header
 
 # Set source files
 set(src 
-    #"src/application/application.cpp"
+    "src/application/application.cpp"
 
     "src/simulation/simulation.cpp"
     "src/simulation/simulation_file_manager.cpp"
@@ -268,6 +268,15 @@ set(TEST_VISUALIZATION_EXAMPLE t-vis-example)
 add_executable(${TEST_VISUALIZATION_EXAMPLE} "examples/test_visualization.cpp")
 target_include_directories(${TEST_VISUALIZATION_EXAMPLE} PRIVATE include)
 target_link_libraries(${TEST_VISUALIZATION_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+# Example test_application
+set(TEST_APPLICATION_EXAMPLE t-app-example)
+add_executable(${TEST_APPLICATION_EXAMPLE} "examples/test_application.cpp")
+target_include_directories(${TEST_APPLICATION_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_APPLICATION_EXAMPLE} PRIVATE 
 imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})

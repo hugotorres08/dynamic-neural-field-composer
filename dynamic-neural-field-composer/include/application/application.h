@@ -8,6 +8,7 @@
 
 #include "exceptions/exception.h"
 #include "simulation/simulation.h"
+#include "visualization/visualization.h"
 
 namespace dnf_composer
 {
@@ -19,24 +20,15 @@ namespace dnf_composer
 	template<typename T>
 	struct has_simulation_constructor<T, std::void_t<decltype(T(std::declval<std::shared_ptr<Simulation>>()))>> : std::true_type {};
 
-	struct ApplicationParameters
-	{
-		imgui_kit::UserInterfaceParameters uiParameters;
-		bool uiActive;
-
-		ApplicationParameters(bool activateUserInterface = true);
-		ApplicationParameters(imgui_kit::UserInterfaceParameters userInterfaceParameters);
-	};
-
 	class Application
 	{
 	private:
 		std::shared_ptr<Simulation> simulation;
-		std::shared_ptr<imgui_kit::UserInterface> ui;
-		ApplicationParameters parameters;
+		std::shared_ptr<Visualization> visualization;
+		std::shared_ptr<imgui_kit::UserInterface> gui;
+		bool guiActive;
 	public:
-		Application(const std::shared_ptr<Simulation>& simulation, bool activateUserInterface = true);
-		Application(const std::shared_ptr<Simulation>& simulation, ApplicationParameters uiParams);
+		Application(const std::shared_ptr<Simulation>& simulation = nullptr, const std::shared_ptr<Visualization>& visualization = nullptr);
 
 		void init() const;
 		void step() const;
@@ -45,21 +37,22 @@ namespace dnf_composer
 		template<typename WindowType, typename... Args, std::enable_if_t<!has_simulation_constructor<WindowType>::value, int> = 0>
 		void addWindow(Args&&... args) const {
 			// For window types that do not require a Simulation* argument
-			ui->addWindow<WindowType>(std::forward<Args>(args)...);
+			gui->addWindow<WindowType>(std::forward<Args>(args)...);
 		}
 
 		template<typename WindowType, typename... Args, std::enable_if_t<has_simulation_constructor<WindowType>::value, int> = 0>
 		void addWindow(Args&&... args) const {
 			// For window types that require a Simulation* argument
-			ui->addWindow<WindowType>(simulation, std::forward<Args>(args)...);
+			gui->addWindow<WindowType>(simulation, std::forward<Args>(args)...);
 		}
 
-		void setActivateUserInterfaceAs(bool activateUI);
-
-		bool hasUIBeenClosed() const;
-		bool isUIActive() const;
+		void toggleGUI();
+		bool hasGUIBeenClosed() const;
+		bool isGUIActive() const;
 
 		~Application() = default;
+	private:
+		void setGUIParameters();
 	};
 }
 

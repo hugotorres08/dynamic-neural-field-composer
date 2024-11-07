@@ -144,4 +144,17 @@ namespace dnf_composer
 	{
 		return data;
 	}
+
+	std::string Plot::toString() const
+	{
+		std::ostringstream result;
+		result << "Plot: { ";
+		result << "Unique identifier: " << uniqueIdentifier << ", ";
+		result << parameters.toString() << ", ";
+		result << "Data*: [ ";
+		for (auto& d : data)
+			result << reinterpret_cast<void*>(d) << ", ";
+		result << " ] }";
+		return result.str();
+	}
 }

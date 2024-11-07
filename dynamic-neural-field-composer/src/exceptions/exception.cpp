@@ -102,6 +102,12 @@ namespace dnf_composer
 			return "Error trying to obtain local time for error.";
 		case ErrorCode::PLOT_INVALID_VIS_OBJ:
 			return "You tried to create a plot without a visualization object.";
+		case ErrorCode::APP_INVALID_SIM:
+			return "Invalid simulation object.";
+		case ErrorCode::APP_INVALID_VIS:
+			return "Invalid visualization object.";
+		case ErrorCode::APP_VIS_SIM_MISMATCH:
+			return "Visualization object does not point to the same Simulation object as Application.";
 		default:
 			return "An error was detected but no suitable response was found!";
 		}

@@ -32,6 +32,9 @@ int main()
 
 		plot2.removePlottingData(&data1);
 
+		std::cout << plot.toString() << std::endl;
+		std::cout << plot2.toString() << std::endl;
+
 		return 0;
 	}
 	catch (const std::exception& ex)
