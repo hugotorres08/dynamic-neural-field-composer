@@ -13,6 +13,7 @@ namespace dnf_composer
 
 		this->simulation = simulation;
 		plots = {};
+		log(tools::logger::LogLevel::INFO, "Visualization object created.");
 	}
 
 	void Visualization::plot(const std::vector<std::pair<std::string, std::string>>& data)
@@ -27,6 +28,7 @@ namespace dnf_composer
 
 		PlotParameters parameters;
 		plots.emplace_back(parameters, allDataToPlotPtr);
+		log(tools::logger::LogLevel::INFO, "Plot " + std::to_string(plots.size() - 1) + " added to visualization.");
 	}
 
 	void Visualization::plot(const std::string& name, const std::string& component)
@@ -46,6 +48,7 @@ namespace dnf_composer
 		}
 
 		plots.emplace_back(parameters, allDataToPlotPtr);
+		log(tools::logger::LogLevel::INFO, "Plot " + std::to_string(plots.size() - 1) + " added to visualization.");
 	}
 
 	void Visualization::plot(const PlotParameters& parameters, const std::string& name, const std::string& component)
@@ -63,11 +66,15 @@ namespace dnf_composer
 
 		for (const auto& d : data)
 		{
-			const auto singleDataToPlotPtr = simulation->getComponentPtr(d.first, d.second);
+			std::vector<double>* singleDataToPlotPtr = simulation->getComponentPtr(d.first, d.second);
 			allDataToPlotPtr.emplace_back(singleDataToPlotPtr);
 		}
 
-		plots[plotId].addPlottingData(allDataToPlotPtr);
+		for (auto& plot : plots)
+		{
+			if (plot.getUniqueIdentifier() == plotId)
+				plot.addPlottingData(allDataToPlotPtr);
+		}
 	}
 
 	void Visualization::plot(int plotId, const std::string& name, const std::string& component)
@@ -75,44 +82,55 @@ namespace dnf_composer
 		std::vector<std::pair<std::string, std::string>> dataVec = { {name, component} };
 		plot(plotId, dataVec);
 	}
+
+	void Visualization::changePlotParameters(int plotId, const PlotParameters& parameters)
+	{
+		if (plotId < 0 || plotId >= plots.size())
+			throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
+
+		for (auto plot : plots)
+		{
+			if (plot.getUniqueIdentifier() == plotId)
+				plot.setParameters(parameters);
+		}
+	}
+
+	void Visualization::removePlot(int plotId)
+	{
+		if (plotId < 0 || plotId >= plots.size())
+			throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
+
+		plots.erase(plots.begin() + plotId);
+		log(tools::logger::LogLevel::INFO, "Plot " + std::to_string(plotId) + " removed from visualization.");
+	}
+
+	void Visualization::removeAllPlots()
+	{
+		plots.clear();
+		log(tools::logger::LogLevel::INFO, "All plots removed from visualization.");
+	}
+
+	void Visualization::removePlottingDataFromPlot(int plotId, const std::pair<std::string, std::string>& data)
+	{
+		if (plotId < 0 || plotId >= plots.size())
+			throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
+
+		const auto dataPtr = simulation->getComponentPtr(data.first, data.second);
+		for (auto& plot : plots)
+		{
+			if (plot.getUniqueIdentifier() == plotId)
+			{
+				const size_t initialSize = plot.getData().size();
+				plot.removePlottingData(dataPtr);
+				if (initialSize == plot.getData().size())
+				{
+					log(tools::logger::LogLevel::WARNING, "Data '" + data.first + " - " + data.second + "' not found in plot " + std::to_string(plotId) + ".");
+					return;
+				}
+				log(tools::logger::LogLevel::INFO, "Data '" + data.first + " - " + data.second + "' removed from plot " + std::to_string(plotId) + ".");
+				return;
+			}
+		}
+		log(tools::logger::LogLevel::WARNING, "Data '" + data.first + " - " + data.second + "' not found in plot " + std::to_string(plotId) + ".");
+	}
 }
-
-
-
-
-//void Visualization::addPlots(const std::vector<Plot>& plots)
-//{
-//	for (const Plot& plot : plots)
-//	{
-//		addPlottingData(plot);
-//	}
-//}
-//
-//void Visualization::addPlot(const Plot& plot)
-//{
-//	for (const auto& indData : plot.data)
-//	{
-//		addPlottingData(indData.first, indData.second, plot.parameters);
-//	}
-//}
-//
-//void Visualization::addPlottingData(const std::string& elementName, const std::string& componentId,
-//	const PlotParameters& parameters)
-//{
-//	if (elementName.empty() || componentId.empty())
-//	{
-//		const std::string message = "Tried to add an invalid element component '" + elementName + "' - '" + componentId + "' to the plot.";
-//		log(tools::logger::LogLevel::WARNING, message);
-//		return;
-//	}
-//
-//	const auto data = simulation->getComponentPtr(elementName, componentId);
-//	if (!data)
-//	{
-//		const std::string message = "Tried to add an invalid element component '" + elementName + "' - '" + componentId + "' to the plot.";
-//		log(tools::logger::LogLevel::WARNING, message);
-//	}
-//
-//	log(tools::logger::LogLevel::INFO, "Added element component '" + elementName + "' - '" + componentId +
-//		"' to the plot.");
-//}

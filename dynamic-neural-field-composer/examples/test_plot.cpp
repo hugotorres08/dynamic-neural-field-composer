@@ -32,7 +32,6 @@ int main()
 
 		plot2.removePlottingData(&data1);
 
-
 		return 0;
 	}
 	catch (const std::exception& ex)

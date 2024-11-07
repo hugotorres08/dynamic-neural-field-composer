@@ -37,15 +37,26 @@ int main(int argc, char* argv[])
 		PlotParameters plotParameters{ plotDimensions, plotAnnotations };
 
 		visualization.plot(plotParameters, { { elem1->getUniqueName(), "output" } });
-		visualization.plot(plotParameters, elem2->getUniqueName(), "output" );
+		visualization.plot(plotParameters, elem3->getUniqueName(), "output" );
 
 		visualization.plot(0, { { elem1->getUniqueName(), "output" } });
 		//visualization.plot(5, { { elem2->getUniqueName(), "output" } }); // raises exception
+		//visualization.plot(1, elem2->getUniqueName(), "output");
+		visualization.plot(1, { { elem1->getUniqueName(), "output" },  { elem1->getUniqueName(), "activation" }, { elem1->getUniqueName(), "input" } });
+		visualization.plot(1, elem1->getUniqueName(), "output");
 		visualization.plot(1, elem2->getUniqueName(), "output");
 
 
+		visualization.changePlotParameters(0, plotParameters);
+		visualization.removePlot(0);
+
+		visualization.removePlottingDataFromPlot(1, { elem2->getUniqueName(), "output" });
+		visualization.removePlottingDataFromPlot(1, { elem1->getUniqueName(), "activation" });
+		visualization.removePlottingDataFromPlot(1, { elem1->getUniqueName(), "output" });
+		visualization.removePlottingDataFromPlot(1, { elem3->getUniqueName(), "input" });
 
 
+		visualization.removeAllPlots();
 
 		return 0;
 	}

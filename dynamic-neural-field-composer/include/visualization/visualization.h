@@ -6,6 +6,7 @@
 #include "simulation/simulation.h"
 #include "exceptions/exception.h"
 #include "plot.h"
+#include "tools/logger.h"
 
 namespace dnf_composer
 {
@@ -29,7 +30,7 @@ namespace dnf_composer
 		void changePlotParameters(int plotId, const PlotParameters& parameters);
 		void removePlot(int plotId);
 		void removeAllPlots();
-		void removePlottingDataFromPlot(int plotId, std::pair<std::string, std::string>& data);
+		void removePlottingDataFromPlot(int plotId, const std::pair<std::string, std::string>& data);
 	};
 }
 

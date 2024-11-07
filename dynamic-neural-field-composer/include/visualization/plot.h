@@ -6,6 +6,8 @@
 #include <string>
 #include <algorithm>
 
+#include "tools/logger.h"
+
 namespace dnf_composer
 {
 	struct PlotDimensions
@@ -16,6 +18,7 @@ namespace dnf_composer
 		PlotDimensions();
 		PlotDimensions(int xMin, int xMax, int yMin, int yMax, double dx);
 		bool isNull() const;
+		std::string toString() const;
 	};
 
 	struct PlotAnnotations
@@ -24,6 +27,7 @@ namespace dnf_composer
 
 		PlotAnnotations();
 		PlotAnnotations(std::string title, std::string x_label, std::string y_label);
+		std::string toString() const;
 	};
 
 	struct PlotParameters
@@ -33,6 +37,7 @@ namespace dnf_composer
 
 		PlotParameters();
 		PlotParameters(const PlotDimensions& dimensions, PlotAnnotations annotations);
+		std::string toString() const;
 	};
 
 	class Plot
@@ -51,5 +56,6 @@ namespace dnf_composer
 		int getUniqueIdentifier() const;
 		PlotParameters getParameters() const;
 		std::vector<std::vector<double>*> getData() const;
+		std::string toString() const;
 	};
 }
