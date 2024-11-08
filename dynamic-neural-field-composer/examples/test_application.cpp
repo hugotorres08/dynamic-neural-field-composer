@@ -13,19 +13,16 @@ int main()
 
 		app.init();
 
-		while (!app.hasGUIBeenClosed())
+		//while (!app.hasGUIBeenClosed())
+		for (int i = 0; i < 100; i++)
 		{
 			app.step();
 		}
 
-		app.close();
-
-		app.init();
 		app.toggleGUI();
 
-		std::cout << "Press ENTER to stop..." << std::endl;
-
 		// Continue calling app.step() while ENTER is not pressed
+		std::cout << "Press ENTER to stop..." << std::endl;
 		while (true)
 		{
 			if (_kbhit())
@@ -40,12 +37,22 @@ int main()
 
 		app.toggleGUI();
 
-		while (!app.hasGUIBeenClosed())
+		// Continue calling app.step() while ENTER is not pressed
+		std::cout << "Press ENTER to stop..." << std::endl;
+		while (true)
 		{
+			if (_kbhit())
+			{
+				if (_getch() == '\r') // Check if the key pressed is ENTER
+				{
+					break;
+				}
+			}
 			app.step();
 		}
 
 		app.close();
+
 	}
 	catch (const dnf_composer::Exception& ex)
 	{

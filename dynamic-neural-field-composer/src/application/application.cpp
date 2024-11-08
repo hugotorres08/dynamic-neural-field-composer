@@ -21,6 +21,7 @@ namespace dnf_composer
 	{
 		simulation->init();
 		gui->initialize();
+		log(tools::logger::LogLevel::INFO, "Application initialized successfully.");
 	}
 
 	void Application::step() const
@@ -35,18 +36,13 @@ namespace dnf_composer
 		simulation->close();
 		if (guiActive)
 			gui->shutdown();
+		log(tools::logger::LogLevel::INFO, "Application closed successfully.");
 	}
 
 	void Application::toggleGUI()
 	{
 		guiActive = !guiActive;
-		//if (guiActive)
-		//{
-		//	setGUIParameters();
-		//	gui->initialize();
-		//}
-		//else
-			//gui->shutdown();
+		log(tools::logger::LogLevel::INFO,std::string("GUI is ") + (guiActive ? "enabled." : "disabled."));
 	}
 
 	bool Application::hasGUIBeenClosed() const
@@ -70,6 +66,7 @@ namespace dnf_composer
 		const IconParameters iconParams{ std::string(PROJECT_DIR) + "/resources/icons/icon.ico" };
 		const BackgroundImageParameters bgParams{ std::string(PROJECT_DIR) + "/resources/images/background.png", ImageFitType::ZOOM_TO_FIT };
 		const UserInterfaceParameters guiParameters{ winParams, fontParams, styleParams, iconParams, bgParams };
-		gui = std::make_shared<imgui_kit::UserInterface>(guiParameters);
+		gui = std::make_shared<UserInterface>(guiParameters);
+		log(tools::logger::LogLevel::INFO, "GUI parameters set successfully.");
 	}
 }
