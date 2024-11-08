@@ -35,11 +35,11 @@ namespace dnf_composer
 	}
 
 	PlotAnnotations::PlotAnnotations()
-		:title("title"), x_label("x label"), y_label("y label")
+		:title("title"), x_label("x label"), y_label("y label"), legends()
 	{}
 
 	PlotAnnotations::PlotAnnotations(std::string title, std::string x_label, std::string y_label)
-		:title(std::move(title)), x_label(std::move(x_label)), y_label(std::move(y_label))
+		:title(std::move(title)), x_label(std::move(x_label)), y_label(std::move(y_label)), legends()
 	{}
 
 	std::string PlotAnnotations::toString() const
@@ -49,6 +49,12 @@ namespace dnf_composer
 		result += "title: " + title + ", ";
 		result += "x_label: " + x_label + ", ";
 		result += "y_label: " + y_label + "}";
+		result += "legends: ";
+		if (legends.empty())
+			result += "none";
+		else
+			for (const auto& l : legends)
+			result += ", " + l;
 		return result;
 	}
 
@@ -69,25 +75,31 @@ namespace dnf_composer
 		return result;
 	}
 
-	Plot::Plot(const PlotParameters& parameters, std::vector<std::vector<double>*> data)
+	Plot::Plot(const PlotParameters& parameters, const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
 		: uniqueIdentifier(uniqueIdentifierCounter++), parameters(parameters)
 	{
 		log(tools::logger::LogLevel::INFO, "Plot created with id " + std::to_string(uniqueIdentifier) + ". " + parameters.toString() + ".");
-		addPlottingData(data);
+		addPlottingData(data, legends);
 	}
 
-	void Plot::addPlottingData(std::vector<std::vector<double>*> data)
+	void Plot::addPlottingData(const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
 	{
 		if (data.empty())
 			return;
 
+		if (!legends.empty() && data.size() != legends.size())
+		{
+			log(tools::logger::LogLevel::WARNING, "Data and legends sizes do not match. Skipping adding data to plot " + std::to_string(uniqueIdentifier) + ".");
+			return;
+		}
+
 		for (auto& d : data)
 		{
-			addPlottingData(d);
+			addPlottingData(d, legends.empty() ? "" : legends[&d - &data[0]]);
 		}
 	}
 
-	void Plot::addPlottingData(std::vector<double>* data)
+	void Plot::addPlottingData(std::vector<double>* data, const std::string& legend)
 	{
 		if (data == nullptr)
 		{
@@ -95,7 +107,7 @@ namespace dnf_composer
 			return;
 		}
 
-		auto it = std::find(this->data.begin(), this->data.end(), data);
+		const auto it = std::find(this->data.begin(), this->data.end(), data);
 		if (it != this->data.end())
 		{
 			log(tools::logger::LogLevel::WARNING, "Data already exists in the plot. Skipping adding data to plot " + std::to_string(uniqueIdentifier) + ".");
@@ -103,6 +115,14 @@ namespace dnf_composer
 		}
 
 		this->data.emplace_back(data);
+		if (legend.empty())
+		{
+			std::ostringstream oss;
+			oss << reinterpret_cast<void*>(data);
+			parameters.annotations.legends.emplace_back(oss.str());
+		}
+		else
+			parameters.annotations.legends.emplace_back(legend);
 		log(tools::logger::LogLevel::INFO, "Data added to plot " + std::to_string(uniqueIdentifier) + ".");
 	}
 
@@ -114,10 +134,12 @@ namespace dnf_composer
 			return;
 		}
 
-		auto it = std::find(this->data.begin(), this->data.end(), data);
+		const auto it = std::find(this->data.begin(), this->data.end(), data);
 		if (it != this->data.end())
 		{
+			const auto legendIt = parameters.annotations.legends.begin() + (it - this->data.begin());
 			this->data.erase(it);
+			parameters.annotations.legends.erase(legendIt);
 			log(tools::logger::LogLevel::INFO, "Data removed from plot " + std::to_string(uniqueIdentifier) + ".");
 			return;
 		}

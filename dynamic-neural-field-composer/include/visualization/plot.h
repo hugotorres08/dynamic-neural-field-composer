@@ -24,6 +24,7 @@ namespace dnf_composer
 	struct PlotAnnotations
 	{
 		std::string title, x_label, y_label;
+		std::vector<std::string> legends;
 
 		PlotAnnotations();
 		PlotAnnotations(std::string title, std::string x_label, std::string y_label);
@@ -48,9 +49,10 @@ namespace dnf_composer
 		std::vector<std::vector<double>*> data;
 	public:
 		Plot(const PlotParameters& parameters = PlotParameters(), 
-			std::vector<std::vector<double>*> data = {});
-		void addPlottingData(std::vector<std::vector<double>*> data);
-		void addPlottingData(std::vector<double>* data);
+			const std::vector<std::vector<double>*>& data = {},
+			const std::vector<std::string>& legends = {});
+		void addPlottingData(const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends = {});
+		void addPlottingData(std::vector<double>* data, const std::string& legend = {});
 		void removePlottingData(std::vector<double>* data);
 		void setParameters(const PlotParameters& parameters);
 		int getUniqueIdentifier() const;

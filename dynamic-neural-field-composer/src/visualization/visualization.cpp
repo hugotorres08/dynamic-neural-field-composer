@@ -27,13 +27,18 @@ namespace dnf_composer
 		}
 
 		PlotParameters parameters;
-		plots.emplace_back(parameters, allDataToPlotPtr);
+		std::vector<std::string> legends;
+		for (const auto& d : data)
+		{
+			legends.emplace_back(d.first + " - " + d.second);
+		}
+		plots.emplace_back(parameters, allDataToPlotPtr, legends);
 		log(tools::logger::LogLevel::INFO, "Plot " + std::to_string(plots.size() - 1) + " added to visualization.");
 	}
 
 	void Visualization::plot(const std::string& name, const std::string& component)
 	{
-		std::vector<std::pair<std::string, std::string>> data = { {name, component} };
+		const std::vector<std::pair<std::string, std::string>> data = { {name, component} };
 		plot(data);
 	}
 
@@ -47,13 +52,18 @@ namespace dnf_composer
 			allDataToPlotPtr.emplace_back(singleDataToPlotPtr);
 		}
 
-		plots.emplace_back(parameters, allDataToPlotPtr);
+		std::vector<std::string> legends;
+		for (const auto& d : data)
+		{
+			legends.emplace_back(d.first + " - " + d.second);
+		}
+		plots.emplace_back(parameters, allDataToPlotPtr, legends);
 		log(tools::logger::LogLevel::INFO, "Plot " + std::to_string(plots.size() - 1) + " added to visualization.");
 	}
 
 	void Visualization::plot(const PlotParameters& parameters, const std::string& name, const std::string& component)
 	{
-		std::vector<std::pair<std::string, std::string>> dataVec = { {name, component} };
+		const std::vector<std::pair<std::string, std::string>> dataVec = { {name, component} };
 		plot(parameters, dataVec);
 	}
 
@@ -63,27 +73,28 @@ namespace dnf_composer
 			throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
 
 		std::vector<std::vector<double>*> allDataToPlotPtr;
-
+		std::vector<std::string> legends;
 		for (const auto& d : data)
 		{
 			std::vector<double>* singleDataToPlotPtr = simulation->getComponentPtr(d.first, d.second);
 			allDataToPlotPtr.emplace_back(singleDataToPlotPtr);
+			legends.emplace_back(d.first + " - " + d.second);
 		}
 
 		for (auto& plot : plots)
 		{
 			if (plot.getUniqueIdentifier() == plotId)
-				plot.addPlottingData(allDataToPlotPtr);
+				plot.addPlottingData(allDataToPlotPtr, legends);
 		}
 	}
 
 	void Visualization::plot(int plotId, const std::string& name, const std::string& component)
 	{
-		std::vector<std::pair<std::string, std::string>> dataVec = { {name, component} };
+		const std::vector<std::pair<std::string, std::string>> dataVec = { {name, component} };
 		plot(plotId, dataVec);
 	}
 
-	void Visualization::changePlotParameters(int plotId, const PlotParameters& parameters)
+	void Visualization::changePlotParameters(int plotId, const PlotParameters& parameters) const
 	{
 		if (plotId < 0 || plotId >= plots.size())
 			throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
