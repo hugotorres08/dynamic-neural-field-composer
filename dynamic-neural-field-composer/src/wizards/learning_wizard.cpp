@@ -12,14 +12,16 @@ namespace dnf_composer
         setNeuralFieldPost();
         fieldCoupling->resetWeights();
 
-        const std::string pathPrefix = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" + fieldCoupling->getUniqueName() + "_";
+        //const std::string pathPrefix = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" + fieldCoupling->getUniqueName() + "_";
+        const std::string pathPrefix = std::string(OUTPUT_DIRECTORY) + "/" + fieldCoupling->getUniqueName() + "_";
         pathToFieldActivationPre = pathPrefix + neuralFieldPre->getUniqueName() + ".txt";
         pathToFieldActivationPost = pathPrefix + neuralFieldPost->getUniqueName() + ".txt";
     }
 
     void LearningWizard::setDataFilePath(const std::string& filePath)
     {
-        const std::string pathPrefix = filePath + "/inter-field-synaptic-connections/" + fieldCoupling->getUniqueName() + "_";
+        //const std::string pathPrefix = filePath + "/inter-field-synaptic-connections/" + fieldCoupling->getUniqueName() + "_";
+        const std::string pathPrefix = filePath + "/" + fieldCoupling->getUniqueName() + "_";
         pathToFieldActivationPre = pathPrefix + neuralFieldPre->getUniqueName() + ".txt";
         pathToFieldActivationPost = pathPrefix + neuralFieldPost->getUniqueName() + ".txt";
     }
@@ -113,7 +115,7 @@ namespace dnf_composer
             // normalize data (remove resting level and normalize between -1 and 1))
             *input = normalizeFieldActivation(*input);
             *output = normalizeFieldActivation(*output);
-
+            
             // save data
             saveFieldActivation(input, pathToFieldActivationPre);
             saveFieldActivation(output, pathToFieldActivationPost);
