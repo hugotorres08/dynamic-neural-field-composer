@@ -17,7 +17,7 @@ namespace dnf_composer
 
 		PlotDimensions();
 		PlotDimensions(int xMin, int xMax, int yMin, int yMax, double dx);
-		bool isNull() const;
+		bool areUndefined() const;
 		std::string toString() const;
 	};
 

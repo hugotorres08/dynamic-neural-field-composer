@@ -38,20 +38,41 @@ namespace dnf_composer
 
 		void PlotControlWindow::renderPlot(const Plot& plot)
 		{
-
 			ImVec2 plotSize = ImGui::GetContentRegionAvail();  // Get available size in the ImGui window
 			plotSize.x -= 5.0f; // Subtract some padding
 			plotSize.y -= 5.0f; // Subtract some padding
+			constexpr static int safeMargin = 1;
+			ImPlotStyle& style = ImPlot::GetStyle();
+			style.LineWeight = 3.0f;
 
-			static constexpr ImPlotFlags flags = ImPlotFlags_Crosshairs | ImPlotFlags_Equal;
+			
+			ImPlotFlags flags = ImPlotFlags_Crosshairs;
 			const PlotParameters& parameters = plot.getParameters();
-			configurePlot(parameters.dimensions);
+			if (parameters.dimensions.areUndefined())
+			{
+				flags |= ImPlotFlags_Equal;
+			}
+			else
+			{
+				ImPlot::SetNextAxesLimits(parameters.dimensions.xMin - safeMargin, parameters.dimensions.xMax + safeMargin,
+					parameters.dimensions.yMin - safeMargin, parameters.dimensions.yMax + safeMargin);
+			}
 
 			const std::string uniquePlotID = parameters.annotations.title + "##" + std::to_string(plot.getUniqueIdentifier());
 			if (ImPlot::BeginPlot(uniquePlotID.c_str(), plotSize, flags))
 			{
-				ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str(),
-					ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
+				if (parameters.dimensions.areUndefined())
+				{
+					ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str(),
+						ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
+				}
+				else
+				{
+					ImPlot::SetNextAxesLimits(parameters.dimensions.xMin - safeMargin, parameters.dimensions.xMax + safeMargin,
+						parameters.dimensions.yMin - safeMargin, parameters.dimensions.yMax + safeMargin);
+					ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str());
+				}
+
 				ImPlot::SetupLegend(ImPlotLocation_South, ImPlotLegendFlags_Horizontal);
 
 				const std::vector<std::vector<double>*> allData = plot.getData();
@@ -72,14 +93,13 @@ namespace dnf_composer
 			ImPlot::EndPlot();
 		}
 
-		void PlotControlWindow::configurePlot(const PlotDimensions& dimensions)
+		/*void PlotControlWindow::configurePlot(const PlotDimensions& dimensions)
 		{
-			constexpr static int safeMargin = 1;
+			
 			ImPlot::SetNextAxesLimits(dimensions.xMin - safeMargin, dimensions.xMax + safeMargin,
 			dimensions.yMin - safeMargin, dimensions.yMax + safeMargin);
-			ImPlotStyle& style = ImPlot::GetStyle();
-			style.LineWeight = 3.0f;
-		}
+
+		}*/
 
 
 		void PlotControlWindow::renderElementPlotTable() const

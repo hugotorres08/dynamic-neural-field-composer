@@ -3,23 +3,34 @@
 namespace dnf_composer
 {
 	PlotDimensions::PlotDimensions()
-		: xMin(0), xMax(100), yMin(-5), yMax(15), dx(1.0)
+		: xMin(0), xMax(1), yMin(0), yMax(1), dx(1.0)
 	{}
 
 	PlotDimensions::PlotDimensions(int xMin, int xMax, int yMin, int yMax, double dx)
 		: xMin(xMin), xMax(xMax), yMin(yMin), yMax(yMax), dx(dx)
 	{
 		if (xMin >= xMax)
-			throw std::invalid_argument("xMin must be less than xMax.");
+		{
+			this->xMin = 0;
+			this->xMax = 1;
+			log(tools::logger::LogLevel::WARNING, "xMin must be less than xMax.");
+		}
 		if (yMin >= yMax)
-			throw std::invalid_argument("yMin must be less than yMax.");
+		{
+			this->yMin = 0;
+			this->yMax = 1;
+			log(tools::logger::LogLevel::WARNING, "yMin must be less than yMax.");
+		}
 		if (dx <= 0)
-			throw std::invalid_argument("dx must be positive.");
+		{
+			this->dx = 1.0;
+			log(tools::logger::LogLevel::WARNING, "dx must be positive.");
+		}
 	}
 
-	bool PlotDimensions::isNull() const
+	bool PlotDimensions::areUndefined() const
 	{
-		return xMin == 0 && xMax == 0 && yMin == 0 && yMax == 0 && dx == 0.0;
+		return xMin == 0 && xMax == 1 && yMin == 0 && yMax == 1 && dx == 1.0;
 	}
 
 	std::string PlotDimensions::toString() const
