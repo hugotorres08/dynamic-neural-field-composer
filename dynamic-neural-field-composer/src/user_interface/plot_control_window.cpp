@@ -16,13 +16,13 @@ namespace dnf_composer
 			}
 			if (ImGui::Begin("Plot table"))
 			{
-				renderPlotTable();
 			}*/
+			//ImGui::ShowDemoWindow();
+			renderPlotTable();
 			renderPlots();
 		}
 
-
-		void PlotControlWindow::renderPlots()
+		void PlotControlWindow::renderPlots() const
 		{
 			const std::vector<Plot> plots = visualization->getPlots();
 			for (const auto& plot : plots)
@@ -41,7 +41,7 @@ namespace dnf_composer
 			ImVec2 plotSize = ImGui::GetContentRegionAvail();  // Get available size in the ImGui window
 			plotSize.x -= 5.0f; // Subtract some padding
 			plotSize.y -= 5.0f; // Subtract some padding
-			constexpr static int safeMargin = 1;
+			constexpr static double safeMargin = 0.01;
 			ImPlotStyle& style = ImPlot::GetStyle();
 			style.LineWeight = 3.0f;
 
@@ -52,11 +52,12 @@ namespace dnf_composer
 			{
 				flags |= ImPlotFlags_Equal;
 			}
-			else
-			{
-				ImPlot::SetNextAxesLimits(parameters.dimensions.xMin - safeMargin, parameters.dimensions.xMax + safeMargin,
-					parameters.dimensions.yMin - safeMargin, parameters.dimensions.yMax + safeMargin);
-			}
+			//else
+			//{
+			//	ImPlot::SetNextAxesLimits(parameters.dimensions.xMin - safeMargin, parameters.dimensions.xMax + safeMargin,
+			//		parameters.dimensions.yMin - safeMargin, parameters.dimensions.yMax + safeMargin);
+			//	auto aux = ImPlot::GetCurrentPlot()->Axes;
+			//}
 
 			const std::string uniquePlotID = parameters.annotations.title + "##" + std::to_string(plot.getUniqueIdentifier());
 			if (ImPlot::BeginPlot(uniquePlotID.c_str(), plotSize, flags))
@@ -68,9 +69,18 @@ namespace dnf_composer
 				}
 				else
 				{
-					ImPlot::SetNextAxesLimits(parameters.dimensions.xMin - safeMargin, parameters.dimensions.xMax + safeMargin,
-						parameters.dimensions.yMin - safeMargin, parameters.dimensions.yMax + safeMargin);
 					ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str());
+					auto plot_ = ImPlot::GetCurrentPlot();
+					auto aux = plot_->Axes;
+					plot_->Axes[0].Range.Min = parameters.dimensions.xMin - safeMargin;
+					plot_->Axes[0].Range.Max = parameters.dimensions.xMax + safeMargin;
+					plot_->Axes[3].Range.Min = parameters.dimensions.yMin - safeMargin;
+					plot_->Axes[3].Range.Max = parameters.dimensions.yMax + safeMargin;
+					//plot_->Axes->Range.Max = parameters.dimensions.yMax + safeMargin;
+					//plot_->XAxis = parameters.dimensions.xMin - safeMargin;
+					//plot_->XAxis.Max = parameters.dimensions.xMax + safeMargin;
+					//plot_->YAxis.Min = parameters.dimensions.yMin - safeMargin;
+					//plot_->YAxis.Max = parameters.dimensions.yMax + safeMargin;
 				}
 
 				ImPlot::SetupLegend(ImPlotLocation_South, ImPlotLegendFlags_Horizontal);
@@ -92,15 +102,6 @@ namespace dnf_composer
 			}
 			ImPlot::EndPlot();
 		}
-
-		/*void PlotControlWindow::configurePlot(const PlotDimensions& dimensions)
-		{
-			
-			ImPlot::SetNextAxesLimits(dimensions.xMin - safeMargin, dimensions.xMax + safeMargin,
-			dimensions.yMin - safeMargin, dimensions.yMax + safeMargin);
-
-		}*/
-
 
 		void PlotControlWindow::renderElementPlotTable() const
 		{
@@ -162,67 +163,135 @@ namespace dnf_composer
 
 		void PlotControlWindow::renderPlotTable()
 		{
-			// Split left and right panes with ImGui::BeginChild for separate regions
-			ImGui::BeginChild("PlotList", ImVec2(150, 0), true); // Left side for plot list
+			static int selectedPlotId = -1;
 
-			// Display each plot ID in a list format
-			//for (size_t i = 0; i < visualization->plots.size(); ++i)
-			std::vector<Plot> plots = visualization->getPlots();
-			for (size_t i = 0; i < plots.size(); ++i)
+			if (ImGui::Begin("Plot Property Editor"))
 			{
-				Plot& plot = plots[i]; // Assuming plots is a public or accessible member
-				int plotId = plot.getUniqueIdentifier(); // Assuming getId() returns plot ID
-
-				if (ImGui::Selectable(("Plot " + std::to_string(plotId)).c_str(), selectedPlotId == plotId))
+				// Help marker [make this a static thing with an string arg.]
+				ImGui::TextDisabled("(?)");
+				if (ImGui::BeginItemTooltip())
 				{
-					selectedPlotId = plotId;
-				}
-			}
-			ImGui::EndChild();
-
-			ImGui::SameLine();
-
-			// Right side: Display properties of the selected plot
-			ImGui::BeginChild("PlotProperties", ImVec2(0, 0), true);
-
-			Plot* selectedPlot = getSelectedPlot();
-			if (selectedPlot)
-			{
-				ImGui::Text("Plot ID: %d", selectedPlot->getUniqueIdentifier());
-				ImGui::Separator();
-
-				// Assuming PlotParameters is a struct that holds plot properties (e.g., title, color, etc.)
-				PlotParameters params = selectedPlot->getParameters();
-
-				// Editable plot properties
-				char title[128];
-				strncpy(title, params.annotations.title.c_str(), sizeof(title));
-				if (ImGui::InputText("Title", title, IM_ARRAYSIZE(title)))
-				{
-					params.annotations.title = title; // Update plot title
+					ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+					ImGui::TextUnformatted("Select a plot from the left panel to edit its properties.");
+					ImGui::PopTextWrapPos();
+					ImGui::EndTooltip();
 				}
 
-				//ImGui::ColorEdit3("Plot Color", (float*)&params.color); // Assuming color is ImVec3
+				// Split left and right panes with ImGui::BeginChild for separate regions
+				ImGui::BeginChild("PlotList", ImVec2(150, 0), true); // Left side for plot list
 
-				//ImGui::DragFloat("Line Thickness", &params.lineThickness, 0.1f, 0.1f, 10.0f);
-				//ImGui::DragFloat("Plot Scale", &params.scale, 0.1f, 0.1f, 10.0f);
+				// Display each plot ID in a list format
+				const std::vector<Plot> plots = visualization->getPlots();
+				for (const auto& plot : plots)
+				{
+					const int plotId = plot.getUniqueIdentifier();
 
-				// Add other parameter widgets as needed (e.g., markers, axis limits, etc.)
+					if (ImGui::Selectable(("Plot #" + std::to_string(plotId)).c_str(), selectedPlotId == plotId))
+					{
+						selectedPlotId = plotId;
+					}
+				}
+				ImGui::EndChild();
+
+				ImGui::SameLine();
+
+				// Right side: Display properties of the selected plot
+				ImGui::BeginChild("PlotProperties", ImVec2(0, 0), true);
+
+				Plot* selectedPlot = getSelectedPlot(selectedPlotId);
+				if (selectedPlot)
+				{
+					bool parametersChanged = false;
+
+					ImGui::Text("Plot ID: %d", selectedPlot->getUniqueIdentifier());
+					ImGui::Separator();
+
+					const PlotParameters oldParams = selectedPlot->getParameters();
+					PlotParameters newParams = oldParams;
+
+					// Editable plot properties
+					char title[128];
+					strncpy_s(title, oldParams.annotations.title.c_str(), sizeof(title));
+					if (ImGui::InputText("Title", title, IM_ARRAYSIZE(title)))
+					{
+						newParams.annotations.title = title;
+						if (ImGui::IsItemDeactivatedAfterEdit())
+							parametersChanged = true;
+					}
+					char xLabel[128];
+					strncpy_s(xLabel, oldParams.annotations.x_label.c_str(), sizeof(xLabel));
+					if (ImGui::InputText("X Label", xLabel, IM_ARRAYSIZE(xLabel)))
+					{
+						newParams.annotations.x_label = xLabel;
+						if (ImGui::IsItemDeactivatedAfterEdit())
+							parametersChanged = true;
+					}
+					char yLabel[128];
+					strncpy_s(yLabel, oldParams.annotations.y_label.c_str(), sizeof(yLabel));
+					if (ImGui::InputText("Y Label", yLabel, IM_ARRAYSIZE(yLabel)))
+					{
+						newParams.annotations.y_label = yLabel;
+						if (ImGui::IsItemDeactivatedAfterEdit())
+							parametersChanged = true;
+					}
+					int xMin = oldParams.dimensions.xMin;
+					if (ImGui::InputInt("X Min", &xMin))
+					{
+						newParams.dimensions.xMin = xMin;
+						if (ImGui::IsItemDeactivatedAfterEdit())
+							parametersChanged = true;
+					}
+					int xMax = oldParams.dimensions.xMax;
+					if (ImGui::InputInt("X Max", &xMax))
+					{
+						newParams.dimensions.xMax = xMax;
+						if (ImGui::IsItemDeactivatedAfterEdit())
+							parametersChanged = true;
+					}
+					int yMin = oldParams.dimensions.yMin;
+					if (ImGui::InputInt("Y Min", &yMin))
+					{
+						newParams.dimensions.yMin = yMin;
+						if (ImGui::IsItemDeactivatedAfterEdit())
+							parametersChanged = true;
+					}
+					int yMax = oldParams.dimensions.yMax;
+					if (ImGui::InputInt("Y Max", &yMax))
+					{
+						newParams.dimensions.yMax = yMax;
+						if (ImGui::IsItemDeactivatedAfterEdit())
+							parametersChanged = true;
+					}
+					double dx = oldParams.dimensions.dx;
+					if (ImGui::InputDouble("dx", &dx))
+					{
+						newParams.dimensions.dx = dx;
+						if (ImGui::IsItemDeactivatedAfterEdit())
+							parametersChanged = true;
+					}
+					if (parametersChanged)
+						if (newParams != oldParams)
+							selectedPlot->setParameters(newParams);
+					
+					//ImGui::ColorEdit3("Plot Color", (float*)&params.color); // Assuming color is ImVec3
+
+					//ImGui::DragFloat("Line Thickness", &params.lineThickness, 0.1f, 0.1f, 10.0f);
+					//ImGui::DragFloat("Plot Scale", &params.scale, 0.1f, 0.1f, 10.0f);
+
+					// Add other parameter widgets as needed (e.g., markers, axis limits, etc.)
+				}
+
+				ImGui::EndChild();
 			}
-			else
-			{
-				ImGui::Text("Select a plot from the left panel to edit its properties.");
-			}
-
-			ImGui::EndChild();
+			ImGui::End();
 		}
 
 		// Helper function to get the currently selected plot
-		Plot* PlotControlWindow::getSelectedPlot() const
+		Plot* PlotControlWindow::getSelectedPlot(int id) const
 		{
 			for (auto& plot : visualization->getPlots())
 			{
-				if (plot.getUniqueIdentifier() == selectedPlotId)
+				if (plot.getUniqueIdentifier() == id)
 				{
 					return &plot;
 				}

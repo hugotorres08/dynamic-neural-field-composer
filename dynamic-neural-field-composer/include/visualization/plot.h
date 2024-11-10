@@ -19,6 +19,7 @@ namespace dnf_composer
 		PlotDimensions(int xMin, int xMax, int yMin, int yMax, double dx);
 		bool areUndefined() const;
 		std::string toString() const;
+		bool operator==(const PlotDimensions& other) const;
 	};
 
 	struct PlotAnnotations
@@ -29,6 +30,7 @@ namespace dnf_composer
 		PlotAnnotations();
 		PlotAnnotations(std::string title, std::string x_label, std::string y_label);
 		std::string toString() const;
+		bool operator==(const PlotAnnotations& other) const;
 	};
 
 	struct PlotParameters
@@ -39,6 +41,7 @@ namespace dnf_composer
 		PlotParameters();
 		PlotParameters(const PlotDimensions& dimensions, PlotAnnotations annotations);
 		std::string toString() const;
+		bool operator==(const PlotParameters& other) const;
 	};
 
 	class Plot

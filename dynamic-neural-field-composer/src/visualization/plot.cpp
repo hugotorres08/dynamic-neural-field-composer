@@ -45,6 +45,13 @@ namespace dnf_composer
 		return result;
 	}
 
+	bool PlotDimensions::operator==(const PlotDimensions& other) const
+	{
+		if (xMin != other.xMin || xMax != other.xMax || yMin != other.yMin || yMax != other.yMax || dx != other.dx)
+			return false;
+		return true;
+	}
+
 	PlotAnnotations::PlotAnnotations()
 		:title("title"), x_label("x label"), y_label("y label"), legends()
 	{}
@@ -69,6 +76,13 @@ namespace dnf_composer
 		return result;
 	}
 
+	bool PlotAnnotations::operator==(const PlotAnnotations& other) const
+	{
+		if (title != other.title || x_label != other.x_label || y_label != other.y_label || legends != other.legends)
+			return false;
+		return true;
+	}
+
 	PlotParameters::PlotParameters()
 		: dimensions(), annotations()
 	{}
@@ -86,10 +100,16 @@ namespace dnf_composer
 		return result;
 	}
 
+	bool PlotParameters::operator==(const PlotParameters& other) const
+	{
+		if (dimensions != other.dimensions || annotations != other.annotations)
+			return false;
+		return true;
+	}
+
 	Plot::Plot(const PlotParameters& parameters, const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
 		: uniqueIdentifier(uniqueIdentifierCounter++), parameters(parameters)
 	{
-		log(tools::logger::LogLevel::INFO, "Plot created with id " + std::to_string(uniqueIdentifier) + ". " + parameters.toString() + ".");
 		addPlottingData(data, legends);
 	}
 

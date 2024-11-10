@@ -15,18 +15,16 @@ namespace dnf_composer
 		private:
 			std::shared_ptr<Visualization> visualization;
 			std::shared_ptr<Simulation> simulation;
-			int selectedPlotId;
 		public:
 			PlotControlWindow(const std::shared_ptr<Visualization>& visualization);
 			virtual void render() override;
 		private:
-			void renderPlots();
+			void renderPlots() const;
 			static void renderPlot(const Plot& plot);
-			static void configurePlot(const PlotDimensions& dimensions);
 
 			void renderElementPlotTable() const;
 			void renderPlotTable();
-			Plot* getSelectedPlot() const;
+			Plot* getSelectedPlot(int id) const;
 		};
 	}
 }
