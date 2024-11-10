@@ -35,7 +35,7 @@ int main()
 		visualization->plot({ { elem1->getUniqueName(), "output"}, {elem2->getUniqueName(), "output"} });
 		visualization->plot({ { elem1->getUniqueName(), "output"}, {elem2->getUniqueName(), "output"} });
 
-		const PlotParameters plotParams{ {0, 31, 0, 1, 1.0}, {"this is a title", "x", "y"}};
+		const PlotParameters plotParams{ {0, 31, 0, 1, 1.0}, {"Gauss kernel", "Space", "Amplitude"}};
 		visualization->plot(plotParams, elem3->getUniqueName(), "kernel");
 
 		app.init();

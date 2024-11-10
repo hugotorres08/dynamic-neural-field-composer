@@ -103,6 +103,7 @@ set(user_interface_headers
     #"include/user_interface/node_graph_window.h"
     #"include/user_interface/heatmap_window.h"
     "include/user_interface/main_window.h"
+    "include/user_interface/widgets.h"
 )
 set(wizards_headers
     #"include/wizards/learning_wizard.h"

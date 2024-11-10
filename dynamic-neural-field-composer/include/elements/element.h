@@ -52,6 +52,7 @@ namespace dnf_composer
 			std::vector<double> getComponent(const std::string& componentName);
 			std::vector<double>* getComponentPtr(const std::string& componentName);
 			std::vector<std::string> getComponentList() const;
+			std::unordered_map<std::string, std::vector<double>> getComponents() const;
 
 			std::vector<std::shared_ptr<Element>> getInputs();
 			std::unordered_map<std::shared_ptr<Element>, std::string> getInputsAndComponents();

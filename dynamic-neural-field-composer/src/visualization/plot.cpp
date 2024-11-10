@@ -3,34 +3,53 @@
 namespace dnf_composer
 {
 	PlotDimensions::PlotDimensions()
-		: xMin(0), xMax(1), yMin(0), yMax(1), dx(1.0)
+		: xMin(0), xMax(100), yMin(-10.0), yMax(10.0), dx(1.0), autoFit(true)
 	{}
 
-	PlotDimensions::PlotDimensions(int xMin, int xMax, int yMin, int yMax, double dx)
-		: xMin(xMin), xMax(xMax), yMin(yMin), yMax(yMax), dx(dx)
+	PlotDimensions::PlotDimensions(const double& x_min, const double& x_max, const double& y_min, const double& y_max, const double& d_x)
+		: xMin(x_min), xMax(x_max), yMin(y_min), yMax(y_max), dx(d_x), autoFit(false)
 	{
 		if (xMin >= xMax)
 		{
-			this->xMin = 0;
-			this->xMax = 1;
-			log(tools::logger::LogLevel::WARNING, "xMin must be less than xMax.");
+			autoFit = true;
+			xMin = 0;
+			xMax = 100;
+			log(tools::logger::LogLevel::WARNING, "xMin must be less than xMax. Auto-fitting enabled.");
+			return;
 		}
 		if (yMin >= yMax)
 		{
-			this->yMin = 0;
-			this->yMax = 1;
-			log(tools::logger::LogLevel::WARNING, "yMin must be less than yMax.");
+			yMin = -10.0;
+			yMax = 10.0;
+			autoFit = true;
+			log(tools::logger::LogLevel::WARNING, "yMin must be less than yMax. Auto-fitting enabled.");
+			return;
 		}
 		if (dx <= 0)
 		{
 			this->dx = 1.0;
-			log(tools::logger::LogLevel::WARNING, "dx must be positive.");
+			autoFit = true;
+			log(tools::logger::LogLevel::WARNING, "dx must be positive. Auto-fitting enabled and dx set to 1.0.");
+			return;
 		}
 	}
 
-	bool PlotDimensions::areUndefined() const
+	PlotDimensions::PlotDimensions(double dx)
+		: xMin(0), xMax(100), yMin(0), yMax(1), dx(dx), autoFit(true)
 	{
-		return xMin == 0 && xMax == 1 && yMin == 0 && yMax == 1 && dx == 1.0;
+		if (dx <= 0)
+		{
+			this->dx = 1.0;
+			autoFit = true;
+			log(tools::logger::LogLevel::WARNING, "dx must be positive. Auto-fitting enabled and dx set to 1.0.");
+		}
+	}
+
+	bool PlotDimensions::isLegal() const
+	{
+		if (xMin >= xMax || yMin >= yMax || dx <= 0)
+			return false;
+		return true;
 	}
 
 	std::string PlotDimensions::toString() const
@@ -47,8 +66,17 @@ namespace dnf_composer
 
 	bool PlotDimensions::operator==(const PlotDimensions& other) const
 	{
-		if (xMin != other.xMin || xMax != other.xMax || yMin != other.yMin || yMax != other.yMax || dx != other.dx)
+		constexpr double epsilon = 1e-6;
+
+		if (std::fabs(xMin - other.xMin) > epsilon ||
+			std::fabs(xMax - other.xMax) > epsilon ||
+			std::fabs(yMin - other.yMin) > epsilon ||
+			std::fabs(yMax - other.yMax) > epsilon ||
+			std::fabs(dx - other.dx) > epsilon ||
+			autoFit != other.autoFit)
+		{
 			return false;
+		}
 		return true;
 	}
 
@@ -107,8 +135,8 @@ namespace dnf_composer
 		return true;
 	}
 
-	Plot::Plot(const PlotParameters& parameters, const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
-		: uniqueIdentifier(uniqueIdentifierCounter++), parameters(parameters)
+	Plot::Plot(PlotParameters parameters, const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
+		: uniqueIdentifier(uniqueIdentifierCounter++), parameters(std::move(parameters)), data()
 	{
 		addPlottingData(data, legends);
 	}
@@ -124,9 +152,9 @@ namespace dnf_composer
 			return;
 		}
 
-		for (auto& d : data)
+		for (size_t i = 0; i < data.size(); ++i)
 		{
-			addPlottingData(d, legends.empty() ? "" : legends[&d - &data[0]]);
+			addPlottingData(data[i], legends.empty() ? "" : legends[i]);
 		}
 	}
 
@@ -180,7 +208,7 @@ namespace dnf_composer
 	void Plot::setParameters(const PlotParameters& parameters)
 	{
 		this->parameters = parameters;
-		log(tools::logger::LogLevel::INFO, "Parameters changed for plot " + std::to_string(uniqueIdentifier) + ". New " + parameters.toString() + ".");
+		log(tools::logger::LogLevel::INFO, "Parameters changed for plot " + std::to_string(uniqueIdentifier) + ".");
 	}
 
 	int Plot::getUniqueIdentifier() const

@@ -10,16 +10,10 @@ namespace dnf_composer
 
 		void PlotControlWindow::render()
 		{
-			/*if (ImGui::Begin("Plot Control"))
-			{
-				renderElementPlotTable();
-			}
-			if (ImGui::Begin("Plot table"))
-			{
-			}*/
-			//ImGui::ShowDemoWindow();
+			renderElementPlotTable();
 			renderPlotTable();
 			renderPlots();
+			updatePlotDimensions = false;
 		}
 
 		void PlotControlWindow::renderPlots() const
@@ -36,7 +30,7 @@ namespace dnf_composer
 			}
 		}
 
-		void PlotControlWindow::renderPlot(const Plot& plot)
+		void PlotControlWindow::renderPlot(const Plot& plot) const
 		{
 			ImVec2 plotSize = ImGui::GetContentRegionAvail();  // Get available size in the ImGui window
 			plotSize.x -= 5.0f; // Subtract some padding
@@ -44,25 +38,23 @@ namespace dnf_composer
 			constexpr static double safeMargin = 0.01;
 			ImPlotStyle& style = ImPlot::GetStyle();
 			style.LineWeight = 3.0f;
-
 			
 			ImPlotFlags flags = ImPlotFlags_Crosshairs;
 			const PlotParameters& parameters = plot.getParameters();
-			if (parameters.dimensions.areUndefined())
+			if (parameters.dimensions.autoFit)
 			{
 				flags |= ImPlotFlags_Equal;
 			}
-			//else
-			//{
-			//	ImPlot::SetNextAxesLimits(parameters.dimensions.xMin - safeMargin, parameters.dimensions.xMax + safeMargin,
-			//		parameters.dimensions.yMin - safeMargin, parameters.dimensions.yMax + safeMargin);
-			//	auto aux = ImPlot::GetCurrentPlot()->Axes;
-			//}
+			else
+			{
+				ImPlot::SetNextAxesLimits(parameters.dimensions.xMin - safeMargin, parameters.dimensions.xMax + safeMargin,
+					parameters.dimensions.yMin - safeMargin, parameters.dimensions.yMax + safeMargin);
+			}
 
 			const std::string uniquePlotID = parameters.annotations.title + "##" + std::to_string(plot.getUniqueIdentifier());
 			if (ImPlot::BeginPlot(uniquePlotID.c_str(), plotSize, flags))
 			{
-				if (parameters.dimensions.areUndefined())
+				if (parameters.dimensions.autoFit)
 				{
 					ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str(),
 						ImPlotAxisFlags_AutoFit, ImPlotAxisFlags_AutoFit);
@@ -70,17 +62,14 @@ namespace dnf_composer
 				else
 				{
 					ImPlot::SetupAxes(parameters.annotations.x_label.c_str(), parameters.annotations.y_label.c_str());
-					auto plot_ = ImPlot::GetCurrentPlot();
-					auto aux = plot_->Axes;
-					plot_->Axes[0].Range.Min = parameters.dimensions.xMin - safeMargin;
-					plot_->Axes[0].Range.Max = parameters.dimensions.xMax + safeMargin;
-					plot_->Axes[3].Range.Min = parameters.dimensions.yMin - safeMargin;
-					plot_->Axes[3].Range.Max = parameters.dimensions.yMax + safeMargin;
-					//plot_->Axes->Range.Max = parameters.dimensions.yMax + safeMargin;
-					//plot_->XAxis = parameters.dimensions.xMin - safeMargin;
-					//plot_->XAxis.Max = parameters.dimensions.xMax + safeMargin;
-					//plot_->YAxis.Min = parameters.dimensions.yMin - safeMargin;
-					//plot_->YAxis.Max = parameters.dimensions.yMax + safeMargin;
+					if (updatePlotDimensions)
+					{
+						const auto imPlot = ImPlot::GetCurrentPlot();
+						imPlot->Axes[0].Range.Min = parameters.dimensions.xMin - safeMargin;
+						imPlot->Axes[0].Range.Max = parameters.dimensions.xMax + safeMargin;
+						imPlot->Axes[3].Range.Min = parameters.dimensions.yMin - safeMargin;
+						imPlot->Axes[3].Range.Max = parameters.dimensions.yMax + safeMargin;
+					}
 				}
 
 				ImPlot::SetupLegend(ImPlotLocation_South, ImPlotLegendFlags_Horizontal);
@@ -93,7 +82,7 @@ namespace dnf_composer
 
 					// Shift x-values by 1 unit and scale
 					std::vector<double> shiftedXValues(data.size());
-					for (int i = 0; i < data.size(); ++i) 
+					for (int i = 0; i < data.size(); ++i)
 						shiftedXValues[i] = (i + 1) * parameters.dimensions.dx;
 
 					ImPlot::PlotLine(label.c_str(), shiftedXValues.data(), data.data(), static_cast<int>(data.size()));
@@ -105,60 +94,74 @@ namespace dnf_composer
 
 		void PlotControlWindow::renderElementPlotTable() const
 		{
-			if (ImGui::BeginTable("PlotControlTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+			if (ImGui::Begin("Element Plot Control"))
 			{
-				// Set column headers
-				ImGui::TableSetupColumn("Elements");
-				ImGui::TableSetupColumn("Components");
-				ImGui::TableSetupColumn("Plot");
-				ImGui::TableSetupColumn("Plot ID");
-				ImGui::TableHeadersRow();
+				widgets::renderHelpMarker("Select the data you want to plot and where to plot it.");
 
-				// Example loop for each element
-				for (const auto& element : simulation->getElements())
+				if (ImGui::BeginTable("PlotControlTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
 				{
-					// For each element, iterate over its components
-					//auto components = element->getComponentNames(); // Assuming this method gives component names for the element
-					std::vector<std::string> components = element->getComponentList();
-					for (const auto& component : components)
+					// Set column headers
+					ImGui::TableSetupColumn("Elements");
+					ImGui::TableSetupColumn("Components");
+					ImGui::TableSetupColumn("Plot");
+					ImGui::TableSetupColumn("Plot ID");
+					ImGui::TableHeadersRow();
+
+					// Example loop for each element
+					for (const auto& element : simulation->getElements())
 					{
-						// Start a new row for each component
-						ImGui::TableNextRow();
+						// For each element, iterate over its components
 
-						// Element column
-						ImGui::TableSetColumnIndex(0);
-						ImGui::TextUnformatted(element->getUniqueName().c_str()); // Display element ID
-
-						// Component column
-						ImGui::TableSetColumnIndex(1);
-						ImGui::TextUnformatted(component.c_str()); // Display component name
-
-						// Plot checkbox column
-						ImGui::TableSetColumnIndex(2);
-						//bool plotEnabled = element->isPlotEnabled(component); // Example method to get current plot state
-						bool plotEnabled = true;
-						if (ImGui::Checkbox(("##PlotCheckbox" + element->getUniqueName() + component).c_str(), &plotEnabled))
+						std::unordered_map<std::string, std::vector<double>> components = element->getComponents();
+						
+						for (const auto& component : components)
 						{
-							// Toggle plot state when checkbox changes
-							//element->setPlotEnabled(component, plotEnabled);
-						}
+							// Start a new row for each component
+							ImGui::TableNextRow();
 
-						// Plot ID column
-						ImGui::TableSetColumnIndex(3);
-						if (plotEnabled)
-						{
-							//int plotId = element->getPlotId(component); // Example method to get plot ID
-							int plotId = 0;
-							ImGui::InputInt(("##PlotID" + element->getUniqueName() + component).c_str(), &plotId, 0, 0, ImGuiInputTextFlags_ReadOnly);
-						}
-						else
-						{
-							ImGui::TextDisabled("_"); // Grayed out when plot is unchecked
+							// Element column
+							ImGui::TableSetColumnIndex(0);
+							ImGui::TextUnformatted(element->getUniqueName().c_str()); // Display element ID
+
+							// Component column
+							ImGui::TableSetColumnIndex(1);
+							ImGui::TextUnformatted(component.first.c_str()); // Display component name
+
+							// Plot checkbox column
+							ImGui::TableSetColumnIndex(2);
+
+							// Check if the plot is enabled
+							int plotId = discoverPlotIdIfComponentIsPlotted(component);
+
+							bool plotEnabled = false;
+
+							if (plotId > -1)
+							{
+								plotEnabled = true;
+							}
+
+							if (ImGui::Checkbox(("##PlotCheckbox" + element->getUniqueName() + component.first).c_str(), &plotEnabled))
+							{
+								plotEnabled = true;
+							}
+
+							// Plot ID column
+							ImGui::TableSetColumnIndex(3);
+							if (plotEnabled)
+							{
+								ImGui::InputInt(("##PlotID" + element->getUniqueName() + component.first).c_str(), &plotId, 0, 0, ImGuiInputTextFlags_ReadOnly);
+							}
+							else
+							{
+								ImGui::TextDisabled("_"); // Grayed out when plot is unchecked
+							}
 						}
 					}
+					ImGui::EndTable();
 				}
-				ImGui::EndTable();
+				ImGui::End();
 			}
+			
 		}
 
 		void PlotControlWindow::renderPlotTable()
@@ -167,15 +170,7 @@ namespace dnf_composer
 
 			if (ImGui::Begin("Plot Property Editor"))
 			{
-				// Help marker [make this a static thing with an string arg.]
-				ImGui::TextDisabled("(?)");
-				if (ImGui::BeginItemTooltip())
-				{
-					ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-					ImGui::TextUnformatted("Select a plot from the left panel to edit its properties.");
-					ImGui::PopTextWrapPos();
-					ImGui::EndTooltip();
-				}
+				widgets::renderHelpMarker("Select a plot from the left panel to edit its properties.");
 
 				// Split left and right panes with ImGui::BeginChild for separate regions
 				ImGui::BeginChild("PlotList", ImVec2(150, 0), true); // Left side for plot list
@@ -234,51 +229,57 @@ namespace dnf_composer
 						if (ImGui::IsItemDeactivatedAfterEdit())
 							parametersChanged = true;
 					}
-					int xMin = oldParams.dimensions.xMin;
-					if (ImGui::InputInt("X Min", &xMin))
+					double xMin = oldParams.dimensions.xMin;
+					if (ImGui::InputDouble("X Min", &xMin, 0.1, 1.0)) // Set step and step_fast
 					{
 						newParams.dimensions.xMin = xMin;
 						if (ImGui::IsItemDeactivatedAfterEdit())
 							parametersChanged = true;
 					}
-					int xMax = oldParams.dimensions.xMax;
-					if (ImGui::InputInt("X Max", &xMax))
+					double xMax = oldParams.dimensions.xMax;
+					if (ImGui::InputDouble("X Max", &xMax, 0.1, 1.0))
 					{
 						newParams.dimensions.xMax = xMax;
 						if (ImGui::IsItemDeactivatedAfterEdit())
 							parametersChanged = true;
 					}
-					int yMin = oldParams.dimensions.yMin;
-					if (ImGui::InputInt("Y Min", &yMin))
+					double yMin = oldParams.dimensions.yMin;
+					if (ImGui::InputDouble("Y Min", &yMin, 0.1, 1.0))
 					{
 						newParams.dimensions.yMin = yMin;
 						if (ImGui::IsItemDeactivatedAfterEdit())
 							parametersChanged = true;
 					}
-					int yMax = oldParams.dimensions.yMax;
-					if (ImGui::InputInt("Y Max", &yMax))
+					double yMax = oldParams.dimensions.yMax;
+					if (ImGui::InputDouble("Y Max", &yMax, 0.1, 1.0))
 					{
 						newParams.dimensions.yMax = yMax;
 						if (ImGui::IsItemDeactivatedAfterEdit())
 							parametersChanged = true;
 					}
 					double dx = oldParams.dimensions.dx;
-					if (ImGui::InputDouble("dx", &dx))
+					if (ImGui::InputDouble("dx", &dx, 0.01, 0.1))
 					{
 						newParams.dimensions.dx = dx;
 						if (ImGui::IsItemDeactivatedAfterEdit())
 							parametersChanged = true;
 					}
+					bool autoFit = oldParams.dimensions.autoFit;
+					if (ImGui::Checkbox("Auto Fit", &autoFit))
+					{
+						newParams.dimensions.autoFit = autoFit;
+						if (ImGui::IsItemDeactivatedAfterEdit())
+							parametersChanged = true;
+					}
 					if (parametersChanged)
+					{
 						if (newParams != oldParams)
+						{
 							selectedPlot->setParameters(newParams);
-					
-					//ImGui::ColorEdit3("Plot Color", (float*)&params.color); // Assuming color is ImVec3
-
-					//ImGui::DragFloat("Line Thickness", &params.lineThickness, 0.1f, 0.1f, 10.0f);
-					//ImGui::DragFloat("Plot Scale", &params.scale, 0.1f, 0.1f, 10.0f);
-
-					// Add other parameter widgets as needed (e.g., markers, axis limits, etc.)
+							updatePlotDimensions = true;
+						}
+						
+					}
 				}
 
 				ImGui::EndChild();
@@ -286,7 +287,6 @@ namespace dnf_composer
 			ImGui::End();
 		}
 
-		// Helper function to get the currently selected plot
 		Plot* PlotControlWindow::getSelectedPlot(int id) const
 		{
 			for (auto& plot : visualization->getPlots())
@@ -298,6 +298,25 @@ namespace dnf_composer
 			}
 			return nullptr;
 		}
+
+		int PlotControlWindow::discoverPlotIdIfComponentIsPlotted(const std::pair<std::string, std::vector<double>>& component) const
+		{
+			for (const auto& plot : visualization->getPlots())
+			{
+				for (const auto& data : plot.getData())
+				{
+					if (!data->empty())
+					{
+						if (component.second == *data)
+						{
+							return plot.getUniqueIdentifier();
+						}
+					}
+				}
+			}
+			return -1;
+		}
+
 
 	}
 }

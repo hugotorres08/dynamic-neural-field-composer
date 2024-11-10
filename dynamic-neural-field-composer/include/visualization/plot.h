@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <string>
 #include <algorithm>
+#include <cmath>
 
 #include "tools/logger.h"
 
@@ -12,12 +13,13 @@ namespace dnf_composer
 {
 	struct PlotDimensions
 	{
-		int xMin, xMax, yMin, yMax;
-		double dx;
+		double xMin, xMax, yMin, yMax, dx;
+		bool autoFit;
 
 		PlotDimensions();
-		PlotDimensions(int xMin, int xMax, int yMin, int yMax, double dx);
-		bool areUndefined() const;
+		PlotDimensions(const double& x_min, const double& x_max, const double& y_min, const double& y_max, const double& d_x);
+		PlotDimensions(double dx);
+		bool isLegal() const;
 		std::string toString() const;
 		bool operator==(const PlotDimensions& other) const;
 	};
@@ -51,7 +53,7 @@ namespace dnf_composer
 		PlotParameters parameters;
 		std::vector<std::vector<double>*> data;
 	public:
-		Plot(const PlotParameters& parameters = PlotParameters(), 
+		Plot(PlotParameters parameters = PlotParameters(), 
 			const std::vector<std::vector<double>*>& data = {},
 			const std::vector<std::string>& legends = {});
 		void addPlottingData(const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends = {});
