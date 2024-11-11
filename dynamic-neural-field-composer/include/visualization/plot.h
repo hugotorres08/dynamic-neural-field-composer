@@ -58,7 +58,7 @@ namespace dnf_composer
 			const std::vector<std::string>& legends = {});
 		void addPlottingData(const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends = {});
 		void addPlottingData(std::vector<double>* data, const std::string& legend = {});
-		void removePlottingData(std::vector<double>* data);
+		void removePlottingData(const std::vector<double>* data);
 		void setParameters(const PlotParameters& parameters);
 		int getUniqueIdentifier() const;
 		PlotParameters getParameters() const;

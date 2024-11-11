@@ -185,7 +185,7 @@ namespace dnf_composer
 		log(tools::logger::LogLevel::INFO, "Data added to plot " + std::to_string(uniqueIdentifier) + ".");
 	}
 
-	void Plot::removePlottingData(std::vector<double>* data)
+	void Plot::removePlottingData(const std::vector<double>* data)
 	{
 		if (data == nullptr)
 		{

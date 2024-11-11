@@ -21,12 +21,12 @@ namespace dnf_composer
 			PlotControlWindow(const std::shared_ptr<Visualization>& visualization);
 			virtual void render() override;
 		private:
-			void renderPlots() const;
-			void renderPlot(const Plot& plot) const;
+			void renderPlotWindows() const;
+			void renderLinePlot(const Plot& plot) const;
 			void renderElementPlotTable() const;
 			void renderPlotTable();
 			Plot* getSelectedPlot(int id) const;
-			int discoverPlotIdIfComponentIsPlotted(const std::pair<std::string, std::vector<double>>& component) const;
+			std::vector<int> discoverPlotIdsIfComponentIsPlotted(const std::vector<double>* componentPtr) const;
 		};
 	}
 }

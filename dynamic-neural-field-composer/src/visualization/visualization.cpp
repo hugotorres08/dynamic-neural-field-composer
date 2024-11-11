@@ -69,9 +69,18 @@ namespace dnf_composer
 
 	void Visualization::plot(int plotId, const std::vector<std::pair<std::string, std::string>>& data)
 	{
-		if (plotId < 0 || plotId >= plots.size())
-			throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
+		// Find the plot with the specified unique identifier
+		const auto it = std::find_if(plots.begin(), plots.end(), [plotId](const Plot& plot) {
+			return plot.getUniqueIdentifier() == plotId;
+			});
 
+		// Check if the plot was found
+		if (it == plots.end()) {
+			log(tools::logger::LogLevel::ERROR, "Plot with ID " + std::to_string(plotId) + " not found.");
+			return;
+		}
+
+		// Collect data to plot
 		std::vector<std::vector<double>*> allDataToPlotPtr;
 		std::vector<std::string> legends;
 		for (const auto& d : data)
@@ -81,11 +90,9 @@ namespace dnf_composer
 			legends.emplace_back(d.first + " - " + d.second);
 		}
 
-		for (auto& plot : plots)
-		{
-			if (plot.getUniqueIdentifier() == plotId)
-				plot.addPlottingData(allDataToPlotPtr, legends);
-		}
+		// Add data to the found plot
+		it->addPlottingData(allDataToPlotPtr, legends);
+		log(tools::logger::LogLevel::INFO, "Data plotted on plot with ID " + std::to_string(plotId) + ".");
 	}
 
 	void Visualization::plot(int plotId, const std::string& name, const std::string& component)
@@ -94,25 +101,40 @@ namespace dnf_composer
 		plot(plotId, dataVec);
 	}
 
-	void Visualization::changePlotParameters(int plotId, const PlotParameters& parameters) const
+	void Visualization::changePlotParameters(int plotId, const PlotParameters& parameters)
 	{
-		if (plotId < 0 || plotId >= plots.size())
-			throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
+		// Find the plot with the specified unique identifier
+		const auto it = std::find_if(plots.begin(), plots.end(), [plotId](const Plot& plot) {
+			return plot.getUniqueIdentifier() == plotId;
+			});
 
-		for (auto plot : plots)
-		{
-			if (plot.getUniqueIdentifier() == plotId)
-				plot.setParameters(parameters);
+		// Check if the plot was found
+		if (it == plots.end()) {
+			log(tools::logger::LogLevel::ERROR, "Plot with ID " + std::to_string(plotId) + " not found.");
+			return;
 		}
+
+		// Update the plot parameters
+		it->setParameters(parameters);
+		log(tools::logger::LogLevel::INFO, "Parameters updated for plot with ID " + std::to_string(plotId) + ".");
 	}
 
 	void Visualization::removePlot(int plotId)
 	{
-		if (plotId < 0 || plotId >= plots.size())
-			throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
+		// Find the plot with the specified unique identifier
+		const auto it = std::find_if(plots.begin(), plots.end(), [plotId](const Plot& plot) {
+			return plot.getUniqueIdentifier() == plotId;
+			});
 
-		plots.erase(plots.begin() + plotId);
-		log(tools::logger::LogLevel::INFO, "Plot " + std::to_string(plotId) + " removed from visualization.");
+		if (it != plots.end()) {
+			// If found, remove the plot
+			plots.erase(it);
+			log(tools::logger::LogLevel::INFO, "Plot with ID " + std::to_string(plotId) + " removed from visualization.");
+		}
+		else {
+			// If not found, log an error
+			log(tools::logger::LogLevel::ERROR, "Plot with ID " + std::to_string(plotId) + " not found.");
+		}
 	}
 
 	void Visualization::removeAllPlots()
@@ -123,25 +145,32 @@ namespace dnf_composer
 
 	void Visualization::removePlottingDataFromPlot(int plotId, const std::pair<std::string, std::string>& data)
 	{
-		if (plotId < 0 || plotId >= plots.size())
-			throw Exception(ErrorCode::VIS_INVALID_PLOTTING_INDEX);
+		// Find the plot with the specified unique identifier
+		auto it = std::find_if(plots.begin(), plots.end(), [plotId](const Plot& plot) {
+			return plot.getUniqueIdentifier() == plotId;
+			});
 
-		const auto dataPtr = simulation->getComponentPtr(data.first, data.second);
-		for (auto& plot : plots)
-		{
-			if (plot.getUniqueIdentifier() == plotId)
-			{
-				const size_t initialSize = plot.getData().size();
-				plot.removePlottingData(dataPtr);
-				if (initialSize == plot.getData().size())
-				{
-					log(tools::logger::LogLevel::WARNING, "Data '" + data.first + " - " + data.second + "' not found in plot " + std::to_string(plotId) + ".");
-					return;
-				}
-				log(tools::logger::LogLevel::INFO, "Data '" + data.first + " - " + data.second + "' removed from plot " + std::to_string(plotId) + ".");
-				return;
-			}
+		// Check if the plot was found
+		if (it == plots.end()) {
+			log(tools::logger::LogLevel::ERROR, "Plot with ID " + std::to_string(plotId) + " not found.");
+			return;
 		}
-		log(tools::logger::LogLevel::WARNING, "Data '" + data.first + " - " + data.second + "' not found in plot " + std::to_string(plotId) + ".");
+
+		// Get the data pointer
+		const auto dataPtr = simulation->getComponentPtr(data.first, data.second);
+
+		// Get the initial size of the plot's data
+		const size_t initialSize = it->getData().size();
+
+		// Attempt to remove the data
+		it->removePlottingData(dataPtr);
+
+		// Check if the size of the data changed
+		if (initialSize == it->getData().size()) {
+			log(tools::logger::LogLevel::WARNING, "Data '" + data.first + " - " + data.second + "' not found in plot " + std::to_string(plotId) + ".");
+		}
+		else {
+			log(tools::logger::LogLevel::INFO, "Data '" + data.first + " - " + data.second + "' removed from plot " + std::to_string(plotId) + ".");
+		}
 	}
 }
