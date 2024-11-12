@@ -6,6 +6,8 @@
 #include "user_interface/simulation_window.h"
 #include "elements/element_factory.h"
 
+#include "elements/gauss_field_coupling.h"
+
 int main()
 {
 	try
@@ -24,19 +26,38 @@ int main()
 		app.addWindow<user_interface::PlotControlWindow>();
 
 		element::ElementFactory factory;
-		const auto elem1 = factory.createElement(element::NEURAL_FIELD, element::ElementCommonParameters(), element::NeuralFieldParameters());
-		const auto elem2 = factory.createElement(element::GAUSS_STIMULUS, element::ElementCommonParameters(), element::GaussStimulusParameters());
-		const auto elem3 = factory.createElement(element::GAUSS_KERNEL, element::ElementCommonParameters(), element::GaussKernelParameters());
+		//const auto elem1 = factory.createElement(element::NEURAL_FIELD, element::ElementCommonParameters(), element::NeuralFieldParameters());
+		//const auto elem2 = factory.createElement(element::GAUSS_STIMULUS, element::ElementCommonParameters(), element::GaussStimulusParameters());
+		//const auto elem3 = factory.createElement(element::GAUSS_KERNEL, element::ElementCommonParameters(), element::GaussKernelParameters());
 
-		simulation->addElement(elem1);
-		simulation->addElement(elem2);
-		simulation->addElement(elem3);
+		//const auto elem4 = factory.createElement(element::GAUSS_FIELD_COUPLING, element::ElementCommonParameters(), element::GaussKernelParameters());
 
-		visualization->plot({ { elem1->getUniqueName(), "output"}, {elem2->getUniqueName(), "output"} });
-		visualization->plot({ { elem1->getUniqueName(), "output"}, {elem2->getUniqueName(), "output"} });
 
-		const PlotParameters plotParams{ {0, 31, 0, 1, 1.0}, {"Gauss kernel", "Space", "Amplitude"}};
-		visualization->plot(plotParams, elem3->getUniqueName(), "kernel");
+		element::ElementSpatialDimensionParameters esdp = { 100, 1.0 };
+		element::ElementCommonParameters ecp = { "gc", esdp };
+		element::GaussCoupling gc1{ 5, 10, 2, 4 };
+		element::GaussFieldCouplingParameters gfcp = { true, false, {gc1} };
+
+		const auto elem4 = std::make_shared<element::GaussFieldCoupling>(ecp, gfcp);
+		simulation->addElement(elem4);
+
+		const auto elem5  = factory.createElement(element::NEURAL_FIELD, element::ElementCommonParameters(), element::NeuralFieldParameters());
+
+		simulation->addElement(elem5);
+
+		elem4->addInput(elem5, "output");
+
+		//simulation->addElement(elem1);
+		//simulation->addElement(elem2);
+		//simulation->addElement(elem3);
+
+		//visualization->plot({ { elem1->getUniqueName(), "output"}, {elem2->getUniqueName(), "output"} });
+		//visualization->plot({ { elem1->getUniqueName(), "output"}, {elem2->getUniqueName(), "output"} });
+
+		visualization->plot({ { elem4->getUniqueName(), "kernel"} });
+
+		//const PlotParameters plotParams{ {0, 31, 0, 1, 1.0}, {"Gauss kernel", "Space", "Amplitude"}};
+		//visualization->plot(plotParams, elem3->getUniqueName(), "kernel");
 
 		app.init();
 

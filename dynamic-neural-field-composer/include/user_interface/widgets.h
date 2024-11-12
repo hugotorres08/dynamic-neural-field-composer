@@ -1,6 +1,10 @@
 #pragma once
 
 #include <imgui.h>
+#include <implot.h>
+
+#include "visualization/plot.h"
+#include "tools/math.h"
 
 namespace dnf_composer
 {
@@ -8,18 +12,9 @@ namespace dnf_composer
 	{
 		namespace widgets
 		{
-			static void renderHelpMarker(const char* desc)
-			{
-				ImGui::TextDisabled("(?)");
-				if (ImGui::IsItemHovered())
-				{
-					ImGui::BeginTooltip();
-					ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-					ImGui::TextUnformatted(desc);
-					ImGui::PopTextWrapPos();
-					ImGui::EndTooltip();
-				}
-			}
+			void renderHelpMarker(const char* desc);
+			void renderLinePlot(const Plot& plot, bool whereDimensionsChangedByUser);
+			void renderHeatmap(const Plot& plot);
 		}
 	}
 }

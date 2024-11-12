@@ -169,6 +169,7 @@ set(src
     #"src/user_interface/node_graph_window.cpp"
     #"src/user_interface/heatmap_window.cpp"
     "src/user_interface/main_window.cpp"
+    "src/user_interface/widgets.cpp"
     
     #"src/wizards/learning_wizard.cpp"
 )
