@@ -378,8 +378,8 @@ namespace dnf_composer
 			}
 
 			inline double gaussian_2d_periodic(double x, double y, double mu_x, double mu_y, double sigma, double A, double max_x, double max_y) {
-				double dx = std::min(std::abs(x - mu_x), max_x - std::abs(x - mu_x));
-				double dy = std::min(std::abs(y - mu_y), max_y - std::abs(y - mu_y));
+				const double dx = std::min(std::abs(x - mu_x), max_x - std::abs(x - mu_x));
+				const double dy = std::min(std::abs(y - mu_y), max_y - std::abs(y - mu_y));
 				const double exponent = -((std::pow(dx, 2) + std::pow(dy, 2)) / (2 * std::pow(sigma, 2)));
 				return A * std::exp(exponent);
 			}

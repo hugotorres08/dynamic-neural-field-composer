@@ -11,7 +11,7 @@ namespace dnf_composer
 		void PlotControlWindow::render()
 		{
 			renderElementPlotTable();
-			renderPlotTable();
+			//renderPlotTable();
 			renderPlotWindows();
 			updatePlotDimensions = false;
 		}
@@ -20,13 +20,14 @@ namespace dnf_composer
 		{
 			for (const auto& plot : visualization->getPlots())
 			{
-				int plotID = plot.getUniqueIdentifier();
+				const int plotID = plot->getUniqueIdentifier();
 				const std::string plotWindowTitle = "Plot #" + std::to_string(plotID);
 				bool open = true;
 
-				if (ImGui::Begin(plotWindowTitle.c_str(), &open, ImGuiWindowFlags_NoCollapse))
-					widgets::renderHeatmap(plot);
-					//widgets::renderLinePlot(plot, updatePlotDimensions);
+				if (ImGui::Begin(plotWindowTitle.c_str(), &open, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_MenuBar))
+				{
+					plot->render();
+				}
 				ImGui::End();
 
 				if (!open)
@@ -158,139 +159,139 @@ namespace dnf_composer
 
 		void PlotControlWindow::renderPlotTable()
 		{
-			static int selectedPlotId = -1;
+			//static int selectedPlotId = -1;
 
-			if (ImGui::Begin("Plot Property Editor"))
-			{
-				widgets::renderHelpMarker("Select a plot from the left panel to edit its properties.");
+			//if (ImGui::Begin("Plot Property Editor"))
+			//{
+			//	widgets::renderHelpMarker("Select a plot from the left panel to edit its properties.");
 
-				// Split left and right panes with ImGui::BeginChild for separate regions
-				ImGui::BeginChild("PlotList", ImVec2(150, 0), true); // Left side for plot list
+			//	// Split left and right panes with ImGui::BeginChild for separate regions
+			//	ImGui::BeginChild("PlotList", ImVec2(150, 0), true); // Left side for plot list
 
-				// Display each plot ID in a list format
-				const std::vector<Plot> plots = visualization->getPlots();
-				for (const auto& plot : plots)
-				{
-					const int plotId = plot.getUniqueIdentifier();
+			//	// Display each plot ID in a list format
+			//	const auto plots = visualization->getPlots();
+			//	for (const auto& plot : plots)
+			//	{
+			//		const int plotId = plot->getUniqueIdentifier();
 
-					if (ImGui::Selectable(("Plot #" + std::to_string(plotId)).c_str(), selectedPlotId == plotId))
-					{
-						selectedPlotId = plotId;
-					}
-				}
-				ImGui::EndChild();
+			//		if (ImGui::Selectable(("Plot #" + std::to_string(plotId)).c_str(), selectedPlotId == plotId))
+			//		{
+			//			selectedPlotId = plotId;
+			//		}
+			//	}
+			//	ImGui::EndChild();
 
-				ImGui::SameLine();
+			//	ImGui::SameLine();
 
-				// Right side: Display properties of the selected plot
-				ImGui::BeginChild("PlotProperties", ImVec2(0, 0), true);
+			//	// Right side: Display properties of the selected plot
+			//	ImGui::BeginChild("PlotProperties", ImVec2(0, 0), true);
 
-				Plot* selectedPlot = getSelectedPlot(selectedPlotId);
-				if (selectedPlot)
-				{
-					bool parametersChanged = false;
+			//	auto selectedPlot = getSelectedPlot(selectedPlotId);
+			//	if (selectedPlot)
+			//	{
+			//		bool parametersChanged = false;
 
-					ImGui::Text("Plot ID: %d", selectedPlot->getUniqueIdentifier());
-					ImGui::Separator();
+			//		ImGui::Text("Plot ID: %d", selectedPlot->getUniqueIdentifier());
+			//		ImGui::Separator();
 
-					const PlotParameters oldParams = selectedPlot->getParameters();
-					PlotParameters newParams = oldParams;
+			//		const PlotParameters oldParams = selectedPlot->getParameters();
+			//		PlotParameters newParams = oldParams;
 
-					// Editable plot properties
-					char title[128];
-					strncpy_s(title, oldParams.annotations.title.c_str(), sizeof(title));
-					if (ImGui::InputText("Title", title, IM_ARRAYSIZE(title)))
-					{
-						newParams.annotations.title = title;
-						if (ImGui::IsItemDeactivatedAfterEdit())
-							parametersChanged = true;
-					}
-					char xLabel[128];
-					strncpy_s(xLabel, oldParams.annotations.x_label.c_str(), sizeof(xLabel));
-					if (ImGui::InputText("X Label", xLabel, IM_ARRAYSIZE(xLabel)))
-					{
-						newParams.annotations.x_label = xLabel;
-						if (ImGui::IsItemDeactivatedAfterEdit())
-							parametersChanged = true;
-					}
-					char yLabel[128];
-					strncpy_s(yLabel, oldParams.annotations.y_label.c_str(), sizeof(yLabel));
-					if (ImGui::InputText("Y Label", yLabel, IM_ARRAYSIZE(yLabel)))
-					{
-						newParams.annotations.y_label = yLabel;
-						if (ImGui::IsItemDeactivatedAfterEdit())
-							parametersChanged = true;
-					}
-					double xMin = oldParams.dimensions.xMin;
-					if (ImGui::InputDouble("X Min", &xMin, 0.1, 1.0, "%.2f"))
-					{
-						newParams.dimensions.xMin = xMin;
-						if (ImGui::IsItemDeactivatedAfterEdit())
-							parametersChanged = true;
-					}
-					double xMax = oldParams.dimensions.xMax;
-					if (ImGui::InputDouble("X Max", &xMax, 0.1, 1.0, "%.2f"))
-					{
-						newParams.dimensions.xMax = xMax;
-						if (ImGui::IsItemDeactivatedAfterEdit())
-							parametersChanged = true;
-					}
-					double yMin = oldParams.dimensions.yMin;
-					if (ImGui::InputDouble("Y Min", &yMin, 0.1, 1.0, "%.2f"))
-					{
-						newParams.dimensions.yMin = yMin;
-						if (ImGui::IsItemDeactivatedAfterEdit())
-							parametersChanged = true;
-					}
-					double yMax = oldParams.dimensions.yMax;
-					if (ImGui::InputDouble("Y Max", &yMax, 0.1, 1.0, "%.2f"))
-					{
-						newParams.dimensions.yMax = yMax;
-						if (ImGui::IsItemDeactivatedAfterEdit())
-							parametersChanged = true;
-					}
-					double dx = oldParams.dimensions.dx;
-					if (ImGui::InputDouble("dx", &dx, 0.01, 0.1, "%.2f"))
-					{
-						newParams.dimensions.dx = dx;
-						if (ImGui::IsItemDeactivatedAfterEdit())
-							parametersChanged = true;
-					}
-					bool autoFit = oldParams.dimensions.autoFit;
-					if (ImGui::Checkbox("Auto Fit", &autoFit))
-					{
-						newParams.dimensions.autoFit = autoFit;
-						if (ImGui::IsItemDeactivatedAfterEdit())
-							parametersChanged = true;
-					}
-					ImGui::Separator();
-					if (ImGui::Button("Remove Plot"))
-					{
-						visualization->removePlot(selectedPlotId);
-						selectedPlotId = -1;
-					}
-					if (parametersChanged)
-					{
-						if (newParams != oldParams)
-						{
-							selectedPlot->setParameters(newParams);
-							updatePlotDimensions = true;
-						}
-					}
-				}
+			//		// Editable plot properties
+			//		char title[128];
+			//		strncpy_s(title, oldParams.annotations.title.c_str(), sizeof(title));
+			//		if (ImGui::InputText("Title", title, IM_ARRAYSIZE(title)))
+			//		{
+			//			newParams.annotations.title = title;
+			//			if (ImGui::IsItemDeactivatedAfterEdit())
+			//				parametersChanged = true;
+			//		}
+			//		char xLabel[128];
+			//		strncpy_s(xLabel, oldParams.annotations.x_label.c_str(), sizeof(xLabel));
+			//		if (ImGui::InputText("X Label", xLabel, IM_ARRAYSIZE(xLabel)))
+			//		{
+			//			newParams.annotations.x_label = xLabel;
+			//			if (ImGui::IsItemDeactivatedAfterEdit())
+			//				parametersChanged = true;
+			//		}
+			//		char yLabel[128];
+			//		strncpy_s(yLabel, oldParams.annotations.y_label.c_str(), sizeof(yLabel));
+			//		if (ImGui::InputText("Y Label", yLabel, IM_ARRAYSIZE(yLabel)))
+			//		{
+			//			newParams.annotations.y_label = yLabel;
+			//			if (ImGui::IsItemDeactivatedAfterEdit())
+			//				parametersChanged = true;
+			//		}
+			//		double xMin = oldParams.dimensions.xMin;
+			//		if (ImGui::InputDouble("X Min", &xMin, 0.1, 1.0, "%.2f"))
+			//		{
+			//			newParams.dimensions.xMin = xMin;
+			//			if (ImGui::IsItemDeactivatedAfterEdit())
+			//				parametersChanged = true;
+			//		}
+			//		double xMax = oldParams.dimensions.xMax;
+			//		if (ImGui::InputDouble("X Max", &xMax, 0.1, 1.0, "%.2f"))
+			//		{
+			//			newParams.dimensions.xMax = xMax;
+			//			if (ImGui::IsItemDeactivatedAfterEdit())
+			//				parametersChanged = true;
+			//		}
+			//		double yMin = oldParams.dimensions.yMin;
+			//		if (ImGui::InputDouble("Y Min", &yMin, 0.1, 1.0, "%.2f"))
+			//		{
+			//			newParams.dimensions.yMin = yMin;
+			//			if (ImGui::IsItemDeactivatedAfterEdit())
+			//				parametersChanged = true;
+			//		}
+			//		double yMax = oldParams.dimensions.yMax;
+			//		if (ImGui::InputDouble("Y Max", &yMax, 0.1, 1.0, "%.2f"))
+			//		{
+			//			newParams.dimensions.yMax = yMax;
+			//			if (ImGui::IsItemDeactivatedAfterEdit())
+			//				parametersChanged = true;
+			//		}
+			//		double dx = oldParams.dimensions.dx;
+			//		if (ImGui::InputDouble("dx", &dx, 0.01, 0.1, "%.2f"))
+			//		{
+			//			newParams.dimensions.dx = dx;
+			//			if (ImGui::IsItemDeactivatedAfterEdit())
+			//				parametersChanged = true;
+			//		}
+			//		/*bool autoFit = oldParams.dimensions.autoFit;
+			//		if (ImGui::Checkbox("Auto Fit", &autoFit))
+			//		{
+			//			newParams.dimensions.autoFit = autoFit;
+			//			if (ImGui::IsItemDeactivatedAfterEdit())
+			//				parametersChanged = true;
+			//		}
+			//		ImGui::Separator();
+			//		if (ImGui::Button("Remove Plot"))
+			//		{
+			//			visualization->removePlot(selectedPlotId);
+			//			selectedPlotId = -1;
+			//		}*/
+			//		if (parametersChanged)
+			//		{
+			//			if (newParams != oldParams)
+			//			{
+			//				selectedPlot->setParameters(newParams);
+			//				updatePlotDimensions = true;
+			//			}
+			//		}
+			//	}
 
-				ImGui::EndChild();
-			}
-			ImGui::End();
+			//	ImGui::EndChild();
+			//}
+			//ImGui::End();
 		}
 
 		Plot* PlotControlWindow::getSelectedPlot(int id) const
 		{
-			for (auto& plot : visualization->getPlots())
+			for (const auto& plot : visualization->getPlots())
 			{
-				if (plot.getUniqueIdentifier() == id)
+				if (plot->getUniqueIdentifier() == id)
 				{
-					return &plot;
+					return plot.get();  // Return a raw pointer to avoid unique_ptr copy issues
 				}
 			}
 			return nullptr;
@@ -302,13 +303,13 @@ namespace dnf_composer
 			plotIds.reserve(visualization->getPlots().size());
 			for (const auto& plot : visualization->getPlots())
 			{
-				for (const auto& data : plot.getData())
+				for (const auto& data : plot->getData())
 				{
 					if (data != nullptr && !data->empty())
 					{
 						if (componentPtr == data) // Compare addresses directly
 						{
-							plotIds.emplace_back(plot.getUniqueIdentifier());
+							plotIds.emplace_back(plot->getUniqueIdentifier());
 						}
 					}
 				}

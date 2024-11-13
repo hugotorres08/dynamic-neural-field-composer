@@ -4,6 +4,7 @@
 
 #include "visualization/visualization.h"
 
+
 namespace dnf_composer
 {
 	Visualization::Visualization(const std::shared_ptr<Simulation>& simulation)
@@ -27,12 +28,13 @@ namespace dnf_composer
 		}
 
 		PlotParameters parameters;
+		LinePlotParameters linePlotParameters; 
 		std::vector<std::string> legends;
 		for (const auto& d : data)
 		{
 			legends.emplace_back(d.first + " - " + d.second);
 		}
-		plots.emplace_back(parameters, allDataToPlotPtr, legends);
+		plots.emplace_back(std::make_shared<LinePlot>(parameters, linePlotParameters, allDataToPlotPtr, legends));
 		log(tools::logger::LogLevel::INFO, "Plot " + std::to_string(plots.size() - 1) + " added to visualization.");
 	}
 
@@ -57,7 +59,22 @@ namespace dnf_composer
 		{
 			legends.emplace_back(d.first + " - " + d.second);
 		}
-		plots.emplace_back(parameters, allDataToPlotPtr, legends);
+
+		switch (parameters.type)
+		{
+			case PlotType::LINE_PLOT:
+			{
+				LinePlotParameters linePlotParameters;
+				plots.emplace_back(std::make_shared<LinePlot>(parameters, linePlotParameters, allDataToPlotPtr, legends));
+				break;
+			}
+			case PlotType::HEATMAP:
+				{
+				HeatmapParameters heatmapParameters;
+				plots.emplace_back(std::make_shared<Heatmap>(parameters, heatmapParameters, allDataToPlotPtr, legends));
+				break;
+			}
+		}
 		log(tools::logger::LogLevel::INFO, "Plot " + std::to_string(plots.size() - 1) + " added to visualization.");
 	}
 
@@ -70,8 +87,8 @@ namespace dnf_composer
 	void Visualization::plot(int plotId, const std::vector<std::pair<std::string, std::string>>& data)
 	{
 		// Find the plot with the specified unique identifier
-		const auto it = std::find_if(plots.begin(), plots.end(), [plotId](const Plot& plot) {
-			return plot.getUniqueIdentifier() == plotId;
+		const auto it = std::find_if(plots.begin(), plots.end(), [plotId](const std::shared_ptr<Plot>& plot) {
+			return plot->getUniqueIdentifier() == plotId;
 			});
 
 		// Check if the plot was found
@@ -91,7 +108,7 @@ namespace dnf_composer
 		}
 
 		// Add data to the found plot
-		it->addPlottingData(allDataToPlotPtr, legends);
+		(*it)->addPlottingData(allDataToPlotPtr, legends);
 		log(tools::logger::LogLevel::INFO, "Data plotted on plot with ID " + std::to_string(plotId) + ".");
 	}
 
@@ -101,29 +118,29 @@ namespace dnf_composer
 		plot(plotId, dataVec);
 	}
 
-	void Visualization::changePlotParameters(int plotId, const PlotParameters& parameters)
-	{
-		// Find the plot with the specified unique identifier
-		const auto it = std::find_if(plots.begin(), plots.end(), [plotId](const Plot& plot) {
-			return plot.getUniqueIdentifier() == plotId;
-			});
+	//void Visualization::changePlotParameters(int plotId, const PlotParameters& parameters)
+	//{
+	//	// Find the plot with the specified unique identifier
+	//	const auto it = std::find_if(plots.begin(), plots.end(), [plotId](const Plot& plot) {
+	//		return plot.getUniqueIdentifier() == plotId;
+	//		});
 
-		// Check if the plot was found
-		if (it == plots.end()) {
-			log(tools::logger::LogLevel::ERROR, "Plot with ID " + std::to_string(plotId) + " not found.");
-			return;
-		}
+	//	// Check if the plot was found
+	//	if (it == plots.end()) {
+	//		log(tools::logger::LogLevel::ERROR, "Plot with ID " + std::to_string(plotId) + " not found.");
+	//		return;
+	//	}
 
-		// Update the plot parameters
-		it->setParameters(parameters);
-		log(tools::logger::LogLevel::INFO, "Parameters updated for plot with ID " + std::to_string(plotId) + ".");
-	}
+	//	// Update the plot parameters
+	//	it->setParameters(parameters);
+	//	log(tools::logger::LogLevel::INFO, "Parameters updated for plot with ID " + std::to_string(plotId) + ".");
+	//}
 
 	void Visualization::removePlot(int plotId)
 	{
 		// Find the plot with the specified unique identifier
-		const auto it = std::find_if(plots.begin(), plots.end(), [plotId](const Plot& plot) {
-			return plot.getUniqueIdentifier() == plotId;
+		const auto it = std::find_if(plots.begin(), plots.end(), [plotId](const std::shared_ptr<Plot>& plot) {
+			return plot->getUniqueIdentifier() == plotId;
 			});
 
 		if (it != plots.end()) {
@@ -146,8 +163,8 @@ namespace dnf_composer
 	void Visualization::removePlottingDataFromPlot(int plotId, const std::pair<std::string, std::string>& data)
 	{
 		// Find the plot with the specified unique identifier
-		auto it = std::find_if(plots.begin(), plots.end(), [plotId](const Plot& plot) {
-			return plot.getUniqueIdentifier() == plotId;
+		const auto it = std::find_if(plots.begin(), plots.end(), [plotId](const std::shared_ptr<Plot>& plot) {
+			return plot->getUniqueIdentifier() == plotId;
 			});
 
 		// Check if the plot was found
@@ -160,13 +177,13 @@ namespace dnf_composer
 		const auto dataPtr = simulation->getComponentPtr(data.first, data.second);
 
 		// Get the initial size of the plot's data
-		const size_t initialSize = it->getData().size();
+		const size_t initialSize = (*it)->getData().size();
 
 		// Attempt to remove the data
-		it->removePlottingData(dataPtr);
+		(*it)->removePlottingData(dataPtr);
 
 		// Check if the size of the data changed
-		if (initialSize == it->getData().size()) {
+		if (initialSize == (*it)->getData().size()) {
 			log(tools::logger::LogLevel::WARNING, "Data '" + data.first + " - " + data.second + "' not found in plot " + std::to_string(plotId) + ".");
 		}
 		else {

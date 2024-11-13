@@ -13,8 +13,6 @@ namespace dnf_composer
 		namespace widgets
 		{
 			void renderHelpMarker(const char* desc);
-			void renderLinePlot(const Plot& plot, bool whereDimensionsChangedByUser);
-			void renderHeatmap(const Plot& plot);
 		}
 	}
 }

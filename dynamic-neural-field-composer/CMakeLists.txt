@@ -56,6 +56,9 @@ set(simulation_headers
 set(visualization_headers
     "include/visualization/visualization.h"
     "include/visualization/plot.h"
+    "include/visualization/plot_parameters.h"
+    "include/visualization/lineplot.h"
+    "include/visualization/heatmap.h"
 )
 set(application_headers
     "include/application/application.h"
@@ -131,7 +134,10 @@ set(src
 
     "src/visualization/visualization.cpp"
     "src/visualization/plot.cpp"
-    
+    "src/visualization/plot_parameters.cpp"
+    "src/visualization/lineplot.cpp"
+    "src/visualization/heatmap.cpp"
+
     "src/elements/activation_function.cpp"
     "src/elements/element.cpp"
     "src/elements/element_factory.cpp"
@@ -257,31 +263,31 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
 #${CMAKE_PROJECT_NAME})
 
 # Example test_plot
-set(TEST_PLOT_EXAMPLE t-plot-example)
-add_executable(${TEST_PLOT_EXAMPLE} "examples/test_plot.cpp")
-target_include_directories(${TEST_PLOT_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_PLOT_EXAMPLE} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Example test_visualization
-set(TEST_VISUALIZATION_EXAMPLE t-vis-example)
-add_executable(${TEST_VISUALIZATION_EXAMPLE} "examples/test_visualization.cpp")
-target_include_directories(${TEST_VISUALIZATION_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_VISUALIZATION_EXAMPLE} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Example test_application
-set(TEST_APPLICATION_EXAMPLE t-app-example)
-add_executable(${TEST_APPLICATION_EXAMPLE} "examples/test_application.cpp")
-target_include_directories(${TEST_APPLICATION_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_APPLICATION_EXAMPLE} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
+#set(TEST_PLOT_EXAMPLE t-plot-example)
+#add_executable(${TEST_PLOT_EXAMPLE} "examples/test_plot.cpp")
+#target_include_directories(${TEST_PLOT_EXAMPLE} PRIVATE include)
+#target_link_libraries(${TEST_PLOT_EXAMPLE} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Example test_visualization
+#set(TEST_VISUALIZATION_EXAMPLE t-vis-example)
+#add_executable(${TEST_VISUALIZATION_EXAMPLE} "examples/test_visualization.cpp")
+#target_include_directories(${TEST_VISUALIZATION_EXAMPLE} PRIVATE include)
+#target_link_libraries(${TEST_VISUALIZATION_EXAMPLE} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Example test_application
+#set(TEST_APPLICATION_EXAMPLE t-app-example)
+#add_executable(${TEST_APPLICATION_EXAMPLE} "examples/test_application.cpp")
+#target_include_directories(${TEST_APPLICATION_EXAMPLE} PRIVATE include)
+#target_link_libraries(${TEST_APPLICATION_EXAMPLE} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
 
 # Example test_plot_control_window
 set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)
