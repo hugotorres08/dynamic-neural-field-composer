@@ -23,6 +23,7 @@ namespace dnf_composer
 		};
 
 		inline const std::map<ElementLabel, std::string> ElementLabelToString = {
+			{UNINITIALIZED, "uninitialized" },
 			{NEURAL_FIELD, "neural field" },
 			{GAUSS_STIMULUS, "gauss stimulus" },
 			{GAUSS_FIELD_COUPLING, "gauss field coupling" },
@@ -50,7 +51,7 @@ namespace dnf_composer
 			std::string uniqueName;
 			ElementLabel label;
 
-			ElementIdentifiers();
+			ElementIdentifiers(ElementLabel label);
 			ElementIdentifiers(std::string elementName);
 			bool operator==(const ElementIdentifiers& other) const;
 			void print() const;
@@ -63,6 +64,7 @@ namespace dnf_composer
 			ElementSpatialDimensionParameters dimensionParameters;
 
 			ElementCommonParameters();
+			ElementCommonParameters(ElementLabel label);
 			ElementCommonParameters(const std::string& elementName);
 			ElementCommonParameters(const std::string& elementName, int x_max);
 			ElementCommonParameters(const std::string& elementName,

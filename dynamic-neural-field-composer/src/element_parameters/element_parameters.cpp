@@ -34,10 +34,10 @@ namespace dnf_composer
 			return result;
 		}
 
-		ElementIdentifiers::ElementIdentifiers()
-			: uniqueIdentifier(uniqueIdentifierCounter++), label(ElementLabel::UNINITIALIZED)
+		ElementIdentifiers::ElementIdentifiers(ElementLabel label)
+			: uniqueIdentifier(uniqueIdentifierCounter++), label(label)
 		{
-			uniqueName = "Element " + std::to_string(uniqueIdentifier);
+			uniqueName = "Element " + ElementLabelToString.at(label) + " " + std::to_string(uniqueIdentifier);
 		}
 
 		ElementIdentifiers::ElementIdentifiers(std::string elementName)
@@ -67,8 +67,14 @@ namespace dnf_composer
 		}
 
 		ElementCommonParameters::ElementCommonParameters()
-			: identifiers(), dimensionParameters()
-		{}
+			: identifiers(ElementLabel::UNINITIALIZED), dimensionParameters()
+		{
+		}
+
+		ElementCommonParameters::ElementCommonParameters(ElementLabel label)
+			: identifiers(label), dimensionParameters()
+		{
+		}
 
 		ElementCommonParameters::ElementCommonParameters(const std::string& elementName)
 			: identifiers(elementName), dimensionParameters()

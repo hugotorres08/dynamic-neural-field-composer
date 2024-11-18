@@ -30,9 +30,9 @@ namespace dnf_composer
 			bool circular;
 			bool normalized;
 
-			MexicanHatKernelParameters(double widthExc, double amplitudeExc,
-				double widthInh, double amplitudeInh,
-				double amplitudeGlobal,
+			MexicanHatKernelParameters(double widthExc = 2.5, double amplitudeExc = 11.0,
+				double widthInh = 5.0, double amplitudeInh = 15.0,
+				double amplitudeGlobal = -0.1,
 				bool circular = true, bool normalized = true)
 				: widthExc(widthExc), amplitudeExc(amplitudeExc),
 				widthInh(widthInh), amplitudeInh(amplitudeInh),

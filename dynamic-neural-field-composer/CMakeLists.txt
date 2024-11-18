@@ -306,3 +306,12 @@ target_link_libraries(${TEST_COUPLINGS_EXAMPLE} PRIVATE
 imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})
+
+# Example test_factory
+set(TEST_FACTORY_EXAMPLE t-factory-example)
+add_executable(${TEST_FACTORY_EXAMPLE} "examples/test_factory.cpp")
+target_include_directories(${TEST_FACTORY_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_FACTORY_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})

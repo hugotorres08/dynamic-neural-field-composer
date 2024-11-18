@@ -26,8 +26,8 @@ namespace dnf_composer
 			double learningRate;
 			LearningRule learningRule;
 
-			FieldCouplingParameters(int inputFieldSize, double scalar, double learningRate,
-				LearningRule learningRule)
+			FieldCouplingParameters(int inputFieldSize = 100, double scalar = 1.0, double learningRate = 0.1,
+				LearningRule learningRule = LearningRule::HEBBIAN)
 			: inputFieldSize(inputFieldSize), scalar(scalar), learningRate(learningRate),
 				learningRule(learningRule)
 			{}

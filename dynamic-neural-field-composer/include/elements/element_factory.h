@@ -25,6 +25,7 @@ namespace dnf_composer
 			std::shared_ptr<Element> createElement(ElementLabel type, 
 				const ElementCommonParameters& elementCommonParameters, 
 				const ElementSpecificParameters& elementSpecificParameters);
+			std::shared_ptr<Element> createElement(ElementLabel type);
 	    private:
 			void setupElementCreators();
 	    };
