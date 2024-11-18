@@ -27,7 +27,7 @@ namespace dnf_composer
 			allDataToPlotPtr.emplace_back(singleDataToPlotPtr);
 		}
 
-		PlotParameters parameters;
+		PlotCommonParameters parameters;
 		LinePlotParameters linePlotParameters; 
 		std::vector<std::string> legends;
 		for (const auto& d : data)
@@ -44,7 +44,7 @@ namespace dnf_composer
 		plot(data);
 	}
 
-	void Visualization::plot(const PlotParameters& parameters, const std::vector<std::pair<std::string, std::string>>& data)
+	void Visualization::plot(const PlotCommonParameters& parameters, const PlotSpecificParameters& specificParameters, const std::vector<std::pair<std::string, std::string>>& data)
 	{
 		std::vector<std::vector<double>*> allDataToPlotPtr;
 
@@ -64,24 +64,24 @@ namespace dnf_composer
 		{
 			case PlotType::LINE_PLOT:
 			{
-				LinePlotParameters linePlotParameters;
-				plots.emplace_back(std::make_shared<LinePlot>(parameters, linePlotParameters, allDataToPlotPtr, legends));
+				const auto linePlotParameters = dynamic_cast<const LinePlotParameters*>(&specificParameters);
+				plots.emplace_back(std::make_shared<LinePlot>(parameters, *linePlotParameters, allDataToPlotPtr, legends));
 				break;
 			}
 			case PlotType::HEATMAP:
-				{
-				HeatmapParameters heatmapParameters;
-				plots.emplace_back(std::make_shared<Heatmap>(parameters, heatmapParameters, allDataToPlotPtr, legends));
+			{
+				const auto heatmapParameters = dynamic_cast<const HeatmapParameters*>(&specificParameters);
+				plots.emplace_back(std::make_shared<Heatmap>(parameters, *heatmapParameters, allDataToPlotPtr, legends));
 				break;
 			}
 		}
 		log(tools::logger::LogLevel::INFO, "Plot " + std::to_string(plots.size() - 1) + " added to visualization.");
 	}
 
-	void Visualization::plot(const PlotParameters& parameters, const std::string& name, const std::string& component)
+	void Visualization::plot(const PlotCommonParameters& parameters, const PlotSpecificParameters& specificParameters, const std::string& name, const std::string& component)
 	{
 		const std::vector<std::pair<std::string, std::string>> dataVec = { {name, component} };
-		plot(parameters, dataVec);
+		plot(parameters, specificParameters, dataVec);
 	}
 
 	void Visualization::plot(int plotId, const std::vector<std::pair<std::string, std::string>>& data)

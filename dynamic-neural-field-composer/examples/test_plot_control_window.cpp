@@ -37,8 +37,9 @@ int main()
 		visualization->plot({ { elem1->getUniqueName(), "output"}, {elem2->getUniqueName(), "output"} });
 
 
-		const PlotParameters plotParams{PlotType::LINE_PLOT, {0, 31, 0, 1, 1.0}, {"Gauss kernel", "Space", "Amplitude"}};
-		visualization->plot(plotParams, elem3->getUniqueName(), "kernel");
+		const PlotCommonParameters plotParams{PlotType::LINE_PLOT, {0, 31, 0, 1, 1.0}, {"Gauss kernel", "Space", "Amplitude"}};
+		const LinePlotParameters linePlotParams{ 5.0f, true };
+		visualization->plot(plotParams, linePlotParams, elem3->getUniqueName(), "kernel");
 
 
 		element::ElementSpatialDimensionParameters esdp = { 100, 1.0 };
@@ -50,7 +51,7 @@ int main()
 		const auto elem5 = factory.createElement(element::NEURAL_FIELD, element::ElementCommonParameters(), element::NeuralFieldParameters());
 		simulation->addElement(elem5);
 		elem4->addInput(elem5, "output");
-		visualization->plot(PlotParameters{PlotType::HEATMAP, {0, 100, 0, 100, 1.0}, {"x", "y", "title"}},{ { elem4->getUniqueName(), "kernel"} });
+		visualization->plot(PlotCommonParameters{ PlotType::HEATMAP, {0, 100, 0, 100, 1.0}, {"x", "y", "title"} }, HeatmapParameters{ 0.0, 0.5 }, { { elem4->getUniqueName(), "kernel"} });
 
 		app.init();
 

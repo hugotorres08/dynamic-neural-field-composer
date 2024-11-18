@@ -107,25 +107,25 @@ namespace dnf_composer
 		return true;
 	}
 
-	PlotParameters::PlotParameters()
-		: dimensions(), annotations(), type(PlotType::LINE_PLOT)
+	PlotCommonParameters::PlotCommonParameters()
+		: type(PlotType::LINE_PLOT), dimensions(), annotations()
 	{}
 
-	PlotParameters::PlotParameters(const PlotType type, const PlotDimensions& dimensions, PlotAnnotations annotations)
-		: dimensions(dimensions), annotations(std::move(annotations)), type(type)
+	PlotCommonParameters::PlotCommonParameters(const PlotType type, const PlotDimensions& dimensions, PlotAnnotations annotations)
+		: type(type), dimensions(dimensions), annotations(std::move(annotations))
 	{}
 
-	std::string PlotParameters::toString() const
+	std::string PlotCommonParameters::toString() const
 	{
 		std::string result;
 		result += "Plot parameters: [ ";
-		result += "Type: " + PlotTypeToString.at(type) + ", ";
+		result += "type: " + PlotTypeToString.at(type) + ", ";
 		result += dimensions.toString() + ", ";
 		result += annotations.toString() + " ]";
 		return result;
 	}
 
-	bool PlotParameters::operator==(const PlotParameters& other) const
+	bool PlotCommonParameters::operator==(const PlotCommonParameters& other) const
 	{
 		if (dimensions != other.dimensions || annotations != other.annotations)
 			return false;

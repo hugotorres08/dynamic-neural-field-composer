@@ -9,10 +9,11 @@ namespace dnf_composer
 	protected:
 		static inline int uniqueIdentifierCounter = 0;
 		int uniqueIdentifier;
-		PlotParameters parameters;
+		PlotType type;
+		PlotCommonParameters commonParameters;
 		std::vector<std::vector<double>*> data;
 	public:
-		Plot(PlotParameters parameters = PlotParameters(), 
+		Plot(PlotCommonParameters parameters = PlotCommonParameters(),
 			const std::vector<std::vector<double>*>& data = {},
 			const std::vector<std::string>& legends = {});
 

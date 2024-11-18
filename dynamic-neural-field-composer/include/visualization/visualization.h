@@ -23,8 +23,8 @@ namespace dnf_composer
 		void plot(const std::vector<std::pair<std::string, std::string>>& data);
 		void plot(const std::string& name, const std::string& component);
 
-		void plot(const PlotParameters& parameters, const std::vector<std::pair<std::string, std::string>>& data);
-		void plot(const PlotParameters& parameters, const std::string& name, const std::string& component);
+		void plot(const PlotCommonParameters& parameters, const PlotSpecificParameters& specificParameters, const std::vector<std::pair<std::string, std::string>>& data);
+		void plot(const PlotCommonParameters& parameters, const PlotSpecificParameters& specificParameters, const std::string& name, const std::string& component);
 
 		void plot(int plotId, const std::vector<std::pair<std::string, std::string>>& data);
 		void plot(int plotId, const std::string& name, const std::string& component);

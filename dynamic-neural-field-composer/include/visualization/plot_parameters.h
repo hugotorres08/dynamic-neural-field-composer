@@ -42,15 +42,21 @@ namespace dnf_composer
 			{PlotType::HEATMAP, "heatmap" }
 		};
 
-	struct PlotParameters
+	struct PlotCommonParameters
 	{
+		PlotType type;
 		PlotDimensions dimensions;
 		PlotAnnotations annotations;
-		PlotType type;
 
-		PlotParameters();
-		PlotParameters(const PlotType type, const PlotDimensions& dimensions, PlotAnnotations annotations);
+		PlotCommonParameters();
+		PlotCommonParameters(const PlotType type, const PlotDimensions& dimensions, PlotAnnotations annotations);
 		std::string toString() const;
-		bool operator==(const PlotParameters& other) const;
+		bool operator==(const PlotCommonParameters& other) const;
+	};
+
+	struct PlotSpecificParameters
+	{
+		PlotSpecificParameters() = default;
+		virtual std::string toString() const = 0;
 	};
 }

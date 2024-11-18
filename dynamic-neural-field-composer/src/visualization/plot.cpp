@@ -3,8 +3,8 @@
 namespace dnf_composer
 {
 
-	Plot::Plot(PlotParameters parameters, const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
-		: uniqueIdentifier(uniqueIdentifierCounter++), parameters(std::move(parameters)), data()
+	Plot::Plot(PlotCommonParameters parameters, const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
+		: uniqueIdentifier(uniqueIdentifierCounter++), commonParameters(std::move(parameters)), data()
 	{
 		addPlottingData(data, legends);
 	}
@@ -20,7 +20,7 @@ namespace dnf_composer
 			return;
 		}
 
-		if (parameters.type == PlotType::HEATMAP && data.size() > 1)
+		if (commonParameters.type == PlotType::HEATMAP && data.size() > 1)
 		{
 			log(tools::logger::LogLevel::WARNING, "Heatmap plot can only have one data series. Skipping adding data to plot " + std::to_string(uniqueIdentifier) + ".");
 			return;
@@ -52,10 +52,10 @@ namespace dnf_composer
 		{
 			std::ostringstream oss;
 			oss << reinterpret_cast<void*>(data);
-			parameters.annotations.legends.emplace_back(oss.str());
+			commonParameters.annotations.legends.emplace_back(oss.str());
 		}
 		else
-			parameters.annotations.legends.emplace_back(legend);
+			commonParameters.annotations.legends.emplace_back(legend);
 		log(tools::logger::LogLevel::INFO, "Data added to plot " + std::to_string(uniqueIdentifier) + ".");
 	}
 
@@ -70,9 +70,9 @@ namespace dnf_composer
 		const auto it = std::find(this->data.begin(), this->data.end(), data);
 		if (it != this->data.end())
 		{
-			const auto legendIt = parameters.annotations.legends.begin() + (it - this->data.begin());
+			const auto legendIt = commonParameters.annotations.legends.begin() + (it - this->data.begin());
 			this->data.erase(it);
-			parameters.annotations.legends.erase(legendIt);
+			commonParameters.annotations.legends.erase(legendIt);
 			log(tools::logger::LogLevel::INFO, "Data removed from plot " + std::to_string(uniqueIdentifier) + ".");
 			return;
 		}
@@ -86,7 +86,7 @@ namespace dnf_composer
 
 	PlotType Plot::getType() const
 	{
-		return parameters.type;
+		return commonParameters.type;
 	}
 
 	std::vector<std::vector<double>*> Plot::getData() const
@@ -96,21 +96,21 @@ namespace dnf_composer
 
 	PlotDimensions Plot::getDimensions() const
 	{
-		return parameters.dimensions;
+		return commonParameters.dimensions;
 	}
 
 	PlotAnnotations Plot::getAnnotations() const
 	{
-		return parameters.annotations;
+		return commonParameters.annotations;
 	}
 
 	void Plot::setDimensions(const PlotDimensions& dimensions)
 	{
-		parameters.dimensions = dimensions;
+		commonParameters.dimensions = dimensions;
 	}
 
 	void Plot::setAnnotations(const PlotAnnotations& annotations)
 	{
-		parameters.annotations = annotations;
+		commonParameters.annotations = annotations;
 	}
 }

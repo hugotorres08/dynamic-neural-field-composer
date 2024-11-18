@@ -4,21 +4,21 @@
 
 namespace dnf_composer
 {
-	struct HeatmapParameters : public PlotParameters
+	struct HeatmapParameters : PlotSpecificParameters
 	{
 		double scaleMin, scaleMax;
 
 		HeatmapParameters();
-		HeatmapParameters(double scaleMin, bool scaleMax);
-		std::string toString() const;
+		HeatmapParameters(double scaleMin, double scaleMax);
+		std::string toString() const override;
 		bool operator==(const HeatmapParameters& other) const;
 	};
 
 	class Heatmap : public Plot
 	{
-		HeatmapParameters parameters;
+		HeatmapParameters heatmapParameters;
 	public:
-		Heatmap(const PlotParameters& parameters = PlotParameters(),
+		Heatmap(const PlotCommonParameters& parameters = PlotCommonParameters(),
 						const HeatmapParameters& heatmapParameters = HeatmapParameters(),
 						const std::vector<std::vector<double>*>& data = {},
 						const std::vector<std::string>& legends = {});
