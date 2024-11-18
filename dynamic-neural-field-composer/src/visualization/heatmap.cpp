@@ -3,11 +3,11 @@
 namespace dnf_composer
 {
 	HeatmapParameters::HeatmapParameters()
-		: scaleMin(0), scaleMax(1)
+		: scaleMin(0), scaleMax(1), autoScale(true)
 	{}
 
 	HeatmapParameters::HeatmapParameters(double scaleMin, double scaleMax)
-		: scaleMin(scaleMin), scaleMax(scaleMax)
+		: scaleMin(scaleMin), scaleMax(scaleMax), autoScale(false)
 	{}
 
 	std::string HeatmapParameters::toString() const
@@ -15,14 +15,15 @@ namespace dnf_composer
 		std::string result;
 		result += "Heatmap parameters: {";
 		result += "Scale min: " + std::to_string(scaleMin) + ", ";
-		result += "Scale max: " + std::to_string(scaleMax) + "}";
+		result += "Scale max: " + std::to_string(scaleMax) + ", ";
+		result += "Auto scale: " + std::string(autoScale ? "true" : "false") + "}";
 		return result;
 	}
 
 	bool HeatmapParameters::operator==(const HeatmapParameters& other) const
 	{
 		static constexpr double epsilon = 1e-6;
-		if (std::abs(scaleMin - other.scaleMin) > epsilon || std::abs(scaleMax - other.scaleMax))
+		if (std::abs(scaleMin - other.scaleMin) > epsilon || std::abs(scaleMax - other.scaleMax) > epsilon)
 			return false;
 		return true;
 	}
@@ -83,6 +84,7 @@ namespace dnf_composer
 		auto y_min = static_cast<int>(commonParameters.dimensions.yMin);
 		auto scaleMin = static_cast<float>(heatmapParameters.scaleMin);
 		auto scaleMax = static_cast<float>(heatmapParameters.scaleMax);
+		bool autoScale = heatmapParameters.autoScale;
 
 		std::string title = commonParameters.annotations.title;
 		std::string x_label = commonParameters.annotations.x_label;
@@ -145,10 +147,20 @@ namespace dnf_composer
 				ImGui::DragFloatRange2("Min / Max", &scaleMin, &scaleMax, 0.01f, -20, 20);
 				heatmapParameters.scaleMin = scaleMin;
 				heatmapParameters.scaleMax = scaleMax;
+				ImGui::Checkbox("Auto scale", &autoScale);
+				heatmapParameters.autoScale = autoScale;
 				ImGui::EndMenu();
 			}
 
 			ImGui::EndMenuBar();
+		}
+
+		if (autoScale)
+		{
+			heatmapParameters.scaleMin = *std::ranges::min_element(flattened_matrix->begin(), flattened_matrix->end());
+			heatmapParameters.scaleMax = *std::ranges::max_element(flattened_matrix->begin(), flattened_matrix->end());
+			scaleMin = static_cast<float>(heatmapParameters.scaleMin);
+			scaleMax = static_cast<float>(heatmapParameters.scaleMax);
 		}
 
 		static constexpr ImPlotFlags hm_flags = ImPlotFlags_Crosshairs | ImPlotFlags_NoLegend;

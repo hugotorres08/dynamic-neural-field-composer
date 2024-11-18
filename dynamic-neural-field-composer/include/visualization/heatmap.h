@@ -7,6 +7,7 @@ namespace dnf_composer
 	struct HeatmapParameters : PlotSpecificParameters
 	{
 		double scaleMin, scaleMax;
+		bool autoScale;
 
 		HeatmapParameters();
 		HeatmapParameters(double scaleMin, double scaleMax);

@@ -14,7 +14,6 @@ namespace dnf_composer
 		{
 			commonParameters.identifiers.label = ElementLabel::GAUSS_FIELD_COUPLING;
 			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size * parameters.inputFieldDimensions.size);
-			
 		}
 
 		void GaussFieldCoupling::init()

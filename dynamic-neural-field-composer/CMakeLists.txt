@@ -109,7 +109,7 @@ set(user_interface_headers
     "include/user_interface/widgets.h"
 )
 set(wizards_headers
-    #"include/wizards/learning_wizard.h"
+    "include/wizards/learning_wizard.h"
 )
 
 set(header 
@@ -177,7 +177,7 @@ set(src
     "src/user_interface/main_window.cpp"
     "src/user_interface/widgets.cpp"
     
-    #"src/wizards/learning_wizard.cpp"
+    "src/wizards/learning_wizard.cpp"
 )
 
 # Define library target
@@ -294,6 +294,15 @@ set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)
 add_executable(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} "examples/test_plot_control_window.cpp")
 target_include_directories(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE include)
 target_link_libraries(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+# Example test_couplings
+set(TEST_COUPLINGS_EXAMPLE t-couplings-example)
+add_executable(${TEST_COUPLINGS_EXAMPLE} "examples/test_couplings.cpp")
+target_include_directories(${TEST_COUPLINGS_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_COUPLINGS_EXAMPLE} PRIVATE 
 imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})

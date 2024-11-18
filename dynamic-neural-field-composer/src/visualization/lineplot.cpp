@@ -3,7 +3,7 @@
 namespace dnf_composer
 {
 	LinePlotParameters::LinePlotParameters()
-		: lineThickness(3.0), autoFit(false)
+		: lineThickness(3.0), autoFit(true)
 	{}
 
 	LinePlotParameters::LinePlotParameters(double lineThickness, bool autoFit)

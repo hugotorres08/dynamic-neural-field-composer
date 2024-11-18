@@ -30,6 +30,10 @@ namespace dnf_composer
 
 			updateAllWeights = true;
 			trained = false;
+
+			// new add
+			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size * parameters.inputFieldSize);
+
 		}
 
 		void FieldCoupling::init()
@@ -41,6 +45,9 @@ namespace dnf_composer
 				trained = true;
 			else
 				fillWeightsRandomly();
+
+			// new add
+			components["kernel"] = tools::math::flattenMatrix(weights);
 		}
 
 		void FieldCoupling::step(double t, double deltaT)
@@ -74,6 +81,8 @@ namespace dnf_composer
 
 		void FieldCoupling::computeOutput()
 		{
+			components["output"] = std::vector<double>(components["output"].size(), 0);
+
 			for (int i = 0; i < components["output"].size(); i++)
 				for (int j = 0; j < components["input"].size(); j++)
 					components["output"][i] += weights[j][i] * components["input"][j];
