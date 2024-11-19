@@ -146,6 +146,7 @@ namespace dnf_composer
 			element::FieldCouplingParameters fcp = fieldCoupling->getParameters();
 
 			auto scalar = static_cast<float>(fcp.scalar);
+			auto learningRate = static_cast<float>(fcp.learningRate);
 			bool activateLearning = fcp.learning;
 
 			std::string label = "##" + element->getUniqueName() + "Scalar";
@@ -154,6 +155,26 @@ namespace dnf_composer
 
 			label = "##" + element->getUniqueName() + "Activate learning";
 			ImGui::Checkbox(label.c_str(), &activateLearning);
+			ImGui::SameLine(); ImGui::Text("Activate Learning");
+
+			label = "##" + element->getUniqueName() + "Learning rate";
+			ImGui::SliderFloat(label.c_str(), &learningRate, 0, 1);
+			ImGui::SameLine(); ImGui::Text("Learning rate");
+
+			label = "##" + element->getUniqueName() + "Learning rule";
+			if (ImGui::BeginCombo(label.c_str(), LearningRuleToString.at(fcp.learningRule).c_str()))
+			{
+				for (int i = 0; i < LearningRuleToString.size(); ++i)
+				{
+					const char* name = LearningRuleToString.at(static_cast<LearningRule>(i)).c_str();
+					if (ImGui::Selectable(name, fcp.learningRule == static_cast<LearningRule>(i)))
+					{
+						fcp.learningRule = static_cast<LearningRule>(i);
+						fieldCoupling->setParameters(fcp);
+					}
+				}
+				ImGui::EndCombo();
+			}
 
 			static constexpr double epsilon = 1e-6;
 			if (std::abs(scalar - static_cast<float>(fcp.scalar)) > epsilon)
@@ -164,6 +185,11 @@ namespace dnf_composer
 			if (activateLearning != fcp.learning)
 			{
 				fcp.learning = activateLearning;
+				fieldCoupling->setParameters(fcp);
+			}
+			if (std::abs(learningRate - static_cast<float>(fcp.learningRate)) > epsilon)
+			{
+				fcp.learningRate = learningRate;
 				fieldCoupling->setParameters(fcp);
 			}
 

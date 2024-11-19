@@ -85,6 +85,7 @@ namespace dnf_composer
 			void updateOutput();
 			void updateInputFieldDimensions();
 			void updateWeights();
+			std::vector<double> normalize(std::vector<double>& vector);
 		};
 	}
 }

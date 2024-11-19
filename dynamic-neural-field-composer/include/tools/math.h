@@ -235,18 +235,31 @@ namespace dnf_composer
 			}
 
 			template <typename T>
-			std::vector<std::vector<T>> ojaLearningRule(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
+			std::vector<std::vector<T>> ojaLearningRule(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& output, double learningRate)
 			{
 				const int inputSize = input.size();
-				const int outputSize = targetOutput.size();
+				const int outputSize = output.size();
+
+				/*for (int i = 0; i < outputSize; ++i) {
+					for (int j = 0; j < inputSize; ++j) {
+						double decayTerm = 0.0;
+						for (int k = 0; k < outputSize; ++k) {
+							decayTerm += output[i] * output[k] * weights[k][j];
+						}
+						weightUpdates[i][j] -= decayTerm;
+					}
+				}*/
 
 				for (int i = 0; i < inputSize; i++)
+				{
 					for (int j = 0; j < outputSize; j++)
 					{
-						weights[i][j] = weights[i][j] * (1 - learningRate * std::pow(targetOutput[j], 2)) + learningRate * input[i] * targetOutput[j];
-						//weights[i][j] += learningRate * targetOutput[j] * (input[i] - targetOutput[j] * weights[i][j]);
+						//weights[i][j] = weights[i][j] * (1 - learningRate * std::pow(targetOutput[j], 2)) + learningRate * input[i] * targetOutput[j];
+						weights[i][j] += learningRate * (input[i] * output[j] - output[j] * input[i] * weights[i][j]);
 						//weights[i][j] += learningRate * input[i] * (targetOutput[j] - alpha * std::pow(targetOutput[j], 2) * weights[i][j]);
 					}
+				}
+					
 				return weights;
 			}
 

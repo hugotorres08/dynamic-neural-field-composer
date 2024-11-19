@@ -96,7 +96,7 @@ int main()
 				PlotType::HEATMAP, 
 				PlotDimensions{0.0, 100.0, 0.0, 100.0, 1.0}, 
 				PlotAnnotations{"Field coupling", "x", "y"} }, 
-			HeatmapParameters{ 0.0, 0.2 }, 
+				HeatmapParameters{},
 			{ {fc_1->getUniqueName(), "kernel"} }
 		);
 

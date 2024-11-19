@@ -109,10 +109,26 @@ namespace dnf_composer
 
 		void FieldCoupling::updateWeights()
 		{
-			std::vector<double> input = parameters.inputField->getComponents()->at("output");
-			std::vector<double> output = parameters.outputField->getComponents()->at("output");
+			std::vector<double> input = parameters.inputField->getComponents()->at("activation");
+			std::vector<double> output = parameters.outputField->getComponents()->at("activation");
+
+			input = normalize(input);
+			output = normalize(output);
 
 			static auto copy_weights = weights;
+
+			switch (parameters.learningRule)
+			{
+			case LearningRule::DELTA:
+				tools::math::deltaLearningRuleKroghHertz(copy_weights, input, output, parameters.learningRate);
+				break;
+			case LearningRule::HEBB:
+				tools::math::hebbLearningRule(copy_weights, input, output, parameters.learningRate);
+				break;
+			case LearningRule::OJA:
+				tools::math::ojaLearningRule(copy_weights, input, output, parameters.learningRate);
+				break;
+			}
 
 			// learning rule delta_wij = learning_rate * (input_i * output_j - output_j^2 * wij)
 			/*for (int i = 0; i < input.size(); i++)
@@ -122,10 +138,34 @@ namespace dnf_composer
 			//tools::math::deltaLearningRuleKroghHertz(copy_weights, input, output, parameters.learningRate);
 			//tools::math::deltaLearningRuleWidrowHoff(copy_weights, input, output, parameters.learningRate);
 			//tools::math::hebbLearningRule(copy_weights, input, output, parameters.learningRate);
-			tools::math::ojaLearningRule(copy_weights, input, output, parameters.learningRate);
-
+			//tools::math::ojaLearningRule(copy_weights, input, output, parameters.learningRate);
 
 			components["kernel"] = tools::math::flattenMatrix(copy_weights);
+		}
+
+		std::vector<double> FieldCoupling::normalize(std::vector<double>& vector)
+		{
+			static constexpr double epsilon = 1e-6;
+
+			// remove negative values from the vector
+			for (double& val : vector)
+				if (val < epsilon)
+					val = 0;
+
+			// Find the minimum and maximum values in the vector
+			const double maxVal = *std::ranges::max_element(vector.begin(), vector.end()) + epsilon;
+			const double minVal = *std::ranges::min_element(vector.begin(), vector.end()) - epsilon;
+
+			// Normalize the vector
+			std::vector<double> normalizedVector;
+			for (double& val : vector)
+			{
+				if (val != 0.0)
+					val = (val - minVal) / (maxVal - minVal);
+				normalizedVector.push_back(val);
+			}
+
+			return normalizedVector;
 		}
 
 		bool FieldCoupling::readWeights()
