@@ -40,7 +40,7 @@ int main()
 		//const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING, element::ElementCommonParameters{}, element::GaussFieldCouplingParameters{false, false, {{50.0, 50.0, 5.0, 5.0}}});
 		//const auto gfc_1 = factory.createElement(element::FIELD_COUPLING, element::ElementCommonParameters{}, element::FieldCouplingParameters{100, 1.0, 0.1, LearningRule::DELTA_KROGH_HERTZ});
 
-		const auto gfc_1 = std::make_shared<element::FieldCoupling>(element::ElementCommonParameters{}, element::FieldCouplingParameters{100, 3.0, 0.1, LearningRule::DELTA_KROGH_HERTZ});
+		const auto fc_1 = std::make_shared<element::FieldCoupling>(element::ElementCommonParameters{}, element::FieldCouplingParameters{ nf_1 , nf_2});
 
 		simulation->addElement(nf_1);
 		simulation->addElement(gk_1);
@@ -49,8 +49,8 @@ int main()
 		simulation->addElement(mhk_2);
 		simulation->addElement(nn_2);
 		simulation->addElement(gs_1);
-		//simulation->addElement(gs_2);
-		simulation->addElement(gfc_1);
+		simulation->addElement(gs_2);
+		simulation->addElement(fc_1);
 
 		nf_1->addInput(gk_1);
 		gk_1->addInput(nf_1);
@@ -60,14 +60,13 @@ int main()
 		nf_2->addInput(mhk_2);
 		mhk_2->addInput(nf_2);
 		nf_2->addInput(nn_2);
-		//nf_2->addInput(gs_2);
+		nf_2->addInput(gs_2);
 
 		visualization->plot({ {nf_1->getUniqueName(), "activation"}, {nf_1->getUniqueName(), "output"}, {nf_1->getUniqueName(), "input"} });
 		visualization->plot({ {nf_2->getUniqueName(), "activation"}, {nf_2->getUniqueName(), "output"}, {nf_2->getUniqueName(), "input"} });
 
-		gfc_1->addInput(nf_1);
-		nf_2->addInput(gfc_1);
-
+		fc_1->addInput(nf_1);
+		nf_2->addInput(fc_1);
 
 		//LearningWizard wizard{ simulation, gfc_1->getUniqueName() };
 		//static constexpr double offset = 1.0;
@@ -96,12 +95,12 @@ int main()
 			PlotCommonParameters{
 				PlotType::HEATMAP, 
 				PlotDimensions{0.0, 100.0, 0.0, 100.0, 1.0}, 
-				PlotAnnotations{"Gauss field coupling", "x", "y"} }, 
+				PlotAnnotations{"Field coupling", "x", "y"} }, 
 			HeatmapParameters{ 0.0, 0.2 }, 
-			{ {gfc_1->getUniqueName(), "kernel"} }
+			{ {fc_1->getUniqueName(), "kernel"} }
 		);
 
-		visualization->plot({{gfc_1->getUniqueName(), "output"}});
+		visualization->plot({{fc_1->getUniqueName(), "output"}});
 
 		app.init();
 

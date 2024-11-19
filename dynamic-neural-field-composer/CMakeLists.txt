@@ -109,7 +109,7 @@ set(user_interface_headers
     "include/user_interface/widgets.h"
 )
 set(wizards_headers
-    "include/wizards/learning_wizard.h"
+    #"include/wizards/learning_wizard.h"
 )
 
 set(header 
@@ -177,7 +177,7 @@ set(src
     "src/user_interface/main_window.cpp"
     "src/user_interface/widgets.cpp"
     
-    "src/wizards/learning_wizard.cpp"
+    #"src/wizards/learning_wizard.cpp"
 )
 
 # Define library target

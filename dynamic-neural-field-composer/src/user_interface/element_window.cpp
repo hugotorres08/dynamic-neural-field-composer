@@ -146,15 +146,24 @@ namespace dnf_composer
 			element::FieldCouplingParameters fcp = fieldCoupling->getParameters();
 
 			auto scalar = static_cast<float>(fcp.scalar);
+			bool activateLearning = fcp.learning;
 
-			const std::string label = "##" + element->getUniqueName() + "Scalar";
+			std::string label = "##" + element->getUniqueName() + "Scalar";
 			ImGui::SliderFloat(label.c_str(), &scalar, 0, 2);
 			ImGui::SameLine(); ImGui::Text("Scalar");
+
+			label = "##" + element->getUniqueName() + "Activate learning";
+			ImGui::Checkbox(label.c_str(), &activateLearning);
 
 			static constexpr double epsilon = 1e-6;
 			if (std::abs(scalar - static_cast<float>(fcp.scalar)) > epsilon)
 			{
 				fcp.scalar = scalar;
+				fieldCoupling->setParameters(fcp);
+			}
+			if (activateLearning != fcp.learning)
+			{
+				fcp.learning = activateLearning;
 				fieldCoupling->setParameters(fcp);
 			}
 

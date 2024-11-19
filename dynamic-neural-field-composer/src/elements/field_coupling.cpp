@@ -4,6 +4,8 @@
 
 #include "elements/field_coupling.h"
 
+#include <complex>
+
 
 namespace dnf_composer
 {
@@ -14,36 +16,27 @@ namespace dnf_composer
 			const FieldCouplingParameters& parameters)
 			: Element(elementCommonParameters), parameters(parameters)
 		{
-			if (parameters.inputFieldSize <= 0)
-				throw Exception(ErrorCode::ELEM_SIZE_NOT_ALLOWED, commonParameters.identifiers.uniqueName);
-
+			this->parameters.learning = false;
 			commonParameters.identifiers.label = ElementLabel::FIELD_COUPLING;
-
-			components["input"] = std::vector<double>(parameters.inputFieldSize);
-			tools::utils::resizeMatrix(weights, static_cast<int>(components["input"].size()),
-				static_cast<int>(components["output"].size()));
-
-			tools::utils::fillMatrixWithRandomValues(weights, -1, 1);
-
 			weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" + 
 				commonParameters.identifiers.uniqueName + "_weights.txt";
 
-			updateAllWeights = true;
-			trained = false;
-
-			// new add
-			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size * parameters.inputFieldSize);
-
+			updateInputFieldDimensions();
+			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size *
+				parameters.inputFieldDimensions.size);
+			components["input"] = std::vector<double>(parameters.inputFieldDimensions.size, 0);
+			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size, 0);
+			weights = std::vector<std::vector<double>>(components["input"].size(), std::vector<double>(components["output"].size(), 0));
 		}
 
 		void FieldCoupling::init()
 		{
+			parameters.learning = false;
+			updateInputFieldDimensions();
 			std::ranges::fill(components["input"], 0);
 			std::ranges::fill(components["output"], 0);
 
-			if (readWeights())
-				trained = true;
-			else
+			if (!readWeights())
 				fillWeightsRandomly();
 
 			// new add
@@ -52,9 +45,10 @@ namespace dnf_composer
 
 		void FieldCoupling::step(double t, double deltaT)
 		{
-			getInputFunction();
-			computeOutput();
-			scaleOutput();
+			if (parameters.learning)
+				updateWeights();
+			updateInput();
+			updateOutput();
 		}
 
 		std::string FieldCoupling::toString() const
@@ -71,66 +65,9 @@ namespace dnf_composer
 			return cloned;
 		}
 
-		void FieldCoupling::getInputFunction()
-		{
-			updateInput();
-			for (auto& value : components["input"])
-				if (value < 0)
-					value = 0;
-		}
-
-		void FieldCoupling::computeOutput()
-		{
-			components["output"] = std::vector<double>(components["output"].size(), 0);
-
-			for (int i = 0; i < components["output"].size(); i++)
-				for (int j = 0; j < components["input"].size(); j++)
-					components["output"][i] += weights[j][i] * components["input"][j];
-
-			for (auto& value : components["output"])
-				if (value < 0)
-					value = 0;
-		}
-
-		void FieldCoupling::scaleOutput()
-		{
-			for (auto& value : components["output"])
-				value *= parameters.scalar;
-		}
-
-		void FieldCoupling::resetWeights()
-		{
-			tools::utils::fillMatrixWithRandomValues(weights, 0, 0);
-		}
-
-		void FieldCoupling::setUpdateAllWeights(bool updateAllWeights)
-		{
-			this->updateAllWeights = updateAllWeights;
-		}
-
 		void FieldCoupling::setParameters(const FieldCouplingParameters& fcp)
 		{
 			parameters = fcp;
-		}
-
-		void FieldCoupling::updateWeights(const std::vector<double>& input, const std::vector<double>& output)
-		{
-			switch (parameters.learningRule)
-			{
-			case LearningRule::HEBBIAN:
-				weights = tools::math::hebbLearningRule(weights, input, output, parameters.learningRate);
-				break;
-			case LearningRule::DELTA_WIDROW_HOFF:
-				weights = tools::math::deltaLearningRuleWidrowHoff(weights, input, output,
-					parameters.learningRate);
-				break;
-			case LearningRule::DELTA_KROGH_HERTZ:
-				weights = tools::math::deltaLearningRuleKroghHertz(weights, input, output, 
-					parameters.learningRate);
-			case LearningRule::OJA:
-				weights = tools::math::ojaLearningRule(weights, input, output, parameters.learningRate);
-				break;
-			}
 		}
 
 		void FieldCoupling::setLearningRate(double learningRate)
@@ -146,6 +83,49 @@ namespace dnf_composer
 		FieldCouplingParameters FieldCoupling::getParameters() const
 		{
 			return parameters;
+		}
+
+		void FieldCoupling::updateOutput()
+		{
+			components["output"] = std::vector<double>(components["output"].size(), 0);
+
+			for (int i = 0; i < components["output"].size(); i++)
+				for (int j = 0; j < components["input"].size(); j++)
+					components["output"][i] += weights[j][i] * components["input"][j];
+		}
+
+		void FieldCoupling::updateInputFieldDimensions()
+		{
+			if (inputs.empty())
+			{
+				const std::string logMessage = "No input element is connected to '" + commonParameters.identifiers.uniqueName + "'.";
+				log(tools::logger::LogLevel::ERROR, logMessage);
+				return;
+			}
+			const std::shared_ptr<Element> input = inputs.begin()->first;
+			tools::logger::log(tools::logger::INFO, "Currently not checking if field couplings have more than one input - enforce this.");
+			parameters.inputFieldDimensions = input->getElementCommonParameters().dimensionParameters;
+		}
+
+		void FieldCoupling::updateWeights()
+		{
+			std::vector<double> input = parameters.inputField->getComponents()->at("output");
+			std::vector<double> output = parameters.outputField->getComponents()->at("output");
+
+			static auto copy_weights = weights;
+
+			// learning rule delta_wij = learning_rate * (input_i * output_j - output_j^2 * wij)
+			/*for (int i = 0; i < input.size(); i++)
+				for (int j = 0; j < output.size(); j++)
+					copy_weights[i][j] += parameters.learningRate * (input[i] * output[j] - output[j] * output[j] * copy_weights[i][j]);*/
+
+			//tools::math::deltaLearningRuleKroghHertz(copy_weights, input, output, parameters.learningRate);
+			//tools::math::deltaLearningRuleWidrowHoff(copy_weights, input, output, parameters.learningRate);
+			//tools::math::hebbLearningRule(copy_weights, input, output, parameters.learningRate);
+			tools::math::ojaLearningRule(copy_weights, input, output, parameters.learningRate);
+
+
+			components["kernel"] = tools::math::flattenMatrix(copy_weights);
 		}
 
 		bool FieldCoupling::readWeights()
@@ -219,14 +199,8 @@ namespace dnf_composer
 		{
 			tools::utils::resizeMatrix(weights, static_cast<int>(components["input"].size()),
 				static_cast<int>(components["output"].size()));
-			tools::utils::fillMatrixWithRandomValues(weights, 0.0, 0.0);
+			tools::utils::fillMatrixWithRandomValues(weights, 0.0, 0.1);
 			log(tools::logger::LogLevel::INFO, "Filling the weight matrix with random values.");
-			trained = false;
-			writeWeights();
-		}
-
-		void FieldCoupling::saveWeights() const
-		{
 			writeWeights();
 		}
 

@@ -175,7 +175,6 @@ namespace dnf_composer
             const auto fieldCoupling = std::dynamic_pointer_cast<element::FieldCoupling>(element);
             const auto fieldCouplingParameters = fieldCoupling->getParameters();
             elementJson["learningRate"] = fieldCouplingParameters.learningRate;
-            elementJson["inputFieldSize"] = fieldCouplingParameters.inputFieldSize;
             elementJson["learningRule"] = fieldCouplingParameters.learningRule;
             elementJson["scalar"] = fieldCouplingParameters.scalar;
         }
@@ -298,16 +297,15 @@ namespace dnf_composer
             break;
 	        case element::FIELD_COUPLING:
             {
-                const int inputFieldSize = elementJson["inputFieldSize"];
                 const double scalar = elementJson["scalar"];
                 const double learningRate = elementJson["learningRate"];
                 const LearningRule learningRule = elementJson["learningRule"];
 
-                auto coupling = std::make_shared<element::FieldCoupling>(
-                    element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::FieldCouplingParameters(inputFieldSize, scalar, learningRate, learningRule)
-                );
-                simulation->addElement(coupling);
+                //auto coupling = std::make_shared<element::FieldCoupling>(
+                //    element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
+				//	element::FieldCouplingParameters(learningRule, scalar, learningRate)
+                //);
+                //simulation->addElement(coupling);
             }
             break;
 	        case element::GAUSS_FIELD_COUPLING:

@@ -91,8 +91,8 @@ namespace dnf_composer
 						return creator->second(ElementCommonParameters(type), NormalNoiseParameters());
 					case ElementLabel::GAUSS_FIELD_COUPLING:
 						return creator->second(ElementCommonParameters(type), GaussFieldCouplingParameters());
-					case ElementLabel::FIELD_COUPLING:
-						return creator->second(ElementCommonParameters(type), FieldCouplingParameters());
+					//case ElementLabel::FIELD_COUPLING:
+						//return creator->second(ElementCommonParameters(type), FieldCouplingParameters());
 					case ElementLabel::UNINITIALIZED:
 						return nullptr;
 				}

@@ -76,15 +76,12 @@ namespace dnf_composer
 		{
 			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size, 0.0);
 
-			static const unsigned int rows = commonParameters.dimensionParameters.size;
-			static const unsigned int cols = static_cast<int>(components["input"].size());
-
-			for (unsigned int x = 0; x < rows; x++)
+			for (int x = 0; x < commonParameters.dimensionParameters.size; x++)
 			{
-				for (unsigned int y = 0; y < cols; y++)
+				for (int y = 0; y < static_cast<int>(components["input"].size()); y++)
 				{
 					components["output"][y] += components["kernel"][x * commonParameters.dimensionParameters.size + y]
-																		* components["input"][x];
+						* components["input"][x];
 				}
 			}
 		}
@@ -119,6 +116,7 @@ namespace dnf_composer
 				return;
 			}
 			const std::shared_ptr<Element> input = inputs.begin()->first;
+			tools::logger::log(tools::logger::INFO, "Currently not checking if field couplings have more than one input - enforce this.");
 			parameters.inputFieldDimensions = input->getElementCommonParameters().dimensionParameters;
 		}
 	}
