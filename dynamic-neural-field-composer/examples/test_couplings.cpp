@@ -26,20 +26,18 @@ int main()
 		app.addWindow<user_interface::PlotControlWindow>();
 
 		element::ElementFactory factory;
-		const auto nf_1 = factory.createElement(element::NEURAL_FIELD, element::ElementCommonParameters{}, element::NeuralFieldParameters{});
-		const auto gk_1 = factory.createElement(element::GAUSS_KERNEL, element::ElementCommonParameters{}, element::GaussKernelParameters{});
-		const auto nn_1 = factory.createElement(element::NORMAL_NOISE, element::ElementCommonParameters{}, element::NormalNoiseParameters{0.01});
+		const auto nf_1 = factory.createElement(element::NEURAL_FIELD);
+		const auto gk_1 = factory.createElement(element::GAUSS_KERNEL);
+		const auto nn_1 = factory.createElement(element::NORMAL_NOISE);
 
-		const auto nf_2 = factory.createElement(element::NEURAL_FIELD, element::ElementCommonParameters{}, element::NeuralFieldParameters{});
-		const auto mhk_2 = factory.createElement(element::MEXICAN_HAT_KERNEL, element::ElementCommonParameters{}, element::MexicanHatKernelParameters{2.5, 11.0, 5.0, 15.0, -0.1});
-		const auto nn_2 = factory.createElement(element::NORMAL_NOISE, element::ElementCommonParameters{}, element::NormalNoiseParameters{0.01});
+		const auto nf_2 = factory.createElement(element::NEURAL_FIELD);
+		const auto mhk_2 = factory.createElement(element::MEXICAN_HAT_KERNEL);
+		const auto nn_2 = factory.createElement(element::NORMAL_NOISE);
 
-		const auto gs_1 = factory.createElement(element::GAUSS_STIMULUS, element::ElementCommonParameters{}, element::GaussStimulusParameters{});
-		const auto gs_2 = factory.createElement(element::GAUSS_STIMULUS, element::ElementCommonParameters{}, element::GaussStimulusParameters{});
+		const auto gs_1 = factory.createElement(element::GAUSS_STIMULUS);
+		const auto gs_2 = factory.createElement(element::GAUSS_STIMULUS);
 
 		//const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING, element::ElementCommonParameters{}, element::GaussFieldCouplingParameters{false, false, {{50.0, 50.0, 5.0, 5.0}}});
-		//const auto gfc_1 = factory.createElement(element::FIELD_COUPLING, element::ElementCommonParameters{}, element::FieldCouplingParameters{100, 1.0, 0.1, LearningRule::DELTA_KROGH_HERTZ});
-
 		const auto fc_1 = std::make_shared<element::FieldCoupling>(element::ElementCommonParameters{}, element::FieldCouplingParameters{ nf_1 , nf_2});
 
 		simulation->addElement(nf_1);
@@ -67,29 +65,6 @@ int main()
 
 		fc_1->addInput(nf_1);
 		nf_2->addInput(fc_1);
-
-		//LearningWizard wizard{ simulation, gfc_1->getUniqueName() };
-		//static constexpr double offset = 1.0;
-		//std::vector<std::vector<double>> inputTargetPeaksForCoupling =
-		//{
-		//	{ 00.00 + offset }, // red
-		//	{ 41.00 + offset }, // orange
-		//	{ 60.00 + offset }, // yellow
-		//};
-
-		//std::vector<std::vector<double>> outputTargetPeaksForCoupling =
-		//{
-		//   { 20.00 + 0.00 },
-		//   { 60.00 + 0.00 },
-		//   { 80.00 + 0.00 },
-		//};
-
-		//wizard.setTargetPeakLocationsForNeuralFieldPre(inputTargetPeaksForCoupling);
-		//wizard.setTargetPeakLocationsForNeuralFieldPost(outputTargetPeaksForCoupling);
-		//wizard.simulateAssociation();
-		//wizard.trainWeights(100);
-		//wizard.saveWeights();
-
 
 		visualization->plot(
 			PlotCommonParameters{

@@ -39,7 +39,7 @@ namespace dnf_composer
 
 			FieldCouplingParameters(const std::shared_ptr<Element>& input, const std::shared_ptr<Element>& output,
 				LearningRule learningRule = LearningRule::HEBB, 
-				double scalar = 1.0, double learningRate = 0.1)
+				double scalar = 1.0, double learningRate = 0.01)
 				: inputField(input), outputField(output),
 			learningRule(learningRule), scalar(scalar),
 				learningRate(learningRate), inputFieldDimensions(), learning(false)
@@ -78,14 +78,13 @@ namespace dnf_composer
 			const std::vector<std::vector<double>>& getWeights() const;
 			FieldCouplingParameters getParameters() const;
 
-			bool readWeights();
+			void readWeights();
 			void writeWeights() const;
 			void fillWeightsRandomly();
 		private:
 			void updateOutput();
 			void updateInputFieldDimensions();
 			void updateWeights();
-			std::vector<double> normalize(std::vector<double>& vector);
 		};
 	}
 }

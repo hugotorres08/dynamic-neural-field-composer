@@ -48,7 +48,7 @@ int main()
 		const auto nn_2 = factory.createElement(element::NORMAL_NOISE);
 		const auto gs_1 = factory.createElement(element::GAUSS_STIMULUS);
 		const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING);
-		const auto fc_1 = factory.createElement(element::FIELD_COUPLING);
+		//const auto fc_1 = factory.createElement(element::FIELD_COUPLING);
 
 		simulation->addElement(nf_1);
 		simulation->addElement(gk_1);
@@ -58,7 +58,7 @@ int main()
 		simulation->addElement(nn_2);
 		simulation->addElement(gs_1);
 		simulation->addElement(gfc_1);
-		simulation->addElement(fc_1);
+		//simulation->addElement(fc_1);
 
 		nf_1->addInput(gk_1);
 		gk_1->addInput(nf_1);
@@ -88,7 +88,7 @@ int main()
 
 		visualization->plot({ {gfc_1->getUniqueName(), "output"} });
 
-		visualization->plot(
+		/*visualization->plot(
 			PlotCommonParameters{
 				PlotType::HEATMAP,
 				PlotDimensions{0.0, 100.0, 0.0, 100.0, 1.0},
@@ -97,7 +97,7 @@ int main()
 			{ {fc_1->getUniqueName(), "kernel"} }
 		);
 
-		visualization->plot({ {fc_1->getUniqueName(), "output"} });
+		visualization->plot({ {fc_1->getUniqueName(), "output"} });*/
 
 		app.init();
 

@@ -26,7 +26,7 @@ namespace dnf_composer
 
 		void ElementWindow::renderModifyElementParameters() const
 		{
-			if (ImGui::CollapsingHeader("Modify element parameters"))
+			//if (ImGui::CollapsingHeader("Modify element parameters"))
 			{
 				const int numberOfElementsInSimulation = simulation->getNumberOfElements();
 
@@ -34,6 +34,7 @@ namespace dnf_composer
 				{
 					auto simulationElement = simulation->getElement(i);
 					switchElementToModify(simulationElement);
+					ImGui::Separator();
 				}
 			}
 		}
@@ -149,22 +150,10 @@ namespace dnf_composer
 			auto learningRate = static_cast<float>(fcp.learningRate);
 			bool activateLearning = fcp.learning;
 
-			std::string label = "##" + element->getUniqueName() + "Scalar";
-			ImGui::SliderFloat(label.c_str(), &scalar, 0, 2);
-			ImGui::SameLine(); ImGui::Text("Scalar");
-
-			label = "##" + element->getUniqueName() + "Activate learning";
-			ImGui::Checkbox(label.c_str(), &activateLearning);
-			ImGui::SameLine(); ImGui::Text("Activate Learning");
-
-			label = "##" + element->getUniqueName() + "Learning rate";
-			ImGui::SliderFloat(label.c_str(), &learningRate, 0, 1);
-			ImGui::SameLine(); ImGui::Text("Learning rate");
-
-			label = "##" + element->getUniqueName() + "Learning rule";
+			std::string label = "##" + element->getUniqueName() + "Learning rule";
 			if (ImGui::BeginCombo(label.c_str(), LearningRuleToString.at(fcp.learningRule).c_str()))
 			{
-				for (int i = 0; i < LearningRuleToString.size(); ++i)
+				for (size_t i = 0; i < LearningRuleToString.size(); ++i)
 				{
 					const char* name = LearningRuleToString.at(static_cast<LearningRule>(i)).c_str();
 					if (ImGui::Selectable(name, fcp.learningRule == static_cast<LearningRule>(i)))
@@ -175,6 +164,18 @@ namespace dnf_composer
 				}
 				ImGui::EndCombo();
 			}
+
+			label = "##" + element->getUniqueName() + "Learning rate";
+			ImGui::SliderFloat(label.c_str(), &learningRate, 0, 1);
+			ImGui::SameLine(); ImGui::Text("Learning rate");
+
+			label = "##" + element->getUniqueName() + "Scalar";
+			ImGui::SliderFloat(label.c_str(), &scalar, 0, 20);
+			ImGui::SameLine(); ImGui::Text("Scalar");
+
+			label = "##" + element->getUniqueName() + "Activate learning";
+			ImGui::Checkbox(label.c_str(), &activateLearning);
+			ImGui::SameLine(); ImGui::Text("Activate learning");
 
 			static constexpr double epsilon = 1e-6;
 			if (std::abs(scalar - static_cast<float>(fcp.scalar)) > epsilon)

@@ -4,9 +4,6 @@
 
 #include "elements/field_coupling.h"
 
-#include <complex>
-
-
 namespace dnf_composer
 {
 	namespace element
@@ -36,8 +33,7 @@ namespace dnf_composer
 			std::ranges::fill(components["input"], 0);
 			std::ranges::fill(components["output"], 0);
 
-			if (!readWeights())
-				fillWeightsRandomly();
+			readWeights();
 
 			// new add
 			components["kernel"] = tools::math::flattenMatrix(weights);
@@ -45,10 +41,10 @@ namespace dnf_composer
 
 		void FieldCoupling::step(double t, double deltaT)
 		{
-			if (parameters.learning)
-				updateWeights();
 			updateInput();
 			updateOutput();
+			if (parameters.learning)
+				updateWeights();
 		}
 
 		std::string FieldCoupling::toString() const
@@ -91,7 +87,7 @@ namespace dnf_composer
 
 			for (int i = 0; i < components["output"].size(); i++)
 				for (int j = 0; j < components["input"].size(); j++)
-					components["output"][i] += weights[j][i] * components["input"][j];
+					components["output"][i] += parameters.scalar * weights[j][i] * components["input"][j];
 		}
 
 		void FieldCoupling::updateInputFieldDimensions()
@@ -103,7 +99,7 @@ namespace dnf_composer
 				return;
 			}
 			const std::shared_ptr<Element> input = inputs.begin()->first;
-			tools::logger::log(tools::logger::INFO, "Currently not checking if field couplings have more than one input - enforce this.");
+			tools::logger::log(tools::logger::WARNING, "Currently not checking if field couplings have more than one input - enforce this.");
 			parameters.inputFieldDimensions = input->getElementCommonParameters().dimensionParameters;
 		}
 
@@ -112,69 +108,31 @@ namespace dnf_composer
 			std::vector<double> input = parameters.inputField->getComponents()->at("activation");
 			std::vector<double> output = parameters.outputField->getComponents()->at("activation");
 
-			input = normalize(input);
-			output = normalize(output);
-
-			static auto copy_weights = weights;
+			input = tools::math::normalize(input);
+			output = tools::math::normalize(output);
 
 			switch (parameters.learningRule)
 			{
 			case LearningRule::DELTA:
-				tools::math::deltaLearningRuleKroghHertz(copy_weights, input, output, parameters.learningRate);
+				log(tools::logger::LogLevel::ERROR, "Delta learning rule is not implemented yet.");
 				break;
 			case LearningRule::HEBB:
-				tools::math::hebbLearningRule(copy_weights, input, output, parameters.learningRate);
+				tools::math::hebbLearningRule(weights, input, output, parameters.learningRate);
 				break;
 			case LearningRule::OJA:
-				tools::math::ojaLearningRule(copy_weights, input, output, parameters.learningRate);
+				tools::math::ojaLearningRule(weights, input, output, parameters.learningRate);
 				break;
 			}
 
-			// learning rule delta_wij = learning_rate * (input_i * output_j - output_j^2 * wij)
-			/*for (int i = 0; i < input.size(); i++)
-				for (int j = 0; j < output.size(); j++)
-					copy_weights[i][j] += parameters.learningRate * (input[i] * output[j] - output[j] * output[j] * copy_weights[i][j]);*/
-
-			//tools::math::deltaLearningRuleKroghHertz(copy_weights, input, output, parameters.learningRate);
-			//tools::math::deltaLearningRuleWidrowHoff(copy_weights, input, output, parameters.learningRate);
-			//tools::math::hebbLearningRule(copy_weights, input, output, parameters.learningRate);
-			//tools::math::ojaLearningRule(copy_weights, input, output, parameters.learningRate);
-
-			components["kernel"] = tools::math::flattenMatrix(copy_weights);
+			components["kernel"] = tools::math::flattenMatrix(weights);
 		}
 
-		std::vector<double> FieldCoupling::normalize(std::vector<double>& vector)
-		{
-			static constexpr double epsilon = 1e-6;
-
-			// remove negative values from the vector
-			for (double& val : vector)
-				if (val < epsilon)
-					val = 0;
-
-			// Find the minimum and maximum values in the vector
-			const double maxVal = *std::ranges::max_element(vector.begin(), vector.end()) + epsilon;
-			const double minVal = *std::ranges::min_element(vector.begin(), vector.end()) - epsilon;
-
-			// Normalize the vector
-			std::vector<double> normalizedVector;
-			for (double& val : vector)
-			{
-				if (val != 0.0)
-					val = (val - minVal) / (maxVal - minVal);
-				normalizedVector.push_back(val);
-			}
-
-			return normalizedVector;
-		}
-
-		bool FieldCoupling::readWeights()
+		void FieldCoupling::readWeights()
 		{
 			std::ifstream file(weightsFilePath);
 
 			const std::tuple<int, int> initialWeightsSize = std::make_tuple( static_cast<int>(weights.size()), 
 				static_cast<int>(weights[0].size()) );
-			std::tuple<int, int> readWeightsSize = std::make_tuple(0, 0);
 
 			if (file.is_open()) {
 				tools::utils::resizeMatrix(weights, 0, 0);
@@ -194,22 +152,20 @@ namespace dnf_composer
 					weightsFilePath + ".";
 				log(tools::logger::LogLevel::INFO, message);
 
-				readWeightsSize = std::make_tuple(static_cast<int>(weights.size()), 
+				const std::tuple<int, int> readWeightsSize = std::make_tuple(static_cast<int>(weights.size()),
 					static_cast<int>(weights[0].size()));
 				if(initialWeightsSize != readWeightsSize)
 				{
 					log(tools::logger::LogLevel::ERROR, "Weight matrix read from file has a different "
 										 "dimensionality compared to the actual matrix size! ");
-					return false;
+					return;
 				}
-				return true;	
+				return;	
 			}
 
 			const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " +
 				weightsFilePath + ". ";
 			log(tools::logger::LogLevel::ERROR, message);
-			
-			return false;
 		}
 
 		void FieldCoupling::writeWeights() const
