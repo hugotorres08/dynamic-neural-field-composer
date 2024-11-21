@@ -4,11 +4,11 @@
 namespace dnf_composer
 {
 	PlotDimensions::PlotDimensions()
-		: xMin(0), xMax(100), yMin(-10.0), yMax(10.0), dx(1.0)
+		: xMin(0), xMax(100), yMin(-10.0), yMax(10.0), xStep(1.0), yStep(1.0)
 	{}
 
-	PlotDimensions::PlotDimensions(const double& x_min, const double& x_max, const double& y_min, const double& y_max, const double& d_x)
-		: xMin(x_min), xMax(x_max), yMin(y_min), yMax(y_max), dx(d_x)
+	PlotDimensions::PlotDimensions(const double& x_min, const double& x_max, const double& y_min, const double& y_max, const double& x_step, const double& y_step)
+		: xMin(x_min), xMax(x_max), yMin(y_min), yMax(y_max), xStep(x_step), yStep(y_step)
 	{
 		if (xMin >= xMax)
 		{
@@ -24,27 +24,33 @@ namespace dnf_composer
 			log(tools::logger::LogLevel::WARNING, "yMin must be less than yMax.");
 			return;
 		}
-		if (dx <= 0)
+		if (xStep <= 0)
 		{
-			this->dx = 1.0;
-			log(tools::logger::LogLevel::WARNING, "dx must be positive.");
+			this->xStep = 1.0;
+			log(tools::logger::LogLevel::WARNING, "xStep must be positive.");
+			return;
+		}
+		if (yStep <= 0)
+		{
+			this->yStep = 1.0;
+			log(tools::logger::LogLevel::WARNING, "yStep must be positive.");
 			return;
 		}
 	}
 
-	PlotDimensions::PlotDimensions(double dx)
-		: xMin(0), xMax(100), yMin(0), yMax(1), dx(dx)
+	PlotDimensions::PlotDimensions(double xStep)
+		: xMin(0), xMax(100), yMin(0), yMax(1), xStep(xStep), yStep(1.0)
 	{
-		if (dx <= 0)
+		if (xStep <= 0)
 		{
-			this->dx = 1.0;
-			log(tools::logger::LogLevel::WARNING, "dx must be positive.");
+			this->xStep = 1.0;
+			log(tools::logger::LogLevel::WARNING, "xStep must be positive.");
 		}
 	}
 
 	bool PlotDimensions::isLegal() const
 	{
-		if (xMin >= xMax || yMin >= yMax || dx <= 0)
+		if (xMin >= xMax || yMin >= yMax || xStep <= 0 || yStep <= 0)
 			return false;
 		return true;
 	}
@@ -57,7 +63,8 @@ namespace dnf_composer
 		result += "xMax: " + std::to_string(xMax) + ", ";
 		result += "yMin: " + std::to_string(yMin) + ", ";
 		result += "yMax: " + std::to_string(yMax) + ", ";
-		result += "dx: " + std::to_string(dx) + "}";
+		result += "xStep: " + std::to_string(xStep) + ", ";
+		result += "yStep: " + std::to_string(yStep) + "}";
 		return result;
 	}
 
@@ -69,7 +76,8 @@ namespace dnf_composer
 			std::fabs(xMax - other.xMax) > epsilon ||
 			std::fabs(yMin - other.yMin) > epsilon ||
 			std::fabs(yMax - other.yMax) > epsilon ||
-			std::fabs(dx - other.dx) > epsilon)
+			std::fabs(xStep - other.xStep) > epsilon ||
+			std::fabs(yStep - other.yStep) > epsilon)
 		{
 			return false;
 		}

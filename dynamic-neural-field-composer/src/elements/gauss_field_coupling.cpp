@@ -102,7 +102,7 @@ namespace dnf_composer
 			init();
 		}
 
-		ElementSpatialDimensionParameters GaussFieldCoupling::getInputFieldDimensions() const
+		ElementDimensions GaussFieldCoupling::getInputFieldDimensions() const
 		{
 			return parameters.inputFieldDimensions;
 		}

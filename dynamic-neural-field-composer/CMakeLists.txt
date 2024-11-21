@@ -101,10 +101,8 @@ set(user_interface_headers
     "include/user_interface/field_metrics_window.h"
     "include/user_interface/element_window.h"
     "include/user_interface/plot_control_window.h"
-    #"include/user_interface/plot_window.h"
     "include/user_interface/simulation_window.h"
-    #"include/user_interface/node_graph_window.h"
-    #"include/user_interface/heatmap_window.h"
+    "include/user_interface/node_graph_window.h"
     "include/user_interface/main_window.h"
     "include/user_interface/widgets.h"
 )
@@ -167,13 +165,11 @@ set(src
     
     "src/exceptions/exception.cpp"
     
-    #"src/user_interface/plot_window.cpp"
     "src/user_interface/plot_control_window.cpp"
     "src/user_interface/simulation_window.cpp"
     "src/user_interface/field_metrics_window.cpp"
     "src/user_interface/element_window.cpp"
-    #"src/user_interface/node_graph_window.cpp"
-    #"src/user_interface/heatmap_window.cpp"
+    "src/user_interface/node_graph_window.cpp"
     "src/user_interface/main_window.cpp"
     "src/user_interface/widgets.cpp"
     
@@ -312,6 +308,15 @@ set(TEST_FACTORY_EXAMPLE t-factory-example)
 add_executable(${TEST_FACTORY_EXAMPLE} "examples/test_factory.cpp")
 target_include_directories(${TEST_FACTORY_EXAMPLE} PRIVATE include)
 target_link_libraries(${TEST_FACTORY_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+# Example test_nodegraph
+set(TEST_NODEGRAPH_EXAMPLE t-nodegraph-example)
+add_executable(${TEST_NODEGRAPH_EXAMPLE} "examples/test_nodegraph.cpp")
+target_include_directories(${TEST_NODEGRAPH_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_NODEGRAPH_EXAMPLE} PRIVATE 
 imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})

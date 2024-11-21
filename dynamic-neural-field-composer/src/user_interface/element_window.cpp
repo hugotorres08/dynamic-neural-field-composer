@@ -145,7 +145,7 @@ namespace dnf_composer
 
 			auto scalar = static_cast<float>(fcp.scalar);
 			auto learningRate = static_cast<float>(fcp.learningRate);
-			bool activateLearning = fcp.learning;
+			bool activateLearning = fcp.isLearningActive;
 
 			std::string label = "##" + element->getUniqueName() + "Learning rule";
 			if (ImGui::BeginCombo(label.c_str(), LearningRuleToString.at(fcp.learningRule).c_str()))
@@ -180,9 +180,9 @@ namespace dnf_composer
 				fcp.scalar = scalar;
 				fieldCoupling->setParameters(fcp);
 			}
-			if (activateLearning != fcp.learning)
+			if (activateLearning != fcp.isLearningActive)
 			{
-				fcp.learning = activateLearning;
+				fcp.isLearningActive = activateLearning;
 				fieldCoupling->setParameters(fcp);
 			}
 			if (std::abs(learningRate - static_cast<float>(fcp.learningRate)) > epsilon)

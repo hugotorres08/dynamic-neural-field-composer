@@ -28,26 +28,24 @@ namespace dnf_composer
 	{
 		struct FieldCouplingParameters : ElementSpecificParameters
 		{
-			std::shared_ptr<Element> inputField;
-			std::shared_ptr<Element> outputField;
+			ElementDimensions inputFieldDimensions;
 			LearningRule learningRule;
 			double scalar;
 			double learningRate;
-			ElementSpatialDimensionParameters inputFieldDimensions;
-			bool learning;
+			bool isLearningActive;
 
-
-			FieldCouplingParameters(const std::shared_ptr<Element>& input, const std::shared_ptr<Element>& output,
-				LearningRule learningRule = LearningRule::HEBB, 
+			FieldCouplingParameters(const ElementDimensions& inputFieldDimensions = ElementDimensions{},
+				LearningRule learningRule = LearningRule::HEBB,
 				double scalar = 1.0, double learningRate = 0.01)
-				: inputField(input), outputField(output),
-			learningRule(learningRule), scalar(scalar),
-				learningRate(learningRate), inputFieldDimensions(), learning(false)
+					: inputFieldDimensions(inputFieldDimensions),
+				learningRule(learningRule), scalar(scalar),
+				learningRate(learningRate), isLearningActive(false)
 			{}
 
 			std::string toString() const override
 			{
 				std::string result = "Field coupling parameters\n";
+				result += "Input field dimensions: " + inputFieldDimensions.toString() + "\n";
 				result += "Learning rule: " + LearningRuleToString.at(learningRule) + "\n";
 				result += "Learning rate: " + std::to_string(learningRate) + "\n";
 				result += "Scalar: " + std::to_string(scalar) + "\n";
@@ -59,8 +57,8 @@ namespace dnf_composer
 		{
 		protected:
 			FieldCouplingParameters parameters;
-			std::vector<std::vector<double>> weights;
-			std::string weightsFilePath;
+			std::shared_ptr<Element> input;
+			std::shared_ptr<Element> output;
 		public:
 			FieldCoupling(const ElementCommonParameters& elementCommonParameters, 
 				const FieldCouplingParameters& fc_parameters);
@@ -70,21 +68,20 @@ namespace dnf_composer
 			std::string toString() const override;
 			std::shared_ptr<Element> clone() const override;
 
-			void setWeightsFilePath(const std::string& filePath);
 			void setLearningRate(double learningRate);
-			void setLearning(bool learning) { parameters.learning = learning; }
+			void setLearning(bool learning);
 			void setParameters(const FieldCouplingParameters& fcp);
-
-			const std::vector<std::vector<double>>& getWeights() const;
 			FieldCouplingParameters getParameters() const;
 
 			void readWeights();
 			void writeWeights() const;
-			void fillWeightsRandomly();
+			void clearWeights();
 		private:
 			void updateOutput();
-			void updateInputFieldDimensions();
+			void updateInputField();
+			void updateOutputField();
 			void updateWeights();
+			bool checkValidConnections();
 		};
 	}
 }

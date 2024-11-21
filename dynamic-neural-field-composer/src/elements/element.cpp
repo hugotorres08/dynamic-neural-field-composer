@@ -4,6 +4,7 @@
 
 #include "elements/element.h"
 
+
 namespace dnf_composer
 {
 	namespace element
@@ -65,6 +66,7 @@ namespace dnf_composer
 			}
 
 			inputs[inputElement] = inputComponent;
+			inputElement->outputs[this->shared_from_this()] = inputComponent;
 
 			const std::string logMessage = "Input '" + inputElement->getUniqueName() +"' added successfully to '" +  this->getUniqueName() + ".";
 			log(tools::logger::LogLevel::INFO, logMessage);

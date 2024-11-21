@@ -52,7 +52,7 @@ namespace dnf_composer
                 const std::string stimulusName = "Input Gaussian Stimulus " + std::to_string(i + 1) + std::to_string(j + 1);
                 const element::ElementIdentifiers stimulusIdentifiers{ stimulusName };
 
-                element::ElementSpatialDimensionParameters stimulusDimensions{ neuralFieldPre->getMaxSpatialDimension(), neuralFieldPre->getStepSize() };
+                element::ElementDimensions stimulusDimensions{ neuralFieldPre->getMaxSpatialDimension(), neuralFieldPre->getStepSize() };
                 element::ElementCommonParameters commonParameters{ stimulusIdentifiers, stimulusDimensions };
 
                 gaussStimulusParameters.position = targetPeakLocationsForNeuralFieldPre[i][j];
@@ -79,7 +79,7 @@ namespace dnf_composer
                 const std::string stimulusName = "Output Gaussian Stimulus " + std::to_string(i + 1) + std::to_string(j + 1);
                 const element::ElementIdentifiers stimulusIdentifiers{ stimulusName };
 
-                element::ElementSpatialDimensionParameters stimulusDimensions{ neuralFieldPost->getMaxSpatialDimension(), neuralFieldPost->getStepSize() };
+                element::ElementDimensions stimulusDimensions{ neuralFieldPost->getMaxSpatialDimension(), neuralFieldPost->getStepSize() };
                 element::ElementCommonParameters commonParameters{ stimulusIdentifiers, stimulusDimensions };
 
                 gaussStimulusParameters.position = targetPeakLocationsForNeuralFieldPost[i][j];

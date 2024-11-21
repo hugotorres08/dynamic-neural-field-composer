@@ -16,12 +16,13 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		class Element
+		class Element : public std::enable_shared_from_this<Element>
 		{
 		protected:
 			ElementCommonParameters commonParameters;
 			std::unordered_map<std::string, std::vector<double>> components;
 			std::unordered_map<std::shared_ptr<Element>, std::string> inputs;
+			std::unordered_map<std::shared_ptr<Element>, std::string> outputs;
 		public:
 			Element(const ElementCommonParameters& parameters);
 
@@ -33,7 +34,7 @@ namespace dnf_composer
 			void close();
 			void print() const;
 
-			void addInput(const std::shared_ptr<Element>& inputElement, 
+			virtual void addInput(const std::shared_ptr<Element>& inputElement, 
 				const std::string& inputComponent = "output");
 			void removeInput(const std::string& inputElementId);
 			void removeInput(int uniqueId);

@@ -26,19 +26,38 @@ int main()
 		app.addWindow<user_interface::PlotControlWindow>();
 
 		element::ElementFactory factory;
-		const auto nf_1 = factory.createElement(element::NEURAL_FIELD);
-		const auto gk_1 = factory.createElement(element::GAUSS_KERNEL);
-		const auto nn_1 = factory.createElement(element::NORMAL_NOISE);
+		const element::ElementDimensions input_dimensions{200, 0.5};
+		const auto nf_1 = factory.createElement(element::ElementLabel::NEURAL_FIELD,
+			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::NEURAL_FIELD}, input_dimensions},
+			element::NeuralFieldParameters{});
+		const auto gk_1 = factory.createElement(element::GAUSS_KERNEL,
+			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::GAUSS_KERNEL}, input_dimensions},
+			element::GaussKernelParameters{});
+		const auto nn_1 = factory.createElement(element::NORMAL_NOISE,
+			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::NORMAL_NOISE}, input_dimensions},
+			element::NormalNoiseParameters{});
+		const auto gs_1 = factory.createElement(element::GAUSS_STIMULUS,
+			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::GAUSS_STIMULUS}, input_dimensions},
+			element::GaussStimulusParameters{});
 
-		const auto nf_2 = factory.createElement(element::NEURAL_FIELD);
-		const auto mhk_2 = factory.createElement(element::MEXICAN_HAT_KERNEL);
-		const auto nn_2 = factory.createElement(element::NORMAL_NOISE);
-
-		const auto gs_1 = factory.createElement(element::GAUSS_STIMULUS);
-		const auto gs_2 = factory.createElement(element::GAUSS_STIMULUS);
+		const element::ElementDimensions output_dimensions{100, 0.5};
+		const auto nf_2 = factory.createElement(element::NEURAL_FIELD,
+			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::NEURAL_FIELD}, output_dimensions},
+			element::NeuralFieldParameters{});
+		const auto mhk_2 = factory.createElement(element::MEXICAN_HAT_KERNEL,
+			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::MEXICAN_HAT_KERNEL}, output_dimensions},
+			element::MexicanHatKernelParameters{});
+		const auto nn_2 = factory.createElement(element::NORMAL_NOISE,
+			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::NORMAL_NOISE}, output_dimensions},
+			element::NormalNoiseParameters{});
+		const auto gs_2 = factory.createElement(element::GAUSS_STIMULUS,
+			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::GAUSS_STIMULUS}, output_dimensions},
+			element::GaussStimulusParameters{});
+		const auto fc_1 = factory.createElement(element::FIELD_COUPLING,
+			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::FIELD_COUPLING}, output_dimensions},
+			element::FieldCouplingParameters{input_dimensions});
 
 		//const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING, element::ElementCommonParameters{}, element::GaussFieldCouplingParameters{false, false, {{50.0, 50.0, 5.0, 5.0}}});
-		const auto fc_1 = std::make_shared<element::FieldCoupling>(element::ElementCommonParameters{}, element::FieldCouplingParameters{ nf_1 , nf_2});
 
 		simulation->addElement(nf_1);
 		simulation->addElement(gk_1);
@@ -60,22 +79,41 @@ int main()
 		nf_2->addInput(nn_2);
 		nf_2->addInput(gs_2);
 
-		visualization->plot({ {nf_1->getUniqueName(), "activation"}, {nf_1->getUniqueName(), "output"}, {nf_1->getUniqueName(), "input"} });
-		visualization->plot({ {nf_2->getUniqueName(), "activation"}, {nf_2->getUniqueName(), "output"}, {nf_2->getUniqueName(), "input"} });
-
 		fc_1->addInput(nf_1);
 		nf_2->addInput(fc_1);
 
 		visualization->plot(
 			PlotCommonParameters{
+			PlotType::LINE_PLOT,
+			PlotDimensions{ 0.0, 200, -20.0, 20, 0.5, 1.0},
+			PlotAnnotations{ "Input neural field", "Spatial dimension", "Amplitude" } },
+			LinePlotParameters{},
+			{ { nf_1->getUniqueName(), "activation" }, { nf_1->getUniqueName(), "output" }, { nf_1->getUniqueName(), "input" } });
+
+		visualization->plot(
+			PlotCommonParameters{
+			PlotType::LINE_PLOT,
+			PlotDimensions{ 0.0, 100, -20.0, 20, 0.5, 1.0 },
+			PlotAnnotations{ "Output neural field", "Spatial dimension", "Amplitude" } },
+			LinePlotParameters{},
+			{ {nf_2->getUniqueName(), "activation"}, {nf_2->getUniqueName(), "output"}, {nf_2->getUniqueName(), "input"} });
+
+		visualization->plot(
+			PlotCommonParameters{
 				PlotType::HEATMAP, 
-				PlotDimensions{0.0, 100.0, 0.0, 100.0, 1.0}, 
-				PlotAnnotations{"Field coupling", "x", "y"} }, 
+				PlotDimensions{0.0, 100, 0.0, 200.0, 0.5, 0.5}, 
+				PlotAnnotations{"Field coupling", "Output field dimension", "Input field dimension"} }, 
 				HeatmapParameters{},
-			{ {fc_1->getUniqueName(), "kernel"} }
+			{ {fc_1->getUniqueName(), "weights"} }
 		);
 
-		visualization->plot({{fc_1->getUniqueName(), "output"}});
+		visualization->plot(
+			PlotCommonParameters{
+			PlotType::LINE_PLOT,
+			PlotDimensions{ 0.0, 100, -20.0, 20, 0.5, 1.0},
+			PlotAnnotations{ "Field coupling output", "Spatial dimension", "Amplitude" } },
+			LinePlotParameters{},
+			{{fc_1->getUniqueName(), "output"}});
 
 		app.init();
 

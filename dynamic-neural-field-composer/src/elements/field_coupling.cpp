@@ -13,36 +13,35 @@ namespace dnf_composer
 			const FieldCouplingParameters& parameters)
 			: Element(elementCommonParameters), parameters(parameters)
 		{
-			this->parameters.learning = false;
 			commonParameters.identifiers.label = ElementLabel::FIELD_COUPLING;
-			weightsFilePath = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" + 
-				commonParameters.identifiers.uniqueName + "_weights.txt";
-
-			updateInputFieldDimensions();
-			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size *
-				parameters.inputFieldDimensions.size);
-			weights = std::vector<std::vector<double>>(components["input"].size(), std::vector<double>(components["output"].size(), 0));
+			components["input"] = std::vector<double>(parameters.inputFieldDimensions.size);
+			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size);
+			components["weights"] = std::vector<double>(components.at("input").size() * components.at("output").size());
 		}
 
 		void FieldCoupling::init()
 		{
-			parameters.learning = false;
-			updateInputFieldDimensions();
+			parameters.isLearningActive = false;
 			std::ranges::fill(components["input"], 0);
 			std::ranges::fill(components["output"], 0);
 
-			readWeights();
+			updateInputField();
+			updateOutputField();
+			if(!checkValidConnections())
+				return;
 
-			// new add
-			components["kernel"] = tools::math::flattenMatrix(weights);
+			//components["weights"] = std::vector<double>(components.at("input").size() * components.at("output").size());
+			std::ranges::fill(components["weights"], 0);
+			readWeights();
 		}
 
 		void FieldCoupling::step(double t, double deltaT)
 		{
 			updateInput();
 			updateOutput();
-			if (parameters.learning)
-				updateWeights();
+			if (parameters.isLearningActive)
+				if(checkValidConnections())
+					updateWeights();
 		}
 
 		std::string FieldCoupling::toString() const
@@ -69,9 +68,9 @@ namespace dnf_composer
 			parameters.learningRate = learningRate;
 		}
 
-		const std::vector<std::vector<double>>& FieldCoupling::getWeights() const
+		void FieldCoupling::setLearning(bool learning)
 		{
-			return weights;
+			parameters.isLearningActive = learning;
 		}
 
 		FieldCouplingParameters FieldCoupling::getParameters() const
@@ -83,31 +82,66 @@ namespace dnf_composer
 		{
 			components["output"] = std::vector<double>(components["output"].size(), 0);
 
-			for (int i = 0; i < components["output"].size(); i++)
-				for (int j = 0; j < components["input"].size(); j++)
-					components["output"][i] += parameters.scalar * weights[j][i] * components["input"][j];
+			for (size_t i = 0; i < components["output"].size(); i++)
+			{
+				for (size_t j = 0; j < components["input"].size(); j++)
+				{
+					const size_t index = j * components["output"].size() + i;
+					components["output"][i] += parameters.scalar * components["weights"][index] * components["input"][j];
+				}
+			}
 		}
 
-		void FieldCoupling::updateInputFieldDimensions()
+		void FieldCoupling::updateInputField()
 		{
-			if (inputs.empty())
+			if (inputs.size() != 1)
 			{
-				const std::string logMessage = "No input element is connected to '" + commonParameters.identifiers.uniqueName + "'.";
+				const std::string logMessage = "Incorrect number of inputs for field coupling '"
+					+ commonParameters.identifiers.uniqueName + "'. Should be 1, is " + std::to_string(inputs.size()) + ".";
 				log(tools::logger::LogLevel::ERROR, logMessage);
 				return;
 			}
-			const std::shared_ptr<Element> input = inputs.begin()->first;
-			tools::logger::log(tools::logger::WARNING, "Currently not checking if field couplings have more than one input - enforce this.");
-			parameters.inputFieldDimensions = input->getElementCommonParameters().dimensionParameters;
+
+			if (inputs.begin()->first->getLabel() != ElementLabel::NEURAL_FIELD)
+			{
+				const std::string logMessage = "Incorrect input type for field coupling '"
+					+ commonParameters.identifiers.uniqueName + "'. Should be a neural field, is " + ElementLabelToString.at(inputs.begin()->first->getLabel()) + ".";
+				log(tools::logger::LogLevel::ERROR, logMessage);
+				return;
+			}	
+
+			input = inputs.begin()->first;
+		}
+
+
+		void FieldCoupling::updateOutputField()
+		{
+			if (outputs.size() != 1)
+			{
+				const std::string logMessage = "Incorrect number of outputs for field coupling '"
+					+ commonParameters.identifiers.uniqueName + "'. Should be 1, is " + std::to_string(outputs.size()) + ".";
+				log(tools::logger::LogLevel::ERROR, logMessage);
+				return;
+			}
+
+			if (outputs.begin()->first->getLabel() != ElementLabel::NEURAL_FIELD)
+			{
+				const std::string logMessage = "Incorrect output type for field coupling '"
+					+ commonParameters.identifiers.uniqueName + "'. Should be a neural field, is " + ElementLabelToString.at(outputs.begin()->first->getLabel()) + ".";
+				log(tools::logger::LogLevel::ERROR, logMessage);
+				return;
+			}
+
+			output = outputs.begin()->first;
 		}
 
 		void FieldCoupling::updateWeights()
 		{
-			std::vector<double> input = parameters.inputField->getComponents()->at("activation");
-			std::vector<double> output = parameters.outputField->getComponents()->at("activation");
+			std::vector<double> inputActivation = input->getComponents()->at("activation");
+			std::vector<double> outputActivation = output->getComponents()->at("activation");
 
-			input = tools::math::normalize(input);
-			output = tools::math::normalize(output);
+			inputActivation = tools::math::normalize(inputActivation);
+			outputActivation = tools::math::normalize(outputActivation);
 
 			switch (parameters.learningRule)
 			{
@@ -115,92 +149,116 @@ namespace dnf_composer
 				log(tools::logger::LogLevel::ERROR, "Delta learning rule is not implemented yet.");
 				break;
 			case LearningRule::HEBB:
-				tools::math::hebbLearningRule(weights, input, output, parameters.learningRate);
+				tools::math::hebbLearningRule(components["weights"], inputActivation, outputActivation, parameters.learningRate);
 				break;
 			case LearningRule::OJA:
-				tools::math::ojaLearningRule(weights, input, output, parameters.learningRate);
+				tools::math::ojaLearningRule(components["weights"], inputActivation, outputActivation, parameters.learningRate);
 				break;
 			}
-
-			components["kernel"] = tools::math::flattenMatrix(weights);
 		}
 
 		void FieldCoupling::readWeights()
 		{
-			std::ifstream file(weightsFilePath);
+			static const std::string filename = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" +
+				commonParameters.identifiers.uniqueName + "_weights.txt";
+			std::ifstream file(filename);
 
-			const std::tuple<int, int> initialWeightsSize = std::make_tuple( static_cast<int>(weights.size()), 
-				static_cast<int>(weights[0].size()) );
+			const size_t inputSize = components.at("input").size();
+			const size_t outputSize = components.at("output").size();
+			const size_t expectedSize = inputSize * outputSize;
 
-			if (file.is_open()) {
-				tools::utils::resizeMatrix(weights, 0, 0);
+			if (file.is_open()) 
+			{
+				std::vector<double> weights;
+				weights.reserve(expectedSize);
 				double element;
-				std::vector<double> row;
+
 				while (file >> element) 
-				{  
-					row.push_back(element);  
-					if (row.size() == components["output"].size())
-					{
-						weights.push_back(row);  
-						row.clear(); 
-					}
+				{
+					weights.emplace_back(element);
 				}
 				file.close();
-				const std::string message = "Weights '" + this->getUniqueName() + "' read successfully from: " +
-					weightsFilePath + ".";
-				log(tools::logger::LogLevel::INFO, message);
 
-				const std::tuple<int, int> readWeightsSize = std::make_tuple(static_cast<int>(weights.size()),
-					static_cast<int>(weights[0].size()));
-				if(initialWeightsSize != readWeightsSize)
+				// Check if the total number of weights matches the expected size
+				if (weights.size() != expectedSize)
 				{
-					log(tools::logger::LogLevel::ERROR, "Weight matrix read from file has a different "
-										 "dimensionality compared to the actual matrix size! ");
+					log(tools::logger::LogLevel::ERROR,
+						"Weight matrix read from file has a different size than expected! "
+						"Expected: " + std::to_string(expectedSize) +
+						", Got: " + std::to_string(weights.size()));
 					return;
 				}
-				return;	
-			}
 
-			const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " +
-				weightsFilePath + ". ";
-			log(tools::logger::LogLevel::ERROR, message);
-		}
+				components["weights"] = weights;
 
-		void FieldCoupling::writeWeights() const
-		{
-			std::ofstream file(weightsFilePath);
-
-			if (file.is_open()) {
-				for (const auto& row : weights) {
-					for (const auto& element : row) {
-						file << element << " ";  
-					}
-					file << '\n'; 
-				}
-				file.close();
-				const std::string message = "Saved weights '" + this->getUniqueName() +"' to: " + weightsFilePath + ".";
+				const std::string message = "Weights '" + this->getUniqueName() + "' read successfully from: " +
+					filename + ".";
 				log(tools::logger::LogLevel::INFO, message);
 			}
-			else
-			{
-				const std::string message = "Failed to saved weights '" + this->getUniqueName() + "' to: " + 
-					weightsFilePath + ". ";
+			else {
+				const std::string message = "Failed to read weights '" + this->getUniqueName() + "' from: " +
+					filename + ".";
 				log(tools::logger::LogLevel::ERROR, message);
 			}
 		}
 
-		void FieldCoupling::fillWeightsRandomly()
+		void FieldCoupling::writeWeights() const
 		{
-			tools::utils::resizeMatrix(weights, static_cast<int>(components["input"].size()),
-				static_cast<int>(components["output"].size()));
-			tools::utils::fillMatrixWithRandomValues(weights, 0.0, 0.1);
-			log(tools::logger::LogLevel::INFO, "Filling the weight matrix with random values.");
-			writeWeights();
+			static const std::string filename = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" +
+				commonParameters.identifiers.uniqueName + "_weights.txt";
+			std::ofstream file(filename);
+
+			if (file.is_open()) 
+			{
+				const size_t inputSize = components.at("input").size();
+				const size_t outputSize = components.at("output").size();
+
+				for (size_t i = 0; i < inputSize; i++) 
+				{
+					for (size_t j = 0; j < outputSize; j++) 
+					{
+						const size_t index = i * outputSize + j;
+						file << components.at("weights")[index] << " ";
+					}
+					file << '\n';
+				}
+
+				file.close();
+
+				const std::string message = "Saved weights '" + this->getUniqueName() + "' to: " + filename + ".";
+				log(tools::logger::LogLevel::INFO, message);
+			}
+			else {
+				const std::string message = "Failed to save weights '" + this->getUniqueName() + "' to: " + filename + ".";
+				log(tools::logger::LogLevel::ERROR, message);
+			}
 		}
 
-		void FieldCoupling::setWeightsFilePath(const std::string& filePath)
+		void FieldCoupling::clearWeights()
 		{
-			weightsFilePath = filePath + "/" + commonParameters.identifiers.uniqueName + "_weights.txt";
+			components["weights"] = std::vector<double>(components["weights"].size(), 0);
 		}
+
+		bool FieldCoupling::checkValidConnections()
+		{
+			if (!input)
+			{
+				const std::string logMessage = "Field coupling '" + commonParameters.identifiers.uniqueName + "' has no input field. Learning is disabled.";
+				log(tools::logger::LogLevel::ERROR, logMessage);
+				parameters.isLearningActive = false;
+				return false;
+			}
+
+			if (!output)
+			{
+				const std::string logMessage = "Field coupling '" + commonParameters.identifiers.uniqueName + "' has no output field. Learning is disabled.";
+				log(tools::logger::LogLevel::ERROR, logMessage);
+				parameters.isLearningActive = false;
+				return false;
+			}
+
+			return true;
+		}
+
 	}
 }

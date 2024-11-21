@@ -244,7 +244,7 @@ namespace dnf_composer
 				return normalizedVector;
 			}
 
-			template <typename T>
+			/*template <typename T>
 			std::vector<std::vector<T>> hebbLearningRule(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& output, double learningRate)
 			{
 				const int inputSize = input.size();
@@ -255,9 +255,22 @@ namespace dnf_composer
 						weights[i][j] += learningRate * input[i] * output[j];
 
 				return weights;
-			}
+			}*/
 
 			template <typename T>
+			std::vector<T> hebbLearningRule(std::vector<T>& weights, const std::vector<T>& input, const std::vector<T>& output, double learningRate)
+			{
+				const int inputSize = input.size();
+				const int outputSize = output.size();
+
+				for (int i = 0; i < inputSize; i++)
+					for (int j = 0; j < outputSize; j++)
+						weights[i * outputSize + j] += learningRate * input[i] * output[j];
+
+				return weights;
+			}
+
+			/*template <typename T>
 			std::vector<std::vector<T>> ojaLearningRule(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& output, double learningRate)
 			{
 				const int inputSize = input.size();
@@ -267,6 +280,22 @@ namespace dnf_composer
 					for (int j = 0; j < outputSize; j++)
 						weights[i][j] += learningRate * (input[i] * output[j] - output[j] * input[i] * weights[i][j]);
 					
+				return weights;
+			}*/
+
+			template <typename T>
+			std::vector<T> ojaLearningRule(std::vector<T>& weights, const std::vector<T>& input, const std::vector<T>& output, double learningRate)
+			{
+				const int inputSize = input.size();
+				const int outputSize = output.size();
+
+				for (int i = 0; i < inputSize; i++)
+					for (int j = 0; j < outputSize; j++)
+					{
+						int index = i * outputSize + j; // Compute the index for the flattened matrix
+						weights[index] += learningRate * (input[i] * output[j] - output[j] * input[i] * weights[index]);
+					}
+
 				return weights;
 			}
 
@@ -394,9 +423,9 @@ namespace dnf_composer
 			}
 
 			inline double gaussian_2d_periodic(double x, double y, double mu_x, double mu_y, double sigma, double A, double max_x, double max_y) {
-				const double dx = std::min(std::abs(x - mu_x), max_x - std::abs(x - mu_x));
+				const double xStep = std::min(std::abs(x - mu_x), max_x - std::abs(x - mu_x));
 				const double dy = std::min(std::abs(y - mu_y), max_y - std::abs(y - mu_y));
-				const double exponent = -((std::pow(dx, 2) + std::pow(dy, 2)) / (2 * std::pow(sigma, 2)));
+				const double exponent = -((std::pow(xStep, 2) + std::pow(dy, 2)) / (2 * std::pow(sigma, 2)));
 				return A * std::exp(exponent);
 			}
 

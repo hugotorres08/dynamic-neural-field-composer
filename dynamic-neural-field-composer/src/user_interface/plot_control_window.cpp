@@ -253,10 +253,10 @@ namespace dnf_composer
 			//			if (ImGui::IsItemDeactivatedAfterEdit())
 			//				parametersChanged = true;
 			//		}
-			//		double dx = oldParams.dimensions.dx;
-			//		if (ImGui::InputDouble("dx", &dx, 0.01, 0.1, "%.2f"))
+			//		double xStep = oldParams.dimensions.xStep;
+			//		if (ImGui::InputDouble("xStep", &xStep, 0.01, 0.1, "%.2f"))
 			//		{
-			//			newParams.dimensions.dx = dx;
+			//			newParams.dimensions.xStep = xStep;
 			//			if (ImGui::IsItemDeactivatedAfterEdit())
 			//				parametersChanged = true;
 			//		}

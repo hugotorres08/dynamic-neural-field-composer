@@ -42,7 +42,7 @@ int main()
 		visualization->plot(plotParams, linePlotParams, elem3->getUniqueName(), "kernel");
 
 
-		element::ElementSpatialDimensionParameters esdp = { 100, 1.0 };
+		element::ElementDimensions esdp = { 100, 1.0 };
 		element::ElementCommonParameters ecp = { "gc", esdp };
 		element::GaussCoupling gc1{ 5, 10, 2, 4 };
 		element::GaussFieldCouplingParameters gfcp = { true, false, {gc1} };

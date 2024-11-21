@@ -84,6 +84,7 @@ namespace dnf_composer
 		auto x_min = static_cast<float>(commonParameters.dimensions.xMin);
 		auto y_max = static_cast<float>(commonParameters.dimensions.yMax);
 		auto y_min = static_cast<float>(commonParameters.dimensions.yMin);
+		auto x_step = static_cast<float>(commonParameters.dimensions.xStep);
 		auto lineWeight = static_cast<float>(linePlotParameters.lineThickness);
 		bool autoFit = linePlotParameters.autoFit;
 
@@ -121,6 +122,12 @@ namespace dnf_composer
 					commonParameters.dimensions.yMin = y_min;
 					whereDimensionsChangedByUser = true;
 				}
+				if (ImGui::DragFloat("X step", &x_step, 0.1f, 0.1f, 1000))
+				{
+					commonParameters.dimensions.xStep = x_step;
+					whereDimensionsChangedByUser = true;
+				}
+
 				if (ImGui::Checkbox("Auto-fit", &autoFit))
 					linePlotParameters.autoFit = autoFit;
 				ImGui::EndMenu();
@@ -203,13 +210,15 @@ namespace dnf_composer
 
         ImPlot::SetupLegend(ImPlotLocation_South, ImPlotLegendFlags_Horizontal);
 
-        for (size_t j = 0; j < data.size(); ++j) {
+		for (size_t j = 0; j < data.size(); ++j) 
+		{
             std::string label = commonParameters.annotations.legends[j];
             const std::vector<double>& line_data = *data[j];
 
             std::vector<double> shiftedXValues(line_data.size());
-            for (size_t i = 0; i < line_data.size(); ++i) {
-                shiftedXValues[i] = (i + 1) * commonParameters.dimensions.dx;
+            for (size_t i = 0; i < line_data.size(); ++i) 
+			{
+                shiftedXValues[i] = (i + 1) * commonParameters.dimensions.xStep;
             }
 
             ImPlot::PlotLine(label.c_str(), shiftedXValues.data(), line_data.data(), static_cast<int>(line_data.size()));

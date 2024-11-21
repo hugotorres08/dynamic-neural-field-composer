@@ -82,6 +82,8 @@ namespace dnf_composer
 		auto x_min = static_cast<int>(commonParameters.dimensions.xMin);
 		auto y_max = static_cast<int>(commonParameters.dimensions.yMax);
 		auto y_min = static_cast<int>(commonParameters.dimensions.yMin);
+		auto x_step = static_cast<float>(commonParameters.dimensions.xStep);
+		auto y_step = static_cast<float>(commonParameters.dimensions.yStep);
 		auto scaleMin = static_cast<float>(heatmapParameters.scaleMin);
 		auto scaleMax = static_cast<float>(heatmapParameters.scaleMax);
 		bool autoScale = heatmapParameters.autoScale;
@@ -109,6 +111,10 @@ namespace dnf_composer
 					commonParameters.dimensions.xMin = x_min;
 				if(ImGui::DragInt("Y min", &y_min, 1, 0, y_max))
 					commonParameters.dimensions.yMin = y_min;
+				if (ImGui::DragFloat("X step", &x_step, 0.1f, 0.1f, 1000))
+					commonParameters.dimensions.xStep = x_step;
+				if (ImGui::DragFloat("Y step", &y_step, 0.1f, 0.1f, 1000))
+					commonParameters.dimensions.yStep = y_step;
 				ImGui::EndMenu();
 			}
 
@@ -163,6 +169,9 @@ namespace dnf_composer
 			scaleMax = static_cast<float>(heatmapParameters.scaleMax);
 		}
 
+		const int rows = static_cast<int>(static_cast<float>(y_max) / y_step);
+		const int cols = static_cast<int>(static_cast<float>(x_max) / x_step);
+
 		static constexpr ImPlotFlags hm_flags = ImPlotFlags_Crosshairs | ImPlotFlags_NoLegend;
 		if (ImPlot::BeginPlot(uniquePlotID.c_str(), plotSize, hm_flags)) {
 			ImPlot::PushColormap(map);
@@ -172,7 +181,7 @@ namespace dnf_composer
 			ImPlot::PlotHeatmap(
 				commonParameters.annotations.legends[0].c_str(),
 				flattened_matrix->data(),
-				y_max, x_max,
+				rows, cols,
 				scaleMin, scaleMax, nullptr,
 				ImPlotPoint(y_min, y_max), ImPlotPoint(x_max, x_min),
 				hm_flags
