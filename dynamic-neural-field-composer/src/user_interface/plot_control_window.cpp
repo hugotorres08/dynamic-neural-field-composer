@@ -114,6 +114,7 @@ namespace dnf_composer
 									if (ImGui::IsItemDeactivatedAfterEdit())
 									{
 										std::vector<int> newComponentPlotIds;
+										newComponentPlotIds.reserve(componentPlotIds.size());
 										std::istringstream stream(newComponentPlotIdsStr);  // Create an input string stream
 
 										int num;
@@ -126,7 +127,9 @@ namespace dnf_composer
 
 										// Vectors to store differences
 										std::vector<int> in_vec1_not_in_vec2;
+										in_vec1_not_in_vec2.reserve(componentPlotIds.size());
 										std::vector<int> in_vec2_not_in_vec1;
+										in_vec2_not_in_vec1.reserve(newComponentPlotIds.size());
 
 										// Get elements in vec1 but not in vec2
 										std::set_difference(componentPlotIds.begin(), componentPlotIds.end(), newComponentPlotIds.begin(), newComponentPlotIds.end(),
@@ -299,7 +302,7 @@ namespace dnf_composer
 
 		std::vector<int> PlotControlWindow::discoverPlotIdsIfComponentIsPlotted(const std::vector<double>* componentPtr) const
 		{
-			std::vector<int> plotIds = {};
+			std::vector<int> plotIds;
 			plotIds.reserve(visualization->getPlots().size());
 			for (const auto& plot : visualization->getPlots())
 			{

@@ -20,7 +20,7 @@ namespace dnf_composer
 	void Visualization::plot(const std::vector<std::pair<std::string, std::string>>& data)
 	{
 		std::vector<std::vector<double>*> allDataToPlotPtr;
-
+		allDataToPlotPtr.reserve(data.size());
 		for (const auto& d : data)
 		{
 			const auto singleDataToPlotPtr = simulation->getComponentPtr(d.first, d.second);
@@ -30,6 +30,7 @@ namespace dnf_composer
 		PlotCommonParameters parameters;
 		LinePlotParameters linePlotParameters; 
 		std::vector<std::string> legends;
+		legends.reserve(data.size());
 		for (const auto& d : data)
 		{
 			legends.emplace_back(d.first + " - " + d.second);
@@ -47,7 +48,7 @@ namespace dnf_composer
 	void Visualization::plot(const PlotCommonParameters& parameters, const PlotSpecificParameters& specificParameters, const std::vector<std::pair<std::string, std::string>>& data)
 	{
 		std::vector<std::vector<double>*> allDataToPlotPtr;
-
+		allDataToPlotPtr.reserve(data.size());
 		for (const auto& d : data)
 		{
 			const auto singleDataToPlotPtr = simulation->getComponentPtr(d.first, d.second);
@@ -55,6 +56,7 @@ namespace dnf_composer
 		}
 
 		std::vector<std::string> legends;
+		legends.reserve(data.size());
 		for (const auto& d : data)
 		{
 			legends.emplace_back(d.first + " - " + d.second);
@@ -99,7 +101,9 @@ namespace dnf_composer
 
 		// Collect data to plot
 		std::vector<std::vector<double>*> allDataToPlotPtr;
+		allDataToPlotPtr.reserve(data.size());
 		std::vector<std::string> legends;
+		legends.reserve(data.size());
 		for (const auto& d : data)
 		{
 			std::vector<double>* singleDataToPlotPtr = simulation->getComponentPtr(d.first, d.second);

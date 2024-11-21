@@ -21,8 +21,6 @@ namespace dnf_composer
 			updateInputFieldDimensions();
 			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size *
 				parameters.inputFieldDimensions.size);
-			components["input"] = std::vector<double>(parameters.inputFieldDimensions.size, 0);
-			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size, 0);
 			weights = std::vector<std::vector<double>>(components["input"].size(), std::vector<double>(components["output"].size(), 0));
 		}
 

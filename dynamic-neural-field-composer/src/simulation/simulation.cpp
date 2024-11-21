@@ -333,6 +333,7 @@ namespace dnf_composer
 	std::vector<std::shared_ptr<element::Element>> Simulation::getElementsThatHaveSpecifiedElementAsInput(const std::string& specifiedElement, const std::string& inputComponent) const
 	{
 		std::vector<std::shared_ptr<element::Element>> elementsThatHaveSpecifiedElementAsInput;
+		elementsThatHaveSpecifiedElementAsInput.reserve(2); // usually we wouldn't have an element that is providing input to more than 2 elements
 		for (const auto& element : elements) 
 		{
 			if (element->hasInput(specifiedElement, inputComponent)) {

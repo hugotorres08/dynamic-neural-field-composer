@@ -26,16 +26,13 @@ namespace dnf_composer
 
 		void ElementWindow::renderModifyElementParameters() const
 		{
-			//if (ImGui::CollapsingHeader("Modify element parameters"))
-			{
-				const int numberOfElementsInSimulation = simulation->getNumberOfElements();
+			const int numberOfElementsInSimulation = simulation->getNumberOfElements();
 
-				for (int i = 0; i < numberOfElementsInSimulation; i++)
-				{
-					auto simulationElement = simulation->getElement(i);
-					switchElementToModify(simulationElement);
-					ImGui::Separator();
-				}
+			for (int i = 0; i < numberOfElementsInSimulation; i++)
+			{
+				auto simulationElement = simulation->getElement(i);
+				switchElementToModify(simulationElement);
+				ImGui::Separator();
 			}
 		}
 
