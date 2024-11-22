@@ -9,22 +9,22 @@ namespace dnf_composer
 {
 	namespace element
 	{
-		ElementSpatialDimensionParameters::ElementSpatialDimensionParameters(int x_max, double d_x)
+		ElementDimensions::ElementDimensions(int x_max, double d_x)
 			: x_max(x_max), size(static_cast<int>(std::round(x_max / d_x))), d_x(d_x)
 		{}
 
-		bool ElementSpatialDimensionParameters::operator==(const ElementSpatialDimensionParameters& other) const
+		bool ElementDimensions::operator==(const ElementDimensions& other) const
 		{
 			constexpr double epsilon = 1e-6;
 			return x_max == other.x_max && std::abs(d_x - other.d_x) < epsilon;
 		}
 
-		void ElementSpatialDimensionParameters::print() const
+		void ElementDimensions::print() const
 		{
 			tools::logger::log(tools::logger::LogLevel::INFO, toString());
 		}
 
-		std::string ElementSpatialDimensionParameters::toString() const
+		std::string ElementDimensions::toString() const
 		{
 			std::string result;
 			result += "Element spatial dimension parameters\n";
@@ -34,9 +34,11 @@ namespace dnf_composer
 			return result;
 		}
 
-		ElementIdentifiers::ElementIdentifiers()
-			: uniqueIdentifier(uniqueIdentifierCounter++), label(ElementLabel::UNINITIALIZED)
-		{}
+		ElementIdentifiers::ElementIdentifiers(ElementLabel label)
+			: uniqueIdentifier(uniqueIdentifierCounter++), label(label)
+		{
+			uniqueName = "Element " + ElementLabelToString.at(label) + " " + std::to_string(uniqueIdentifier);
+		}
 
 		ElementIdentifiers::ElementIdentifiers(std::string elementName)
 			: uniqueIdentifier(uniqueIdentifierCounter++), uniqueName(std::move(elementName)),
@@ -65,8 +67,14 @@ namespace dnf_composer
 		}
 
 		ElementCommonParameters::ElementCommonParameters()
-			: identifiers(), dimensionParameters()
-		{}
+			: identifiers(ElementLabel::UNINITIALIZED), dimensionParameters()
+		{
+		}
+
+		ElementCommonParameters::ElementCommonParameters(ElementLabel label)
+			: identifiers(label), dimensionParameters()
+		{
+		}
 
 		ElementCommonParameters::ElementCommonParameters(const std::string& elementName)
 			: identifiers(elementName), dimensionParameters()
@@ -77,12 +85,12 @@ namespace dnf_composer
 		{}
 
 		ElementCommonParameters::ElementCommonParameters(const std::string& elementName, 
-			const ElementSpatialDimensionParameters& dimensionParameters)
+			const ElementDimensions& dimensionParameters)
 			: identifiers(elementName), dimensionParameters(dimensionParameters)
 		{}
 
 		ElementCommonParameters::ElementCommonParameters(ElementIdentifiers identifiers, 
-			const ElementSpatialDimensionParameters& dimensionParameters)
+			const ElementDimensions& dimensionParameters)
 			: identifiers(std::move(identifiers)), dimensionParameters(dimensionParameters)
 		{}
 

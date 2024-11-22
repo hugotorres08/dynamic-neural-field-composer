@@ -71,5 +71,33 @@ namespace dnf_composer
 			else
 				return nullptr;
 		}
+		std::shared_ptr<Element> ElementFactory::createElement(ElementLabel type)
+		{
+			const auto creator = elementCreators.find(type);
+
+			if (creator != elementCreators.end())
+			{
+				switch (type)
+				{
+					case ElementLabel::NEURAL_FIELD:
+						return creator->second(ElementCommonParameters(type), NeuralFieldParameters());
+					case ElementLabel::GAUSS_STIMULUS:
+						return creator->second(ElementCommonParameters(type), GaussStimulusParameters());
+					case ElementLabel::GAUSS_KERNEL:
+						return creator->second(ElementCommonParameters(type), GaussKernelParameters());
+					case ElementLabel::MEXICAN_HAT_KERNEL:
+						return creator->second(ElementCommonParameters(type), MexicanHatKernelParameters());
+					case ElementLabel::NORMAL_NOISE:
+						return creator->second(ElementCommonParameters(type), NormalNoiseParameters());
+					case ElementLabel::GAUSS_FIELD_COUPLING:
+						return creator->second(ElementCommonParameters(type), GaussFieldCouplingParameters());
+					case ElementLabel::FIELD_COUPLING:
+						return creator->second(ElementCommonParameters(type), FieldCouplingParameters());
+					case ElementLabel::UNINITIALIZED:
+						return nullptr;
+				}
+			}
+			return nullptr;
+		}
 	}
 }

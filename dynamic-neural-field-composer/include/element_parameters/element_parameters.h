@@ -23,6 +23,7 @@ namespace dnf_composer
 		};
 
 		inline const std::map<ElementLabel, std::string> ElementLabelToString = {
+			{UNINITIALIZED, "uninitialized" },
 			{NEURAL_FIELD, "neural field" },
 			{GAUSS_STIMULUS, "gauss stimulus" },
 			{GAUSS_FIELD_COUPLING, "gauss field coupling" },
@@ -32,13 +33,13 @@ namespace dnf_composer
 			{NORMAL_NOISE, "normal noise" },
 		};
 
-		struct ElementSpatialDimensionParameters
+		struct ElementDimensions
 		{
 			int x_max, size;
 			double d_x;
 
-			ElementSpatialDimensionParameters(int x_max = 100, double d_x = 1.0);
-			bool operator==(const ElementSpatialDimensionParameters& other) const;
+			ElementDimensions(int x_max = 100, double d_x = 1.0);
+			bool operator==(const ElementDimensions& other) const;
 			void print() const;
 			std::string toString() const;
 		};
@@ -50,7 +51,7 @@ namespace dnf_composer
 			std::string uniqueName;
 			ElementLabel label;
 
-			ElementIdentifiers();
+			ElementIdentifiers(ElementLabel label);
 			ElementIdentifiers(std::string elementName);
 			bool operator==(const ElementIdentifiers& other) const;
 			void print() const;
@@ -60,15 +61,16 @@ namespace dnf_composer
 		struct ElementCommonParameters
 		{
 			ElementIdentifiers identifiers;
-			ElementSpatialDimensionParameters dimensionParameters;
+			ElementDimensions dimensionParameters;
 
 			ElementCommonParameters();
+			ElementCommonParameters(ElementLabel label);
 			ElementCommonParameters(const std::string& elementName);
 			ElementCommonParameters(const std::string& elementName, int x_max);
 			ElementCommonParameters(const std::string& elementName,
-				const ElementSpatialDimensionParameters& dimensionParameters);
+				const ElementDimensions& dimensionParameters);
 			ElementCommonParameters(ElementIdentifiers identifiers, 
-				const ElementSpatialDimensionParameters& dimensionParameters);
+				const ElementDimensions& dimensionParameters);
 			bool operator==(const ElementCommonParameters& other) const;
 			void print() const;
 			std::string toString() const;

@@ -4,8 +4,6 @@
 
 #include "user_interface/element_window.h"
 
-
-
 namespace dnf_composer
 {
 	namespace user_interface
@@ -26,15 +24,13 @@ namespace dnf_composer
 
 		void ElementWindow::renderModifyElementParameters() const
 		{
-			if (ImGui::CollapsingHeader("Modify element parameters"))
-			{
-				const int numberOfElementsInSimulation = simulation->getNumberOfElements();
+			const int numberOfElementsInSimulation = simulation->getNumberOfElements();
 
-				for (int i = 0; i < numberOfElementsInSimulation; i++)
-				{
-					auto simulationElement = simulation->getElement(i);
-					switchElementToModify(simulationElement);
-				}
+			for (int i = 0; i < numberOfElementsInSimulation; i++)
+			{
+				auto simulationElement = simulation->getElement(i);
+				switchElementToModify(simulationElement);
+				ImGui::Separator();
 			}
 		}
 
@@ -146,10 +142,35 @@ namespace dnf_composer
 			element::FieldCouplingParameters fcp = fieldCoupling->getParameters();
 
 			auto scalar = static_cast<float>(fcp.scalar);
+			auto learningRate = static_cast<float>(fcp.learningRate);
+			bool activateLearning = fcp.isLearningActive;
 
-			const std::string label = "##" + element->getUniqueName() + "Scalar";
-			ImGui::SliderFloat(label.c_str(), &scalar, 0, 2);
+			std::string label = "##" + element->getUniqueName() + "Learning rule";
+			if (ImGui::BeginCombo(label.c_str(), LearningRuleToString.at(fcp.learningRule).c_str()))
+			{
+				for (size_t i = 0; i < LearningRuleToString.size(); ++i)
+				{
+					const char* name = LearningRuleToString.at(static_cast<LearningRule>(i)).c_str();
+					if (ImGui::Selectable(name, fcp.learningRule == static_cast<LearningRule>(i)))
+					{
+						fcp.learningRule = static_cast<LearningRule>(i);
+						fieldCoupling->setParameters(fcp);
+					}
+				}
+				ImGui::EndCombo();
+			}
+
+			label = "##" + element->getUniqueName() + "Learning rate";
+			ImGui::SliderFloat(label.c_str(), &learningRate, 0, 1);
+			ImGui::SameLine(); ImGui::Text("Learning rate");
+
+			label = "##" + element->getUniqueName() + "Scalar";
+			ImGui::SliderFloat(label.c_str(), &scalar, 0, 20);
 			ImGui::SameLine(); ImGui::Text("Scalar");
+
+			label = "##" + element->getUniqueName() + "Activate learning";
+			ImGui::Checkbox(label.c_str(), &activateLearning);
+			ImGui::SameLine(); ImGui::Text("Activate learning");
 
 			static constexpr double epsilon = 1e-6;
 			if (std::abs(scalar - static_cast<float>(fcp.scalar)) > epsilon)
@@ -157,7 +178,37 @@ namespace dnf_composer
 				fcp.scalar = scalar;
 				fieldCoupling->setParameters(fcp);
 			}
+			if (activateLearning != fcp.isLearningActive)
+			{
+				fcp.isLearningActive = activateLearning;
+				fieldCoupling->setParameters(fcp);
+			}
+			if (std::abs(learningRate - static_cast<float>(fcp.learningRate)) > epsilon)
+			{
+				fcp.learningRate = learningRate;
+				fieldCoupling->setParameters(fcp);
+			}
 
+			ImGui::PushID(element->getUniqueName().c_str()); // Use unique ID for scope
+
+			if (ImGui::Button("Read weights"))
+			{
+				fieldCoupling->readWeights();
+			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("Save weights"))
+			{
+				fieldCoupling->writeWeights();
+			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("Clear weights"))
+			{
+				fieldCoupling->clearWeights();
+			}
+
+			ImGui::PopID(); // End unique ID scope
 		}
 
 		void ElementWindow::modifyElementGaussKernel(const std::shared_ptr<element::Element>& element) 
@@ -318,12 +369,12 @@ namespace dnf_composer
 				auto width = static_cast<float>(coupling.width);
 
 				label = "##" + element->getUniqueName() + "x_i" + std::to_string(couplingIndex);
-				ImGui::SliderFloat(label.c_str(), &x_i, 0, static_cast<float>(size));
+				ImGui::SliderFloat(label.c_str(), &x_i, 0, static_cast<float>(other_size));
 				text = "x_i " + std::to_string(couplingIndex);
 				ImGui::SameLine(); ImGui::Text(text.c_str());
 
 				label = "##" + element->getUniqueName() + "x_j" + std::to_string(couplingIndex);
-				ImGui::SliderFloat(label.c_str(), &x_j, 0, static_cast<float>(other_size));
+				ImGui::SliderFloat(label.c_str(), &x_j, 0, static_cast<float>(size));
 				text = "x_j " + std::to_string(couplingIndex);
 				ImGui::SameLine(); ImGui::Text(text.c_str());
 
@@ -354,8 +405,6 @@ namespace dnf_composer
 					gfc->setParameters(gfcp);
 				}
 			}
-			
 		}
-		
 	}
 }

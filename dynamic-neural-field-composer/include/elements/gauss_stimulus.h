@@ -14,7 +14,7 @@ namespace dnf_composer
 		{
 
 			GaussStimulusParameters(double width = 5.0, double amplitude = 15.0,
-				double position = 0.0, bool circular = true, bool normalized = false)
+				double position = 50.0, bool circular = true, bool normalized = false)
 				: width(width), amplitude(amplitude), position(position),
 				circular(circular), normalized(normalized)
 			{}

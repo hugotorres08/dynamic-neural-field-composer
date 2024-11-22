@@ -51,8 +51,14 @@ add_compile_definitions(OUTPUT_DIRECTORY="${OUTPUT_DIRECTORY}")
 # Set header files grouped by directories
 set(simulation_headers
     "include/simulation/simulation.h"
-    "include/simulation/visualization.h"
     "include/simulation/simulation_file_manager.h"
+)
+set(visualization_headers
+    "include/visualization/visualization.h"
+    "include/visualization/plot.h"
+    "include/visualization/plot_parameters.h"
+    "include/visualization/lineplot.h"
+    "include/visualization/heatmap.h"
 )
 set(application_headers
     "include/application/application.h"
@@ -71,7 +77,7 @@ set(elements_headers
     "include/elements/normal_noise.h"
 )
 set(element_parameters_headers
-"include/element_parameters/element_parameters.h"
+    "include/element_parameters/element_parameters.h"
 #"include/element_parameters/field_coupling_parameters.h"
 ##"include/element_parameters/gauss_field_coupling_parameters.h"
 #"include/element_parameters/gauss_kernel_parameters.h"
@@ -95,18 +101,18 @@ set(user_interface_headers
     "include/user_interface/field_metrics_window.h"
     "include/user_interface/element_window.h"
     "include/user_interface/plot_control_window.h"
-    "include/user_interface/plot_window.h"
     "include/user_interface/simulation_window.h"
     "include/user_interface/node_graph_window.h"
-    "include/user_interface/heatmap_window.h"
     "include/user_interface/main_window.h"
+    "include/user_interface/widgets.h"
 )
 set(wizards_headers
-    "include/wizards/learning_wizard.h"
+    #"include/wizards/learning_wizard.h"
 )
 
 set(header 
     ${simulation_headers}
+    ${visualization_headers}
     ${application_headers}
     ${elements_headers}
     ${element_parameters_headers}
@@ -119,12 +125,17 @@ set(header
 
 # Set source files
 set(src 
+    "src/application/application.cpp"
+
     "src/simulation/simulation.cpp"
-    "src/simulation/visualization.cpp"
     "src/simulation/simulation_file_manager.cpp"
 
-    "src/application/application.cpp"
-    
+    "src/visualization/visualization.cpp"
+    "src/visualization/plot.cpp"
+    "src/visualization/plot_parameters.cpp"
+    "src/visualization/lineplot.cpp"
+    "src/visualization/heatmap.cpp"
+
     "src/elements/activation_function.cpp"
     "src/elements/element.cpp"
     "src/elements/element_factory.cpp"
@@ -136,7 +147,7 @@ set(src
     "src/elements/mexican_hat_kernel.cpp"
     "src/elements/neural_field.cpp" 
     "src/elements/normal_noise.cpp"
-
+    
     "src/element_parameters/element_parameters.cpp"
 #"src/element_parameters/field_coupling_parameters.cpp"
 ##"include/element_parameters/gauss_field_coupling_parameters.h"
@@ -152,19 +163,17 @@ set(src
     "src/tools/utils.cpp"
     "src/tools/logger.cpp"
     
-
     "src/exceptions/exception.cpp"
     
-    "src/user_interface/plot_window.cpp"
     "src/user_interface/plot_control_window.cpp"
     "src/user_interface/simulation_window.cpp"
     "src/user_interface/field_metrics_window.cpp"
     "src/user_interface/element_window.cpp"
     "src/user_interface/node_graph_window.cpp"
-    "src/user_interface/heatmap_window.cpp"
     "src/user_interface/main_window.cpp"
-
-    "src/wizards/learning_wizard.cpp"
+    "src/user_interface/widgets.cpp"
+    
+    #"src/wizards/learning_wizard.cpp"
 )
 
 # Define library target
@@ -175,10 +184,6 @@ target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC
     $<INSTALL_INTERFACE:${DNF_COMPOSER_INC_INSTALL_DIR}> 
     #PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include 
 )
-
-
-#find_package(directx-headers CONFIG REQUIRED)
-#target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE Microsoft::DirectX-Guids Microsoft::DirectX-Headers)
 
 # Setup imgui
 find_package(imgui CONFIG REQUIRED)
@@ -196,7 +201,6 @@ target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE nlohmann_json::nlohmann_json
 # Setup imgui-platform-kit
 find_package(imgui-platform-kit REQUIRED)
 target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE imgui-platform-kit)
-
 
 target_compile_definitions(${CMAKE_PROJECT_NAME} PUBLIC
     DNF_COMPOSER=1
@@ -246,114 +250,82 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
 )
 
 # Add executable project
-set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
-add_executable(${EXE_PROJECT} "src/dynamic-neural-field-composer.cpp")
-target_include_directories(${EXE_PROJECT} PRIVATE include)
-target_link_libraries(${EXE_PROJECT} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-## Add executable example project run_sim
-#set(EXE_PROJECT_EXAMPLE_RUN_SIM ${CMAKE_PROJECT_NAME}-example-run_sim)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM} "examples/run_sim.cpp")
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-#
-## Add executable example project run_sim_headless
-#set(EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS ${CMAKE_PROJECT_NAME}-example-run_sim_headless)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} "examples/run_sim_headless.cpp")
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_HEADLESS} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-#
-## Add executable example project run_learning_wizard
-#set(EXE_PROJECT_EXAMPLE_LEARNING_WIZARD ${CMAKE_PROJECT_NAME}-example-run_learning_wizard)
-#add_executable(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} "examples/run_learning_wizard.cpp")
-#target_include_directories(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_LEARNING_WIZARD} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-##
-### Add executable example project run_sim_read_write
-##set(EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE ${CMAKE_PROJECT_NAME}-example-run_sim_read_write)
-##add_executable(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} "examples/run_sim_read_write.cpp")
-##target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE include)
-##target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_SIM_READ_WRITE} PRIVATE 
-##imgui::imgui
-##imgui-platform-kit 
-##${CMAKE_PROJECT_NAME})
-##
-# Add executable example project run_testbench
-set(EXE_PROJECT_EXAMPLE_RUN_TESTBENCH ${CMAKE_PROJECT_NAME}-example-run_testbench)
-add_executable(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} "examples/run_testbench.cpp")
-target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE include)
-target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_TESTBENCH} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-##
-## Add executable example project run_element_factory
-#set(EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY ${CMAKE_PROJECT_NAME}-example-run_element_factory)
-#add_executable(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} "examples/run_element_factory.cpp")
-#target_include_directories(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_RUN_ELEMENT_FACTORY} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-#
-## Add executable example project pepper_robot_joint_task_model
-#set(EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-pepper-joint_task_model)
-#add_executable(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} "examples/pepper_robot_joint_task_model.cpp")
-#target_include_directories(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_PEPPER_JOINT_TASK} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-#
-## Add executable example project panda_joint_task_model
-#set(EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK ${CMAKE_PROJECT_NAME}-example-panda_joint_task_model)
-#add_executable(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} "examples/panda_robot_joint_task_model.cpp")
-#target_include_directories(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT_EXAMPLE_PANDA_JOINT_TASK} PRIVATE 
+#set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
+#add_executable(${EXE_PROJECT} "src/dynamic-neural-field-composer.cpp")
+#target_include_directories(${EXE_PROJECT} PRIVATE include)
+#target_link_libraries(${EXE_PROJECT} PRIVATE 
 #imgui::imgui
 #imgui-platform-kit 
 #${CMAKE_PROJECT_NAME})
 
-# Setup Catch2
-#enable_testing()
-#find_package(Catch2 CONFIG REQUIRED)
-#include(CTest)
-#include(Catch)
+# Example test_plot
+#set(TEST_PLOT_EXAMPLE t-plot-example)
+#add_executable(${TEST_PLOT_EXAMPLE} "examples/test_plot.cpp")
+#target_include_directories(${TEST_PLOT_EXAMPLE} PRIVATE include)
+#target_link_libraries(${TEST_PLOT_EXAMPLE} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
 #
-## Add test project
-#set(TEST_PROJECT ${CMAKE_PROJECT_NAME}-test)
-#add_executable(${TEST_PROJECT} 
-#    tests/test.cpp 
-#    tests/test_clones.cpp
-#    tests/test_simulation_rw.cpp
-#    tests/test_application.cpp
-#    tests/test_element.cpp 
-#    tests/test_gauss_kernel.cpp 
-#    tests/test_gauss_stimulus.cpp 
-#    tests/test_mexican_hat_kernel.cpp 
-#    tests/test_neural_field.cpp 
-#    tests/test_normal_noise.cpp
-#    tests/test_simulation.cpp 
-#    tests/test_visualization.cpp 
-#    tests/test_learning_wizard.cpp
-#    tests/test_element_factory.cpp
-#    tests/test_kernel.cpp
-#    tests/test_field_coupling.cpp
-#    tests/test_gauss_field_coupling.cpp
-#)
-#target_include_directories(${TEST_PROJECT} PRIVATE include)
-#target_link_libraries(${TEST_PROJECT} PRIVATE Catch2::Catch2 Catch2::Catch2WithMain imgui-platform-kit ${CMAKE_PROJECT_NAME})
-## Automatically discover and add tests
-#catch_discover_tests(${TEST_PROJECT})
+## Example test_visualization
+#set(TEST_VISUALIZATION_EXAMPLE t-vis-example)
+#add_executable(${TEST_VISUALIZATION_EXAMPLE} "examples/test_visualization.cpp")
+#target_include_directories(${TEST_VISUALIZATION_EXAMPLE} PRIVATE include)
+#target_link_libraries(${TEST_VISUALIZATION_EXAMPLE} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Example test_application
+#set(TEST_APPLICATION_EXAMPLE t-app-example)
+#add_executable(${TEST_APPLICATION_EXAMPLE} "examples/test_application.cpp")
+#target_include_directories(${TEST_APPLICATION_EXAMPLE} PRIVATE include)
+#target_link_libraries(${TEST_APPLICATION_EXAMPLE} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+
+# Example test_plot_control_window
+set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)
+add_executable(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} "examples/test_plot_control_window.cpp")
+target_include_directories(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+# Example test_couplings
+set(TEST_COUPLINGS_EXAMPLE t-couplings-example)
+add_executable(${TEST_COUPLINGS_EXAMPLE} "examples/test_couplings.cpp")
+target_include_directories(${TEST_COUPLINGS_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_COUPLINGS_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+# Example test_factory
+set(TEST_FACTORY_EXAMPLE t-factory-example)
+add_executable(${TEST_FACTORY_EXAMPLE} "examples/test_factory.cpp")
+target_include_directories(${TEST_FACTORY_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_FACTORY_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+# Example test_nodegraph
+set(TEST_NODEGRAPH_EXAMPLE t-nodegraph-example)
+add_executable(${TEST_NODEGRAPH_EXAMPLE} "examples/test_nodegraph.cpp")
+target_include_directories(${TEST_NODEGRAPH_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_NODEGRAPH_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+# Example test_simulation
+set(TEST_SIMULATION_EXAMPLE t-simulation-example)
+add_executable(${TEST_SIMULATION_EXAMPLE} "examples/test_simulation.cpp")
+target_include_directories(${TEST_SIMULATION_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_SIMULATION_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})

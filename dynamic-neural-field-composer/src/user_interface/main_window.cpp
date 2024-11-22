@@ -5,20 +5,12 @@ namespace dnf_composer::user_interface
 	MainWindow::MainWindow(const std::shared_ptr<Simulation>& simulation)
 	: simulation{ simulation }
     {
-	
+
 	}
 
 	void MainWindow::render()
 	{
-        // [Put this elsewhere] Enable Keyboard Controls
-        auto io = ImGui::GetIO();
-        io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard; 
-        // [Put this elsewhere] Using the light style with borders
-        ImGui::StyleColorsLight();
-        ImGuiStyle& style = ImGui::GetStyle();
-        style.FrameBorderSize = 1.0f;
-
-        renderFullscreenWindow();
+        //renderFullscreenWindow();
 		renderMainMenuBar();
         renderFileWindows();
         renderAdvancedSettingsWindows();
@@ -98,6 +90,10 @@ namespace dnf_composer::user_interface
 
             if (ImGui::BeginMenu("Advanced Settings"))
             {
+                ImGui::MenuItem("Dear ImGui Demo", nullptr,
+					&advancedSettingsFlags.showImGuiDemo);
+                ImGui::MenuItem("ImPlot Demo", nullptr,
+					&advancedSettingsFlags.showImPlotDemo);
                 ImGui::MenuItem("Dear ImGui Metrics/Debugger", nullptr,
                     &advancedSettingsFlags.showToolMetrics);
                 ImGui::MenuItem("Dear ImGui Debug Log", nullptr,
@@ -146,6 +142,10 @@ namespace dnf_composer::user_interface
 
     void MainWindow::renderAdvancedSettingsWindows()
     {
+        if (advancedSettingsFlags.showImGuiDemo)
+            ImGui::ShowDemoWindow();
+        if (advancedSettingsFlags.showImPlotDemo)
+            ImPlot::ShowDemoWindow();
         if(advancedSettingsFlags.showToolMetrics)
 			ImGui::ShowMetricsWindow(&advancedSettingsFlags.showToolMetrics);
         if (advancedSettingsFlags.showToolDebugLog)

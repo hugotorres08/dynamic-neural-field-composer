@@ -188,12 +188,13 @@ namespace dnf_composer
 				return newContents;
 			}
 
-			template<typename T>
+			template <typename T>
 			std::vector<T> sigmoid(const std::vector<T>& x, T beta, T x0)
 			{
 				std::vector<T> s(x.size());
-				for (int i = 0; i < static_cast<int>(s.size()); i++)
-					s[i] = 1 / (1 + exp(-beta * (x[i] - x0)));
+				for (std::size_t i = 0; i < s.size(); ++i) {
+					s[i] = 1 / (1 + std::exp(-beta * (x[i] - x0)));
+				}
 				return s;
 			}
 
@@ -222,47 +223,88 @@ namespace dnf_composer
 			std::vector<double> generateNormalVector(int size);
 
 			template <typename T>
-			std::vector<std::vector<T>> hebbLearningRule(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
+			std::vector<T> normalize(const std::vector<T>& vector)
+			{
+				static constexpr T epsilon = 1e-6;
+				static constexpr T offset = 1.0;
+
+				// Find the minimum and maximum values in the vector
+				const T minVal = *std::ranges::min_element(vector.begin(), vector.end()) - epsilon;
+
+				std::vector<T> normalizedVector = vector;
+				for (T& val : normalizedVector)
+					val += minVal;
+
+				normalizedVector = math::sigmoid(normalizedVector, 0.2, std::abs(minVal) + offset);
+				const T newMinVal = *std::ranges::min_element(normalizedVector.begin(), normalizedVector.end());
+
+				for (T& val : normalizedVector)
+					val -= newMinVal;
+
+				return normalizedVector;
+			}
+
+			/*template <typename T>
+			std::vector<std::vector<T>> hebbLearningRule(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& output, double learningRate)
 			{
 				const int inputSize = input.size();
-				const int outputSize = targetOutput.size();
+				const int outputSize = output.size();
 
 				for (int i = 0; i < inputSize; i++)
 					for (int j = 0; j < outputSize; j++)
-						weights[i][j] += learningRate * input[i] * targetOutput[j];
+						weights[i][j] += learningRate * input[i] * output[j];
+
+				return weights;
+			}*/
+
+			template <typename T>
+			std::vector<T> hebbLearningRule(std::vector<T>& weights, const std::vector<T>& input, const std::vector<T>& output, double learningRate)
+			{
+				const int inputSize = input.size();
+				const int outputSize = output.size();
+
+				for (int i = 0; i < inputSize; i++)
+					for (int j = 0; j < outputSize; j++)
+						weights[i * outputSize + j] += learningRate * input[i] * output[j];
 
 				return weights;
 			}
 
-			template <typename T>
-			std::vector<std::vector<T>> ojaLearningRule(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
+			/*template <typename T>
+			std::vector<std::vector<T>> ojaLearningRule(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& output, double learningRate)
 			{
 				const int inputSize = input.size();
-				const int outputSize = targetOutput.size();
+				const int outputSize = output.size();
+
+				for (int i = 0; i < inputSize; i++)
+					for (int j = 0; j < outputSize; j++)
+						weights[i][j] += learningRate * (input[i] * output[j] - output[j] * input[i] * weights[i][j]);
+					
+				return weights;
+			}*/
+
+			template <typename T>
+			std::vector<T> ojaLearningRule(std::vector<T>& weights, const std::vector<T>& input, const std::vector<T>& output, double learningRate)
+			{
+				const int inputSize = input.size();
+				const int outputSize = output.size();
 
 				for (int i = 0; i < inputSize; i++)
 					for (int j = 0; j < outputSize; j++)
 					{
-						weights[i][j] = weights[i][j] * (1 - learningRate * std::pow(targetOutput[j], 2)) + learningRate * input[i] * targetOutput[j];
-						//weights[i][j] += learningRate * targetOutput[j] * (input[i] - targetOutput[j] * weights[i][j]);
-						//weights[i][j] += learningRate * input[i] * (targetOutput[j] - alpha * std::pow(targetOutput[j], 2) * weights[i][j]);
+						int index = i * outputSize + j; // Compute the index for the flattened matrix
+						weights[index] += learningRate * (input[i] * output[j] - output[j] * input[i] * weights[index]);
 					}
+
 				return weights;
 			}
 
 			template <typename T>
-			std::vector<std::vector<T>> deltaLearningRuleWidrowHoff(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
+			std::vector<std::vector<T>> deltaLearningRuleWidrowHoff(std::vector<std::vector<T>>& weights, const std::vector<T>& input, 
+				const std::vector<T>& actualOutput, const std::vector<T>& targetOutput, double learningRate)
 			{
 				const int inputSize = input.size();
-				int outputSize = targetOutput.size();
-
-				// Calculate the activation levels of the fields based on the input values and current weights
-				std::vector<T> actualOutput(outputSize, 0.0);
-				for (size_t j = 0; j < outputSize; ++j) {
-					for (size_t i = 0; i < inputSize; ++i) {
-						actualOutput[j] += input[i] * weights[i][j];
-					}
-				}
+				const int outputSize = targetOutput.size();
 
 				// Calculate the error between the target output and the actual output
 				std::vector<T> error(outputSize, 0.0);
@@ -281,18 +323,20 @@ namespace dnf_composer
 			}
 
 			template <typename T>
-			std::vector<std::vector<T>> deltaLearningRuleKroghHertz(std::vector<std::vector<T>>& weights, const std::vector<T>& input, const std::vector<T>& targetOutput, double learningRate)
+				std::vector<std::vector<T>> deltaLearningRuleKroghHertz(std::vector<std::vector<T>>& weights, const std::vector<T>& input, 
+					const std::vector<T>& targetOutput, const std::vector<T>& actualOutput,
+					double learningRate)
 			{
 				const int inputSize = input.size();
 				int outputSize = targetOutput.size();
 
-				// Calculate the activation levels of the fields based on the input values and current weights
-				std::vector<T> actualOutput(outputSize, 0.0);
-				for (size_t j = 0; j < outputSize; ++j) {
-					for (size_t i = 0; i < inputSize; ++i) {
-						actualOutput[j] += input[i] * weights[i][j];
-					}
-				}
+				//// Calculate the activation levels of the fields based on the input values and current weights
+				//std::vector<T> actualOutput(outputSize, 0.0);
+				//for (size_t j = 0; j < outputSize; ++j) {
+				//	for (size_t i = 0; i < inputSize; ++i) {
+				//		actualOutput[j] += input[i] * weights[i][j];
+				//	}
+				//}
 
 				// Calculate the error between the target output and the actual output
 				std::vector<T> error(outputSize, 0.0);
@@ -303,7 +347,8 @@ namespace dnf_composer
 				// Update the weights based on the error and current activation levels of the fields
 				for (size_t i = 0; i < inputSize; ++i) {
 					for (size_t j = 0; j < outputSize; ++j) {
-						weights[i][j] += learningRate * (error[j] - learningRate * weights[i][j]) * input[i];
+						//weights[i][j] += learningRate * (error[j] - learningRate * weights[i][j]) * input[i]; // old
+						weights[i][j] += learningRate * (error[j]) * input[i];
 					}
 				}
 
@@ -378,9 +423,9 @@ namespace dnf_composer
 			}
 
 			inline double gaussian_2d_periodic(double x, double y, double mu_x, double mu_y, double sigma, double A, double max_x, double max_y) {
-				double dx = std::min(std::abs(x - mu_x), max_x - std::abs(x - mu_x));
-				double dy = std::min(std::abs(y - mu_y), max_y - std::abs(y - mu_y));
-				const double exponent = -((std::pow(dx, 2) + std::pow(dy, 2)) / (2 * std::pow(sigma, 2)));
+				const double xStep = std::min(std::abs(x - mu_x), max_x - std::abs(x - mu_x));
+				const double dy = std::min(std::abs(y - mu_y), max_y - std::abs(y - mu_y));
+				const double exponent = -((std::pow(xStep, 2) + std::pow(dy, 2)) / (2 * std::pow(sigma, 2)));
 				return A * std::exp(exponent);
 			}
 

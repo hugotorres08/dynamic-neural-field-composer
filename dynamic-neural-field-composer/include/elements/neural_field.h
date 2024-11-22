@@ -39,7 +39,7 @@ namespace dnf_composer
 			}
 
 			NeuralFieldParameters()
-				:tau(0.0), startingRestingLevel(0.0), activationFunction(nullptr)
+				:tau(25.0), startingRestingLevel(-5.0), activationFunction(nullptr)
 			{}
 
 			NeuralFieldParameters(double tau, double restingLevel,

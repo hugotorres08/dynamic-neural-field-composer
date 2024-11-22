@@ -25,6 +25,11 @@ namespace dnf_composer
 		initialized = false;
 		paused = false;
 		elements = {};
+		std::ostringstream oss;
+		oss << "Simulation '" << uniqueIdentifier << "' created. "
+			<< "With parameters [dt:" << std::fixed << std::setprecision(2) << deltaT
+			<< "s, t0:" << tZero << "s].";
+		tools::logger::log(tools::logger::LogLevel::INFO, oss.str());
 	}
 
 	Simulation::Simulation(const Simulation& other)
@@ -120,11 +125,7 @@ namespace dnf_composer
 			element->init();
 
 		initialized = true;
-		std::ostringstream oss;
-		oss << "Simulation " << uniqueIdentifier << " initialized. "
-			<< "With parameters [dt:" << std::fixed << std::setprecision(2) << deltaT
-			<< "s, t0:" << tZero << "s].";
-		tools::logger::log(tools::logger::LogLevel::INFO, oss.str());
+		tools::logger::log(tools::logger::LogLevel::INFO, "Simulation initialized.");
 	}
 
 	void Simulation::step()
@@ -332,6 +333,7 @@ namespace dnf_composer
 	std::vector<std::shared_ptr<element::Element>> Simulation::getElementsThatHaveSpecifiedElementAsInput(const std::string& specifiedElement, const std::string& inputComponent) const
 	{
 		std::vector<std::shared_ptr<element::Element>> elementsThatHaveSpecifiedElementAsInput;
+		elementsThatHaveSpecifiedElementAsInput.reserve(2); // usually we wouldn't have an element that is providing input to more than 2 elements
 		for (const auto& element : elements) 
 		{
 			if (element->hasInput(specifiedElement, inputComponent)) {
@@ -354,13 +356,12 @@ namespace dnf_composer
 		if (error != 0)
 			throw Exception(ErrorCode::SIM_INVALID_PARAMETER);
 		std::ostringstream oss;
-		oss << std::put_time(&local_time, "[%Y-%m-%d] [%H-%M-%S] default");
+		oss << std::put_time(&local_time, "default sim [%Y-%m-%d] [%H-%M-%S]");
 		uniqueIdentifier = oss.str();
 	}
 
 	void Simulation::exportComponentToFile(const std::string& id, const std::string& componentName) const
 	{
-
 		const std::shared_ptr<element::Element> foundElement = getElement(id);
 		const std::vector<double> component = foundElement->getComponent(componentName);
 
@@ -388,6 +389,5 @@ namespace dnf_composer
 	{
 		return elements;
 	}
-
 }
 

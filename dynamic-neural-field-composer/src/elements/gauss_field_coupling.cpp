@@ -13,24 +13,27 @@ namespace dnf_composer
 			: Element(elementCommonParameters), parameters(gfc_parameters)
 		{
 			commonParameters.identifiers.label = ElementLabel::GAUSS_FIELD_COUPLING;
-			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size * parameters.inputFieldDimensions.size);
-			
+			components["input"] = std::vector<double>(parameters.inputFieldDimensions.size);
+			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size);
+			components["weights"] = std::vector<double>(components.at("input").size() * components.at("output").size());
 		}
 
 		void GaussFieldCoupling::init()
 		{
 			updateInputFieldDimensions();
-			components["kernel"] = std::vector<double>(commonParameters.dimensionParameters.size *
-															parameters.inputFieldDimensions.size);
-			std::ranges::fill(components["output"], 0.0);
 
-			static const unsigned int rows = commonParameters.dimensionParameters.size;
-			static const unsigned int cols = static_cast<int>(components["input"].size());
+			std::ranges::fill(components["input"], 0);
+			std::ranges::fill(components["output"], 0);
+			std::ranges::fill(components["weights"], 0);
 
-			for (unsigned int x = 0; x < rows; x++)
+			const unsigned int cols = static_cast<int>(components["output"].size());
+			const unsigned int rows = static_cast<int>(components["input"].size());
+
+			for (unsigned int i = 0; i < cols; i++)
 			{
-				std::vector<double> row;
-				for (unsigned int y = 0; y < cols; y++)
+				std::vector<double> col;
+				col.reserve(rows);
+				for (unsigned int j = 0; j < rows; j++)
 				{
 					double value = 0.0;
 					for (const auto& coupling : parameters.couplings)
@@ -39,16 +42,17 @@ namespace dnf_composer
 						if (parameters.normalized)	
 							amplitude /= sqrt(2 * std::numbers::pi * std::pow(coupling.width, 2));
 						if (parameters.circular)
-							value += tools::math::gaussian_2d_periodic(x, y,
+							value += tools::math::gaussian_2d_periodic(j, i,
 								coupling.x_i/parameters.inputFieldDimensions.d_x, coupling.x_j/commonParameters.dimensionParameters.d_x,
 								coupling.width, amplitude,
 								rows, cols);
 						else
-							value += tools::math::gaussian_2d(x, y, 
-								coupling.x_i/parameters.inputFieldDimensions.d_x, coupling.x_j/commonParameters.dimensionParameters.d_x, 
-									coupling.width, coupling.width, amplitude);
+							value += tools::math::gaussian_2d(j, i,
+								coupling.x_i / parameters.inputFieldDimensions.d_x, coupling.x_j / commonParameters.dimensionParameters.d_x,
+								coupling.width, coupling.width, amplitude);
 					}
-					components["kernel"][x * cols + y] = value;
+					const size_t index = j * cols + i;
+					components["weights"][index] = value;
 				}
 			}
 		}
@@ -75,17 +79,14 @@ namespace dnf_composer
 
 		void GaussFieldCoupling::updateOutput()
 		{
-			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size, 0.0);
+			components["output"] = std::vector<double>(components["output"].size(), 0);
 
-			static const unsigned int rows = commonParameters.dimensionParameters.size;
-			static const unsigned int cols = static_cast<int>(components["input"].size());
-
-			for (unsigned int x = 0; x < rows; x++)
+			for (size_t i = 0; i < components["output"].size(); i++)
 			{
-				for (unsigned int y = 0; y < cols; y++)
+				for (size_t j = 0; j < components["input"].size(); j++)
 				{
-					components["output"][y] += components["kernel"][x * commonParameters.dimensionParameters.size + y]
-																		* components["input"][x];
+					const size_t index = j * components["output"].size() + i;
+					components["output"][i] += components["weights"][index] * components["input"][j];
 				}
 			}
 		}
@@ -106,19 +107,29 @@ namespace dnf_composer
 			init();
 		}
 
-		ElementSpatialDimensionParameters GaussFieldCoupling::getInputFieldDimensions() const
+		ElementDimensions GaussFieldCoupling::getInputFieldDimensions() const
 		{
 			return parameters.inputFieldDimensions;
 		}
 
 		void GaussFieldCoupling::updateInputFieldDimensions()
 		{
-			if(inputs.empty())
+			if (inputs.size() != 1)
 			{
-				const std::string logMessage = "No input element is connected to '" + commonParameters.identifiers.uniqueName + "'.";
+				const std::string logMessage = "Incorrect number of inputs for gauss field coupling '"
+					+ commonParameters.identifiers.uniqueName + "'. Should be 1, is " + std::to_string(inputs.size()) + ".";
 				log(tools::logger::LogLevel::ERROR, logMessage);
 				return;
 			}
+
+			if (inputs.begin()->first->getLabel() != ElementLabel::NEURAL_FIELD)
+			{
+				const std::string logMessage = "Incorrect input type for field coupling '"
+					+ commonParameters.identifiers.uniqueName + "'. Should be a neural field, is " + ElementLabelToString.at(inputs.begin()->first->getLabel()) + ".";
+				log(tools::logger::LogLevel::ERROR, logMessage);
+				return;
+			}
+
 			const std::shared_ptr<Element> input = inputs.begin()->first;
 			parameters.inputFieldDimensions = input->getElementCommonParameters().dimensionParameters;
 		}

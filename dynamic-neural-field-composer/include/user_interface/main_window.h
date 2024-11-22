@@ -20,6 +20,8 @@ namespace dnf_composer::user_interface
 		bool showToolIdStackTool = false;
 		bool showToolStyleEditor = false;
 		bool showToolAbout = false;
+		bool showImGuiDemo = false;
+		bool showImPlotDemo = false;
 	};
 
 	class MainWindow : public imgui_kit::UserInterfaceWindow

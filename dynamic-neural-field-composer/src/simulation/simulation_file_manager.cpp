@@ -175,16 +175,20 @@ namespace dnf_composer
             const auto fieldCoupling = std::dynamic_pointer_cast<element::FieldCoupling>(element);
             const auto fieldCouplingParameters = fieldCoupling->getParameters();
             elementJson["learningRate"] = fieldCouplingParameters.learningRate;
-            elementJson["inputFieldSize"] = fieldCouplingParameters.inputFieldSize;
             elementJson["learningRule"] = fieldCouplingParameters.learningRule;
             elementJson["scalar"] = fieldCouplingParameters.scalar;
+            elementJson["input_x_max"] = fieldCouplingParameters.inputFieldDimensions.x_max;
+            elementJson["input_d_x"] = fieldCouplingParameters.inputFieldDimensions.d_x;
         }
+        break;
         case element::GAUSS_FIELD_COUPLING:
         {
             const auto gaussFieldCoupling = std::dynamic_pointer_cast<element::GaussFieldCoupling>(element);
             const auto gaussFieldCouplingParameters = gaussFieldCoupling->getParameters();
             elementJson["circular"] = gaussFieldCouplingParameters.circular;
             elementJson["normalized"] = gaussFieldCouplingParameters.normalized;
+            elementJson["input_x_max"] = gaussFieldCouplingParameters.inputFieldDimensions.x_max;
+            elementJson["input_d_x"] = gaussFieldCouplingParameters.inputFieldDimensions.d_x;
             for (const auto& coupling : gaussFieldCouplingParameters.couplings)
 				elementJson["couplings"] += {coupling.x_i, coupling.x_j};
         }
@@ -232,7 +236,7 @@ namespace dnf_composer
 		            }
 		            // Reconstruct neural field element
 		            auto neuralField = std::make_shared<element::NeuralField>(
-		                element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
+		                element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
 		                element::NeuralFieldParameters(tau, restingLevel, *activationFunction)
 		            );
 		            // Add the reconstructed element to the simulation
@@ -244,7 +248,7 @@ namespace dnf_composer
                 const double amplitude = elementJson["amplitude"];
 
                 auto normalNoise = std::make_shared<element::NormalNoise>(
-                    element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
+                    element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
                     element::NormalNoiseParameters(amplitude)
                 );
                 simulation->addElement(normalNoise);
@@ -258,7 +262,7 @@ namespace dnf_composer
                 const bool normalized = elementJson["normalized"];
 
                 auto kernel = std::make_shared<element::GaussKernel>(
-                    element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
+                    element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
                     element::GaussKernelParameters(width, amplitude, circular, normalized)
                 );
                 simulation->addElement(kernel);
@@ -275,7 +279,7 @@ namespace dnf_composer
                 const bool normalized = elementJson["normalized"];
 
                 auto kernel = std::make_shared<element::MexicanHatKernel>(
-                    element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
+                    element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
                     element::MexicanHatKernelParameters(widthExc, amplitudeExc, widthInh, amplitudeInh, amplitudeGlobal, circular, normalized)
                 );
                 simulation->addElement(kernel);
@@ -290,7 +294,7 @@ namespace dnf_composer
                 const bool normalized = elementJson["normalized"];
 
                 auto stimulus = std::make_shared<element::GaussStimulus>(
-                    element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
+                    element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
                     element::GaussStimulusParameters(width, amplitude, position, circular, normalized)
                 );
                 simulation->addElement(stimulus);
@@ -298,14 +302,14 @@ namespace dnf_composer
             break;
 	        case element::FIELD_COUPLING:
             {
-                const int inputFieldSize = elementJson["inputFieldSize"];
-                const double scalar = elementJson["scalar"];
                 const double learningRate = elementJson["learningRate"];
                 const LearningRule learningRule = elementJson["learningRule"];
-
+                const double scalar = elementJson["scalar"];
+                const int input_x_max = elementJson["input_x_max"];
+                const double input_d_x = elementJson["input_d_x"];
                 auto coupling = std::make_shared<element::FieldCoupling>(
-                    element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-                    element::FieldCouplingParameters(inputFieldSize, scalar, learningRate, learningRule)
+                    element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
+                    element::FieldCouplingParameters({input_x_max, input_d_x}, learningRule, scalar, learningRate)
                 );
                 simulation->addElement(coupling);
             }
@@ -314,11 +318,13 @@ namespace dnf_composer
             {
 				const bool circular = elementJson["circular"];
                 const bool normalized = elementJson["normalized"];
+                const int input_x_max = elementJson["input_x_max"];
+                const double input_d_x = elementJson["input_d_x"];
                 const std::vector<std::pair<double, double>> couplings = elementJson["couplings"];
 
                 auto coupling = std::make_shared<element::GaussFieldCoupling>(
-					element::ElementCommonParameters(uniqueName, element::ElementSpatialDimensionParameters(x_max, d_x)),
-					element::GaussFieldCouplingParameters(circular, normalized)
+					element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
+                    element::GaussFieldCouplingParameters({input_x_max, input_d_x}, circular, normalized)
 				);
                 simulation->addElement(coupling);
             }

@@ -4,40 +4,51 @@
 
 #include "tools/math.h"
 #include "element.h"
+#include "neural_field.h"
 #include "tools/utils.h"
 
 
 namespace dnf_composer
 {
-	enum class LearningRule
+	enum class LearningRule : int
 	{
-		HEBBIAN = 0,
+		HEBB,
 		OJA,
-		DELTA_WIDROW_HOFF,
-		DELTA_KROGH_HERTZ
+		DELTA
+	};
+
+	inline const std::map<LearningRule, std::string> LearningRuleToString = {
+		{LearningRule::HEBB, "Hebb"},
+		{LearningRule::OJA, "Oja"},
+		{LearningRule::DELTA, "Delta"}
+
 	};
 
 	namespace element
 	{
 		struct FieldCouplingParameters : ElementSpecificParameters
 		{
-			int inputFieldSize;
+			ElementDimensions inputFieldDimensions;
+			LearningRule learningRule;
 			double scalar;
 			double learningRate;
-			LearningRule learningRule;
+			bool isLearningActive;
 
-			FieldCouplingParameters(int inputFieldSize, double scalar, double learningRate,
-				LearningRule learningRule)
-			: inputFieldSize(inputFieldSize), scalar(scalar), learningRate(learningRate),
-				learningRule(learningRule)
+			FieldCouplingParameters(const ElementDimensions& inputFieldDimensions = ElementDimensions{},
+				LearningRule learningRule = LearningRule::HEBB,
+				double scalar = 1.0, double learningRate = 0.01)
+					: inputFieldDimensions(inputFieldDimensions),
+				learningRule(learningRule), scalar(scalar),
+				learningRate(learningRate), isLearningActive(false)
 			{}
 
 			std::string toString() const override
 			{
 				std::string result = "Field coupling parameters\n";
-				result += "Input field size: " + std::to_string(inputFieldSize) + "\n";
-				result += "Scalar: " + std::to_string(scalar) + "\n";
+				result += "Input field dimensions: " + inputFieldDimensions.toString() + "\n";
+				result += "Learning rule: " + LearningRuleToString.at(learningRule) + "\n";
 				result += "Learning rate: " + std::to_string(learningRate) + "\n";
+				result += "Scalar: " + std::to_string(scalar) + "\n";
 				return result;
 			}
 		};
@@ -46,10 +57,8 @@ namespace dnf_composer
 		{
 		protected:
 			FieldCouplingParameters parameters;
-			std::vector<std::vector<double>> weights;
-			bool trained;
-			bool updateAllWeights;
-			std::string weightsFilePath;
+			std::shared_ptr<Element> input;
+			std::shared_ptr<Element> output;
 		public:
 			FieldCoupling(const ElementCommonParameters& elementCommonParameters, 
 				const FieldCouplingParameters& fc_parameters);
@@ -57,30 +66,22 @@ namespace dnf_composer
 			void init() override;
 			void step(double t, double deltaT) override;
 			std::string toString() const override;
-			// close() used to be a pure virtual function in Element
-			// and was implemented in FieldCoupling.cpp
-			// resetWeights() used to be called here
 			std::shared_ptr<Element> clone() const override;
 
-
-			void setWeightsFilePath(const std::string& filePath);
-			bool readWeights();
-			void resetWeights();
-			void saveWeights() const;
-			virtual void updateWeights(const std::vector<double>& input, const std::vector<double>& output);
-
 			void setLearningRate(double learningRate);
-			void setUpdateAllWeights(bool updateAllWeights);
+			void setLearning(bool learning);
 			void setParameters(const FieldCouplingParameters& fcp);
-
-			const std::vector<std::vector<double>>& getWeights() const;
 			FieldCouplingParameters getParameters() const;
-		protected:
-			void getInputFunction();
-			void computeOutput();
-			void scaleOutput();
+
+			void readWeights();
 			void writeWeights() const;
-			void fillWeightsRandomly();
+			void clearWeights();
+		private:
+			void updateOutput();
+			void updateInputField();
+			void updateOutputField();
+			void updateWeights();
+			bool checkValidConnections();
 		};
 	}
 }

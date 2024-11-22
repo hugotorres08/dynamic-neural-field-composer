@@ -13,7 +13,7 @@ namespace dnf_composer
 	{
 		struct NormalNoiseParameters : ElementSpecificParameters
 		{
-			NormalNoiseParameters(double amp) : amplitude(amp) {}
+			NormalNoiseParameters(double amp = 0.01) : amplitude(amp) {}
 
 			double amplitude;
 			bool operator==(const NormalNoiseParameters& other) const
