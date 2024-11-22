@@ -324,7 +324,7 @@
             "gauss stimulus"
         ],
         "normalized": false,
-        "position": 50.0,
+        "position": 104.79499816894531,
         "uniqueName": "Element gauss stimulus 24",
         "width": 5.0,
         "x_max": 150
@@ -339,7 +339,7 @@
             "gauss stimulus"
         ],
         "normalized": false,
-        "position": 50.0,
+        "position": 62.928001403808594,
         "uniqueName": "Element gauss stimulus 32",
         "width": 5.0,
         "x_max": 75
@@ -633,11 +633,11 @@
                 "output"
             ],
             [
-                "Element field coupling 70",
+                "Element gauss stimulus 68",
                 "output"
             ],
             [
-                "Element gauss stimulus 68",
+                "Element field coupling 70",
                 "output"
             ]
         ],
