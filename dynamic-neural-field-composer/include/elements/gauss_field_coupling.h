@@ -48,14 +48,16 @@ namespace dnf_composer
 
 		struct GaussFieldCouplingParameters : ElementSpecificParameters
 		{
-			bool normalized = true;
-			bool circular = false;
 			ElementDimensions inputFieldDimensions;
+			bool normalized;
+			bool circular;
 			std::vector<GaussCoupling> couplings;
 
-			GaussFieldCouplingParameters(bool normalized = true, bool circular = false,
+			GaussFieldCouplingParameters(const ElementDimensions& inputFieldDimensions = ElementDimensions{}, 
+				bool normalized = true, bool circular = false,
 				const std::vector<GaussCoupling>& couplings = {})
-				: normalized(normalized), circular(circular), couplings(couplings)
+				: inputFieldDimensions(inputFieldDimensions),
+					normalized(normalized), circular(circular), couplings(couplings)
 			{}
 
 			void addCoupling(const GaussCoupling& coupling)

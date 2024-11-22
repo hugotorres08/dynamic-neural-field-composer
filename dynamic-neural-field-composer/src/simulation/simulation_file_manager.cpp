@@ -177,13 +177,18 @@ namespace dnf_composer
             elementJson["learningRate"] = fieldCouplingParameters.learningRate;
             elementJson["learningRule"] = fieldCouplingParameters.learningRule;
             elementJson["scalar"] = fieldCouplingParameters.scalar;
+            elementJson["input_x_max"] = fieldCouplingParameters.inputFieldDimensions.x_max;
+            elementJson["input_d_x"] = fieldCouplingParameters.inputFieldDimensions.d_x;
         }
+        break;
         case element::GAUSS_FIELD_COUPLING:
         {
             const auto gaussFieldCoupling = std::dynamic_pointer_cast<element::GaussFieldCoupling>(element);
             const auto gaussFieldCouplingParameters = gaussFieldCoupling->getParameters();
             elementJson["circular"] = gaussFieldCouplingParameters.circular;
             elementJson["normalized"] = gaussFieldCouplingParameters.normalized;
+            elementJson["input_x_max"] = gaussFieldCouplingParameters.inputFieldDimensions.x_max;
+            elementJson["input_d_x"] = gaussFieldCouplingParameters.inputFieldDimensions.d_x;
             for (const auto& coupling : gaussFieldCouplingParameters.couplings)
 				elementJson["couplings"] += {coupling.x_i, coupling.x_j};
         }
@@ -297,29 +302,29 @@ namespace dnf_composer
             break;
 	        case element::FIELD_COUPLING:
             {
-                const LearningRule learningRule = elementJson["learningRule"];
                 const double learningRate = elementJson["learningRate"];
+                const LearningRule learningRule = elementJson["learningRule"];
                 const double scalar = elementJson["scalar"];
-                    log(tools::logger::FATAL, "Field coupling element not implemented yet.");
-                /*const element::ElementDimensions dimensions = elementJson
-
-
+                const int input_x_max = elementJson["input_x_max"];
+                const double input_d_x = elementJson["input_d_x"];
                 auto coupling = std::make_shared<element::FieldCoupling>(
                     element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
-					element::FieldCouplingParameters(learningRule, scalar, learningRate)
+                    element::FieldCouplingParameters({input_x_max, input_d_x}, learningRule, scalar, learningRate)
                 );
-                simulation->addElement(coupling);*/
+                simulation->addElement(coupling);
             }
             break;
 	        case element::GAUSS_FIELD_COUPLING:
             {
 				const bool circular = elementJson["circular"];
                 const bool normalized = elementJson["normalized"];
+                const int input_x_max = elementJson["input_x_max"];
+                const double input_d_x = elementJson["input_d_x"];
                 const std::vector<std::pair<double, double>> couplings = elementJson["couplings"];
 
                 auto coupling = std::make_shared<element::GaussFieldCoupling>(
 					element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
-					element::GaussFieldCouplingParameters(circular, normalized)
+                    element::GaussFieldCouplingParameters({input_x_max, input_d_x}, circular, normalized)
 				);
                 simulation->addElement(coupling);
             }

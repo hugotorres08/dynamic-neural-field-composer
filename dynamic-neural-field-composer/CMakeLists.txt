@@ -320,3 +320,12 @@ target_link_libraries(${TEST_NODEGRAPH_EXAMPLE} PRIVATE
 imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})
+
+# Example test_simulation
+set(TEST_SIMULATION_EXAMPLE t-simulation-example)
+add_executable(${TEST_SIMULATION_EXAMPLE} "examples/test_simulation.cpp")
+target_include_directories(${TEST_SIMULATION_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_SIMULATION_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})

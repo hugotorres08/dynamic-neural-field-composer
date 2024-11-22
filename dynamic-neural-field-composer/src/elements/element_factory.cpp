@@ -79,7 +79,7 @@ namespace dnf_composer
 			{
 				switch (type)
 				{
-				case ElementLabel::NEURAL_FIELD:
+					case ElementLabel::NEURAL_FIELD:
 						return creator->second(ElementCommonParameters(type), NeuralFieldParameters());
 					case ElementLabel::GAUSS_STIMULUS:
 						return creator->second(ElementCommonParameters(type), GaussStimulusParameters());

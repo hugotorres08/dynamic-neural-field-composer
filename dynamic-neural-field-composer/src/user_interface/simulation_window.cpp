@@ -92,6 +92,7 @@ namespace dnf_composer
 						{
 							auto input = simulation->getElement(selectedElementId);
 							simulationElement->addInput(input);
+							simulation->init();
 						}
 						ImGui::TreePop();
 					}
@@ -116,6 +117,7 @@ namespace dnf_composer
 						{
 							simulation->removeElement(elementId);
 							numberOfElementsInSimulation--;
+							simulation->init();
 						}
 						ImGui::TreePop();
 					}
@@ -294,7 +296,41 @@ namespace dnf_composer
 
 		void SimulationWindow::addElementFieldCoupling() const
 		{
-			log(tools::logger::LogLevel::ERROR, "This is still not done, I'm sorry! :(.");
+			static char id[CHAR_SIZE] = "field coupling u -> v";
+			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
+			static int x_max = 100;
+			ImGui::InputInt("output x_max", &x_max, 1.0, 10.0);
+			static double d_x = 0.1;
+			ImGui::InputDouble("output d_x", &d_x, 0.1, 0.5, "%.2f");
+			static int in_x_max = 100;
+			ImGui::InputInt("input x_max", &in_x_max, 1.0, 10.0);
+			static double in_d_x = 0.1;
+			ImGui::InputDouble("input d_x", &in_d_x, 0.1, 0.5, "%.2f");
+			static LearningRule learningRule = LearningRule::HEBB;
+			if (ImGui::BeginCombo("learning rule", LearningRuleToString.at(learningRule).c_str()))
+			{
+				for (size_t i = 0; i < LearningRuleToString.size(); ++i)
+				{
+					const char* name = LearningRuleToString.at(static_cast<LearningRule>(i)).c_str();
+					if (ImGui::Selectable(name, learningRule == static_cast<LearningRule>(i)))
+					{
+						learningRule = static_cast<LearningRule>(i);
+					}
+				}
+				ImGui::EndCombo();
+			}
+			static double scalar = 1.0;
+			ImGui::InputDouble("scalar", &scalar, 0.1f, 1.0f, "%.2f");
+			static double learningRate = 0.01;
+			ImGui::InputDouble("learning rate", &learningRate, 0.01f, 0.1f, "%.2f");
+
+			if(ImGui::Button("Add", { 100.0f, 30.0f }))
+			{
+				const element::FieldCouplingParameters fcp = { {in_x_max, in_d_x}, learningRule, scalar, learningRate };
+				const element::ElementDimensions dimensions{ x_max, d_x };
+				const std::shared_ptr<element::FieldCoupling> fieldCoupling(new element::FieldCoupling({ id, dimensions }, fcp));
+				simulation->addElement(fieldCoupling);
+			}
 		}
 
 		void SimulationWindow::addElementGaussFieldCoupling() const
@@ -302,9 +338,13 @@ namespace dnf_composer
 			static char id[CHAR_SIZE] = "gauss field coupling u -> v";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int x_max = 100;
-			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
+			ImGui::InputInt("output x_max", &x_max, 1.0, 10.0);
 			static double d_x = 0.1;
-			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
+			ImGui::InputDouble("output d_x", &d_x, 0.1, 0.5, "%.2f");
+			static int in_x_max = 100;
+			ImGui::InputInt("input x_max", &in_x_max, 1.0, 10.0);
+			static double in_d_x = 0.1;
+			ImGui::InputDouble("input d_x", &in_d_x, 0.1, 0.5, "%.2f");
 			static double x_i = 1;
 			ImGui::InputDouble("x_i", &x_i, 1.0f, 10.0f, "%.2f");
 			static double x_j = 1;
@@ -320,7 +360,7 @@ namespace dnf_composer
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
-				const element::GaussFieldCouplingParameters gfcp = { normalized, circular, {{x_i, x_j, amplitude, width}} };
+				const element::GaussFieldCouplingParameters gfcp = { {in_x_max, in_d_x}, normalized, circular, {{x_i, x_j, amplitude, width}} };
 				const element::ElementDimensions dimensions{ x_max, d_x };
 				const std::shared_ptr<element::GaussFieldCoupling> gaussCoupling(new element::GaussFieldCoupling({ id, dimensions }, gfcp));
 				simulation->addElement(gaussCoupling);

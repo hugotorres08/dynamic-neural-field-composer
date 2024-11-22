@@ -24,14 +24,12 @@ namespace dnf_composer
 			parameters.isLearningActive = false;
 			std::ranges::fill(components["input"], 0);
 			std::ranges::fill(components["output"], 0);
+			std::ranges::fill(components["weights"], 0);
 
 			updateInputField();
 			updateOutputField();
 			if(!checkValidConnections())
 				return;
-
-			//components["weights"] = std::vector<double>(components.at("input").size() * components.at("output").size());
-			std::ranges::fill(components["weights"], 0);
 			readWeights();
 		}
 
@@ -159,7 +157,7 @@ namespace dnf_composer
 
 		void FieldCoupling::readWeights()
 		{
-			static const std::string filename = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" +
+			const std::string filename = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" +
 				commonParameters.identifiers.uniqueName + "_weights.txt";
 			std::ifstream file(filename);
 
@@ -204,7 +202,7 @@ namespace dnf_composer
 
 		void FieldCoupling::writeWeights() const
 		{
-			static const std::string filename = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" +
+			const std::string filename = std::string(OUTPUT_DIRECTORY) + "/inter-field-synaptic-connections/" +
 				commonParameters.identifiers.uniqueName + "_weights.txt";
 			std::ofstream file(filename);
 

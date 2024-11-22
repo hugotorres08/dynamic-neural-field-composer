@@ -26,7 +26,7 @@ int main()
 		app.addWindow<user_interface::PlotControlWindow>();
 
 		element::ElementFactory factory;
-		const element::ElementDimensions input_dimensions{200, 0.5};
+		const element::ElementDimensions input_dimensions{200, 0.7};
 		const auto nf_1 = factory.createElement(element::ElementLabel::NEURAL_FIELD,
 			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::NEURAL_FIELD}, input_dimensions},
 			element::NeuralFieldParameters{});
@@ -40,7 +40,7 @@ int main()
 			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::GAUSS_STIMULUS}, input_dimensions},
 			element::GaussStimulusParameters{});
 
-		const element::ElementDimensions output_dimensions{100, 0.5};
+		const element::ElementDimensions output_dimensions{100, 1.0};
 		const auto nf_2 = factory.createElement(element::NEURAL_FIELD,
 			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::NEURAL_FIELD}, output_dimensions},
 			element::NeuralFieldParameters{});
@@ -53,11 +53,12 @@ int main()
 		const auto gs_2 = factory.createElement(element::GAUSS_STIMULUS,
 			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::GAUSS_STIMULUS}, output_dimensions},
 			element::GaussStimulusParameters{});
-		const auto fc_1 = factory.createElement(element::FIELD_COUPLING,
-			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::FIELD_COUPLING}, output_dimensions},
-			element::FieldCouplingParameters{input_dimensions});
-
-		//const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING, element::ElementCommonParameters{}, element::GaussFieldCouplingParameters{false, false, {{50.0, 50.0, 5.0, 5.0}}});
+		//const auto fc_1 = factory.createElement(element::FIELD_COUPLING,
+			//element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::FIELD_COUPLING}, output_dimensions},
+			//element::FieldCouplingParameters{input_dimensions});
+		const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING, 
+			element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::GAUSS_FIELD_COUPLING}, output_dimensions},
+			element::GaussFieldCouplingParameters{input_dimensions,true, false, {{50.0, 50.0, 5.0, 5.0}}});
 
 		simulation->addElement(nf_1);
 		simulation->addElement(gk_1);
@@ -67,7 +68,8 @@ int main()
 		simulation->addElement(nn_2);
 		simulation->addElement(gs_1);
 		simulation->addElement(gs_2);
-		simulation->addElement(fc_1);
+		//simulation->addElement(fc_1);
+		simulation->addElement(gfc_1);
 
 		nf_1->addInput(gk_1);
 		gk_1->addInput(nf_1);
@@ -79,13 +81,15 @@ int main()
 		nf_2->addInput(nn_2);
 		nf_2->addInput(gs_2);
 
-		fc_1->addInput(nf_1);
-		nf_2->addInput(fc_1);
+		//fc_1->addInput(nf_1);
+		//nf_2->addInput(fc_1);
+		gfc_1->addInput(nf_1);
+		nf_2->addInput(gfc_1);
 
 		visualization->plot(
 			PlotCommonParameters{
 			PlotType::LINE_PLOT,
-			PlotDimensions{ 0.0, 200, -20.0, 20, 0.5, 1.0},
+			PlotDimensions{ 0.0, 200, -20.0, 20, 0.7, 1.0},
 			PlotAnnotations{ "Input neural field", "Spatial dimension", "Amplitude" } },
 			LinePlotParameters{},
 			{ { nf_1->getUniqueName(), "activation" }, { nf_1->getUniqueName(), "output" }, { nf_1->getUniqueName(), "input" } });
@@ -93,7 +97,7 @@ int main()
 		visualization->plot(
 			PlotCommonParameters{
 			PlotType::LINE_PLOT,
-			PlotDimensions{ 0.0, 100, -20.0, 20, 0.5, 1.0 },
+			PlotDimensions{ 0.0, 100, -20.0, 20, 1.0, 1.0 },
 			PlotAnnotations{ "Output neural field", "Spatial dimension", "Amplitude" } },
 			LinePlotParameters{},
 			{ {nf_2->getUniqueName(), "activation"}, {nf_2->getUniqueName(), "output"}, {nf_2->getUniqueName(), "input"} });
@@ -101,19 +105,19 @@ int main()
 		visualization->plot(
 			PlotCommonParameters{
 				PlotType::HEATMAP, 
-				PlotDimensions{0.0, 100, 0.0, 200.0, 0.5, 0.5}, 
+				PlotDimensions{0.0, 100, 0.0, 200.0, 1.0, 0.7}, 
 				PlotAnnotations{"Field coupling", "Output field dimension", "Input field dimension"} }, 
 				HeatmapParameters{},
-			{ {fc_1->getUniqueName(), "weights"} }
+			{ {gfc_1->getUniqueName(), "weights"} }
 		);
 
 		visualization->plot(
 			PlotCommonParameters{
 			PlotType::LINE_PLOT,
-			PlotDimensions{ 0.0, 100, -20.0, 20, 0.5, 1.0},
+			PlotDimensions{ 0.0, 100, -20.0, 20, 1.0, 1.0},
 			PlotAnnotations{ "Field coupling output", "Spatial dimension", "Amplitude" } },
 			LinePlotParameters{},
-			{{fc_1->getUniqueName(), "output"}});
+			{{gfc_1->getUniqueName(), "output"}});
 
 		app.init();
 

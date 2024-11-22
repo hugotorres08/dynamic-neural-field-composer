@@ -4,8 +4,6 @@
 
 #include "user_interface/element_window.h"
 
-
-
 namespace dnf_composer
 {
 	namespace user_interface
@@ -191,6 +189,26 @@ namespace dnf_composer
 				fieldCoupling->setParameters(fcp);
 			}
 
+			ImGui::PushID(element->getUniqueName().c_str()); // Use unique ID for scope
+
+			if (ImGui::Button("Read weights"))
+			{
+				fieldCoupling->readWeights();
+			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("Save weights"))
+			{
+				fieldCoupling->writeWeights();
+			}
+			ImGui::SameLine();
+
+			if (ImGui::Button("Clear weights"))
+			{
+				fieldCoupling->clearWeights();
+			}
+
+			ImGui::PopID(); // End unique ID scope
 		}
 
 		void ElementWindow::modifyElementGaussKernel(const std::shared_ptr<element::Element>& element) 
@@ -351,12 +369,12 @@ namespace dnf_composer
 				auto width = static_cast<float>(coupling.width);
 
 				label = "##" + element->getUniqueName() + "x_i" + std::to_string(couplingIndex);
-				ImGui::SliderFloat(label.c_str(), &x_i, 0, static_cast<float>(size));
+				ImGui::SliderFloat(label.c_str(), &x_i, 0, static_cast<float>(other_size));
 				text = "x_i " + std::to_string(couplingIndex);
 				ImGui::SameLine(); ImGui::Text(text.c_str());
 
 				label = "##" + element->getUniqueName() + "x_j" + std::to_string(couplingIndex);
-				ImGui::SliderFloat(label.c_str(), &x_j, 0, static_cast<float>(other_size));
+				ImGui::SliderFloat(label.c_str(), &x_j, 0, static_cast<float>(size));
 				text = "x_j " + std::to_string(couplingIndex);
 				ImGui::SameLine(); ImGui::Text(text.c_str());
 
@@ -387,8 +405,6 @@ namespace dnf_composer
 					gfc->setParameters(gfcp);
 				}
 			}
-			
 		}
-		
 	}
 }
