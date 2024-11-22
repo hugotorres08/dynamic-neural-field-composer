@@ -3,7 +3,6 @@
 
 #include <imgui-platform-kit/user_interface_window.h>
 
-#include "wizards/learning_wizard.h"
 #include "simulation/simulation.h"
 #include "elements/element_factory.h"
 

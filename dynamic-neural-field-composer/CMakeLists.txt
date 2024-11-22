@@ -106,9 +106,6 @@ set(user_interface_headers
     "include/user_interface/main_window.h"
     "include/user_interface/widgets.h"
 )
-set(wizards_headers
-    #"include/wizards/learning_wizard.h"
-)
 
 set(header 
     ${simulation_headers}
@@ -120,7 +117,6 @@ set(header
     ${exceptions_headers}
     ${user_interface_headers}
     ${user_interface_headers}
-    ${wizards_headers}
 )
 
 # Set source files
@@ -172,8 +168,7 @@ set(src
     "src/user_interface/node_graph_window.cpp"
     "src/user_interface/main_window.cpp"
     "src/user_interface/widgets.cpp"
-    
-    #"src/wizards/learning_wizard.cpp"
+   
 )
 
 # Define library target
