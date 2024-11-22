@@ -55,7 +55,6 @@ int main()
             element::GaussFieldCouplingParameters{input_dimensions, true, false, { {50.0, 50.0, 5.0, 5.0},
             																										{25.0, 75.0, 5.0, 5.0},
 																													{75.0, 25.0, 5.0, 5.0}}});
-
         simulation->addElement(nf_1);
         simulation->addElement(gk_1);
         simulation->addElement(nn_1);
