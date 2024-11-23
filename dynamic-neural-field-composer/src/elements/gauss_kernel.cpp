@@ -47,6 +47,7 @@ namespace dnf_composer
 				components["kernel"][i] = parameters.amplitude * gauss[i];
 
 			std::ranges::fill(components["input"], 0.0);
+			std::ranges::fill(components["output"], 0.0);
 		}
 
 		void GaussKernel::step(double t, double deltaT)

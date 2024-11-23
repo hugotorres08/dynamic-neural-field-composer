@@ -22,7 +22,7 @@ namespace dnf_composer
             const auto simulationElement = simulation->getElement(i);
             json elementJson;
             elementJson = elementToJson(simulationElement);
-            elementsJson.push_back(elementJson);
+            elementsJson.emplace_back(elementJson);
         }
 
         // Write the JSON to a file
@@ -190,7 +190,7 @@ namespace dnf_composer
             elementJson["input_x_max"] = gaussFieldCouplingParameters.inputFieldDimensions.x_max;
             elementJson["input_d_x"] = gaussFieldCouplingParameters.inputFieldDimensions.d_x;
             for (const auto& coupling : gaussFieldCouplingParameters.couplings)
-				elementJson["couplings"] += {coupling.x_i, coupling.x_j};
+				elementJson["couplings"] += {coupling.x_i, coupling.x_j, coupling.amplitude, coupling.width};
         }
         break;
         case element::UNINITIALIZED:
@@ -260,10 +260,11 @@ namespace dnf_composer
                 const double width = elementJson["width"];
                 const bool circular = elementJson["circular"];
                 const bool normalized = elementJson["normalized"];
+                const double amplitudeGlobal = elementJson["amplitudeGlobal"];
 
                 auto kernel = std::make_shared<element::GaussKernel>(
                     element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
-                    element::GaussKernelParameters(width, amplitude, circular, normalized)
+                    element::GaussKernelParameters(width, amplitude, amplitudeGlobal, circular, normalized)
                 );
                 simulation->addElement(kernel);
             }
@@ -320,11 +321,22 @@ namespace dnf_composer
                 const bool normalized = elementJson["normalized"];
                 const int input_x_max = elementJson["input_x_max"];
                 const double input_d_x = elementJson["input_d_x"];
-                const std::vector<std::pair<double, double>> couplings = elementJson["couplings"];
+
+                std::vector<element::GaussCoupling> couplings;
+                couplings.reserve(elementJson["couplings"].size());
+                for (const auto& coupling : elementJson["couplings"])
+                {
+	                const double x_i = coupling[0];
+					const double x_j = coupling[1];
+                    const double amp = coupling[2];
+                    const double width = coupling[3];
+					auto gc = element::GaussCoupling(x_i, x_j, amp, width);
+					couplings.push_back(gc);
+				}
 
                 auto coupling = std::make_shared<element::GaussFieldCoupling>(
 					element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
-                    element::GaussFieldCouplingParameters({input_x_max, input_d_x}, circular, normalized)
+                    element::GaussFieldCouplingParameters({input_x_max, input_d_x}, normalized, circular, couplings)
 				);
                 simulation->addElement(coupling);
             }

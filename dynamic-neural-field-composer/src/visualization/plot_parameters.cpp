@@ -85,11 +85,11 @@ namespace dnf_composer
 	}
 
 	PlotAnnotations::PlotAnnotations()
-		:title("title"), x_label("x label"), y_label("y label"), legends()
+		:title("title"), x_label("x label"), y_label("y label")//, legends()
 	{}
 
 	PlotAnnotations::PlotAnnotations(std::string title, std::string x_label, std::string y_label)
-		:title(std::move(title)), x_label(std::move(x_label)), y_label(std::move(y_label)), legends()
+		:title(std::move(title)), x_label(std::move(x_label)), y_label(std::move(y_label))//, legends()
 	{}
 
 	std::string PlotAnnotations::toString() const
@@ -100,17 +100,17 @@ namespace dnf_composer
 		result += "x_label: " + x_label + ", ";
 		result += "y_label: " + y_label + "}";
 		result += "legends: ";
-		if (legends.empty())
-			result += "none";
-		else
-			for (const auto& l : legends)
-				result += ", " + l;
+		//if (legends.empty())
+		//	result += "none";
+		//else
+		//	for (const auto& l : legends)
+		//		result += ", " + l;
 		return result;
 	}
 
 	bool PlotAnnotations::operator==(const PlotAnnotations& other) const
 	{
-		if (title != other.title || x_label != other.x_label || y_label != other.y_label || legends != other.legends)
+		if (title != other.title || x_label != other.x_label || y_label != other.y_label )//|| legends != other.legends)
 			return false;
 		return true;
 	}

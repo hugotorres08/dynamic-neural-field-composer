@@ -33,8 +33,9 @@ namespace dnf_composer
 
 		void NeuralField::init()
 		{
-			//std::ranges::fill(components["activation"], parameters.startingRestingLevel);
-			//std::ranges::fill(components["input"], 0.0);
+			std::ranges::fill(components["activation"], parameters.startingRestingLevel);
+			std::ranges::fill(components["input"], 0.0);
+			std::ranges::fill(components["output"], 0.0);
 			std::ranges::fill(components["resting level"], parameters.startingRestingLevel);
 			calculateOutput();
 		}

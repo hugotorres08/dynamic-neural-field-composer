@@ -6,7 +6,6 @@
 #include "user_interface/simulation_window.h"
 #include "user_interface/node_graph_window.h"
 #include "elements/element_factory.h"
-#include "wizards/learning_wizard.h"
 
 
 int main()

@@ -179,6 +179,7 @@ namespace dnf_composer
 		clean();
 		const SimulationFileManager sfm{ shared_from_this(), readPath };
 		sfm.loadElementsFromJson();
+		init();
 	}
 
 	void Simulation::run(double runTime)

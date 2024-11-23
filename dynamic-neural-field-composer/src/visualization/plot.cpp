@@ -3,13 +3,16 @@
 namespace dnf_composer
 {
 
-	Plot::Plot(PlotCommonParameters parameters, const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
-		: uniqueIdentifier(uniqueIdentifierCounter++), commonParameters(std::move(parameters)), data()
+	Plot::Plot(PlotCommonParameters parameters//, 
+		//const std::vector<std::vector<double>*>& data, 
+		//const std::vector<std::string>& legends
+	)
+		: uniqueIdentifier(uniqueIdentifierCounter++), commonParameters(std::move(parameters))//, //data()
 	{
-		addPlottingData(data, legends);
+		//addPlottingData(data, legends);
 	}
 
-	void Plot::addPlottingData(const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
+	/*void Plot::addPlottingData(const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
 	{
 		if (data.empty())
 			return;
@@ -77,7 +80,7 @@ namespace dnf_composer
 			return;
 		}
 		log(tools::logger::LogLevel::WARNING, "Data does not exist in the plot. Skipping removing data from plot " + std::to_string(uniqueIdentifier) + ".");
-	}
+	}*/
 
 	int Plot::getUniqueIdentifier() const
 	{
@@ -89,10 +92,10 @@ namespace dnf_composer
 		return commonParameters.type;
 	}
 
-	std::vector<std::vector<double>*> Plot::getData() const
+	/*std::vector<std::vector<double>*> Plot::getData() const
 	{
 		return data;
-	}
+	}*/
 
 	PlotDimensions Plot::getDimensions() const
 	{

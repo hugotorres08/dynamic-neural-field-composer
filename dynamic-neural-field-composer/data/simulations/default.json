@@ -71,15 +71,15 @@
                 "output"
             ],
             [
+                "Element gauss field coupling 16",
+                "output"
+            ],
+            [
                 "Element normal noise 12",
                 "output"
             ],
             [
                 "Element gauss stimulus 14",
-                "output"
-            ],
-            [
-                "Element gauss field coupling 16",
                 "output"
             ]
         ],
@@ -160,15 +160,21 @@
         "couplings": [
             [
                 50.0,
-                50.0
+                50.0,
+                5.0,
+                5.0
             ],
             [
                 25.0,
-                75.0
+                75.0,
+                5.0,
+                5.0
             ],
             [
                 75.0,
-                25.0
+                25.0,
+                5.0,
+                5.0
             ]
         ],
         "d_x": 1.0,
@@ -525,19 +531,27 @@
         "couplings": [
             [
                 60.0,
-                40.0
+                40.0,
+                5.0,
+                5.0
             ],
             [
-                40.0,
-                60.0
+                106.57499694824219,
+                64.41799926757813,
+                5.0,
+                5.0
             ],
             [
                 20.0,
-                80.0
+                23.424999237060547,
+                5.0,
+                5.0
             ],
             [
-                80.0,
-                20.0
+                139.31500244140625,
+                20.0,
+                5.0,
+                5.0
             ]
         ],
         "d_x": 0.6,
@@ -629,11 +643,11 @@
                 "output"
             ],
             [
-                "Element normal noise 66",
+                "Element field coupling 70",
                 "output"
             ],
             [
-                "Element field coupling 70",
+                "Element normal noise 66",
                 "output"
             ],
             [

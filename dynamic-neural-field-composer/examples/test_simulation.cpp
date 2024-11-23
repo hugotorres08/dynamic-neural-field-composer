@@ -20,6 +20,7 @@ int main()
         app.addWindow<imgui_kit::LogWindow>();
         app.addWindow<user_interface::ElementWindow>();
         app.addWindow<user_interface::PlotControlWindow>();
+        app.addWindow<user_interface::SimulationWindow>();
 
         element::ElementFactory factory;
         const element::ElementDimensions input_dimensions{200, 0.7};

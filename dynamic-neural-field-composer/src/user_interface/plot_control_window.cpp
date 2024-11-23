@@ -10,7 +10,7 @@ namespace dnf_composer
 
 		void PlotControlWindow::render()
 		{
-			renderElementPlotTable();
+			//renderElementPlotTable();
 			//renderPlotTable();
 			renderPlotWindows();
 			updatePlotDimensions = false;
@@ -18,7 +18,8 @@ namespace dnf_composer
 
 		void PlotControlWindow::renderPlotWindows() const
 		{
-			for (const auto& plot : visualization->getPlots())
+			visualization->render();
+			/*for (const auto& plot : visualization->getPlots())
 			{
 				const int plotID = plot->getUniqueIdentifier();
 				const std::string plotWindowTitle = "Plot #" + std::to_string(plotID);
@@ -32,133 +33,133 @@ namespace dnf_composer
 
 				if (!open)
 					visualization->removePlot(plotID);
-			}
+			}*/
 		}
 
-		void PlotControlWindow::renderElementPlotTable() const
-		{
-			if (ImGui::Begin("Element Plot Control"))
-			{
-				widgets::renderHelpMarker("Select the data you want to plot and where to plot it.");
+		//void PlotControlWindow::renderElementPlotTable() const
+		//{
+		//	if (ImGui::Begin("Element Plot Control"))
+		//	{
+		//		widgets::renderHelpMarker("Select the data you want to plot and where to plot it.");
 
-				if (ImGui::BeginTable("PlotControlTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
-				{
-					// Set column headers
-					ImGui::TableSetupColumn("Elements");
-					ImGui::TableSetupColumn("Components");
-					ImGui::TableSetupColumn("Plot");
-					ImGui::TableSetupColumn("Plot IDs");
-					ImGui::TableHeadersRow();
+		//		if (ImGui::BeginTable("PlotControlTable", 4, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg))
+		//		{
+		//			// Set column headers
+		//			ImGui::TableSetupColumn("Elements");
+		//			ImGui::TableSetupColumn("Components");
+		//			ImGui::TableSetupColumn("Plot");
+		//			ImGui::TableSetupColumn("Plot IDs");
+		//			ImGui::TableHeadersRow();
 
-					for (const auto& element : simulation->getElements())
-					{
-						// For each element, iterate over its components
-						const auto* components = element->getComponents();
-						for (const auto& [name, value] : *components) 
-						{
-							// Start a new row for each component
-							ImGui::TableNextRow();
-							// Element column
-							ImGui::TableSetColumnIndex(0);
-							ImGui::TextUnformatted(element->getUniqueName().c_str()); // Display element ID
-							// Component column
-							ImGui::TableSetColumnIndex(1);
-							ImGui::TextUnformatted(name.c_str()); // Display component name
-							// Plot checkbox column
-							ImGui::TableSetColumnIndex(2);
+		//			for (const auto& element : simulation->getElements())
+		//			{
+		//				// For each element, iterate over its components
+		//				const auto* components = element->getComponents();
+		//				for (const auto& [name, value] : *components) 
+		//				{
+		//					// Start a new row for each component
+		//					ImGui::TableNextRow();
+		//					// Element column
+		//					ImGui::TableSetColumnIndex(0);
+		//					ImGui::TextUnformatted(element->getUniqueName().c_str()); // Display element ID
+		//					// Component column
+		//					ImGui::TableSetColumnIndex(1);
+		//					ImGui::TextUnformatted(name.c_str()); // Display component name
+		//					// Plot checkbox column
+		//					ImGui::TableSetColumnIndex(2);
 
-							// Check if the component is already plotted and where
-							std::vector<int> componentPlotIds = discoverPlotIdsIfComponentIsPlotted(&value);
-							std::string componentPlotIdStr = {};
-							for (const auto& id : componentPlotIds)
-								componentPlotIdStr += std::to_string(id) + " ";
+		//					// Check if the component is already plotted and where
+		//					std::vector<int> componentPlotIds = discoverPlotIdsIfComponentIsPlotted(&value);
+		//					std::string componentPlotIdStr = {};
+		//					for (const auto& id : componentPlotIds)
+		//						componentPlotIdStr += std::to_string(id) + " ";
 
-							bool isComponentInAPlot = !componentPlotIds.empty();
-							bool usrToggledPlot = false;
-							if (ImGui::Checkbox(("##PlotCheckbox" + element->getUniqueName() + name).c_str(), &isComponentInAPlot))
-								usrToggledPlot = !usrToggledPlot;
+		//					bool isComponentInAPlot = !componentPlotIds.empty();
+		//					bool usrToggledPlot = false;
+		//					if (ImGui::Checkbox(("##PlotCheckbox" + element->getUniqueName() + name).c_str(), &isComponentInAPlot))
+		//						usrToggledPlot = !usrToggledPlot;
 
-							// Plot ID column
-							ImGui::TableSetColumnIndex(3);
+		//					// Plot ID column
+		//					ImGui::TableSetColumnIndex(3);
 
-							if (componentPlotIds.empty())
-							{
-								if (usrToggledPlot)
-								{
-									visualization->plot({ {element->getUniqueName(), name} });
-									ImGui::TextDisabled("_");
-								}
-								else
-								{
-									ImGui::TextDisabled("_");
-								}
-							}
-							else
-							{
-								if (usrToggledPlot)
-								{
-									for (const auto& id : componentPlotIds)
-										visualization->removePlottingDataFromPlot(id, { element->getUniqueName(), name });
-									ImGui::TextDisabled("_");
-								}
-								else
-								{
-									std::string newComponentPlotIdsStr = componentPlotIdStr;
-									std::vector<char> buffer(newComponentPlotIdsStr.begin(), newComponentPlotIdsStr.end());
-									buffer.resize(newComponentPlotIdsStr.size() + 10);  // Ensure extra space for user input
-									if (ImGui::InputText(("##PlotID" + element->getUniqueName() + name).c_str(), buffer.data(), buffer.size())) 
-									{
-										newComponentPlotIdsStr = buffer.data();
-									}
+		//					if (componentPlotIds.empty())
+		//					{
+		//						if (usrToggledPlot)
+		//						{
+		//							visualization->plot({ {element->getUniqueName(), name} });
+		//							ImGui::TextDisabled("_");
+		//						}
+		//						else
+		//						{
+		//							ImGui::TextDisabled("_");
+		//						}
+		//					}
+		//					else
+		//					{
+		//						if (usrToggledPlot)
+		//						{
+		//							for (const auto& id : componentPlotIds)
+		//								visualization->removePlottingDataFromPlot(id, { element->getUniqueName(), name });
+		//							ImGui::TextDisabled("_");
+		//						}
+		//						else
+		//						{
+		//							std::string newComponentPlotIdsStr = componentPlotIdStr;
+		//							std::vector<char> buffer(newComponentPlotIdsStr.begin(), newComponentPlotIdsStr.end());
+		//							buffer.resize(newComponentPlotIdsStr.size() + 10);  // Ensure extra space for user input
+		//							if (ImGui::InputText(("##PlotID" + element->getUniqueName() + name).c_str(), buffer.data(), buffer.size())) 
+		//							{
+		//								newComponentPlotIdsStr = buffer.data();
+		//							}
 
-									if (ImGui::IsItemDeactivatedAfterEdit())
-									{
-										std::vector<int> newComponentPlotIds;
-										newComponentPlotIds.reserve(componentPlotIds.size());
-										std::istringstream stream(newComponentPlotIdsStr);  // Create an input string stream
+		//							if (ImGui::IsItemDeactivatedAfterEdit())
+		//							{
+		//								std::vector<int> newComponentPlotIds;
+		//								newComponentPlotIds.reserve(componentPlotIds.size());
+		//								std::istringstream stream(newComponentPlotIdsStr);  // Create an input string stream
 
-										int num;
-										while (stream >> num)  // Extract integers from the stream
-											newComponentPlotIds.emplace_back(num);  // Store each integer in the vector
+		//								int num;
+		//								while (stream >> num)  // Extract integers from the stream
+		//									newComponentPlotIds.emplace_back(num);  // Store each integer in the vector
 
-										// Sort both vectors (required for set_difference)
-										std::sort(componentPlotIds.begin(), componentPlotIds.end());
-										std::sort(newComponentPlotIds.begin(), newComponentPlotIds.end());
+		//								// Sort both vectors (required for set_difference)
+		//								std::sort(componentPlotIds.begin(), componentPlotIds.end());
+		//								std::sort(newComponentPlotIds.begin(), newComponentPlotIds.end());
 
-										// Vectors to store differences
-										std::vector<int> in_vec1_not_in_vec2;
-										in_vec1_not_in_vec2.reserve(componentPlotIds.size());
-										std::vector<int> in_vec2_not_in_vec1;
-										in_vec2_not_in_vec1.reserve(newComponentPlotIds.size());
+		//								// Vectors to store differences
+		//								std::vector<int> in_vec1_not_in_vec2;
+		//								in_vec1_not_in_vec2.reserve(componentPlotIds.size());
+		//								std::vector<int> in_vec2_not_in_vec1;
+		//								in_vec2_not_in_vec1.reserve(newComponentPlotIds.size());
 
-										// Get elements in vec1 but not in vec2
-										std::set_difference(componentPlotIds.begin(), componentPlotIds.end(), newComponentPlotIds.begin(), newComponentPlotIds.end(),
-											std::back_inserter(in_vec1_not_in_vec2));
+		//								// Get elements in vec1 but not in vec2
+		//								std::set_difference(componentPlotIds.begin(), componentPlotIds.end(), newComponentPlotIds.begin(), newComponentPlotIds.end(),
+		//									std::back_inserter(in_vec1_not_in_vec2));
 
-										// Get elements in vec2 but not in vec1
-										std::set_difference(newComponentPlotIds.begin(), newComponentPlotIds.end(), componentPlotIds.begin(), componentPlotIds.end(),
-											std::back_inserter(in_vec2_not_in_vec1));
+		//								// Get elements in vec2 but not in vec1
+		//								std::set_difference(newComponentPlotIds.begin(), newComponentPlotIds.end(), componentPlotIds.begin(), componentPlotIds.end(),
+		//									std::back_inserter(in_vec2_not_in_vec1));
 
-										if (!in_vec1_not_in_vec2.empty())
-											for (int plotId : in_vec1_not_in_vec2) 
-												visualization->removePlottingDataFromPlot(plotId, { element->getUniqueName(), name });
+		//								if (!in_vec1_not_in_vec2.empty())
+		//									for (int plotId : in_vec1_not_in_vec2) 
+		//										visualization->removePlottingDataFromPlot(plotId, { element->getUniqueName(), name });
 
-										if (!in_vec2_not_in_vec1.empty())
-											for (int plotId : in_vec2_not_in_vec1)
-												visualization->plot(plotId, { {element->getUniqueName(), name} });
-										
-									}
+		//								if (!in_vec2_not_in_vec1.empty())
+		//									for (int plotId : in_vec2_not_in_vec1)
+		//										visualization->plot(plotId, { {element->getUniqueName(), name} });
+		//								
+		//							}
 
-								}
-							}
-						}
-					}
-					ImGui::EndTable();
-				}
-				ImGui::End();
-			}
-			
-		}
+		//						}
+		//					}
+		//				}
+		//			}
+		//			ImGui::EndTable();
+		//		}
+		//		ImGui::End();
+		//	}
+		//	
+		//}
 
 		void PlotControlWindow::renderPlotTable()
 		{
@@ -290,34 +291,34 @@ namespace dnf_composer
 
 		Plot* PlotControlWindow::getSelectedPlot(int id) const
 		{
-			for (const auto& plot : visualization->getPlots())
-			{
-				if (plot->getUniqueIdentifier() == id)
-				{
-					return plot.get();  // Return a raw pointer to avoid unique_ptr copy issues
-				}
-			}
+			//for (const auto& plot : visualization->getPlots())
+			//{
+			//	if (plot->getUniqueIdentifier() == id)
+			//	{
+			//		return plot.get();  // Return a raw pointer to avoid unique_ptr copy issues
+			//	}
+			//}
 			return nullptr;
 		}
 
-		std::vector<int> PlotControlWindow::discoverPlotIdsIfComponentIsPlotted(const std::vector<double>* componentPtr) const
-		{
-			std::vector<int> plotIds;
-			plotIds.reserve(visualization->getPlots().size());
-			for (const auto& plot : visualization->getPlots())
-			{
-				for (const auto& data : plot->getData())
-				{
-					if (data != nullptr && !data->empty())
-					{
-						if (componentPtr == data) // Compare addresses directly
-						{
-							plotIds.emplace_back(plot->getUniqueIdentifier());
-						}
-					}
-				}
-			}
-			return plotIds;
-		}
+		//std::vector<int> PlotControlWindow::discoverPlotIdsIfComponentIsPlotted(const std::vector<double>* componentPtr) const
+		//{
+		//	std::vector<int> plotIds;
+		//	plotIds.reserve(visualization->getPlots().size());
+		//	for (const auto& plot : visualization->getPlots())
+		//	{
+		//		for (const auto& data : plot->getData())
+		//		{
+		//			if (data != nullptr && !data->empty())
+		//			{
+		//				if (componentPtr == data) // Compare addresses directly
+		//				{
+		//					plotIds.emplace_back(plot->getUniqueIdentifier());
+		//				}
+		//			}
+		//		}
+		//	}
+		//	return plotIds;
+		//}
 	}
 }

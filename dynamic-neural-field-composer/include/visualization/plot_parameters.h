@@ -25,7 +25,6 @@ namespace dnf_composer
 	struct PlotAnnotations
 	{
 		std::string title, x_label, y_label;
-		std::vector<std::string> legends;
 
 		PlotAnnotations();
 		PlotAnnotations(std::string title, std::string x_label, std::string y_label);

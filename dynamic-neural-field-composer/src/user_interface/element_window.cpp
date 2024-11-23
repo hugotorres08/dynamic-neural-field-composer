@@ -39,7 +39,37 @@ namespace dnf_composer
 			const std::string elementId = element->getUniqueName();
 			const element::ElementLabel label = element->getLabel();
 
-			ImGui::Text("Element %s", elementId.c_str());
+			//// Set text color based on the element label
+			//switch (label)
+			//{
+			//case element::ElementLabel::NEURAL_FIELD:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Blue);
+			//	break;
+			//case element::ElementLabel::GAUSS_STIMULUS:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Green);
+			//	break;
+			//case element::ElementLabel::FIELD_COUPLING:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Red);
+			//	break;
+			//case element::ElementLabel::GAUSS_KERNEL:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Magenta);
+			//	break;
+			//case element::ElementLabel::MEXICAN_HAT_KERNEL:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Lime);
+			//	break;
+			//case element::ElementLabel::NORMAL_NOISE:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Violet);
+			//	break;
+			//case element::ElementLabel::GAUSS_FIELD_COUPLING:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Azure);
+			//	break;
+			//default:
+			//	break;
+			//}
+			//ImGui::PopStyleColor();
+
+			ImGui::SeparatorText( ("Element " + elementId).c_str() );
+
 
 			switch (label)
 			{
@@ -64,7 +94,7 @@ namespace dnf_composer
 			case element::ElementLabel::GAUSS_FIELD_COUPLING:
 				modifyElementGaussFieldCoupling(element);
 				break;
-			default:
+			default: case element::ElementLabel::UNINITIALIZED:
 				log(tools::logger::LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.");
 				break;
 			}
