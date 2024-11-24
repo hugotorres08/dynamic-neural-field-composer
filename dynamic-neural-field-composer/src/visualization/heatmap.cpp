@@ -28,11 +28,14 @@ namespace dnf_composer
 		return true;
 	}
 
-	Heatmap::Heatmap(const PlotCommonParameters& parameters, const HeatmapParameters& heatmapParameters//, const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends
-	)
-		: Plot(parameters//, data, legends
-		), heatmapParameters(heatmapParameters)
+	Heatmap::Heatmap(const PlotCommonParameters& parameters, const HeatmapParameters& heatmapParameters)
+		: Plot(parameters), heatmapParameters(heatmapParameters)
 	{
+		commonParameters.dimensions.xMin = 0;
+		commonParameters.dimensions.xMax = 100;
+		commonParameters.dimensions.yMin = 0;
+		commonParameters.dimensions.yMax = 100;
+		commonParameters.type = PlotType::HEATMAP;
 	}
 
 	void Heatmap::setScale(double min, double max)
@@ -59,10 +62,6 @@ namespace dnf_composer
 		result << "Plot: { ";
 		result << "Unique identifier: " << uniqueIdentifier << ", ";
 		result << commonParameters.toString() << ", ";
-		//result << "Data*: [ ";
-		//for (auto& d : data)
-		//	result << reinterpret_cast<void*>(d) << ", ";
-		//result << " ] }";
 		result << heatmapParameters.toString();
 		return result.str();
 	}

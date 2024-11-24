@@ -16,10 +16,11 @@ namespace dnf_composer
 	{
 	private:
 		std::shared_ptr<Simulation> simulation;
-		//std::vector<std::shared_ptr<Plot>> plots;
 		std::unordered_map<std::shared_ptr<Plot>, std::vector<std::pair<std::string, std::string>>> plots;
 	public:
 		Visualization(const std::shared_ptr<Simulation>& simulation);
+
+		void plot(PlotType type = PlotType::LINE_PLOT);
 
 		void plot(const std::vector<std::pair<std::string, std::string>>& data);
 		void plot(const std::string& name, const std::string& component);
@@ -36,7 +37,7 @@ namespace dnf_composer
 		void removePlottingDataFromPlot(int plotId, const std::pair<std::string, std::string>& data);
 
 		std::shared_ptr<Simulation> getSimulation() const { return simulation; }
-		//std::vector<std::shared_ptr<Plot>> getPlots() { return plots; }
+		std::unordered_map<std::shared_ptr<Plot>, std::vector<std::pair<std::string, std::string>>> getPlots() { return plots; }
 
 		void render();
 	};

@@ -25,33 +25,78 @@ int main()
 		app.addWindow<user_interface::PlotControlWindow>();
 
 		element::ElementFactory factory;
-		const auto elem1 = factory.createElement(element::NEURAL_FIELD, element::ElementCommonParameters(), element::NeuralFieldParameters());
-		const auto elem2 = factory.createElement(element::GAUSS_STIMULUS, element::ElementCommonParameters(), element::GaussStimulusParameters());
-		const auto elem3 = factory.createElement(element::GAUSS_KERNEL, element::ElementCommonParameters(), element::GaussKernelParameters());
+		const auto elem1 = factory.createElement(element::NEURAL_FIELD);
+		const auto elem2 = factory.createElement(element::GAUSS_STIMULUS);
+		const auto elem3 = factory.createElement(element::GAUSS_KERNEL);
+
+		const auto elem4 = factory.createElement(element::NEURAL_FIELD);
+		const auto elem5 = factory.createElement(element::GAUSS_STIMULUS);
+		const auto elem6 = factory.createElement(element::GAUSS_KERNEL);
 
 		simulation->addElement(elem1);
 		simulation->addElement(elem2);
 		simulation->addElement(elem3);
-
-		visualization->plot({ { elem1->getUniqueName(), "output"}, {elem2->getUniqueName(), "output"} });
-		visualization->plot({ { elem1->getUniqueName(), "output"}, {elem2->getUniqueName(), "output"} });
-
-
-		/*const PlotCommonParameters plotParams{PlotType::LINE_PLOT, {0, 31, 0, 1, 1.0}, {"Gauss kernel", "Space", "Amplitude"}};
-		const LinePlotParameters linePlotParams{ 5.0f, true };
-		visualization->plot(plotParams, linePlotParams, elem3->getUniqueName(), "kernel");*/
-
-
-		element::ElementDimensions esdp = { 100, 1.0 };
-		element::ElementCommonParameters ecp = { "gc", esdp };
-		element::GaussCoupling gc1{ 5, 10, 2, 4 };
-		//element::GaussFieldCouplingParameters gfcp = { true, false, {gc1} };
-		/*const auto elem4 = std::make_shared<element::GaussFieldCoupling>(ecp, gfcp);
 		simulation->addElement(elem4);
-		const auto elem5 = factory.createElement(element::NEURAL_FIELD, element::ElementCommonParameters(), element::NeuralFieldParameters());
 		simulation->addElement(elem5);
-		elem4->addInput(elem5, "output");*/
-		//visualization->plot(PlotCommonParameters{ PlotType::HEATMAP, {0, 100, 0, 100, 1.0}, {"x", "y", "title"} }, HeatmapParameters{ 0.0, 0.5 }, { { elem4->getUniqueName(), "kernel"} });
+		simulation->addElement(elem6);
+
+		elem1->addInput(elem2);
+		elem1->addInput(elem3);
+		elem3->addInput(elem1);
+
+		elem4->addInput(elem5);
+		elem4->addInput(elem6);
+		elem6->addInput(elem4);
+
+		visualization->plot({ { elem1->getUniqueName(), "output"}, {elem1->getUniqueName(), "activation"} });
+		visualization->plot( elem3->getUniqueName(), "output");
+
+		visualization->plot(
+			PlotCommonParameters{
+				PlotType::LINE_PLOT,
+				PlotDimensions{0.0, 100.0, -10.0, 15.0, 1.0, 1.0},
+				PlotAnnotations{"This is a title", "x", "y"}
+			}, 
+			LinePlotParameters{5.0, false},
+			{ { elem4->getUniqueName(), "output"}, {elem4->getUniqueName(), "activation"}
+			}
+		);
+
+		visualization->plot(
+			PlotCommonParameters{
+				PlotType::LINE_PLOT,
+				PlotDimensions{0.0, 100.0, -10.0, 15.0, 1.0, 1.0},
+				PlotAnnotations{"This is another title", "x", "y"}
+			},
+			LinePlotParameters{ 5.0, false },
+			elem6->getUniqueName(), "output"
+		);
+
+		visualization->plot(0, { { elem2->getUniqueName(), "output"} });
+		visualization->plot(2, elem5->getUniqueName(), "output");
+
+		visualization->removePlot(1);
+		visualization->removePlottingDataFromPlot(0, { elem1->getUniqueName(), "output" });
+
+		visualization->removeAllPlots();
+
+		visualization->plot(PlotType::LINE_PLOT);
+		visualization->plot(PlotType::HEATMAP);
+
+		const auto elem7 = factory.createElement(element::GAUSS_FIELD_COUPLING,
+			element::ElementCommonParameters{element::GAUSS_FIELD_COUPLING},
+			element::GaussFieldCouplingParameters{ element::ElementDimensions{100, 1.0},
+			true, false, {{50.0, 50.0, 5, 5}}});
+
+		simulation->addElement(elem7);
+
+		elem7->addInput(elem1);
+		elem4->addInput(elem7);
+
+		visualization->plot({ { elem1->getUniqueName(), "activation"}, {elem1->getUniqueName(), "output"} });
+		visualization->plot(4, { {elem4->getUniqueName(), "output"} });
+
+		visualization->plot(5, elem7->getUniqueName(), "weights");
 
 		app.init();
 

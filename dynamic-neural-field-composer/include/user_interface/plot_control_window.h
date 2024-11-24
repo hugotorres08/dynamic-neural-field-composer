@@ -23,7 +23,7 @@ namespace dnf_composer
 		private:
 			void renderPlotWindows() const;
 			//void renderLinePlot(const Plot& plot) const;
-			//void renderElementPlotTable() const;
+			void renderElementPlotTable() const;
 			void renderPlotTable();
 			Plot* getSelectedPlot(int id) const;
 			//std::vector<int> discoverPlotIdsIfComponentIsPlotted(const std::vector<double>* componentPtr) const;

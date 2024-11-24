@@ -70,7 +70,6 @@ namespace dnf_composer
 
 			ImGui::SeparatorText( ("Element " + elementId).c_str() );
 
-
 			switch (label)
 			{
 			case element::ElementLabel::NEURAL_FIELD:
