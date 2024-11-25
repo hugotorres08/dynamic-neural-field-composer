@@ -99,12 +99,6 @@ namespace dnf_composer
 		result += "title: " + title + ", ";
 		result += "x_label: " + x_label + ", ";
 		result += "y_label: " + y_label + "}";
-		result += "legends: ";
-		//if (legends.empty())
-		//	result += "none";
-		//else
-		//	for (const auto& l : legends)
-		//		result += ", " + l;
 		return result;
 	}
 

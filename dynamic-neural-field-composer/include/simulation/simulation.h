@@ -62,6 +62,7 @@ namespace dnf_composer
 		int getNumberOfElements() const;
 		std::vector < std::shared_ptr<element::Element>> getElementsThatHaveSpecifiedElementAsInput(const std::string& specifiedElement, 
 		                                                                                            const std::string& inputComponent = "output") const;
+		bool componentExists(const std::string& id, const std::string& componentName) const;
 
 		void exportComponentToFile(const std::string& id, const std::string& componentName) const;
 

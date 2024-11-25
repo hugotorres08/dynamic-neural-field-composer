@@ -31,7 +31,6 @@ namespace dnf_composer
 		void plot(int plotId, const std::vector<std::pair<std::string, std::string>>& data);
 		void plot(int plotId, const std::string& name, const std::string& component);
 
-		//void changePlotParameters(int plotId, const PlotParameters& parameters);
 		void removePlot(int plotId);
 		void removeAllPlots();
 		void removePlottingDataFromPlot(int plotId, const std::pair<std::string, std::string>& data);

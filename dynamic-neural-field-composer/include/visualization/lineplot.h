@@ -21,10 +21,7 @@ namespace dnf_composer
 		LinePlotParameters linePlotParameters;
 	public:
 		LinePlot(const PlotCommonParameters& parameters = PlotCommonParameters(),
-			const LinePlotParameters& linePlotParameters = LinePlotParameters()//,
-			//const std::vector<std::vector<double>*>& data = {},
-			//const std::vector<std::string>& legends = {}
-			);
+			const LinePlotParameters& linePlotParameters = LinePlotParameters());
 
 		void setLineThickness(double lineThickness);
 		void setAutoFit(bool autoFit);

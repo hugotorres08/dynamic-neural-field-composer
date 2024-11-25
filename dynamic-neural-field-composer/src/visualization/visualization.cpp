@@ -98,24 +98,6 @@ namespace dnf_composer
 		plot(plotId, dataVec);
 	}
 
-	//void Visualization::changePlotParameters(int plotId, const PlotParameters& parameters)
-	//{
-	//	// Find the plot with the specified unique identifier
-	//	const auto it = std::find_if(plots.begin(), plots.end(), [plotId](const Plot& plot) {
-	//		return plot.getUniqueIdentifier() == plotId;
-	//		});
-
-	//	// Check if the plot was found
-	//	if (it == plots.end()) {
-	//		log(tools::logger::LogLevel::ERROR, "Plot with ID " + std::to_string(plotId) + " not found.");
-	//		return;
-	//	}
-
-	//	// Update the plot parameters
-	//	it->setParameters(parameters);
-	//	log(tools::logger::LogLevel::INFO, "Parameters updated for plot with ID " + std::to_string(plotId) + ".");
-	//}
-
 	void Visualization::removePlot(int plotId)
 	{
 		// Find the plot with the specified unique identifier
@@ -174,6 +156,17 @@ namespace dnf_composer
 		for (const auto& entry : plots) 
 		{
 			std::vector<std::pair<std::string, std::string>> data = entry.second;
+
+			// Check if data exists in the simulation, if not remove it from the plot
+			if (!std::ranges::all_of(data, [this](const std::pair<std::string, std::string>& d)
+			{
+				return simulation->componentExists(d.first, d.second);
+				}))
+			{
+				removePlot(entry.first->getUniqueIdentifier());
+				return;
+			}
+
 
 			std::vector<std::vector<double>*> allDataToPlotPtr;
 			allDataToPlotPtr.reserve(data.size());

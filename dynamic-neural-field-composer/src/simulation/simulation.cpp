@@ -303,7 +303,8 @@ namespace dnf_composer
 			if (element->getUniqueName() == id)
 				return element;
 
-		throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, id);
+		return nullptr;
+		//throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, id);
 	}
 
 	std::shared_ptr<element::Element> Simulation::getElement(const int index) const 
@@ -342,6 +343,17 @@ namespace dnf_composer
 			}
 		}
 		return elementsThatHaveSpecifiedElementAsInput;
+	}
+
+	bool Simulation::componentExists(const std::string& id, const std::string& componentName) const
+	{
+		const std::shared_ptr<element::Element> foundElement = getElement(id);
+		if (!foundElement)
+			return false;
+
+		const auto componentList = foundElement->getComponentList();
+
+		return std::ranges::find(componentList, componentName) != componentList.end();
 	}
 
 	bool Simulation::isInitialized() const
