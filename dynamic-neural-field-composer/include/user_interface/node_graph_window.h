@@ -14,6 +14,29 @@ namespace dnf_composer
 {
 	namespace user_interface
 	{
+		inline ImVec4 getNodeColorForElementType(element::ElementLabel label)
+		{
+			switch (label) {
+			case element::ElementLabel::NEURAL_FIELD:
+				return imgui_kit::colours::PastelBlue;
+			case element::ElementLabel::NORMAL_NOISE:
+				return imgui_kit::colours::PastelGreen;
+			case element::ElementLabel::GAUSS_KERNEL:
+				return imgui_kit::colours::PastelOrange;
+			case element::ElementLabel::GAUSS_STIMULUS:
+				return imgui_kit::colours::PastelPink;
+			case element::ElementLabel::MEXICAN_HAT_KERNEL:
+				return imgui_kit::colours::PastelViolet;
+			case element::ElementLabel::GAUSS_FIELD_COUPLING:
+				return imgui_kit::colours::PastelYellow;
+			case element::ElementLabel::FIELD_COUPLING:
+				return imgui_kit::colours::Beige;
+			default:
+				return imgui_kit::colours::Blue;
+			}
+		}
+
+
 		class NodeGraphWindow : public imgui_kit::UserInterfaceWindow
 		{
 		private:
@@ -35,6 +58,7 @@ namespace dnf_composer
 			~NodeGraphWindow() override = default;
 		private:
 			void renderElementNodes();
+			void setNodeStyle(const std::shared_ptr<element::Element>& element);
 			void renderElementNode(const std::shared_ptr<element::Element>& element);
 			void renderElementNodeHeader(const std::shared_ptr<element::Element>& element);
 			void renderElementCommonParameters(const std::shared_ptr<element::Element>& element);

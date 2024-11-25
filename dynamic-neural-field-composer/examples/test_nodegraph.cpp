@@ -6,6 +6,7 @@
 #include "user_interface/simulation_window.h"
 #include "user_interface/node_graph_window.h"
 #include "elements/element_factory.h"
+#include "user_interface/plots_window.h"
 
 
 int main()
@@ -24,6 +25,7 @@ int main()
 		app.addWindow<user_interface::ElementWindow>();
 		app.addWindow<user_interface::SimulationWindow>();
 		app.addWindow<user_interface::PlotControlWindow>();
+		app.addWindow<user_interface::PlotsWindow>();
 		app.addWindow<user_interface::NodeGraphWindow>();
 
 		element::ElementFactory factory;
@@ -38,8 +40,8 @@ int main()
 		const auto gs_1 = factory.createElement(element::GAUSS_STIMULUS);
 		const auto gs_2 = factory.createElement(element::GAUSS_STIMULUS);
 
-		//const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING, element::ElementCommonParameters{}, element::GaussFieldCouplingParameters{false, false, {{50.0, 50.0, 5.0, 5.0}}});
-		//const auto fc_1 = std::make_shared<element::FieldCoupling>(element::ElementCommonParameters{}, element::FieldCouplingParameters{});
+		const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING, element::ElementCommonParameters{element::GAUSS_FIELD_COUPLING}, element::GaussFieldCouplingParameters{{100, 1.0},false, false, { {50.0, 50.0, 5.0, 5.0} }});
+		const auto fc_1 = std::make_shared<element::FieldCoupling>(element::ElementCommonParameters{element::FIELD_COUPLING}, element::FieldCouplingParameters{});
 
 		simulation->addElement(nf_1);
 		simulation->addElement(gk_1);
@@ -49,7 +51,8 @@ int main()
 		simulation->addElement(nn_2);
 		simulation->addElement(gs_1);
 		simulation->addElement(gs_2);
-		//simulation->addElement(fc_1);
+		simulation->addElement(gfc_1);
+		simulation->addElement(fc_1);
 
 		nf_1->addInput(gk_1);
 		gk_1->addInput(nf_1);

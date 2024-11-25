@@ -1,5 +1,7 @@
 #include "user_interface/node_graph_window.h"
 
+#include "elements/field_coupling.h"
+
 
 namespace dnf_composer
 {
@@ -21,13 +23,11 @@ namespace dnf_composer
 			{
 				ImNodeEditor::SetCurrentEditor(context);
 				const auto& io = ImGui::GetIO();
-				ImGui::PushStyleColor(ImGuiCol_Text, IM_COL32(255, 255, 255, 255)); // Set text color to white
 				ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
 				ImNodeEditor::Begin("My Node ImNodeEditor");
 					renderElementNodes();
 				ImNodeEditor::End();
 				ImNodeEditor::SetCurrentEditor(nullptr);
-				ImGui::PopStyleColor();
 			}
 			ImGui::End();
 		}
@@ -36,7 +36,9 @@ namespace dnf_composer
 		{
 			for (const auto& element : simulation->getElements())
 			{
+				
 				ImNodeEditor::BeginNode(element->getUniqueIdentifier());
+				setNodeStyle(element);
 				renderElementNode(element);
 				ImNodeEditor::EndNode();
 			}
@@ -44,6 +46,21 @@ namespace dnf_composer
 			{
 				renderElementNodeConnections(element);
 			}
+		}
+
+		void NodeGraphWindow::setNodeStyle(const std::shared_ptr<element::Element>& element)
+		{
+			static constexpr float rounding = 5.0f;
+			ImNodeEditor::PushStyleVar(ImNodeEditor::StyleVar_NodeRounding, rounding);
+
+			const ImVec4 nodeBgColor = getNodeColorForElementType(element->getElementCommonParameters().identifiers.label);
+			ImNodeEditor::PushStyleColor(ImNodeEditor::StyleColor_NodeBg, nodeBgColor);
+			ImNodeEditor::PushStyleColor(ImNodeEditor::StyleColor_NodeBorder, imgui_kit::colours::White);
+
+			//ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::White);
+			//ImGui::PopStyleColor();
+
+			//ImNodeEditor::PopStyleColor(2); // apparently this is not necessary
 		}
 
 		void NodeGraphWindow::renderElementNode(const std::shared_ptr<element::Element>& element)
@@ -58,42 +75,32 @@ namespace dnf_composer
 			renderElementPins(element);
 		}
 
+
 		void NodeGraphWindow::renderElementNodeHeader(const std::shared_ptr<element::Element>& element)
 		{
-			static constexpr float rounding = 2.0f;
-			static constexpr ImU32 headerBgColor = IM_COL32(65, 60, 65, 255);
-			static constexpr ImU32 headerTextColor = IM_COL32(255, 255, 255, 255);
-			ImNodeEditor::PushStyleColor(ImNodeEditor::StyleColor_NodeBg, imgui_kit::colours::DarkGray);
-			ImNodeEditor::PushStyleColor(ImNodeEditor::StyleColor_NodeBorder, imgui_kit::colours::LightGray);
-			//ImNodeEditor::PushStyleColor(ImNodeEditor::StyleColor_PinRect, ImColor(60, 180, 255, 150));
-			//ImNodeEditor::PushStyleColor(ImNodeEditor::StyleColor_PinRectBorder, ImColor(60, 180, 255, 150));
-			//ImNodeEditor::PushStyleVar(ImNodeEditor::StyleVar_NodePadding, ImVec4(0, 0, 0, 0));
-			ImNodeEditor::PushStyleVar(ImNodeEditor::StyleVar_NodeRounding, rounding);
-			ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, rounding);
-			//ImNodeEditor::PushStyleVar(ImNodeEditor::StyleVar_SourceDirection, ImVec2(0.0f, 1.0f));
-			//ImNodeEditor::PushStyleVar(ImNodeEditor::StyleVar_TargetDirection, ImVec2(0.0f, -1.0f));
-			//ImNodeEditor::PushStyleVar(ImNodeEditor::StyleVar_LinkStrength, 0.0f);
-			//ImNodeEditor::PushStyleVar(ImNodeEditor::StyleVar_PinBorderWidth, 1.0f);
-			//ImNodeEditor::PushStyleVar(ImNodeEditor::StyleVar_PinRadius, 5.0f);
 			const ImVec2 nodePos = ImNodeEditor::GetNodePosition(element->getUniqueIdentifier());
 			const ImVec2 nodeSize = ImNodeEditor::GetNodeSize(element->getUniqueIdentifier());
 
 			ImDrawList* draw_list = ImGui::GetWindowDrawList();
 			const ImVec2 titleBarPos = ImVec2(nodePos.x + 1.5f, nodePos.y + 1.0f);
-			const ImVec2 titleBarSize = ImVec2(nodeSize.x -2.5f, ImGui::GetTextLineHeightWithSpacing());
+			const ImVec2 titleBarSize = ImVec2(nodeSize.x - 2.5f, ImGui::GetTextLineHeightWithSpacing());
 
 			// Draw title bar background
-			draw_list->AddRectFilled(titleBarPos, 
+			draw_list->AddRectFilled(
+				titleBarPos,
 				ImVec2(titleBarPos.x + titleBarSize.x, titleBarPos.y + titleBarSize.y),
-				headerBgColor, rounding);
+				IM_COL32(65, 60, 65, 255), 5.0f
+			);
+
 			// Draw title text
 			const element::ElementCommonParameters parameters = element->getElementCommonParameters();
 			const std::string name = parameters.identifiers.uniqueName;
-			draw_list->AddText(ImVec2(titleBarPos.x + 3.0f, titleBarPos.y), headerTextColor, name.c_str());
+			draw_list->AddText(ImVec2(titleBarPos.x + 3.0f, titleBarPos.y), IM_COL32(255, 255, 255, 255), name.c_str());
+
 			// Offset the position of the remaining node content to avoid overlapping with the title bar
 			ImGui::Dummy(ImVec2(0, 15));
-			ImGui::PopStyleVar();
 		}
+
 
 		void NodeGraphWindow::renderElementCommonParameters(const std::shared_ptr<element::Element>& element)
 		{
@@ -109,81 +116,107 @@ namespace dnf_composer
 
 		void NodeGraphWindow::renderElementSpecificParameters(const std::shared_ptr<element::Element>& element)
 		{
-			switch (element->getElementCommonParameters().identifiers.label)
-			{
-			case element::ElementLabel::NEURAL_FIELD:
-			{
-				const auto neuralField = std::dynamic_pointer_cast<element::NeuralField>(element);
-				const element::NeuralFieldParameters parameters = neuralField->getParameters();
-				ImGui::Text("Resting level: %.2f", parameters.startingRestingLevel);
-				ImGui::Text("Tau: %.2f", parameters.tau);
-			}
-			break;
-			case element::ElementLabel::NORMAL_NOISE:
-			{
-				const auto normalNoise = std::dynamic_pointer_cast<element::NormalNoise>(element);
-				const element::NormalNoiseParameters parameters = normalNoise->getParameters();
-				ImGui::Text("Amplitude: %.2f", parameters.amplitude);
-			}
-			break;
-			case element::ElementLabel::GAUSS_KERNEL:
-			{
-				const auto gaussKernel = std::dynamic_pointer_cast<element::GaussKernel>(element);
-				const element::GaussKernelParameters parameters = gaussKernel->getParameters();
-				ImGui::Text("Width: %.2f", parameters.width);
-				ImGui::Text("Amplitude: %.2f", parameters.amplitude);
-				ImGui::Text("Amplitude global: %.2f", parameters.amplitudeGlobal);
-				ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
-				ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
-			}
-			break;
-			case element::ElementLabel::GAUSS_STIMULUS:
-			{
-				const auto gaussStimulus = std::dynamic_pointer_cast<element::GaussStimulus>(element);
-				const element::GaussStimulusParameters parameters = gaussStimulus->getParameters();
-				ImGui::Text("Amplitude: %.2f", parameters.amplitude);
-				ImGui::Text("Center: %.2f", parameters.position);
-				ImGui::Text("Width: %.2f", parameters.width);
+			static bool showSpecificParameters = false;
 
-				ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
-				ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
-			}
-			break;
-			case element::ElementLabel::MEXICAN_HAT_KERNEL:
-			{
-				const auto mexicanHatKernel = std::dynamic_pointer_cast<element::MexicanHatKernel>(element);
-				const element::MexicanHatKernelParameters parameters = mexicanHatKernel->getParameters();
-				ImGui::Text("Amplitude exc: %.2f", parameters.amplitudeExc);
-				ImGui::Text("Amplitude inh: %.2f", parameters.amplitudeInh);
-				ImGui::Text("Width exc: %.2f", parameters.widthExc);
-				ImGui::Text("Width inh: %.2f", parameters.widthInh);
-				ImGui::Text("Amplitude global: %.2f", parameters.amplitudeGlobal);
-				ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
-				ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
-			}
-			break;
-			case element::ElementLabel::GAUSS_FIELD_COUPLING:
-			{
-				const auto gfc = std::dynamic_pointer_cast<element::GaussFieldCoupling>(element);
-				const element::GaussFieldCouplingParameters parameters = gfc->getParameters();
+			ImGui::PushID(element.get());
 
-				ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
-				ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
+			// Toggle button
+			if (ImGui::Button(showSpecificParameters ? "Hide Specific Parameters" : "Show Specific Parameters"))
+			{
+				showSpecificParameters = !showSpecificParameters;
+			}
 
-				ImGui::Text("Couplings:");
-				for (const auto& coupling : parameters.couplings)
+			if (showSpecificParameters)
+			{
+
+				switch (element->getElementCommonParameters().identifiers.label)
 				{
-					ImGui::Text("x_i: %.2f", coupling.x_i); ImGui::SameLine();
-					ImGui::Text("x_j: %.2f", coupling.x_j); ImGui::SameLine();
-					ImGui::Text("A: %.2f", coupling.amplitude); ImGui::SameLine();
-					ImGui::Text("W: %.2f", coupling.width);
+				case element::ElementLabel::NEURAL_FIELD:
+				{
+					const auto neuralField = std::dynamic_pointer_cast<element::NeuralField>(element);
+					const element::NeuralFieldParameters parameters = neuralField->getParameters();
+					ImGui::Text("Resting level: %.2f", parameters.startingRestingLevel);
+					ImGui::Text("Tau: %.2f", parameters.tau);
+					ImGui::Text("Activation function: %s", parameters.activationFunction->toString().c_str());
+				}
+				break;
+				case element::ElementLabel::NORMAL_NOISE:
+				{
+					const auto normalNoise = std::dynamic_pointer_cast<element::NormalNoise>(element);
+					const element::NormalNoiseParameters parameters = normalNoise->getParameters();
+					ImGui::Text("Amplitude: %.2f", parameters.amplitude);
+				}
+				break;
+				case element::ElementLabel::GAUSS_KERNEL:
+				{
+					const auto gaussKernel = std::dynamic_pointer_cast<element::GaussKernel>(element);
+					const element::GaussKernelParameters parameters = gaussKernel->getParameters();
+					ImGui::Text("Width: %.2f", parameters.width);
+					ImGui::Text("Amplitude: %.2f", parameters.amplitude);
+					ImGui::Text("Amplitude global: %.2f", parameters.amplitudeGlobal);
+					ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
+					ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
+				}
+				break;
+				case element::ElementLabel::GAUSS_STIMULUS:
+				{
+					const auto gaussStimulus = std::dynamic_pointer_cast<element::GaussStimulus>(element);
+					const element::GaussStimulusParameters parameters = gaussStimulus->getParameters();
+					ImGui::Text("Amplitude: %.2f", parameters.amplitude);
+					ImGui::Text("Center: %.2f", parameters.position);
+					ImGui::Text("Width: %.2f", parameters.width);
+					ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
+					ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
+				}
+				break;
+				case element::ElementLabel::MEXICAN_HAT_KERNEL:
+				{
+					const auto mexicanHatKernel = std::dynamic_pointer_cast<element::MexicanHatKernel>(element);
+					const element::MexicanHatKernelParameters parameters = mexicanHatKernel->getParameters();
+					ImGui::Text("Amplitude exc: %.2f", parameters.amplitudeExc);
+					ImGui::Text("Amplitude inh: %.2f", parameters.amplitudeInh);
+					ImGui::Text("Width exc: %.2f", parameters.widthExc);
+					ImGui::Text("Width inh: %.2f", parameters.widthInh);
+					ImGui::Text("Amplitude global: %.2f", parameters.amplitudeGlobal);
+					ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
+					ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
+				}
+				break;
+				case element::ElementLabel::GAUSS_FIELD_COUPLING:
+				{
+					const auto gfc = std::dynamic_pointer_cast<element::GaussFieldCoupling>(element);
+					const element::GaussFieldCouplingParameters parameters = gfc->getParameters();
+					ImGui::Text("Input field dimensions: x_max %d, d_x %.2f", parameters.inputFieldDimensions.x_max, parameters.inputFieldDimensions.d_x);
+					ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
+					ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
+
+					ImGui::Text("Couplings:");
+					for (const auto& coupling : parameters.couplings)
+					{
+						ImGui::Text("x_i: %.2f", coupling.x_i); ImGui::SameLine();
+						ImGui::Text("x_j: %.2f", coupling.x_j); ImGui::SameLine();
+						ImGui::Text("A: %.2f", coupling.amplitude); ImGui::SameLine();
+						ImGui::Text("W: %.2f", coupling.width);
+					}
+				}
+				break;
+				case element::ElementLabel::FIELD_COUPLING:
+				{
+					const auto fc = std::dynamic_pointer_cast<element::FieldCoupling>(element);
+					const element::FieldCouplingParameters parameters = fc->getParameters();
+					ImGui::Text("Input field dimensions: x_max %d, d_x %.2f", parameters.inputFieldDimensions.x_max, parameters.inputFieldDimensions.d_x);
+					ImGui::Text("Learning rule: %s", LearningRuleToString.at(parameters.learningRule).c_str());
+					ImGui::Text("Scalar: %.2f", parameters.scalar);
+					ImGui::Text("Learning rate: %.2f", parameters.learningRate);
+					ImGui::Text("Learning active: %s", parameters.isLearningActive ? "true" : "false");
+				}
+				break;
+				default:
+					tools::logger::log(tools::logger::LogLevel::ERROR, "Element label not recognized at node graph.");
+					break;
 				}
 			}
-			break;
-			default:
-				tools::logger::log(tools::logger::LogLevel::ERROR, "Element label not recognized at node graph.");
-				break;
-			}
+			ImGui::PopID();
 		}
 
 		void NodeGraphWindow::renderElementPins(const std::shared_ptr<element::Element>& element)
