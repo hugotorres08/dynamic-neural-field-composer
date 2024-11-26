@@ -16,7 +16,7 @@ namespace dnf_composer
 
 		void SimulationWindow::render()
 		{
-			if (ImGui::Begin("Simulation control"))
+			if (ImGui::Begin("Simulation Control"))
 			{
 				renderStartSimulationButton();
 				renderAddElement();
@@ -46,40 +46,41 @@ namespace dnf_composer
 
 		void SimulationWindow::renderAddElement() const
 		{
+			ImGui::PushID("add element");
 			if (ImGui::CollapsingHeader("Add element"))
 			{
 				for (const auto& pair : element::ElementLabelToString)
-					renderElementProperties(pair);
+					if (pair.first != element::ElementLabel::UNINITIALIZED)
+						renderElementProperties(pair);
 			}
+			ImGui::PopID();
 		}
 
 		void SimulationWindow::renderSetInteraction() const
 		{
+			ImGui::PushID("set interaction");
 			if (ImGui::CollapsingHeader("Set interactions between elements"))
 			{
-				const int numberOfElementsInSimulation = simulation->getNumberOfElements();
-
-				for (int i = 0; i < numberOfElementsInSimulation; i++)
+				for (const auto& element : simulation->getElements())
 				{
-					const auto simulationElement = simulation->getElement(i);
-					std::string targetElementId = simulationElement->getUniqueName();
-
-					if (ImGui::TreeNode(targetElementId.c_str()))
+					const auto elementId = element->getUniqueName();
+					if (ImGui::TreeNode(elementId.c_str()))
 					{
 						static std::string selectedElementId{};
 						static int currentElementIdx = 0;
+
+						// Section 1: Add New Input
 						ImGui::Text("Select the element you want to define as input");
 						if (ImGui::BeginListBox("##Element list available as inputs"))
 						{
-							for (int n = 0; n < numberOfElementsInSimulation; n++)
+							for (const auto& other_element : simulation->getElements())
 							{
-								const auto element = simulation->getElement(n);
-								std::string inputElementId = element->getUniqueName();
-								const bool isSelected = (currentElementIdx == n);
+								std::string inputElementId = other_element->getUniqueName();
+								const bool isSelected = (currentElementIdx == other_element->getUniqueIdentifier());
 								if (ImGui::Selectable(inputElementId.c_str(), isSelected))
 								{
 									selectedElementId = inputElementId;
-									currentElementIdx = n;
+									currentElementIdx = other_element->getUniqueIdentifier();
 								}
 
 								if (isSelected)
@@ -91,38 +92,64 @@ namespace dnf_composer
 						if (ImGui::Button("Add", { 100.0f, 30.0f }))
 						{
 							auto input = simulation->getElement(selectedElementId);
-							simulationElement->addInput(input);
+							element->addInput(input);
 							simulation->init();
 						}
+
+						// Section 2: Show Existing Connections
+						ImGui::Separator();
+						ImGui::Text("Currently connected elements:");
+						const auto& inputs = element->getInputs();
+						if (inputs.empty())
+						{
+							ImGui::Text("No connections.");
+						}
+						else
+						{
+							for (size_t i = 0; i < inputs.size(); ++i)
+							{
+								const auto& connectedElement = inputs[i];
+								ImGui::BulletText("%s", connectedElement->getUniqueName().c_str());
+
+								// Add a "Remove" button for each connection
+								ImGui::SameLine();
+								std::string buttonLabel = "Remove##" + std::to_string(i);
+								if (ImGui::Button(buttonLabel.c_str()))
+								{
+									element->removeInput(connectedElement->getUniqueIdentifier());
+									simulation->init();
+								}
+							}
+						}
+						ImGui::Separator();
+
 						ImGui::TreePop();
 					}
 				}
 			}
+			ImGui::PopID();
 		}
 
 		void SimulationWindow::renderRemoveElement() const
 		{
+			ImGui::PushID("remove element");
 			if (ImGui::CollapsingHeader("Remove elements from simulation"))
 			{
-				int numberOfElementsInSimulation = simulation->getNumberOfElements();
-
-				for (int i = 0; i < numberOfElementsInSimulation; i++)
+				for (const auto& element : simulation->getElements())
 				{
-					const auto simulationElement = simulation->getElement(i);
-					std::string elementId = simulationElement->getUniqueName();
-
+					const auto elementId = element->getUniqueName();
 					if (ImGui::TreeNode(elementId.c_str()))
 					{
 						if (ImGui::Button("Remove", { 100.0f, 30.0f }))
 						{
 							simulation->removeElement(elementId);
-							numberOfElementsInSimulation--;
 							simulation->init();
 						}
 						ImGui::TreePop();
 					}
 				}
 			}
+			ImGui::PopID();
 		}
 
 		void SimulationWindow::renderElementProperties(const std::pair<int, std::string>& elementId) const
@@ -162,41 +189,36 @@ namespace dnf_composer
 
 		void SimulationWindow::renderLogElementProperties() const
 		{
+			ImGui::PushID("log element parameters");
 			if (ImGui::CollapsingHeader("Log element parameters"))
 			{
-				const int numberOfElementsInSimulation = simulation->getNumberOfElements();
-
-				for (int i = 0; i < numberOfElementsInSimulation; i++)
+				for (const auto& element : simulation->getElements())
 				{
-					const auto simulationElement = simulation->getElement(i);
-					std::string elementId = simulationElement->getUniqueName();
-
+					const auto elementId = element->getUniqueName();
 					if (ImGui::TreeNode(elementId.c_str()))
 					{
 						if (ImGui::Button("Log", { 100.0f, 30.0f }))
-						{
-							simulationElement->print();
+												{
+							element->print();
 						}
 						ImGui::TreePop();
 					}
 				}
 			}
+			ImGui::PopID();
 		}
 
 		void SimulationWindow::renderExportElementComponents() const
 		{
+			ImGui::PushID("export element components");
 			if (ImGui::CollapsingHeader("Export element components"))
 			{
-				const int numberOfElementsInSimulation = simulation->getNumberOfElements();
-
-				for (int i = 0; i < numberOfElementsInSimulation; i++)
+				for (const auto& element : simulation->getElements())
 				{
-					const auto simulationElement = simulation->getElement(i);
-					std::string elementId = simulationElement->getUniqueName();
-
+					const auto elementId = element->getUniqueName();
 					if (ImGui::TreeNode(elementId.c_str()))
 					{
-						for(const auto& componentName : simulationElement->getComponentList())
+						for (const auto& componentName : element->getComponentList())
 						{
 							if (ImGui::TreeNode(componentName.c_str()))
 							{
@@ -211,16 +233,17 @@ namespace dnf_composer
 					}
 				}
 			}
+			ImGui::PopID();
 		}
 
 		void SimulationWindow::addElementNeuralField() const
 		{
-
+			ImGui::PushID("neural field");
 			static char id[CHAR_SIZE] = "neural field u";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int x_max = 100;
 			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
-			static double d_x = 0.1;
+			static double d_x = 1.0;
 			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
 			static double tau = 25;
 			ImGui::InputDouble("tau", &tau, 1.0f, 10.0f, "%.2f");
@@ -241,15 +264,17 @@ namespace dnf_composer
 				const std::shared_ptr<element::NeuralField> neuralField(new element::NeuralField(commonParameters, nfp));
 				simulation->addElement(neuralField);
 			}
+			ImGui::PopID();
 		}
 
 		void SimulationWindow::addElementGaussStimulus() const
 		{
+			ImGui::PushID("gauss stimulus");
 			static char id[CHAR_SIZE] = "gauss stimulus a";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int x_max = 100;
 			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
-			static double d_x = 0.1;
+			static double d_x = 1.0;
 			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
 			static double sigma = 5;
 			ImGui::InputDouble("sigma", &sigma, 1.0f, 10.0f, "%.2f");
@@ -269,18 +294,20 @@ namespace dnf_composer
 				const std::shared_ptr<element::GaussStimulus> gaussStimulus(new element::GaussStimulus ({id, dimensions}, gsp));
 				simulation->addElement(gaussStimulus);
 			}
+			ImGui::PopID();
 		}
 
 		void SimulationWindow::addElementNormalNoise() const
 		{
+			ImGui::PushID("normal noise");
 			static char id[CHAR_SIZE] = "normal noise a";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int x_max = 100;
 			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
-			static double d_x = 0.1;
+			static double d_x = 1.0;
 			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
-			static double amplitude = 20;
-			ImGui::InputDouble("amplitude", &amplitude, 1.0f, 10.0f, "%.2f");
+			static double amplitude = 0.01;
+			ImGui::InputDouble("amplitude", &amplitude, 0.01f, 1.0f, "%.2f");
 
 			if (ImGui::Button("Add", { 100.0f, 30.0f }))
 			{
@@ -291,20 +318,24 @@ namespace dnf_composer
 				const std::shared_ptr<element::GaussKernel> gaussKernelNormalNoise(new element::GaussKernel({ std::string(id) + " gauss kernel", dimensions }, gkp));
 				simulation->addElement(normalNoise);
 				simulation->addElement(gaussKernelNormalNoise);
+				simulation->createInteraction(id, "output", std::string(id) + " gauss kernel");
+				simulation->createInteraction(std::string(id) + " gauss kernel", "output", id);
 			}
+			ImGui::PopID();
 		}
 
 		void SimulationWindow::addElementFieldCoupling() const
 		{
+			ImGui::PushID("field coupling");
 			static char id[CHAR_SIZE] = "field coupling u -> v";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int x_max = 100;
 			ImGui::InputInt("output x_max", &x_max, 1.0, 10.0);
-			static double d_x = 0.1;
+			static double d_x = 1.0;
 			ImGui::InputDouble("output d_x", &d_x, 0.1, 0.5, "%.2f");
 			static int in_x_max = 100;
 			ImGui::InputInt("input x_max", &in_x_max, 1.0, 10.0);
-			static double in_d_x = 0.1;
+			static double in_d_x = 1.0;
 			ImGui::InputDouble("input d_x", &in_d_x, 0.1, 0.5, "%.2f");
 			static LearningRule learningRule = LearningRule::HEBB;
 			if (ImGui::BeginCombo("learning rule", LearningRuleToString.at(learningRule).c_str()))
@@ -331,19 +362,21 @@ namespace dnf_composer
 				const std::shared_ptr<element::FieldCoupling> fieldCoupling(new element::FieldCoupling({ id, dimensions }, fcp));
 				simulation->addElement(fieldCoupling);
 			}
+			ImGui::PopID();
 		}
 
 		void SimulationWindow::addElementGaussFieldCoupling() const
 		{
+			ImGui::PushID("gauss field coupling");
 			static char id[CHAR_SIZE] = "gauss field coupling u -> v";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int x_max = 100;
 			ImGui::InputInt("output x_max", &x_max, 1.0, 10.0);
-			static double d_x = 0.1;
+			static double d_x = 1.0;
 			ImGui::InputDouble("output d_x", &d_x, 0.1, 0.5, "%.2f");
 			static int in_x_max = 100;
 			ImGui::InputInt("input x_max", &in_x_max, 1.0, 10.0);
-			static double in_d_x = 0.1;
+			static double in_d_x = 1.0;
 			ImGui::InputDouble("input d_x", &in_d_x, 0.1, 0.5, "%.2f");
 			static double x_i = 1;
 			ImGui::InputDouble("x_i", &x_i, 1.0f, 10.0f, "%.2f");
@@ -365,16 +398,17 @@ namespace dnf_composer
 				const std::shared_ptr<element::GaussFieldCoupling> gaussCoupling(new element::GaussFieldCoupling({ id, dimensions }, gfcp));
 				simulation->addElement(gaussCoupling);
 			}
-
+			ImGui::PopID();
 		}
 
 		void SimulationWindow::addElementGaussKernel() const
 		{
+			ImGui::PushID("gauss kernel");
 			static char id[CHAR_SIZE] = "gauss kernel u -> u";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int x_max = 100;
 			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
-			static double d_x = 0.1;
+			static double d_x = 1.0;
 			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
 			static double sigma = 20;
 			ImGui::InputDouble("sigma", &sigma, 1.0f, 10.0f, "%.2f");
@@ -394,15 +428,17 @@ namespace dnf_composer
 				const std::shared_ptr<element::GaussKernel> gaussKernel(new element::GaussKernel({ id, dimensions }, gkp));
 				simulation->addElement(gaussKernel);
 			}
+			ImGui::PopID();
 		}
 
 		void SimulationWindow::addElementMexicanHatKernel() const
 		{
+			ImGui::PushID("mexican hat kernel");
 			static char id[CHAR_SIZE] = "mexican hat kernel u -> u";
 			ImGui::InputTextWithHint("id", "enter text here", id, IM_ARRAYSIZE(id));
 			static int x_max = 100;
 			ImGui::InputInt("x_max", &x_max, 1.0, 10.0);
-			static double d_x = 0.1;
+			static double d_x = 1.0;
 			ImGui::InputDouble("d_x", &d_x, 0.1, 0.5, "%.2f");
 			static double sigmaExc = 5;
 			ImGui::InputDouble("sigmaExc", &sigmaExc, 1.0f, 10.0f, "%.2f");
@@ -427,6 +463,7 @@ namespace dnf_composer
 				const std::shared_ptr<element::MexicanHatKernel> mexicanHatKernel(new element::MexicanHatKernel({ id, dimensions }, mhkp));
 				simulation->addElement(mexicanHatKernel);
 			}
+			ImGui::PopID();
 		}
 
 	}

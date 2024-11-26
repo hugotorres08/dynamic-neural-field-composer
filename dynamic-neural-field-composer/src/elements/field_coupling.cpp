@@ -96,7 +96,7 @@ namespace dnf_composer
 			{
 				const std::string logMessage = "Incorrect number of inputs for field coupling '"
 					+ commonParameters.identifiers.uniqueName + "'. Should be 1, is " + std::to_string(inputs.size()) + ".";
-				log(tools::logger::LogLevel::ERROR, logMessage);
+				log(tools::logger::LogLevel::WARNING, logMessage);
 				return;
 			}
 
@@ -104,7 +104,7 @@ namespace dnf_composer
 			{
 				const std::string logMessage = "Incorrect input type for field coupling '"
 					+ commonParameters.identifiers.uniqueName + "'. Should be a neural field, is " + ElementLabelToString.at(inputs.begin()->first->getLabel()) + ".";
-				log(tools::logger::LogLevel::ERROR, logMessage);
+				log(tools::logger::LogLevel::WARNING, logMessage);
 				return;
 			}	
 
@@ -118,7 +118,7 @@ namespace dnf_composer
 			{
 				const std::string logMessage = "Incorrect number of outputs for field coupling '"
 					+ commonParameters.identifiers.uniqueName + "'. Should be 1, is " + std::to_string(outputs.size()) + ".";
-				log(tools::logger::LogLevel::ERROR, logMessage);
+				log(tools::logger::LogLevel::WARNING, logMessage);
 				return;
 			}
 
@@ -126,7 +126,7 @@ namespace dnf_composer
 			{
 				const std::string logMessage = "Incorrect output type for field coupling '"
 					+ commonParameters.identifiers.uniqueName + "'. Should be a neural field, is " + ElementLabelToString.at(outputs.begin()->first->getLabel()) + ".";
-				log(tools::logger::LogLevel::ERROR, logMessage);
+				log(tools::logger::LogLevel::WARNING, logMessage);
 				return;
 			}
 
@@ -242,7 +242,7 @@ namespace dnf_composer
 			if (!input)
 			{
 				const std::string logMessage = "Field coupling '" + commonParameters.identifiers.uniqueName + "' has no input field. Learning is disabled.";
-				log(tools::logger::LogLevel::ERROR, logMessage);
+				log(tools::logger::LogLevel::WARNING, logMessage);
 				parameters.isLearningActive = false;
 				return false;
 			}
@@ -250,7 +250,7 @@ namespace dnf_composer
 			if (!output)
 			{
 				const std::string logMessage = "Field coupling '" + commonParameters.identifiers.uniqueName + "' has no output field. Learning is disabled.";
-				log(tools::logger::LogLevel::ERROR, logMessage);
+				log(tools::logger::LogLevel::WARNING, logMessage);
 				parameters.isLearningActive = false;
 				return false;
 			}

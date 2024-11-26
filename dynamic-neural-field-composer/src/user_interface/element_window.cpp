@@ -15,7 +15,7 @@ namespace dnf_composer
 
 		void ElementWindow::render()
 		{
-			if (ImGui::Begin("Element control"))
+			if (ImGui::Begin("Element Control"))
 			{
 				renderModifyElementParameters();
 			}
@@ -90,7 +90,9 @@ namespace dnf_composer
 			case element::ElementLabel::GAUSS_FIELD_COUPLING:
 				modifyElementGaussFieldCoupling(element);
 				break;
-			default: case element::ElementLabel::UNINITIALIZED:
+			case element::ElementLabel::UNINITIALIZED:
+				break;
+			default:
 				log(tools::logger::LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.");
 				break;
 			}
@@ -135,7 +137,8 @@ namespace dnf_composer
 			ImGui::SameLine(); ImGui::Text("Width");
 
 			label = "##" + element->getUniqueName() + "Position";
-			ImGui::SliderFloat(label.c_str(), &position, 0, static_cast<float>(stimulus->getElementCommonParameters().dimensionParameters.x_max));
+			ImGui::SliderFloat(label.c_str(), &position, 0,
+				static_cast<float>(stimulus->getElementCommonParameters().dimensionParameters.x_max));
 			ImGui::SameLine(); ImGui::Text("Position");
 
 			label = "##" + element->getUniqueName() + "Circular";
@@ -430,6 +433,67 @@ namespace dnf_composer
 					coupling.width = width;
 					gfc->setParameters(gfcp);
 				}
+			}
+
+			// Section: Add New Coupling
+			ImGui::Separator();
+
+			// Button to open the modal
+			if (ImGui::Button("Add new coupling"))
+			{
+				ImGui::OpenPopup("Add Coupling Modal");
+			}
+
+			// Modal dialog for adding a coupling
+			if (ImGui::BeginPopupModal("Add Coupling Modal", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				static float new_x_i = 0.0f, new_x_j = 0.0f, new_amplitude = 1.0f, new_width = 1.0f;
+
+				ImGui::Text("Specify new coupling parameters:");
+				ImGui::Separator();
+
+				std::string label_new_params = "##New_x_i";
+				ImGui::SliderFloat(label_new_params.c_str(), &new_x_i, 0, static_cast<float>(other_size));
+				ImGui::SameLine(); ImGui::Text("New x_i");
+
+				label_new_params = "##New_x_j";
+				ImGui::SliderFloat(label_new_params.c_str(), &new_x_j, 0, static_cast<float>(size));
+				ImGui::SameLine(); ImGui::Text("New x_j");
+
+				label_new_params = "##NewAmplitude";
+				ImGui::SliderFloat(label_new_params.c_str(), &new_amplitude, 0, 100);
+				ImGui::SameLine(); ImGui::Text("New Amplitude");
+
+				label_new_params = "##NewWidth";
+				ImGui::SliderFloat(label_new_params.c_str(), &new_width, 1, 30);
+				ImGui::SameLine(); ImGui::Text("New Width");
+
+				if (ImGui::Button("Add Coupling", ImVec2(120, 0)))
+				{
+					element::GaussCoupling newCoupling{
+						static_cast<double>(new_x_i),
+							static_cast<double>(new_x_j),
+							static_cast<double>(new_amplitude),
+							static_cast<double>(new_width)
+					};
+					gfc->addCoupling(newCoupling);
+					gfc->init();
+
+					// Reset parameters
+					new_x_i = 0.0f;
+					new_x_j = 0.0f;
+					new_amplitude = 1.0f;
+					new_width = 1.0f;
+
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel", ImVec2(120, 0)))
+				{
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::EndPopup();
 			}
 		}
 	}

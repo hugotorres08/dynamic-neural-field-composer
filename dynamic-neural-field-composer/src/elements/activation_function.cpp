@@ -40,12 +40,12 @@ namespace dnf_composer
 		std::string SigmoidFunction::toString() const
 		{
 			std::string result = "SigmoidFunction(";
-			std::ostringstream stream;
-			stream << std::fixed << std::setprecision(2) << x_shift;
-			result += "x_shift = " + std::to_string(x_shift) + ", ";
-			stream.clear();
-			stream << std::fixed << std::setprecision(2) << steepness; 
-			result += "steepness = " + std::to_string(steepness) + ")";
+			std::ostringstream stream_x_shift;
+			stream_x_shift << std::fixed << std::setprecision(2) << x_shift;
+			result += "x_shift = " + stream_x_shift.str() + ", ";
+			std::ostringstream stream_steepness;
+			stream_steepness << std::fixed << std::setprecision(2) << steepness;
+			result += "steepness = " + stream_steepness.str() + ")";
 			return result;
 		}
 
