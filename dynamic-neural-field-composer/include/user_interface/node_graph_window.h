@@ -9,33 +9,47 @@
 #include "elements/normal_noise.h"
 #include "elements/mexican_hat_kernel.h"
 #include "elements/gauss_field_coupling.h"
+#include "elements/field_coupling.h"
+#include "widgets.h"
 
 namespace dnf_composer
 {
 	namespace user_interface
 	{
-		inline ImVec4 getNodeColorForElementType(element::ElementLabel label)
+		inline ImU32 getHeaderColorForElementType(element::ElementLabel label)
 		{
 			switch (label) {
 			case element::ElementLabel::NEURAL_FIELD:
-				return imgui_kit::colours::PastelBlue;
+				return IM_COL32(86, 128, 191, 255); // Blue
 			case element::ElementLabel::NORMAL_NOISE:
-				return imgui_kit::colours::PastelGreen;
+				return IM_COL32(223, 148, 84, 255);  // Orange
 			case element::ElementLabel::GAUSS_KERNEL:
-				return imgui_kit::colours::PastelOrange;
+				return IM_COL32(191, 63, 63, 255);   // Warm Red
 			case element::ElementLabel::GAUSS_STIMULUS:
-				return imgui_kit::colours::PastelPink;
+				return IM_COL32(127, 191, 127, 255); // Green
 			case element::ElementLabel::MEXICAN_HAT_KERNEL:
-				return imgui_kit::colours::PastelViolet;
+				return IM_COL32(154, 121, 191, 255); // Purple
 			case element::ElementLabel::GAUSS_FIELD_COUPLING:
-				return imgui_kit::colours::PastelYellow;
+				return IM_COL32(165, 102, 71, 255);  // Brown
 			case element::ElementLabel::FIELD_COUPLING:
-				return imgui_kit::colours::Beige;
+				return IM_COL32(212, 192, 121, 255); // Light Gold
 			default:
-				return imgui_kit::colours::Blue;
+				return IM_COL32(127, 127, 127, 255); // Neutral gray
 			}
 		}
 
+		/* Deep color scale
+		IM_COL32(95, 192, 208, 255) Light Teal
+		IM_COL32(212, 192, 121, 255) Light Gold	 
+		IM_COL32(200, 200, 200, 255) Light Gray	
+		IM_COL32(236, 149, 192, 255) Light Pink
+		IM_COL32(165, 102, 71, 255) Brown
+		IM_COL32(154, 121, 191, 255) Purple
+		IM_COL32(191, 63, 63, 255) Warm Red
+		IM_COL32(127, 191, 127, 255) Green
+		IM_COL32(223, 148, 84, 255) Orange
+		IM_COL32(86, 128, 191, 255 Blue
+		*/
 
 		class NodeGraphWindow : public imgui_kit::UserInterfaceWindow
 		{
@@ -65,6 +79,9 @@ namespace dnf_composer
 			void renderElementSpecificParameters(const std::shared_ptr<element::Element>& element);
 			void renderElementPins(const std::shared_ptr<element::Element>& element);
 			void renderElementNodeConnections(const std::shared_ptr<element::Element>& element);
+			void handleInteractions();
+			void handlePinInteractions();
+			void handleLinkInteractions();
 		};
 	}
 }

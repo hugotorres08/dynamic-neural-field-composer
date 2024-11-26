@@ -1,6 +1,5 @@
 #include "user_interface/node_graph_window.h"
 
-#include "elements/field_coupling.h"
 
 
 namespace dnf_composer
@@ -23,10 +22,17 @@ namespace dnf_composer
 			{
 				ImNodeEditor::SetCurrentEditor(context);
 				const auto& io = ImGui::GetIO();
+				widgets::renderHelpMarker("Visualize the elements and their interactions in the simulation.\n"
+							  "Create interactions by clicking on output pins and dragging to input pins.\n"
+							  "Delete interactions by double clicking on links.");
+				ImGui::SameLine();
 				ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
 				ImNodeEditor::Begin("My Node ImNodeEditor");
-					renderElementNodes();
+				ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::White);
+				renderElementNodes();
+				handleInteractions();
 				ImNodeEditor::End();
+				ImGui::PopStyleColor();
 				ImNodeEditor::SetCurrentEditor(nullptr);
 			}
 			ImGui::End();
@@ -53,13 +59,8 @@ namespace dnf_composer
 			static constexpr float rounding = 5.0f;
 			ImNodeEditor::PushStyleVar(ImNodeEditor::StyleVar_NodeRounding, rounding);
 
-			const ImVec4 nodeBgColor = getNodeColorForElementType(element->getElementCommonParameters().identifiers.label);
-			ImNodeEditor::PushStyleColor(ImNodeEditor::StyleColor_NodeBg, nodeBgColor);
+			ImNodeEditor::PushStyleColor(ImNodeEditor::StyleColor_NodeBg, imgui_kit::colours::DarkGray);
 			ImNodeEditor::PushStyleColor(ImNodeEditor::StyleColor_NodeBorder, imgui_kit::colours::White);
-
-			//ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::White);
-			//ImGui::PopStyleColor();
-
 			//ImNodeEditor::PopStyleColor(2); // apparently this is not necessary
 		}
 
@@ -67,10 +68,6 @@ namespace dnf_composer
 		{
 			renderElementNodeHeader(element);
 			renderElementCommonParameters(element);
-			//constexpr ImGuiTreeNodeFlags headerFlags = ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanAvailWidth;
-			//const std::string header = "##Parameters " + std::to_string(element->getUniqueIdentifier()) ;
-			//const bool isOpen = ImGui::TreeNodeEx(header.c_str(), headerFlags);
-			//if (isOpen)
 			renderElementSpecificParameters(element);
 			renderElementPins(element);
 		}
@@ -89,13 +86,15 @@ namespace dnf_composer
 			draw_list->AddRectFilled(
 				titleBarPos,
 				ImVec2(titleBarPos.x + titleBarSize.x, titleBarPos.y + titleBarSize.y),
-				IM_COL32(65, 60, 65, 255), 5.0f
+				getHeaderColorForElementType(element->getLabel()), 5.0f
 			);
 
 			// Draw title text
 			const element::ElementCommonParameters parameters = element->getElementCommonParameters();
 			const std::string name = parameters.identifiers.uniqueName;
-			draw_list->AddText(ImVec2(titleBarPos.x + 3.0f, titleBarPos.y), IM_COL32(255, 255, 255, 255), name.c_str());
+			draw_list->AddText(ImVec2(titleBarPos.x + 3.0f, titleBarPos.y),
+				IM_COL32(255, 255, 255, 255), 
+				name.c_str());
 
 			// Offset the position of the remaining node content to avoid overlapping with the title bar
 			ImGui::Dummy(ImVec2(0, 15));
@@ -227,12 +226,10 @@ namespace dnf_composer
 			ImNodeEditor::PinPivotAlignment(ImVec2(0.0f, 0.5f));
 			ImGui::Text("Input");
 			ImNodeEditor::EndPin();
-
-			// Make sure the next element is on the same line
 			ImGui::SameLine();
 
 			// Add some space to separate the input from the output visually
-			ImGui::Dummy(ImVec2(100.0f, 0.0f)); ImGui::SameLine();  // Adjust 200.0f as necessary for spacing
+			ImGui::Dummy(ImVec2(100.0f, 0.0f)); ImGui::SameLine();  // Adjust for spacing
 
 			// Begin an output pin for the node with a unique identifier
 			ImNodeEditor::BeginPin(startingOutputPinId + element->getUniqueIdentifier(), ImNodeEditor::PinKind::Output);
@@ -240,7 +237,6 @@ namespace dnf_composer
 			ImNodeEditor::PinPivotAlignment(ImVec2(1.0f, 0.5f));
 			ImGui::Text("Output");
 			ImNodeEditor::EndPin();
-
 
 		}
 
@@ -256,6 +252,70 @@ namespace dnf_composer
 					connection->getUniqueIdentifier() + startingOutputPinId, 
 					element->getUniqueIdentifier() + startingInputPinId,
 					imgui_kit::colours::White, thickness);
+			}
+		}
+
+		void NodeGraphWindow::handleInteractions()
+		{
+			handlePinInteractions();
+			handleLinkInteractions();
+		}
+
+		void NodeGraphWindow::handlePinInteractions()
+		{
+			static bool isUsrAttemptingAConnection = false;
+			static ImNodeEditor::PinId outputPinId = 0;
+
+			// Set interactions by clicking on output pins and dragging to input pins
+			if(ImNodeEditor::GetHoveredPin() && ImGui::IsMouseDown(ImGuiMouseButton_Left))
+			{
+				outputPinId = ImNodeEditor::GetHoveredPin();
+				isUsrAttemptingAConnection = true;
+				return;
+			}
+
+			if (ImNodeEditor::GetHoveredPin() && isUsrAttemptingAConnection )
+			{
+				const int outputElementId = static_cast<int>(outputPinId.Get()) - startingOutputPinId;
+				const int inputElementId = static_cast<int>(ImNodeEditor::GetHoveredPin().Get()) - startingInputPinId;
+
+				const int highestElementIndex = simulation->getHighestElementIndex();
+				if (outputElementId > highestElementIndex || inputElementId > highestElementIndex 
+					|| outputElementId < 0 || inputElementId < 0)
+				{
+					isUsrAttemptingAConnection = false;
+					return;
+				}
+
+				const std::string outputElementName = simulation->getElement(outputElementId)->getUniqueName();
+				const std::string inputElementName = simulation->getElement(inputElementId)->getUniqueName();
+				simulation->createInteraction(outputElementName, "output", inputElementName);
+				isUsrAttemptingAConnection = false; // Reset the connection state
+			}
+		}
+
+		void NodeGraphWindow::handleLinkInteractions()
+		{
+			// Delete interactions by double clicking on links
+			const ImNodeEditor::LinkId doubleClickedLink = ImNodeEditor::GetDoubleClickedLink();
+			if (doubleClickedLink)
+			{
+				tools::logger::log(tools::logger::LogLevel::INFO, "Link double clicked: " + std::to_string(doubleClickedLink.Get()));
+				ImNodeEditor::PinId startPin;
+				ImNodeEditor::PinId endPin;
+				GetLinkPins(doubleClickedLink, &startPin, &endPin);
+
+				const int inputElementId = static_cast<int>(startPin.Get()) - startingOutputPinId;
+				const int outputElementId = static_cast<int>(endPin.Get()) - startingInputPinId;
+
+				const int highestElementIndex = simulation->getHighestElementIndex();
+				if (outputElementId > highestElementIndex || inputElementId > highestElementIndex
+					|| outputElementId < 0 || inputElementId < 0)
+				{
+					return;
+				}
+
+				simulation->getElement(outputElementId)->removeInput(inputElementId);
 			}
 		}
 	}

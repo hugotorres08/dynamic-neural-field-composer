@@ -21,15 +21,13 @@ namespace dnf_composer
 
 		void FieldMetricsWindow::getNeuralFieldsAndRenderCentroids() const
 		{
-			const int numberOfElementsInSimulation = simulation->getNumberOfElements();
 			ImGui::BeginTabBar("NeuralFieldTabs");
 
-			for (int i = 0; i < numberOfElementsInSimulation; i++)
+			for(const auto& element : simulation->getElements())
 			{
-				const auto simulationElement = simulation->getElement(i);
-				if (simulationElement->getLabel() == element::NEURAL_FIELD)
+				if (element->getLabel() == element::NEURAL_FIELD)
 				{
-					const auto neuralField = std::dynamic_pointer_cast<element::NeuralField>(simulationElement);
+					const auto neuralField = std::dynamic_pointer_cast<element::NeuralField>(element);
 					const std::string elementName = neuralField->getUniqueName();
 
 					if (ImGui::BeginTabItem(elementName.c_str()))
@@ -39,6 +37,8 @@ namespace dnf_composer
 					}
 				}
 			}
+
+
 			ImGui::EndTabBar();
 		}
 

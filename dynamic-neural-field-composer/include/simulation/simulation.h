@@ -6,7 +6,6 @@
 #include <filesystem>
 #include <chrono>
 
-
 #include "elements/element.h"
 #include "exceptions/exception.h"
 #include "tools/utils.h"
@@ -62,6 +61,8 @@ namespace dnf_composer
 		int getNumberOfElements() const;
 		std::vector < std::shared_ptr<element::Element>> getElementsThatHaveSpecifiedElementAsInput(const std::string& specifiedElement, 
 		                                                                                            const std::string& inputComponent = "output") const;
+		int getHighestElementIndex() const;
+
 		bool componentExists(const std::string& id, const std::string& componentName) const;
 
 		void exportComponentToFile(const std::string& id, const std::string& componentName) const;

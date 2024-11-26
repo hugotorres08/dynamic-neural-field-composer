@@ -3,8 +3,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "simulation/simulation.h"
-
 #include "simulation/simulation_file_manager.h"
+
 
 
 namespace dnf_composer
@@ -309,8 +309,9 @@ namespace dnf_composer
 
 	std::shared_ptr<element::Element> Simulation::getElement(const int index) const 
 	{
-		if (index < static_cast<int>(elements.size()))
-			return elements[index];
+		for (const auto& element : elements)
+			if (element->getUniqueIdentifier() == index)
+							return element;
 
 		throw Exception(ErrorCode::SIM_ELEM_INDEX, index);
 	}
@@ -343,6 +344,15 @@ namespace dnf_composer
 			}
 		}
 		return elementsThatHaveSpecifiedElementAsInput;
+	}
+
+	int Simulation::getHighestElementIndex() const
+	{
+		int highestIndex = 0;
+		for (const auto& element : elements)
+			if (element->getUniqueIdentifier() > highestIndex)
+				highestIndex = element->getUniqueIdentifier();
+		return highestIndex;
 	}
 
 	bool Simulation::componentExists(const std::string& id, const std::string& componentName) const

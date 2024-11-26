@@ -24,12 +24,9 @@ namespace dnf_composer
 
 		void ElementWindow::renderModifyElementParameters() const
 		{
-			const int numberOfElementsInSimulation = simulation->getNumberOfElements();
-
-			for (int i = 0; i < numberOfElementsInSimulation; i++)
+			for (const auto& element : simulation->getElements())
 			{
-				auto simulationElement = simulation->getElement(i);
-				switchElementToModify(simulationElement);
+				switchElementToModify(element);
 				ImGui::Separator();
 			}
 		}
