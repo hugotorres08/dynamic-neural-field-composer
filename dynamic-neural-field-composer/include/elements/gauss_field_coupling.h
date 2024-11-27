@@ -2,6 +2,7 @@
 
 #include "element.h"
 #include "tools/math.h"
+#include "tools/utils.h"
 
 
 namespace dnf_composer
@@ -37,12 +38,7 @@ namespace dnf_composer
 				result += "a: " + std::to_string(amplitude) + " ";
 				result += "w: " + std::to_string(width) + "]\n";
 				return result;
-			}
-
-			void print() const
-			{
-				tools::logger::log(tools::logger::INFO, toString());
-			}
+			}	
 		};
 
 
