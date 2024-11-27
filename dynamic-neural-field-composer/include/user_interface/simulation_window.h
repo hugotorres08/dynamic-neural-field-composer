@@ -30,7 +30,8 @@ namespace dnf_composer
 			void render() override;
 			~SimulationWindow() override = default;
 		private:
-			void renderStartSimulationButton() const;
+			void renderSimulationControlButtons() const;
+			void renderSimulationProperties() const;
 			void renderAddElement() const;
 			void renderSetInteraction() const;
 			void renderRemoveElement() const;
