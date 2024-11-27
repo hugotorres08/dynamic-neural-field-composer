@@ -48,8 +48,8 @@ namespace dnf_composer
 							{
 								ImGui::TextUnformatted((data.first + " " + data.second).c_str());
 							}
+							ImGui::EndListBox();
 						}
-						ImGui::EndListBox();
 
 						// Add data button and popup
 						ImGui::TableSetColumnIndex(3);
