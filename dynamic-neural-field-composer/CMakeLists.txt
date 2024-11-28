@@ -233,6 +233,7 @@ write_basic_package_version_file(${version_file}
 
 # Install the headers
 install(FILES ${simulation_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/simulation)
+install(FILES ${visualization_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/visualization)
 install(FILES ${application_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/application)
 install(FILES ${elements_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/elements)
 install(FILES ${tools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/tools)
