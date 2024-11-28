@@ -5,6 +5,7 @@
 #include "simulation/simulation.h"
 #include "tools/file_dialog.h"
 
+
 namespace dnf_composer::user_interface
 {
 	struct FileFlags

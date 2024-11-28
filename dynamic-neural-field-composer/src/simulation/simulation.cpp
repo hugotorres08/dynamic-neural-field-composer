@@ -292,6 +292,14 @@ namespace dnf_composer
 		uniqueIdentifier = id;
 	}
 
+	void Simulation::setDeltaT(double deltaT)
+	{
+		if (deltaT <= 0)
+			throw Exception(ErrorCode::SIM_INVALID_PARAMETER);
+
+		this->deltaT = deltaT;
+	}
+
 	std::string Simulation::getUniqueIdentifier() const
 	{
 		return uniqueIdentifier;
@@ -353,6 +361,26 @@ namespace dnf_composer
 			if (element->getUniqueIdentifier() > highestIndex)
 				highestIndex = element->getUniqueIdentifier();
 		return highestIndex;
+	}
+
+	std::string Simulation::getIdentifier() const
+	{
+		return uniqueIdentifier;
+	}
+
+	double Simulation::getDeltaT() const
+	{
+		return deltaT;
+	}
+
+	double Simulation::getTZero() const
+	{
+		return tZero;
+	}
+
+	double Simulation::getT() const
+	{
+		return t;
 	}
 
 	bool Simulation::componentExists(const std::string& id, const std::string& componentName) const

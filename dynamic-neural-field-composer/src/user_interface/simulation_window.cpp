@@ -18,7 +18,8 @@ namespace dnf_composer
 		{
 			if (ImGui::Begin("Simulation Control"))
 			{
-				renderStartSimulationButton();
+				renderSimulationControlButtons();
+				renderSimulationProperties();
 				renderAddElement();
 				renderSetInteraction();
 				renderRemoveElement();
@@ -28,7 +29,7 @@ namespace dnf_composer
 			ImGui::End();
 		}
 
-		void SimulationWindow::renderStartSimulationButton() const
+		void SimulationWindow::renderSimulationControlButtons() const
 		{
 			if (ImGui::Button("Start simulation"))
 				simulation->init();
@@ -42,6 +43,34 @@ namespace dnf_composer
 
 			if (ImGui::Button("Resume simulation"))
 				simulation->resume();
+		}
+
+		void SimulationWindow::renderSimulationProperties() const
+		{
+			ImGui::Separator();
+
+			const std::string& identifier = simulation->getIdentifier();
+			const double deltaT = simulation->getDeltaT();
+			const double tZero = simulation->getTZero();
+			const double t = simulation->getT();
+
+			ImGui::Text("Identifier: ");
+			ImGui::SameLine();
+			ImGui::TextColored(imgui_kit::colours::Azure, "%s", identifier.c_str());
+
+			ImGui::Text("Time Step (deltaT): ");
+			ImGui::SameLine();
+			ImGui::TextColored(imgui_kit::colours::Green, "%.3f", deltaT);
+
+			ImGui::Text("Start Time (tZero): ");
+			ImGui::SameLine();
+			ImGui::TextColored(imgui_kit::colours::Peach, "%.3f", tZero);
+
+			ImGui::Text("Current Time (t): ");
+			ImGui::SameLine();
+			ImGui::TextColored(imgui_kit::colours::Red, "%.3f", t);
+
+			ImGui::Separator();
 		}
 
 		void SimulationWindow::renderAddElement() const

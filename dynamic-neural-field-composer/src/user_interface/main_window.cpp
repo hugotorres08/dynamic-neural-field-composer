@@ -74,6 +74,38 @@ namespace dnf_composer::user_interface
 
             if (ImGui::BeginMenu("Settings"))
             {
+                static char newIdentifier[128] = "";   // Buffer for editing the identifier
+                static bool initialized = false;      // Flag to track initialization
+
+                if (!initialized)
+                {
+                    strncpy_s(newIdentifier, simulation->getIdentifier().c_str(), sizeof(newIdentifier));
+                    initialized = true;
+                }
+
+                ImGui::Text("Simulation Identifier:");
+                ImGui::InputText("##inline_identifier", newIdentifier, sizeof(newIdentifier));
+
+                ImGui::SameLine();
+                if (ImGui::Button("Save##menu_identifier"))
+                {
+                    simulation->setUniqueIdentifier(newIdentifier);
+                }
+
+                ImGui::Separator();
+
+                static auto deltaT = static_cast<float>(simulation->getDeltaT());
+                ImGui::Text("Time Step (deltaT): ");
+                ImGui::SliderFloat("##menu_deltaT_slider", &deltaT, 0.001f, 25.0, "%.3f");
+                if (ImGui::IsItemDeactivatedAfterEdit())
+                    simulation->setDeltaT(deltaT);
+
+                ImGui::Separator();
+
+                ImGui::Text("Current Time (t): ");
+                ImGui::SameLine();
+                ImGui::TextColored(imgui_kit::colours::Red, "%.3f", simulation->getT());
+
                 ImGui::EndMenu();
             }
 

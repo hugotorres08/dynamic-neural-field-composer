@@ -204,11 +204,11 @@ namespace dnf_composer
             }
         }
 
-        ImPlot::SetupLegend(ImPlotLocation_South, ImPlotLegendFlags_Horizontal);
+        ImPlot::SetupLegend(ImPlotLocation_SouthWest, ImPlotLegendFlags_None);
 
 		for (size_t j = 0; j < data.size(); ++j) 
 		{
-			const std::string label = legends[j];
+			const std::string& label = legends[j];
             const std::vector<double>& line_data = *data[j];
 
             std::vector<double> shiftedXValues(line_data.size());
@@ -219,7 +219,8 @@ namespace dnf_composer
 
             ImPlot::PlotLine(label.c_str(), shiftedXValues.data(), line_data.data(), static_cast<int>(line_data.size()));
         }
-        ImPlot::EndPlot();
+
+		ImPlot::EndPlot();
 	}
 
 }

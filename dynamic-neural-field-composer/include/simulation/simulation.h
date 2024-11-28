@@ -51,6 +51,7 @@ namespace dnf_composer
 			const std::string& receivingElementId) const;
 
 		void setUniqueIdentifier(const std::string& id);
+		void setDeltaT(double deltaT);
 
 		std::vector<std::shared_ptr<element::Element>> getElements() const;
 		std::string getUniqueIdentifier() const;
@@ -62,6 +63,10 @@ namespace dnf_composer
 		std::vector < std::shared_ptr<element::Element>> getElementsThatHaveSpecifiedElementAsInput(const std::string& specifiedElement, 
 		                                                                                            const std::string& inputComponent = "output") const;
 		int getHighestElementIndex() const;
+		std::string getIdentifier() const;
+		double getDeltaT() const;
+		double getTZero() const;
+		double getT() const;
 
 		bool componentExists(const std::string& id, const std::string& componentName) const;
 
