@@ -104,15 +104,26 @@ namespace dnf_composer
 			element::NeuralFieldParameters nfp = neuralField->getParameters();
 
 			auto restingLevel = static_cast<float>(nfp.startingRestingLevel);
+			auto tau = static_cast<float>(nfp.tau);
 
-			const std::string label = "##" + element->getUniqueName() + "Resting level";
-			ImGui::SliderFloat(label.c_str(), &restingLevel, -30, 0);
+			std::string label = "##" + element->getUniqueName() + "Resting level";
+			ImGui::SliderFloat(label.c_str(), &restingLevel, -30.0f, 0.0f);
 			ImGui::SameLine(); ImGui::Text("Resting level");
+
+			label = "##" + element->getUniqueName() + "Tau";
+			ImGui::SliderFloat(label.c_str(), &tau, 1.0f, 300.0f);
+			ImGui::SameLine(); ImGui::Text("Tau");
 
 			static constexpr double epsilon = 1e-6;
 			if (std::abs(restingLevel - static_cast<float>(nfp.startingRestingLevel)) > epsilon) 
 			{
 				nfp.startingRestingLevel = restingLevel;
+				neuralField->setParameters(nfp);
+			}
+
+			if (std::abs(tau - static_cast<float>(nfp.tau)) > epsilon)
+			{
+				nfp.tau = tau;
 				neuralField->setParameters(nfp);
 			}
 		}
