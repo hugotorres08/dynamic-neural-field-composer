@@ -77,7 +77,7 @@ namespace dnf_composer
 		std::string MexicanHatKernel::toString() const
 		{
 			std::string result = "Mexican hat kernel element\n";
-			result += commonParameters.toString();
+			result += commonParameters.toString() + '\n';
 			result += parameters.toString();
 			return result;
 		}

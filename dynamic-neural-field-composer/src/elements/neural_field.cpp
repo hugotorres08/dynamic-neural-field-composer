@@ -92,8 +92,8 @@ namespace dnf_composer
 		std::string NeuralField::toString() const
 		{
 			std::string result = "Neural field element\n";
-			result += commonParameters.toString();
-			result += parameters.toString();
+			result += commonParameters.toString() + '\n';
+			result += parameters.toString() + '\n';
 			result += state.toString();
 			return result;
 		}

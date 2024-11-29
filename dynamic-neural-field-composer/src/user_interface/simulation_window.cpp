@@ -56,19 +56,19 @@ namespace dnf_composer
 
 			ImGui::Text("Identifier: ");
 			ImGui::SameLine();
-			ImGui::TextColored(imgui_kit::colours::Azure, "%s", identifier.c_str());
+			ImGui::TextUnformatted(identifier.c_str());
 
 			ImGui::Text("Time Step (deltaT): ");
 			ImGui::SameLine();
-			ImGui::TextColored(imgui_kit::colours::Green, "%.3f", deltaT);
+			ImGui::Text("%.3f", deltaT);
 
 			ImGui::Text("Start Time (tZero): ");
 			ImGui::SameLine();
-			ImGui::TextColored(imgui_kit::colours::Peach, "%.3f", tZero);
+			ImGui::Text("%.3f", tZero);
 
 			ImGui::Text("Current Time (t): ");
 			ImGui::SameLine();
-			ImGui::TextColored(imgui_kit::colours::Red, "%.3f", t);
+			ImGui::TextColored(imgui_kit::colours::Black, "%.3f", t);
 
 			ImGui::Separator();
 		}

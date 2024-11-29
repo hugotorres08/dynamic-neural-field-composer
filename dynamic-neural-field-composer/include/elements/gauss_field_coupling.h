@@ -33,12 +33,12 @@ namespace dnf_composer
 			std::string toString() const
 			{
 				std::string result = "Gauss coupling [";
-				result += "x_i: " + std::to_string(x_i) + " ";
-				result += "x_j: " + std::to_string(x_j) + " ";
-				result += "a: " + std::to_string(amplitude) + " ";
-				result += "w: " + std::to_string(width) + "]\n";
+				result += "x_i: " + std::format("{:.2f}", x_i) + " ";
+				result += "x_j: " + std::format("{:.2f}", x_j) + " ";
+				result += "a: " + std::format("{:.2f}", amplitude) + " ";
+				result += "w: " + std::format("{:.2f}", width) + "]\n";
 				return result;
-			}	
+			}
 		};
 
 
@@ -63,15 +63,17 @@ namespace dnf_composer
 
 			std::string toString() const override
 			{
-				std::string result = "Gauss field coupling parameters:\n";
-				result += "Normalized: " + std::to_string(normalized) + "\n";
-				result += "Circular: " + std::to_string(circular) + "\n";
-				result += "Input field dimensions: " + inputFieldDimensions.toString() + "\n";
+				std::ostringstream result;
+				result << std::fixed << std::setprecision(2);
+				result << "Parameters: ["
+					<< "Circular: " << (circular ? "true" : "false") << ", "
+					<< "Normalized: " << (normalized ? "true" : "false") << ", "
+					<< "Input field dimensions: " + inputFieldDimensions.toString() << "]\n";
 
 				for (const auto& coupling : couplings)
-					result += coupling.toString();
+					result << coupling.toString();
 
-				return result;
+				return result.str();
 			}
 		};
 

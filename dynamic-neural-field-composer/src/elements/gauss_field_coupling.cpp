@@ -66,7 +66,7 @@ namespace dnf_composer
 		std::string GaussFieldCoupling::toString() const
 		{
 			std::string result = "Gauss field coupling element\n";
-			result += commonParameters.toString();
+			result += commonParameters.toString() + '\n';
 			result += parameters.toString();
 			return result;
 		}

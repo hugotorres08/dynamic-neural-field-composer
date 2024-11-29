@@ -44,12 +44,15 @@ namespace dnf_composer
 
 			std::string toString() const override
 			{
-				std::string result = "Field coupling parameters\n";
-				result += "Input field dimensions: " + inputFieldDimensions.toString() + "\n";
-				result += "Learning rule: " + LearningRuleToString.at(learningRule) + "\n";
-				result += "Learning rate: " + std::to_string(learningRate) + "\n";
-				result += "Scalar: " + std::to_string(scalar) + "\n";
-				return result;
+				std::ostringstream result;
+				result << std::fixed << std::setprecision(2);
+				result << "Parameters: ["
+					<< "Input field dimensions: " << inputFieldDimensions.toString() << ", "
+					<< "Learning rule: " << LearningRuleToString.at(learningRule) << ", "
+					<< "Learning rate: " << learningRate << ", "
+					<< "Scalar: " << scalar
+					<< "]";
+				return result.str();
 			}
 		};
 

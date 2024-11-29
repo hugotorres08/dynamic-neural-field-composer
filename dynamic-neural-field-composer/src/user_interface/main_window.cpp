@@ -104,7 +104,7 @@ namespace dnf_composer::user_interface
 
                 ImGui::Text("Current Time (t): ");
                 ImGui::SameLine();
-                ImGui::TextColored(imgui_kit::colours::Red, "%.3f", simulation->getT());
+                ImGui::TextColored(imgui_kit::colours::Black, "%.3f", simulation->getT());
 
                 ImGui::EndMenu();
             }

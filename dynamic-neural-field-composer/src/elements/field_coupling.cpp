@@ -45,7 +45,7 @@ namespace dnf_composer
 		std::string FieldCoupling::toString() const
 		{
 			std::string result = "Field coupling element\n";
-			result += commonParameters.toString();
+			result += commonParameters.toString() + '\n';
 			result += parameters.toString();
 			return result;
 		}

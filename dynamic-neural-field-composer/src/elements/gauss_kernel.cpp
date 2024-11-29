@@ -72,7 +72,7 @@ namespace dnf_composer
 		std::string GaussKernel::toString() const
 		{
 			std::string result = "Gauss kernel element\n";
-			result += commonParameters.toString();
+			result += commonParameters.toString() + '\n';
 			result += parameters.toString();
 			return result;
 		}

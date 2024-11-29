@@ -27,10 +27,11 @@ namespace dnf_composer
 		auto io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		// [Put this elsewhere] Using the light style with borders
-		ImGui::StyleColorsLight();
+		//ImGui::StyleColorsLight();
 		ImGuiStyle& style = ImGui::GetStyle();
 		style.FrameBorderSize = 1.0f;
 		style.FrameRounding = 6.0f;
+		style.GrabRounding = 6.0f;
 		style.Colors[ImGuiCol_WindowBg].w = 0.7f;
 		style.Colors[ImGuiCol_FrameBg].w = 0.8f;
 	}
@@ -75,7 +76,7 @@ namespace dnf_composer
 		const FontParameters fontParams{ std::string(PROJECT_DIR) + "/resources/fonts/Lexend-Light.ttf", 15 };
 
 		//const StyleParameters styleParams{ ImVec4(0.3f, 0.3f, 0.3f, 0.6f), colours::White };
-		constexpr ImVec4 themeColor = ImVec4(0.55f, 0.80f, 0.85f, 0.85f);
+		constexpr ImVec4 themeColor = ImVec4(0.55f, 0.80f, 0.85f, 0.95f);
 		const StyleParameters styleParams{ themeColor, colours::White };
 
 		const IconParameters iconParams{ std::string(PROJECT_DIR) + "/resources/icons/icon.ico" };
