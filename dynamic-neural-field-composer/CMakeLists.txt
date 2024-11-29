@@ -175,11 +175,27 @@ set(src
 
 # Define library target
 add_library(${CMAKE_PROJECT_NAME} ${header} ${src})
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    #$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> 
-    $<INSTALL_INTERFACE:${DNF_COMPOSER_INC_INSTALL_DIR}> 
-    #PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include 
+#target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC 
+#    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#    #$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> 
+#    $<INSTALL_INTERFACE:${DNF_COMPOSER_INC_INSTALL_DIR}> 
+#    #PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include 
+#)
+#target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC 
+#    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#    $<INSTALL_INTERFACE:${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer>
+#)
+#target_include_directories(${CMAKE_PROJECT_NAME} 
+#    PRIVATE $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+#    PUBLIC $<INSTALL_INTERFACE:include/dnf_composer>
+#)
+#target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC 
+#    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include> # During build
+#    $<INSTALL_INTERFACE:include>                           # During installation
+#)
+target_include_directories(${CMAKE_PROJECT_NAME} 
+    PUBLIC $<INSTALL_INTERFACE:include> 
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include 
 )
 
 # Setup imgui
@@ -211,17 +227,19 @@ set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
 )
 
 # Install the library (binaries)
+#install(TARGETS ${CMAKE_PROJECT_NAME} EXPORT ${CMAKE_PROJECT_NAME}Targets
+#    RUNTIME       DESTINATION ${DNF_COMPOSER_RUNTIME_INSTALL_DIR}
+#    LIBRARY       DESTINATION ${DNF_COMPOSER_LIBRARY_INSTALL_DIR}
+#    ARCHIVE       DESTINATION ${DNF_COMPOSER_ARCHIVE_INSTALL_DIR}
+#    FRAMEWORK     DESTINATION ${DNF_COMPOSER_FRAMEWORK_INSTALL_DIR}
+#)
 install(TARGETS ${CMAKE_PROJECT_NAME} EXPORT ${CMAKE_PROJECT_NAME}Targets
-    RUNTIME       DESTINATION ${DNF_COMPOSER_RUNTIME_INSTALL_DIR}
-    LIBRARY       DESTINATION ${DNF_COMPOSER_LIBRARY_INSTALL_DIR}
-    ARCHIVE       DESTINATION ${DNF_COMPOSER_ARCHIVE_INSTALL_DIR}
-    FRAMEWORK     DESTINATION ${DNF_COMPOSER_FRAMEWORK_INSTALL_DIR}
+    RUNTIME DESTINATION ${DNF_COMPOSER_RUNTIME_INSTALL_DIR}
+    LIBRARY DESTINATION ${DNF_COMPOSER_LIBRARY_INSTALL_DIR}
+    ARCHIVE DESTINATION ${DNF_COMPOSER_ARCHIVE_INSTALL_DIR}
+    INCLUDES DESTINATION include/dnf_composer # Explicitly set the install include path
 )
 
-## Install the headers
-#install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-#        DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer
-#        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
 
 # Package version configuration
 include(CMakePackageConfigHelpers)
@@ -231,57 +249,36 @@ write_basic_package_version_file(${version_file}
     COMPATIBILITY AnyNewerVersion
 )
 
-# Install the headers
-install(FILES ${simulation_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/simulation)
-install(FILES ${visualization_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/visualization)
-install(FILES ${application_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/application)
-install(FILES ${elements_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/elements)
-install(FILES ${tools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/tools)
-install(FILES ${exceptions_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/exceptions)
-install(FILES ${user_interface_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/user_interface)
-install(FILES ${wizards_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/wizards)
-install(FILES ${element_parameters_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/element_parameters)
+# Install the headers 
+#install(FILES ${simulation_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/simulation)
+#install(FILES ${visualization_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/visualization)
+#install(FILES ${application_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/application)
+#install(FILES ${elements_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/elements)
+#install(FILES ${tools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/tools)
+#install(FILES ${exceptions_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/exceptions)
+#install(FILES ${user_interface_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/user_interface)
+#install(FILES ${wizards_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/wizards)
+#install(FILES ${element_parameters_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/element_parameters)
+install(FILES ${simulation_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/simulation)
+install(FILES ${visualization_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/visualization)
+install(FILES ${application_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/application)
+install(FILES ${elements_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/elements)
+install(FILES ${tools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/tools)
+install(FILES ${exceptions_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/exceptions)
+install(FILES ${user_interface_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/user_interface)
+install(FILES ${element_parameters_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/element_parameters)
+
+
+# When linking from another project dnf_composer should be a prefix
+# Like this: #include <dnf_composer/simulation/simulation.h>
+# However, when including from the same project, the prefix should be removed
+# Like this: #include "simulation/simulation.h"
+# How can we handle this?
 
 
 install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CONFIG_INSTALL_DIR}
     FILE ${CMAKE_PROJECT_NAME}-config.cmake
 )
-
-# Add executable project
-#set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
-#add_executable(${EXE_PROJECT} "src/dynamic-neural-field-composer.cpp")
-#target_include_directories(${EXE_PROJECT} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-
-# Example test_plot
-#set(TEST_PLOT_EXAMPLE t-plot-example)
-#add_executable(${TEST_PLOT_EXAMPLE} "examples/test_plot.cpp")
-#target_include_directories(${TEST_PLOT_EXAMPLE} PRIVATE include)
-#target_link_libraries(${TEST_PLOT_EXAMPLE} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-#
-## Example test_visualization
-#set(TEST_VISUALIZATION_EXAMPLE t-vis-example)
-#add_executable(${TEST_VISUALIZATION_EXAMPLE} "examples/test_visualization.cpp")
-#target_include_directories(${TEST_VISUALIZATION_EXAMPLE} PRIVATE include)
-#target_link_libraries(${TEST_VISUALIZATION_EXAMPLE} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-#
-## Example test_application
-#set(TEST_APPLICATION_EXAMPLE t-app-example)
-#add_executable(${TEST_APPLICATION_EXAMPLE} "examples/test_application.cpp")
-#target_include_directories(${TEST_APPLICATION_EXAMPLE} PRIVATE include)
-#target_link_libraries(${TEST_APPLICATION_EXAMPLE} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
 
 # Example test_plot_control_window
 set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)

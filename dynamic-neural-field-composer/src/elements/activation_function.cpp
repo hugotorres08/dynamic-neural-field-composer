@@ -3,7 +3,7 @@
 
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
-#include "./elements/activation_function.h"
+#include "elements/activation_function.h"
 
 
 
