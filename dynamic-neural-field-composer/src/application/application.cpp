@@ -27,13 +27,13 @@ namespace dnf_composer
 		auto io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 		// [Put this elsewhere] Using the light style with borders
-		//ImGui::StyleColorsLight();
+		ImGui::StyleColorsLight();
 		ImGuiStyle& style = ImGui::GetStyle();
 		style.FrameBorderSize = 1.0f;
 		style.FrameRounding = 6.0f;
 		style.GrabRounding = 6.0f;
-		style.Colors[ImGuiCol_WindowBg].w = 0.7f;
-		style.Colors[ImGuiCol_FrameBg].w = 0.8f;
+		//style.Colors[ImGuiCol_WindowBg].w = 0.7f;
+		//style.Colors[ImGuiCol_FrameBg].w = 0.8f;
 	}
 
 	void Application::step() const

@@ -31,10 +31,10 @@ namespace dnf_composer
 	Heatmap::Heatmap(const PlotCommonParameters& parameters, const HeatmapParameters& heatmapParameters)
 		: Plot(parameters), heatmapParameters(heatmapParameters)
 	{
-		commonParameters.dimensions.xMin = 0;
-		commonParameters.dimensions.xMax = 100;
-		commonParameters.dimensions.yMin = 0;
-		commonParameters.dimensions.yMax = 100;
+		//commonParameters.dimensions.xMin = 0;
+		//commonParameters.dimensions.xMax = 100;
+		//commonParameters.dimensions.yMin = 0;
+		//commonParameters.dimensions.yMax = 100;
 		commonParameters.type = PlotType::HEATMAP;
 	}
 
