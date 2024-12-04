@@ -21,7 +21,6 @@ namespace dnf_composer
 		{LearningRule::HEBB, "Hebb"},
 		{LearningRule::OJA, "Oja"},
 		{LearningRule::DELTA, "Delta"}
-
 	};
 
 	namespace element
@@ -41,6 +40,17 @@ namespace dnf_composer
 				learningRule(learningRule), scalar(scalar),
 				learningRate(learningRate), isLearningActive(false)
 			{}
+
+			bool operator==(const FieldCouplingParameters& other) const
+			{
+				constexpr double epsilon = 1e-6;
+
+				return std::abs(inputFieldDimensions.x_max - other.inputFieldDimensions.x_max) < epsilon &&
+					std::abs(inputFieldDimensions.d_x - other.inputFieldDimensions.d_x) < epsilon &&
+					learningRule == other.learningRule &&
+					std::abs(scalar - other.scalar) < epsilon &&
+					std::abs(learningRate - other.learningRate) < epsilon;
+			}
 
 			std::string toString() const override
 			{
