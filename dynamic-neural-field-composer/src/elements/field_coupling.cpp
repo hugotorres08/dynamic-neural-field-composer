@@ -24,7 +24,7 @@ namespace dnf_composer
 			parameters.isLearningActive = false;
 			std::ranges::fill(components["input"], 0);
 			std::ranges::fill(components["output"], 0);
-			std::ranges::fill(components["weights"], 0);
+			//std::ranges::fill(components["weights"], 0);
 
 			updateInputField();
 			updateOutputField();
