@@ -28,7 +28,7 @@ namespace dnf_composer
 					ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 50);
 					ImGui::TableSetupColumn("Type", ImGuiTableColumnFlags_WidthFixed, 100);
 					ImGui::TableSetupColumn("Data", ImGuiTableColumnFlags_WidthFixed, 300);
-					ImGui::TableSetupColumn("Change plotted data", ImGuiTableColumnFlags_WidthFixed, 300);
+					ImGui::TableSetupColumn("Change plotted data", ImGuiTableColumnFlags_WidthFixed, 500);
 					ImGui::TableHeadersRow();
 
 					const auto& plots = visualization->getPlots();

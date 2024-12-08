@@ -23,6 +23,7 @@ namespace dnf_composer::user_interface
 		bool showToolAbout = false;
 		bool showImGuiDemo = false;
 		bool showImPlotDemo = false;
+		bool showImGuiKitStyleEditor = false;
 	};
 
 	class MainWindow : public imgui_kit::UserInterfaceWindow

@@ -68,7 +68,7 @@ namespace dnf_composer
 
 			ImGui::Text("Current Time (t): ");
 			ImGui::SameLine();
-			ImGui::TextColored(imgui_kit::colours::Black, "%.3f", t);
+			ImGui::Text("%.3f", t);
 
 			ImGui::Separator();
 		}

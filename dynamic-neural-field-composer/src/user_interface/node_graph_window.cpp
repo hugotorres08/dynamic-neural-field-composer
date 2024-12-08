@@ -28,11 +28,9 @@ namespace dnf_composer
 				ImGui::SameLine();
 				ImGui::Text("FPS: %.2f (%.2gms)", io.Framerate, io.Framerate ? 1000.0f / io.Framerate : 0.0f);
 				ImNodeEditor::Begin("My Node ImNodeEditor");
-				ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::White);
 				renderElementNodes();
 				handleInteractions();
 				ImNodeEditor::End();
-				ImGui::PopStyleColor();
 				ImNodeEditor::SetCurrentEditor(nullptr);
 			}
 			ImGui::End();
@@ -42,10 +40,11 @@ namespace dnf_composer
 		{
 			for (const auto& element : simulation->getElements())
 			{
-				
+				ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::White);
 				ImNodeEditor::BeginNode(element->getUniqueIdentifier());
 				setNodeStyle(element);
 				renderElementNode(element);
+				ImGui::PopStyleColor();
 				ImNodeEditor::EndNode();
 			}
 			for (const auto& element : simulation->getElements())
@@ -300,7 +299,6 @@ namespace dnf_composer
 			const ImNodeEditor::LinkId doubleClickedLink = ImNodeEditor::GetDoubleClickedLink();
 			if (doubleClickedLink)
 			{
-				tools::logger::log(tools::logger::LogLevel::INFO, "Link double clicked: " + std::to_string(doubleClickedLink.Get()));
 				ImNodeEditor::PinId startPin;
 				ImNodeEditor::PinId endPin;
 				GetLinkPins(doubleClickedLink, &startPin, &endPin);

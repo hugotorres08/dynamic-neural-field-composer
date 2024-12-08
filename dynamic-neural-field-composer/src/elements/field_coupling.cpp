@@ -17,6 +17,8 @@ namespace dnf_composer
 			components["input"] = std::vector<double>(parameters.inputFieldDimensions.size);
 			components["output"] = std::vector<double>(commonParameters.dimensionParameters.size);
 			components["weights"] = std::vector<double>(components.at("input").size() * components.at("output").size());
+			std::ranges::fill(components["weights"], 0);
+			readWeights();
 		}
 
 		void FieldCoupling::init()
@@ -24,13 +26,11 @@ namespace dnf_composer
 			parameters.isLearningActive = false;
 			std::ranges::fill(components["input"], 0);
 			std::ranges::fill(components["output"], 0);
-			//std::ranges::fill(components["weights"], 0);
 
 			updateInputField();
 			updateOutputField();
 			if(!checkValidConnections())
 				return;
-			readWeights();
 		}
 
 		void FieldCoupling::step(double t, double deltaT)

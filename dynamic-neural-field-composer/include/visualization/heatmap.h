@@ -19,8 +19,13 @@ namespace dnf_composer
 	{
 		HeatmapParameters heatmapParameters;
 	public:
-		Heatmap(const PlotCommonParameters& parameters = PlotCommonParameters(),
-						const HeatmapParameters& heatmapParameters = HeatmapParameters());
+
+		Heatmap(const PlotCommonParameters& parameters = 
+			{ PlotType::HEATMAP, 
+			{0.0, 100.0, 0.0, 100.0, 1.0, 1.0},
+			{"Heatmap plot", "Spatial dimension output", "Spatial dimension input"}},
+			const HeatmapParameters& heatmapParameters = HeatmapParameters());
+
 		void setScale(double min, double max);
 		std::pair<double, double> getScale() const;
 		std::string toString() const override;

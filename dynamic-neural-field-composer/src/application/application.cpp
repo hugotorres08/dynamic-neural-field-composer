@@ -26,14 +26,6 @@ namespace dnf_composer
 		// [Put this elsewhere] Enable Keyboard Controls
 		auto io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-		// [Put this elsewhere] Using the light style with borders
-		ImGui::StyleColorsLight();
-		ImGuiStyle& style = ImGui::GetStyle();
-		style.FrameBorderSize = 1.0f;
-		style.FrameRounding = 6.0f;
-		style.GrabRounding = 6.0f;
-		//style.Colors[ImGuiCol_WindowBg].w = 0.7f;
-		//style.Colors[ImGuiCol_FrameBg].w = 0.8f;
 	}
 
 	void Application::step() const
@@ -73,12 +65,14 @@ namespace dnf_composer
 	{
 		using namespace imgui_kit;
 		const WindowParameters winParams{ "Dynamic Neural Field Composer" };
-		const FontParameters fontParams{ std::string(PROJECT_DIR) + "/resources/fonts/Lexend-Light.ttf", 15 };
-
-		//const StyleParameters styleParams{ ImVec4(0.3f, 0.3f, 0.3f, 0.6f), colours::White };
-		constexpr ImVec4 themeColor = ImVec4(0.55f, 0.80f, 0.85f, 0.95f);
-		const StyleParameters styleParams{ themeColor, colours::White };
-
+		const FontParameters fontParams({ {std::string(PROJECT_DIR) + "/resources/fonts/JetBrainsMono-Regular.ttf", 16},
+												{std::string(PROJECT_DIR) + "/resources/fonts/JetBrainsMono-Thin.ttf", 16},
+												{std::string(PROJECT_DIR) + "/resources/fonts/JetBrainsMono-Medium.ttf", 16},
+												{std::string(PROJECT_DIR) + "/resources/fonts/JetBrainsMono-Bold.ttf", 16},
+												{std::string(PROJECT_DIR) + "/resources/fonts/JetBrainsMono-Italic.ttf", 16},
+												{std::string(PROJECT_DIR) + "/resources/fonts/JetBrainsMono-Light.ttf", 16},
+			});
+		const StyleParameters styleParams{ Theme::GreenLeaf };
 		const IconParameters iconParams{ std::string(PROJECT_DIR) + "/resources/icons/icon.ico" };
 		const BackgroundImageParameters bgParams{ std::string(PROJECT_DIR) + "/resources/images/background.png", ImageFitType::ZOOM_TO_FIT };
 		const UserInterfaceParameters guiParameters{ winParams, fontParams, styleParams, iconParams, bgParams };
