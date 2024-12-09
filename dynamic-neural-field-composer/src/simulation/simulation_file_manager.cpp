@@ -15,13 +15,12 @@ namespace dnf_composer
 	{
         json elementsJson;
 
-        const int numberOfElementsInSimulation = simulation->getNumberOfElements();
 
-        for (int i = 0; i < numberOfElementsInSimulation; i++)
-        {
-            const auto simulationElement = simulation->getElement(i);
+        //for (int i = 0; i < numberOfElementsInSimulation; i++)
+		for (const auto& element : simulation->getElements())
+		{
             json elementJson;
-            elementJson = elementToJson(simulationElement);
+            elementJson = elementToJson(element);
             elementsJson.emplace_back(elementJson);
         }
 
