@@ -58,6 +58,12 @@ namespace dnf_composer
 					const auto params = dynamic_cast<const FieldCouplingParameters*>(&elementSpecificParameters);
 					return std::make_shared<FieldCoupling>(elementCommonParameters, *params);
 				};
+
+			elementCreators[ElementLabel::OSCILLATORY_KERNEL] = [](const ElementCommonParameters& elementCommonParameters, const ElementSpecificParameters& elementSpecificParameters)
+				{
+					const auto params = dynamic_cast<const OscillatoryKernelParameters*>(&elementSpecificParameters);
+					return std::make_shared<OscillatoryKernel>(elementCommonParameters, *params);
+				};
 		}
 
 		std::shared_ptr<Element> ElementFactory::createElement(ElementLabel type, const ElementCommonParameters& elementCommonParameters, const ElementSpecificParameters& elementSpecificParameters)
@@ -93,6 +99,8 @@ namespace dnf_composer
 						return creator->second(ElementCommonParameters(type), GaussFieldCouplingParameters());
 					case ElementLabel::FIELD_COUPLING:
 						return creator->second(ElementCommonParameters(type), FieldCouplingParameters());
+					case ElementLabel::OSCILLATORY_KERNEL:
+						return creator->second(ElementCommonParameters(type), OscillatoryKernelParameters());
 					case ElementLabel::UNINITIALIZED:
 						return nullptr;
 				}

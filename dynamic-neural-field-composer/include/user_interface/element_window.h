@@ -10,6 +10,7 @@
 #include "elements/mexican_hat_kernel.h"
 #include "elements/normal_noise.h"
 #include "elements/gauss_field_coupling.h"
+#include "elements/oscillatory_kernel.h"
 
 namespace dnf_composer
 {
@@ -39,6 +40,7 @@ namespace dnf_composer
 			static void modifyElementMexicanHatKernel(const std::shared_ptr<element::Element>& element);
 			static void modifyElementNormalNoise(const std::shared_ptr<element::Element>& element);
 			static void modifyElementGaussFieldCoupling(const std::shared_ptr<element::Element>& element);
+			static void modifyElementOscillatoryKernel(const std::shared_ptr<element::Element>& element);
 		};
 	}
 }
