@@ -87,9 +87,7 @@ namespace dnf_composer
 			//fullSum = 0.0; // Reset the full sum
 
 				// Determine kernel range
-			double effectiveRange = std::max(parameters.decay/100,
-				parameters.zeroCrossings);
-			kernelRange = tools::math::computeKernelRange(1 / parameters.decay, cutOfFactor,
+			kernelRange = tools::math::computeKernelRange(1/parameters.decay, cutOfFactor,
 				commonParameters.dimensionParameters.size, parameters.circular);
 
 			if (parameters.circular)
@@ -101,30 +99,30 @@ namespace dnf_composer
 			int rangeXsize = kernelRange[0] + kernelRange[1] + 1;
 			std::vector<int> rangeX(rangeXsize);
 			const int startingValue = static_cast<int>(kernelRange[0]);
-			std::iota(rangeX.begin(), rangeX.end(), -startingValue);
+			std::iota(rangeX.begin(), rangeX.end(), -kernelRange[0]);
 
 			// Compute the oscillatory kernel components
 			components["kernel"].resize(rangeX.size());
-			double alpha = parameters.zeroCrossings * std::numbers::pi; // Calculate alpha based on zero crossings
+			double alpha = parameters.zeroCrossings;// *std::numbers::pi; // Calculate alpha based on zero crossings
 
 			for (int i = 0; i < components["kernel"].size(); i++)
 			{
 				double distance = rangeX[i];
 				double decayFactor = exp(-parameters.decay * std::abs(distance)); // Smooth exponential decay
-				double oscillation = sin(alpha * distance) + cos(alpha * distance); // Smooth oscillation
+				double oscillation = sin(std::abs(alpha * distance)) +cos(alpha * distance); // Smooth oscillation
 				components["kernel"][i] = parameters.amplitude * decayFactor * oscillation;
 			}
 
-			// Smooth the kernel further by applying a Gaussian envelope
-			if (parameters.normalized)
-			{
-				double normFactor = std::accumulate(components["kernel"].begin(), components["kernel"].end(), 0.0);
-				if (normFactor != 0.0)
-				{
-					for (double& value : components["kernel"])
-						value /= normFactor;
-				}
-			}
+			//// Smooth the kernel further by applying a Gaussian envelope
+			//if (parameters.normalized)
+			//{
+			//	double normFactor = std::accumulate(components["kernel"].begin(), components["kernel"].end(), 0.0);
+			//	if (normFactor != 0.0)
+			//	{
+			//		for (double& value : components["kernel"])
+			//			value /= normFactor;
+			//	}
+			//}
 
 			// Initialize input and output components
 			std::ranges::fill(components["input"], 0.0);

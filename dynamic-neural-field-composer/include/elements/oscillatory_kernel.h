@@ -15,6 +15,7 @@ namespace dnf_composer
 			double amplitudeGlobal;
 			bool circular;
 			bool normalized;
+			double width = 1;
 
 			OscillatoryKernelParameters(double amplitude = 3.0, double decay = 0.8,
 				double zeroCrossings = 1.0, double amplitudeGlobal = -0.01,

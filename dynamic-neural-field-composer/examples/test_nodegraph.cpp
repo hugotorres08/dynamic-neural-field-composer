@@ -70,6 +70,8 @@ int main()
 
 		visualization->plot({ {nf_1->getUniqueName(), "activation"}, {nf_1->getUniqueName(), "output"}, {nf_1->getUniqueName(), "input"} });
 		visualization->plot({ {nf_2->getUniqueName(), "activation"}, {nf_2->getUniqueName(), "output"}, {nf_2->getUniqueName(), "input"} });
+		visualization->plot({ {ok_2->getUniqueName(), "kernel"} });
+		visualization->plot({ {ok_2->getUniqueName(), "output"} });
 
 		//fc_1->addInput(nf_1);
 		//nf_2->addInput(fc_1);
