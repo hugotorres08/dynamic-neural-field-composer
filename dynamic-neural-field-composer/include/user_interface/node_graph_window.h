@@ -10,6 +10,7 @@
 #include "elements/mexican_hat_kernel.h"
 #include "elements/gauss_field_coupling.h"
 #include "elements/field_coupling.h"
+#include "elements/oscillatory_kernel.h"
 #include "widgets.h"
 
 namespace dnf_composer

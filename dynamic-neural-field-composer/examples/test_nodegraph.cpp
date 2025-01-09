@@ -23,7 +23,7 @@ int main()
 		app.addWindow<imgui_kit::LogWindow>();
 		app.addWindow<user_interface::FieldMetricsWindow>();
 		app.addWindow<user_interface::ElementWindow>();
-		//app.addWindow<user_interface::SimulationWindow>();
+		app.addWindow<user_interface::SimulationWindow>();
 		app.addWindow<user_interface::PlotControlWindow>();
 		app.addWindow<user_interface::PlotsWindow>();
 		app.addWindow<user_interface::NodeGraphWindow>();
@@ -41,7 +41,8 @@ int main()
 		const auto gs_1 = factory.createElement(element::GAUSS_STIMULUS);
 		const auto gs_2 = factory.createElement(element::GAUSS_STIMULUS);
 
-		const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING, element::ElementCommonParameters{element::GAUSS_FIELD_COUPLING}, element::GaussFieldCouplingParameters{{100, 1.0},false, false, { {50.0, 50.0, 5.0, 5.0} }});
+		const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING, element::ElementCommonParameters{element::GAUSS_FIELD_COUPLING}, 
+			element::GaussFieldCouplingParameters{{100, 1.0},false, false, { {50.0, 50.0, 5.0, 5.0} }});
 		const auto fc_1 = std::make_shared<element::FieldCoupling>(element::ElementCommonParameters{element::FIELD_COUPLING}, element::FieldCouplingParameters{});
 
 		simulation->addElement(nf_1);

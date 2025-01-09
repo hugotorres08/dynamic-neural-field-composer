@@ -15,11 +15,10 @@ namespace dnf_composer
 			double amplitudeGlobal;
 			bool circular;
 			bool normalized;
-			double width = 1;
 
-			OscillatoryKernelParameters(double amplitude = 3.0, double decay = 0.8,
-				double zeroCrossings = 1.0, double amplitudeGlobal = -0.01,
-				bool circular = true, bool normalized = true)
+			OscillatoryKernelParameters(double amplitude = 1.0, double decay = 0.08,
+				double zeroCrossings = 0.3, double amplitudeGlobal = -0.01,
+				bool circular = true, bool normalized = false)
 				: amplitude(amplitude), decay(decay),
 				zeroCrossings(zeroCrossings), amplitudeGlobal(amplitudeGlobal),
 				circular(circular), normalized(normalized)
@@ -29,6 +28,9 @@ namespace dnf_composer
 					this->zeroCrossings = 0.0;
 				else if (zeroCrossings > 1.0)
 					this->zeroCrossings = 1.0;
+				// decay cannot be negative or zero
+				if (decay <= 0.0)
+					this->decay = 0.01;
 			}
 
 			bool operator==(const OscillatoryKernelParameters& other) const

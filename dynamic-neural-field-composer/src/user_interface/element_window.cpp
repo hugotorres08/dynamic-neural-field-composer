@@ -520,7 +520,6 @@ namespace dnf_composer
 			auto decay = static_cast<float>(okp.decay);
 			auto zeroCrossings = static_cast<float>(okp.zeroCrossings);
 			auto amplitudeGlobal = static_cast<float>(okp.amplitudeGlobal);
-			auto width = static_cast<float>(okp.width);
 			bool circular = okp.circular;
 			bool normalized = okp.normalized;
 
@@ -529,7 +528,7 @@ namespace dnf_composer
 			ImGui::SameLine(); ImGui::Text("Amplitude");
 
 			label = "##" + element->getUniqueName() + "Decay";
-			ImGui::SliderFloat(label.c_str(), &decay, 0, 10);
+			ImGui::SliderFloat(label.c_str(), &decay, 0.001f, 10);
 			ImGui::SameLine(); ImGui::Text("Decay");
 
 			label = "##" + element->getUniqueName() + "Zero crossings";
@@ -539,10 +538,6 @@ namespace dnf_composer
 			label = "##" + element->getUniqueName() + "Amplitude global";
 			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 0);
 			ImGui::SameLine(); ImGui::Text("Amplitude global");
-
-			label = "##" + element->getUniqueName() + "Width";
-			ImGui::SliderFloat(label.c_str(), &width, -10, 10);
-			ImGui::SameLine(); ImGui::Text("Width");
 
 			label = "##" + element->getUniqueName() + "Circular";
 			ImGui::Checkbox(label.c_str(), &circular);
@@ -558,14 +553,13 @@ namespace dnf_composer
 								std::abs(decay - static_cast<float>(okp.decay)) > epsilon ||
 								std::abs(zeroCrossings - static_cast<float>(okp.zeroCrossings)) > epsilon ||
 								std::abs(amplitudeGlobal - static_cast<float>(okp.amplitudeGlobal)) > epsilon ||
-								std::abs(width - static_cast<float>(okp.width)) > epsilon ||
 								circular != okp.circular ||
 								normalized != okp.normalized)
 			{
 				okp.amplitude = amplitude;
 				okp.decay = decay;
 				okp.zeroCrossings = zeroCrossings;
-				okp.width = width;
+				okp.amplitudeGlobal = amplitudeGlobal;
 				okp.circular = circular;
 				okp.normalized = normalized;
 				kernel->setParameters(okp);

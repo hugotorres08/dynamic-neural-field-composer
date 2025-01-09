@@ -211,6 +211,18 @@ namespace dnf_composer
 					ImGui::Text("Learning active: %s", parameters.isLearningActive ? "true" : "false");
 				}
 				break;
+				case element::ElementLabel::OSCILLATORY_KERNEL:
+				{
+					const auto oscillatoryKernel = std::dynamic_pointer_cast<element::OscillatoryKernel>(element);
+					const element::OscillatoryKernelParameters parameters = oscillatoryKernel->getParameters();
+					ImGui::Text("Amplitude: %.2f", parameters.amplitude);
+					ImGui::Text("Decay: %.2f", parameters.decay);
+					ImGui::Text("Zero crossings: %.2f", parameters.zeroCrossings);
+					ImGui::Text("Amplitude global: %.2f", parameters.amplitudeGlobal);
+					ImGui::Text("Circular: %s", parameters.circular ? "true" : "false");
+					ImGui::Text("Normalized: %s", parameters.normalized ? "true" : "false");
+				}
+				break;
 				default:
 					tools::logger::log(tools::logger::LogLevel::ERROR, "Element label not recognized at node graph.");
 					break;
