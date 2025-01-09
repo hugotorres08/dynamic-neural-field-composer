@@ -90,6 +90,9 @@ namespace dnf_composer
 			case element::ElementLabel::GAUSS_FIELD_COUPLING:
 				modifyElementGaussFieldCoupling(element);
 				break;
+			case element::ElementLabel::OSCILLATORY_KERNEL:
+				modifyElementOscillatoryKernel(element);
+				break;
 			case element::ElementLabel::UNINITIALIZED:
 				break;
 			default:
@@ -507,5 +510,67 @@ namespace dnf_composer
 				ImGui::EndPopup();
 			}
 		}
+
+		void ElementWindow::modifyElementOscillatoryKernel(const std::shared_ptr<element::Element>& element)
+		{
+			const auto kernel = std::dynamic_pointer_cast<element::OscillatoryKernel>(element);
+			element::OscillatoryKernelParameters okp = kernel->getParameters();
+
+			auto amplitude = static_cast<float>(okp.amplitude);
+			auto decay = static_cast<float>(okp.decay);
+			auto zeroCrossings = static_cast<float>(okp.zeroCrossings);
+			auto amplitudeGlobal = static_cast<float>(okp.amplitudeGlobal);
+			auto width = static_cast<float>(okp.width);
+			bool circular = okp.circular;
+			bool normalized = okp.normalized;
+
+			std::string label = "##" + element->getUniqueName() + "Amplitude";
+			ImGui::SliderFloat(label.c_str(), &amplitude, 0, 30);
+			ImGui::SameLine(); ImGui::Text("Amplitude");
+
+			label = "##" + element->getUniqueName() + "Decay";
+			ImGui::SliderFloat(label.c_str(), &decay, 0, 10);
+			ImGui::SameLine(); ImGui::Text("Decay");
+
+			label = "##" + element->getUniqueName() + "Zero crossings";
+			ImGui::SliderFloat(label.c_str(), &zeroCrossings, 0, 1);
+			ImGui::SameLine(); ImGui::Text("Zero crossings");
+
+			label = "##" + element->getUniqueName() + "Amplitude global";
+			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 0);
+			ImGui::SameLine(); ImGui::Text("Amplitude global");
+
+			label = "##" + element->getUniqueName() + "Width";
+			ImGui::SliderFloat(label.c_str(), &width, -10, 10);
+			ImGui::SameLine(); ImGui::Text("Width");
+
+			label = "##" + element->getUniqueName() + "Circular";
+			ImGui::Checkbox(label.c_str(), &circular);
+			ImGui::SameLine(); ImGui::Text("Circular");
+
+			label = "##" + element->getUniqueName() + "Normalized";
+			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &normalized);
+			ImGui::SameLine(); ImGui::Text("Normalized");
+
+
+			static constexpr double epsilon = 1e-6;
+			if (std::abs(amplitude - static_cast<float>(okp.amplitude)) > epsilon ||
+								std::abs(decay - static_cast<float>(okp.decay)) > epsilon ||
+								std::abs(zeroCrossings - static_cast<float>(okp.zeroCrossings)) > epsilon ||
+								std::abs(amplitudeGlobal - static_cast<float>(okp.amplitudeGlobal)) > epsilon ||
+								std::abs(width - static_cast<float>(okp.width)) > epsilon ||
+								circular != okp.circular ||
+								normalized != okp.normalized)
+			{
+				okp.amplitude = amplitude;
+				okp.decay = decay;
+				okp.zeroCrossings = zeroCrossings;
+				okp.width = width;
+				okp.circular = circular;
+				okp.normalized = normalized;
+				kernel->setParameters(okp);
+			}
+		}
+
 	}
 }

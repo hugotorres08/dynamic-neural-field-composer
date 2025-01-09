@@ -9,6 +9,7 @@
 #include "elements/gauss_field_coupling.h"
 #include "elements/field_coupling.h"
 #include "simulation/simulation.h"
+#include "elements/oscillatory_kernel.h"
 
 namespace dnf_composer
 {

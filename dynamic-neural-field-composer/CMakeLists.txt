@@ -75,6 +75,7 @@ set(elements_headers
     "include/elements/mexican_hat_kernel.h"
     "include/elements/neural_field.h"
     "include/elements/normal_noise.h"
+    "include/elements/oscillatory_kernel.h"
 )
 set(element_parameters_headers
     "include/element_parameters/element_parameters.h"
@@ -142,6 +143,7 @@ set(src
     "src/elements/gauss_stimulus.cpp"  
     "src/elements/kernel.cpp"
     "src/elements/mexican_hat_kernel.cpp"
+    "src/elements/oscillatory_kernel.cpp"
     "src/elements/neural_field.cpp" 
     "src/elements/normal_noise.cpp"
     

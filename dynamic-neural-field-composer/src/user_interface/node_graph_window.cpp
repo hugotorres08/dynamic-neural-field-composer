@@ -95,7 +95,7 @@ namespace dnf_composer
 			draw_list->AddText(ImVec2(titleBarPos.x + 3.0f, titleBarPos.y),
 				IM_COL32(255, 255, 255, 255), 
 				name.c_str());
-			ImGui::PushFont(ImGui::GetIO().Fonts->Fonts[0]);// regular font
+			ImGui::PopFont();
 
 			// Offset the position of the remaining node content to avoid overlapping with the title bar
 			ImGui::Dummy(ImVec2(0, 15));

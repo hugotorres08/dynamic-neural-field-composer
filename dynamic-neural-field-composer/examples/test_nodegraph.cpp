@@ -23,7 +23,7 @@ int main()
 		app.addWindow<imgui_kit::LogWindow>();
 		app.addWindow<user_interface::FieldMetricsWindow>();
 		app.addWindow<user_interface::ElementWindow>();
-		app.addWindow<user_interface::SimulationWindow>();
+		//app.addWindow<user_interface::SimulationWindow>();
 		app.addWindow<user_interface::PlotControlWindow>();
 		app.addWindow<user_interface::PlotsWindow>();
 		app.addWindow<user_interface::NodeGraphWindow>();
@@ -34,7 +34,8 @@ int main()
 		const auto nn_1 = factory.createElement(element::NORMAL_NOISE);
 
 		const auto nf_2 = factory.createElement(element::NEURAL_FIELD);
-		const auto mhk_2 = factory.createElement(element::MEXICAN_HAT_KERNEL);
+		//const auto mhk_2 = factory.createElement(element::MEXICAN_HAT_KERNEL);
+		const auto ok_2 = factory.createElement(element::OSCILLATORY_KERNEL);
 		const auto nn_2 = factory.createElement(element::NORMAL_NOISE);
 
 		const auto gs_1 = factory.createElement(element::GAUSS_STIMULUS);
@@ -47,7 +48,8 @@ int main()
 		simulation->addElement(gk_1);
 		simulation->addElement(nn_1);
 		simulation->addElement(nf_2);
-		simulation->addElement(mhk_2);
+		//simulation->addElement(mhk_2);
+		simulation->addElement(ok_2);
 		simulation->addElement(nn_2);
 		simulation->addElement(gs_1);
 		simulation->addElement(gs_2);
@@ -59,13 +61,17 @@ int main()
 		nf_1->addInput(nn_1);
 		nf_1->addInput(gs_1);
 
-		nf_2->addInput(mhk_2);
-		mhk_2->addInput(nf_2);
+		//nf_2->addInput(mhk_2);
+		//mhk_2->addInput(nf_2);
+		nf_2->addInput(ok_2);
+		ok_2->addInput(nf_2);
 		nf_2->addInput(nn_2);
 		nf_2->addInput(gs_2);
 
 		visualization->plot({ {nf_1->getUniqueName(), "activation"}, {nf_1->getUniqueName(), "output"}, {nf_1->getUniqueName(), "input"} });
 		visualization->plot({ {nf_2->getUniqueName(), "activation"}, {nf_2->getUniqueName(), "output"}, {nf_2->getUniqueName(), "input"} });
+		visualization->plot({ {ok_2->getUniqueName(), "kernel"} });
+		visualization->plot({ {ok_2->getUniqueName(), "output"} });
 
 		//fc_1->addInput(nf_1);
 		//nf_2->addInput(fc_1);
