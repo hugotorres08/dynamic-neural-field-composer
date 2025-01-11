@@ -19,7 +19,7 @@ namespace dnf_composer
 		void OscillatoryKernel::init()
 		{
 			// Determine kernel range
-			double effectiveRange = std::max(1.0 / parameters.decay,
+			const double effectiveRange = std::max(1.0 / parameters.decay,
 				parameters.zeroCrossings * cutOfFactor);
 			kernelRange = tools::math::computeKernelRange(effectiveRange, cutOfFactor,
 				commonParameters.dimensionParameters.size, parameters.circular);
@@ -38,15 +38,15 @@ namespace dnf_composer
 			components["kernel"].resize(rangeX.size());
 			for (int i = 0; i < components["kernel"].size(); i++)
 			{
-				double distance = rangeX[i];
-				double decayFactor = exp(-parameters.decay * std::abs(distance));
-				double oscillation = sin(parameters.decay * std::abs(parameters.zeroCrossings * distance)) + cos(parameters.zeroCrossings * distance);
+				const double distance = rangeX[i];
+				const double decayFactor = exp(-parameters.decay * std::abs(distance));
+				const double oscillation = sin(parameters.decay * std::abs(parameters.zeroCrossings * distance)) + cos(parameters.zeroCrossings * distance);
 				components["kernel"][i] = parameters.amplitude * decayFactor * oscillation;
 			}
 
 			if (parameters.normalized)
 			{
-				double normFactor = std::accumulate(components["kernel"].begin(), components["kernel"].end(), 0.0);
+				const double normFactor = std::accumulate(components["kernel"].begin(), components["kernel"].end(), 0.0);
 				if (normFactor != 0.0)
 				{
 					for (double& value : components["kernel"])
