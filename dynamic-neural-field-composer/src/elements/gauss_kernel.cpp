@@ -46,6 +46,7 @@ namespace dnf_composer
 			for (int i = 0; i < components["kernel"].size(); i++)
 				components["kernel"][i] = parameters.amplitude * gauss[i];
 
+			fullSum = 0.0;
 			std::ranges::fill(components["input"], 0.0);
 			std::ranges::fill(components["output"], 0.0);
 		}

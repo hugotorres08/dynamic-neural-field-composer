@@ -1,5 +1,6 @@
 #include "simulation/simulation_file_manager.h"
 
+
 namespace dnf_composer
 {
     using json = nlohmann::json;
@@ -15,8 +16,6 @@ namespace dnf_composer
 	{
         json elementsJson;
 
-
-        //for (int i = 0; i < numberOfElementsInSimulation; i++)
 		for (const auto& element : simulation->getElements())
 		{
             json elementJson;
@@ -192,7 +191,21 @@ namespace dnf_composer
 				elementJson["couplings"] += {coupling.x_i, coupling.x_j, coupling.amplitude, coupling.width};
         }
         break;
+        case element::OSCILLATORY_KERNEL:
+	        {
+		        const auto oscillatoryKernel = std::dynamic_pointer_cast<element::OscillatoryKernel>(element);
+		        const auto oscillatoryKernelParameters = oscillatoryKernel->getParameters();
+		        elementJson["amplitude"] = oscillatoryKernelParameters.amplitude;
+		        elementJson["decay"] = oscillatoryKernelParameters.decay;
+		        elementJson["zeroCrossings"] = oscillatoryKernelParameters.zeroCrossings;
+                elementJson["amplitudeGlobal"] = oscillatoryKernelParameters.amplitudeGlobal;
+		        elementJson["circular"] = oscillatoryKernelParameters.circular;
+		        elementJson["normalized"] = oscillatoryKernelParameters.normalized;
+	        }
+            break;
+        default: 
         case element::UNINITIALIZED:
+            tools::logger::log(tools::logger::ERROR, "Element label not recognized.");
             break;
         }
 
@@ -340,8 +353,26 @@ namespace dnf_composer
                 simulation->addElement(coupling);
             }
             break;
+	        case element::OSCILLATORY_KERNEL:
+		        {
+			        const double decay = elementJson["decay"];
+			        const double zeroCrossings = elementJson["zeroCrossings"];
+			        const double amplitude = elementJson["amplitude"];
+                    const double amplitudeGlobal = elementJson["amplitudeGlobal"];
+			        const bool circular = elementJson["circular"];
+			        const bool normalized = elementJson["normalized"];
+
+                    auto kernel = std::make_shared<element::OscillatoryKernel>(
+				        element::ElementCommonParameters(uniqueName, element::ElementDimensions(x_max, d_x)),
+				        element::OscillatoryKernelParameters(amplitude, decay, zeroCrossings, amplitudeGlobal, circular, normalized)
+			        );
+			        simulation->addElement(kernel);
+		        }
+            break;
 	        default:
-                break;
+	        case element::UNINITIALIZED:
+                tools::logger::log(tools::logger::ERROR, "Element label not recognized.");
+            break;
 	        }
     }
 

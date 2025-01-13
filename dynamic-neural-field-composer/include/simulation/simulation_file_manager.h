@@ -5,13 +5,14 @@
 
 #include "./simulation/simulation.h"
 
-#include "./elements/neural_field.h"
+#include "elements/neural_field.h"
 #include "elements/gauss_kernel.h"
 #include "elements/mexican_hat_kernel.h"
 #include "elements/normal_noise.h"
 #include "elements/field_coupling.h"
 #include "elements/gauss_stimulus.h"
 #include "elements/gauss_field_coupling.h"
+#include "elements/oscillatory_kernel.h"
 
 namespace dnf_composer
 {

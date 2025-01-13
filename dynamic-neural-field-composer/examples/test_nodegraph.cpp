@@ -15,7 +15,7 @@ int main()
 	{
 		using namespace dnf_composer;
 
-		const auto simulation = std::make_shared<Simulation>("default", 25.0, 0.0, 0.0);
+		const auto simulation = std::make_shared<Simulation>("test-nodegraph", 25.0, 0.0, 0.0);
 		const auto visualization = std::make_shared<Visualization>(simulation);
 		const Application app{ simulation, visualization };
 

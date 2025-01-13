@@ -54,9 +54,9 @@ namespace dnf_composer
 				}
 			}
 
+			fullSum = 0.0;
 			std::ranges::fill(components["input"], 0.0);
 			std::ranges::fill(components["output"], 0.0);
-			fullSum = 0.0;
 		}
 
 		void OscillatoryKernel::step(double t, double deltaT)
