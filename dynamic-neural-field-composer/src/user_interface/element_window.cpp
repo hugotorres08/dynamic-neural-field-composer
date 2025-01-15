@@ -93,6 +93,9 @@ namespace dnf_composer
 			case element::ElementLabel::OSCILLATORY_KERNEL:
 				modifyElementOscillatoryKernel(element);
 				break;
+			case element::ElementLabel::ASYMMETRIC_GAUSS_KERNEL:
+				modifyElementAsymmetricGaussKernel(element);
+				break;
 			case element::ElementLabel::UNINITIALIZED:
 				break;
 			default:
@@ -563,6 +566,60 @@ namespace dnf_composer
 				okp.circular = circular;
 				okp.normalized = normalized;
 				kernel->setParameters(okp);
+			}
+		}
+
+		void ElementWindow::modifyElementAsymmetricGaussKernel(const std::shared_ptr<element::Element>& element)
+		{
+			const auto kernel = std::dynamic_pointer_cast<element::AsymmetricGaussKernel>(element);
+			element::AsymmetricGaussKernelParameters agkp = kernel->getParameters();
+
+			auto amplitude = static_cast<float>(agkp.amplitude);
+			auto width = static_cast<float>(agkp.width);
+			auto amplitudeGlobal = static_cast<float>(agkp.amplitudeGlobal);
+			auto timeShift = static_cast<float>(agkp.timeShift);
+			bool circular = agkp.circular;
+			bool normalized = agkp.normalized;
+
+			std::string label = "##" + element->getUniqueName() + "Amplitude";
+			ImGui::SliderFloat(label.c_str(), &amplitude, 0, 30);
+			ImGui::SameLine(); ImGui::Text("Amplitude");
+
+			label = "##" + element->getUniqueName() + "Width";
+			ImGui::SliderFloat(label.c_str(), &width, 0, 30);
+			ImGui::SameLine(); ImGui::Text("Width");
+
+			label = "##" + element->getUniqueName() + "Amplitude global";
+			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 10);
+			ImGui::SameLine(); ImGui::Text("Amplitude global");
+
+			label = "##" + element->getUniqueName() + "Time shift";
+			ImGui::SliderFloat(label.c_str(), &timeShift, -10, 10);
+			ImGui::SameLine(); ImGui::Text("Time shift");
+
+			label = "##" + element->getUniqueName() + "Circular";
+			ImGui::Checkbox(label.c_str(), &circular);
+			ImGui::SameLine(); ImGui::Text("Circular");
+
+			label = "##" + element->getUniqueName() + "Normalized";
+			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &normalized);
+			ImGui::SameLine(); ImGui::Text("Normalized");
+
+			static constexpr double epsilon = 1e-6;
+			if (std::abs(amplitude - static_cast<float>(agkp.amplitude)) > epsilon ||
+								std::abs(width - static_cast<float>(agkp.width)) > epsilon ||
+								std::abs(amplitudeGlobal - static_cast<float>(agkp.amplitudeGlobal)) > epsilon ||
+								std::abs(timeShift - static_cast<float>(agkp.timeShift)) > epsilon ||
+								circular != agkp.circular ||
+								normalized != agkp.normalized)
+			{
+				agkp.amplitude = amplitude;
+				agkp.width = width;
+				agkp.amplitudeGlobal = amplitudeGlobal;
+				agkp.timeShift = timeShift;
+				agkp.circular = circular;
+				agkp.normalized = normalized;
+				kernel->setParameters(agkp);
 			}
 		}
 

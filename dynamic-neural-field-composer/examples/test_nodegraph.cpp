@@ -30,7 +30,7 @@ int main()
 
 		element::ElementFactory factory;
 		const auto nf_1 = factory.createElement(element::NEURAL_FIELD);
-		const auto gk_1 = factory.createElement(element::GAUSS_KERNEL);
+		const auto gk_1 = factory.createElement(element::ASYMMETRIC_GAUSS_KERNEL);
 		const auto nn_1 = factory.createElement(element::NORMAL_NOISE);
 
 		const auto nf_2 = factory.createElement(element::NEURAL_FIELD);
@@ -72,8 +72,8 @@ int main()
 
 		visualization->plot({ {nf_1->getUniqueName(), "activation"}, {nf_1->getUniqueName(), "output"}, {nf_1->getUniqueName(), "input"} });
 		visualization->plot({ {nf_2->getUniqueName(), "activation"}, {nf_2->getUniqueName(), "output"}, {nf_2->getUniqueName(), "input"} });
-		visualization->plot({ {ok_2->getUniqueName(), "kernel"} });
-		visualization->plot({ {ok_2->getUniqueName(), "output"} });
+		visualization->plot({ {gk_1->getUniqueName(), "kernel"} });
+		visualization->plot({ {gk_1->getUniqueName(), "output"} });
 
 		//fc_1->addInput(nf_1);
 		//nf_2->addInput(fc_1);

@@ -64,6 +64,12 @@ namespace dnf_composer
 					const auto params = dynamic_cast<const OscillatoryKernelParameters*>(&elementSpecificParameters);
 					return std::make_shared<OscillatoryKernel>(elementCommonParameters, *params);
 				};
+
+			elementCreators[ElementLabel::ASYMMETRIC_GAUSS_KERNEL] = [](const ElementCommonParameters& elementCommonParameters, const ElementSpecificParameters& elementSpecificParameters)
+				{
+					const auto params = dynamic_cast<const AsymmetricGaussKernelParameters*>(&elementSpecificParameters);
+					return std::make_shared<AsymmetricGaussKernel>(elementCommonParameters, *params);
+				};
 		}
 
 		std::shared_ptr<Element> ElementFactory::createElement(ElementLabel type, const ElementCommonParameters& elementCommonParameters, const ElementSpecificParameters& elementSpecificParameters)
@@ -101,6 +107,8 @@ namespace dnf_composer
 						return creator->second(ElementCommonParameters(type), FieldCouplingParameters());
 					case ElementLabel::OSCILLATORY_KERNEL:
 						return creator->second(ElementCommonParameters(type), OscillatoryKernelParameters());
+					case ElementLabel::ASYMMETRIC_GAUSS_KERNEL:
+						return creator->second(ElementCommonParameters(type), AsymmetricGaussKernelParameters());
 					case ElementLabel::UNINITIALIZED:
 						return nullptr;
 				}

@@ -18,6 +18,7 @@ namespace dnf_composer
 			GAUSS_KERNEL,
 			MEXICAN_HAT_KERNEL,
 			OSCILLATORY_KERNEL,
+			ASYMMETRIC_GAUSS_KERNEL,
 			NORMAL_NOISE,
 			FIELD_COUPLING,
 			GAUSS_FIELD_COUPLING,
@@ -32,6 +33,7 @@ namespace dnf_composer
 			{GAUSS_KERNEL, "gauss kernel" },
 			{MEXICAN_HAT_KERNEL, "mexican hat kernel" },
 			{OSCILLATORY_KERNEL, "oscillatory kernel"},
+			{ASYMMETRIC_GAUSS_KERNEL, "asymmetric gauss kernel"},
 			{NORMAL_NOISE, "normal noise" },
 		};
 

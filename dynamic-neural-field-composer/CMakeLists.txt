@@ -76,6 +76,7 @@ set(elements_headers
     "include/elements/neural_field.h"
     "include/elements/normal_noise.h"
     "include/elements/oscillatory_kernel.h"
+    "include/elements/asymmetric_gauss_kernel.h"
 )
 set(element_parameters_headers
     "include/element_parameters/element_parameters.h"
@@ -146,7 +147,8 @@ set(src
     "src/elements/oscillatory_kernel.cpp"
     "src/elements/neural_field.cpp" 
     "src/elements/normal_noise.cpp"
-    
+    "src/elements/asymmetric_gauss_kernel.cpp"
+   
     "src/element_parameters/element_parameters.cpp"
 #"src/element_parameters/field_coupling_parameters.cpp"
 ##"include/element_parameters/gauss_field_coupling_parameters.h"
