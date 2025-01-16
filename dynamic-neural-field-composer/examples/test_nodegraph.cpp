@@ -30,7 +30,7 @@ int main()
 
 		element::ElementFactory factory;
 		const auto nf_1 = factory.createElement(element::NEURAL_FIELD);
-		const auto gk_1 = factory.createElement(element::ASYMMETRIC_GAUSS_KERNEL);
+		const auto gk_1 = factory.createElement(element::GAUSS_KERNEL);
 		const auto nn_1 = factory.createElement(element::NORMAL_NOISE);
 
 		const auto nf_2 = factory.createElement(element::NEURAL_FIELD);

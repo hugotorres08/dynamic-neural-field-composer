@@ -36,28 +36,19 @@ namespace dnf_composer
             std::iota(rangeX.begin(), rangeX.end(), -startingValue);
 
             // Generate Gaussian and derivative
-            std::vector<double> gauss(commonParameters.dimensionParameters.size);
-            std::vector<double> gaussDerivative(commonParameters.dimensionParameters.size);
+			gauss = std::vector<double>(commonParameters.dimensionParameters.size);
+			gaussDerivative = std::vector<double>(commonParameters.dimensionParameters.size);
 
             if (parameters.normalized)
             {
                 gauss = tools::math::gaussNorm(rangeX, 0.0, parameters.width);
-                gaussDerivative = tools::math::gaussDerivativeNorm(rangeX, 0.0, parameters.width, parameters.amplitude); // Assume this exists in math tools
+                gaussDerivative = tools::math::gaussDerivativeNorm(rangeX, 0.0, parameters.width, parameters.amplitude); 
             }
             else
             {
                 gauss = tools::math::gauss(rangeX, 0.0, parameters.width);
-                gaussDerivative = tools::math::gaussDerivative(rangeX, 0.0, parameters.width, parameters.amplitude); // Assume this exists in math tools
+                gaussDerivative = tools::math::gaussDerivative(rangeX, 0.0, parameters.width, parameters.amplitude);
             }
-
-            // Simulated eta(t) using exponential decay
-            static const double eta0 = parameters.timeShift; // Initial amplitude of the bump movement
-            static const double lambda = 5; // Decay rate of eta(t)
-            double eta_t = eta0 * exp(-lambda); // Exponential decay
-
-            // Alternatively, use linear decay (comment out the above and uncomment below)
-            //double eta_t = eta0 * std::max(0.0, 1.0 - lambda * t);
-
 
             // Combine Gaussian with its derivative for asymmetry
             components["kernel"].resize(rangeX.size());
@@ -75,8 +66,11 @@ namespace dnf_composer
 		{
             updateInput();
 
-            fullSum = std::accumulate(components["input"].begin(), components["input"].end(),
-                (double)0.0);
+			// find a way to get the velocity and acceleration of the input
+            // n(t) = -tau * v(t) -tau * c * a(t)
+			// c - constant time shift
+
+            fullSum = std::accumulate(components["input"].begin(), components["input"].end(), (double)0.0);
 
             // Compute convolution
             std::vector<double> convolution(commonParameters.dimensionParameters.size);

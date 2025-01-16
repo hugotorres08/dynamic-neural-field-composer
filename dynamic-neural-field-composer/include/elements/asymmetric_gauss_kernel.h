@@ -16,7 +16,7 @@ namespace dnf_composer
 			bool circular;
 			bool normalized;
 
-			AsymmetricGaussKernelParameters(double width = 3.0, double amp = 3.0, double ampGlobal = -0.01, double timeShift = 0.00,
+			AsymmetricGaussKernelParameters(double width = 3.0, double amp = 3.0, double ampGlobal = 0.00, double timeShift = 0.00,
 				bool circular = true, bool normalized = true)
 				: width(width), amplitude(amp), amplitudeGlobal(ampGlobal), timeShift(timeShift),
 				circular(circular), normalized(normalized)
@@ -36,7 +36,7 @@ namespace dnf_composer
 			std::string toString() const override
 			{
 				std::ostringstream result;
-				result << std::fixed << std::setprecision(2); // Ensures numbers have 2 decimal places
+				result << std::fixed << std::setprecision(2); 
 				result << "Parameters: ["
 					<< "Width: " << width << ", "
 					<< "Amplitude: " << amplitude << ", "
@@ -53,6 +53,8 @@ namespace dnf_composer
 		{
 		private:
 			AsymmetricGaussKernelParameters parameters;
+			std::vector<double> gauss;
+			std::vector<double> gaussDerivative;
 		public:
 			AsymmetricGaussKernel(const ElementCommonParameters& elementCommonParameters, AsymmetricGaussKernelParameters agk_parameters);
 
