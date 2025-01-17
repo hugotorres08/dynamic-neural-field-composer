@@ -118,7 +118,7 @@ namespace dnf_composer
 
 			NeuralFieldState()
 				:bumps({}), stable(false), lowestActivation(0.0),
-				highestActivation(0.0), thresholdForStability(0.075)
+				highestActivation(0.0), thresholdForStability(0.895)
 			{}
 
 			std::string toString() const
