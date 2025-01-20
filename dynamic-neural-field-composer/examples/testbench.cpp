@@ -29,7 +29,7 @@ int main()
 		app.addWindow<user_interface::NodeGraphWindow>();
 
 		const auto gscp_1 = element::ElementCommonParameters{ "Gauss stimulus 1" };
-		const auto gsp_1 = element::GaussStimulusParameters{ 5, 15, 20 };
+		const auto gsp_1 = element::GaussStimulusParameters{ 5, -15, 20 };
 		const auto gs_1 = std::make_shared < element::GaussStimulus > (gscp_1, gsp_1);
 
 		const auto gscp_2 = element::ElementCommonParameters{ "Gauss stimulus 2" };
@@ -41,15 +41,15 @@ int main()
 		const auto gs_3 = std::make_shared < element::GaussStimulus > (gscp_3, gsp_3);
 
 		const auto gkcp = element::ElementCommonParameters{ "Gauss coupling" };
-		const auto gkp = element::GaussKernelParameters{ 3, 5.652 };
+		const auto gkp = element::GaussKernelParameters{ 3, -5.652 };
 		const auto gk = std::make_shared < element::GaussKernel > ( gkcp, gkp );
 
-		const auto gkcp_1 = element::ElementCommonParameters{ "Self-excitation gauss kernel 1" };
-		const auto gkp_1 = element::GaussKernelParameters{};
-		const auto gk_1 = std::make_shared < element::GaussKernel > ( gkcp_1, gkp_1 );
+		const auto gkcp_1 = element::ElementCommonParameters{ "Self-excitation mexican-hat kernel 1" };
+		const auto gkp_1 = element::MexicanHatKernelParameters{};
+		const auto gk_1 = std::make_shared < element::MexicanHatKernel > ( gkcp_1, gkp_1 );
 
 		const auto gkcp_2 = element::ElementCommonParameters{ "Self-excitation gauss kernel 2" };
-		const auto gkp_2 = element::GaussKernelParameters{ 3, 6.405, -0.313 };
+		const auto gkp_2 = element::GaussKernelParameters{ 3, -6.405, -0.313 };
 		const auto gk_2 = std::make_shared < element::GaussKernel > ( gkcp_2, gkp_2 );
 
 		const auto nfcp_1 = element::ElementCommonParameters{ "Neural field 1" };
