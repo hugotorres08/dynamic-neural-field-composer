@@ -198,7 +198,7 @@ namespace dnf_composer
 			state.stable = false;
 
 			// also valid and simpler approach
-			/*static double previousHighestActivation = 0.0;
+			/*static double previousHighestActivation = parameters.startingRestingLevel;
 			if (std::fabs(state.highestActivation - previousHighestActivation) < state.thresholdForStability)
 				state.stable = true;
 			else
