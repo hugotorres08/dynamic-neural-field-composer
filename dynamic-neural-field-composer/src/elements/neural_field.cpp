@@ -45,7 +45,7 @@ namespace dnf_composer
 			updateInput();
 			calculateActivation(t, deltaT);
 			calculateOutput();
-			updateState();
+			updateState(deltaT);
 		}
 
 		void NeuralField::setParameters(const NeuralFieldParameters& neuralFieldParameters)
@@ -161,11 +161,11 @@ namespace dnf_composer
 		//	}
 		//}
 
-		void NeuralField::updateState()
+		void NeuralField::updateState(double deltaT)
 		{
 			//calculateCentroid();
 			updateMinMaxActivation();
-			updateBumps();
+			updateBumps(deltaT);
 			checkStability();
 		}
 
@@ -214,8 +214,9 @@ namespace dnf_composer
 			state.highestActivation = *std::ranges::max_element(components["activation"]);
 		}
 
-		void NeuralField::updateBumps()
+		void NeuralField::updateBumps(double deltaT)
 		{
+			const auto oldBumps = state.bumps;
 			state.bumps.clear();
 
 			constexpr double activationThreshold = 0.00001; // Define a threshold for what counts as a 'bump'
@@ -229,6 +230,9 @@ namespace dnf_composer
 				{
 					// Start of a new bump
 					inBump = true;
+
+					currentBump = NeuralFieldBump(); // Reset the bump !
+
 					currentBump.startPosition = (i + 1) * commonParameters.dimensionParameters.d_x;
 					currentBump.amplitude = activation;
 					currentBump.width = 1;
@@ -246,6 +250,26 @@ namespace dnf_composer
 					currentBump.width *= commonParameters.dimensionParameters.d_x;
 					currentBump.endPosition = i * commonParameters.dimensionParameters.d_x;
 					currentBump.centroid = ((currentBump.startPosition + currentBump.endPosition) / 2);
+
+					// in state.bumps find a bump with the same centroid
+					static constexpr double epsilon = 2.0;//1e-6;
+					const auto it = std::find_if(oldBumps.begin(), oldBumps.end(),
+						[&currentBump](const NeuralFieldBump& bump) {
+							return std::abs(bump.centroid - currentBump.centroid) < epsilon;
+						});
+					if (it != oldBumps.end()) 
+					{
+						// if the bump is found, update it
+						currentBump.velocity = (currentBump.centroid - it->centroid) / deltaT;
+						currentBump.acceleration = (currentBump.velocity - it->velocity) / deltaT;
+					}
+					else
+					{
+						// if the bump is not found, set the velocity and acceleration to zero
+						currentBump.velocity = 0.0;
+						currentBump.acceleration = 0.0;
+					}
+
 					state.bumps.push_back(currentBump);
 					inBump = false;
 				}
@@ -278,6 +302,24 @@ namespace dnf_composer
 							commonParameters.dimensionParameters.x_max) / 2.0), 
 							commonParameters.dimensionParameters.x_max);
 
+					// in state.bumps find a bump with the same centroid
+					static constexpr double epsilon = 2.0;// 1e-6;
+					const auto it = std::find_if(oldBumps.begin(), oldBumps.end(),
+						[&newBump](const NeuralFieldBump& bump) {
+							return std::abs(bump.centroid - newBump.centroid) < epsilon;
+						});
+					if (it != oldBumps.end()) {
+						// if the bump is found, update it
+						newBump.velocity = (newBump.centroid - it->centroid) / deltaT;
+						newBump.acceleration = (newBump.velocity - it->velocity) / deltaT;
+					}
+					else
+					{
+						// if the bump is not found, set the velocity and acceleration to zero
+						newBump.velocity = 0.0;
+						newBump.acceleration = 0.0;
+					}
+
 					// Remove the first and last bump
 					state.bumps.pop_back(); // remove last
 					state.bumps.erase(state.bumps.begin()); // remove first
@@ -286,7 +328,6 @@ namespace dnf_composer
 					state.bumps.push_back(newBump);
 				}
 			}
-
 		}
 	}
 }

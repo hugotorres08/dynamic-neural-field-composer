@@ -64,7 +64,8 @@ namespace dnf_composer
 			for (size_t j = 0; j < bumps.size(); j++)
 			{
 				const element::NeuralFieldBump& bump = bumps[j];
-				ImGui::Text("Bump %d: Start %.2f, End %.2f, Amplitude %.2f, Width %.2f, Position %.2f", j, bump.startPosition, bump.endPosition, bump.amplitude, bump.width, bump.centroid);
+				ImGui::Text("Bump %d: Start %.2f, End %.2f, Amplitude %.2f, Width %.2f, Position %.2f, Velocity %.2f, Acceleration %.2f", 
+					j, bump.startPosition, bump.endPosition, bump.amplitude, bump.width, bump.centroid, bump.velocity, bump.acceleration);
 			}
 		}
 	}

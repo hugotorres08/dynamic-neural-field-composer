@@ -251,6 +251,15 @@ imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})
 
+# Test asymmetric gauss kernel
+set(TEST_AGK test_agk)
+add_executable(${TEST_AGK} "examples/test_agk.cpp")
+target_include_directories(${TEST_AGK} PRIVATE include)
+target_link_libraries(${TEST_AGK} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
 
 ## Example test_plot_control_window
 #set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)

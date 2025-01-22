@@ -158,7 +158,7 @@ namespace dnf_composer
 			bool normalized = gsp.normalized;
 
 			std::string label = "##" + element->getUniqueName() + "Amplitude";
-			ImGui::SliderFloat(label.c_str(), &amplitude, -30, 30);
+			ImGui::SliderFloat(label.c_str(), &amplitude, 0, 30);
 			ImGui::SameLine(); ImGui::Text("Amplitude");
 
 			label = "##" + element->getUniqueName() + "Width";

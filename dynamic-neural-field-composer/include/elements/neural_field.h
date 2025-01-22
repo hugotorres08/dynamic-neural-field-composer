@@ -77,17 +77,26 @@ namespace dnf_composer
 			double endPosition;
 			double amplitude;
 			double width;
+			double previousCentroid = 0.0;
+			double velocity;
+			double acceleration;
 
 			NeuralFieldBump(double centroid = 0.0,
 				double startPosition = 0.0,
 				double endPosition = 0.0,
 				double amplitude = 0.0,
-				double width = 0.0)
+				double width = 0.0,
+				double previousCentroid = 0.0,
+				double velocity = 0.0,
+				double acceleration = 0.0)
 				: centroid(centroid),
 				startPosition(startPosition),
 				endPosition(endPosition),
 				amplitude(amplitude),
-				width(width)
+				width(width),
+				previousCentroid(previousCentroid),
+				velocity(velocity),
+				acceleration(acceleration)
 			{}
 
 			std::string toString() const
@@ -97,7 +106,9 @@ namespace dnf_composer
 				str += "Amplitude: " + std::format("{:.2f}", amplitude) + ", ";
 				str += "Width: " + std::format("{:.2f}", width) + ", ";
 				str += "Start pos.: " + std::format("{:.2f}", startPosition) + ", ";
-				str += "End pos.: " + std::format("{:.2f}", endPosition) + "]";
+				str += "End pos.: " + std::format("{:.2f}", endPosition) + ", ";
+				str += "Velocity: " + std::format("{:.2f}", velocity) + ", ";
+				str += "Acceleration: " + std::format("{:.2f}", acceleration) + "]";
 				return str;
 			}
 
@@ -168,10 +179,10 @@ namespace dnf_composer
 			void calculateActivation(double t, double deltaT);
 			void calculateOutput();
 			//void calculateCentroid();
-			void updateState();
+			void updateState(double deltaT);
 			void checkStability();
 			void updateMinMaxActivation();
-			void updateBumps();
+			void updateBumps(double deltaT);
 		};
 	}
 }
