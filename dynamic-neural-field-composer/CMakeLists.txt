@@ -242,11 +242,30 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
     FILE ${CMAKE_PROJECT_NAME}-config.cmake
 )
 
+
+# Entry point
+set(ENTRY_POINT entrypoint)
+add_executable(${ENTRY_POINT} "examples/entry.cpp")
+target_include_directories(${ENTRY_POINT} PRIVATE include)
+target_link_libraries(${ENTRY_POINT} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
 # Testbench
 set(TESTBENCH testbench)
 add_executable(${TESTBENCH} "examples/testbench.cpp")
 target_include_directories(${TESTBENCH} PRIVATE include)
 target_link_libraries(${TESTBENCH} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+# Complementary action selection architecture
+set(COMP_ACTION_SELECTION_ARCH comp_act_selection)
+add_executable(${COMP_ACTION_SELECTION_ARCH} "examples/complementary_action_selection.cpp")
+target_include_directories(${COMP_ACTION_SELECTION_ARCH} PRIVATE include)
+target_link_libraries(${COMP_ACTION_SELECTION_ARCH} PRIVATE 
 imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})
