@@ -211,7 +211,7 @@ namespace dnf_composer
 			}
 		}
 
-		elements.push_back(element);
+		elements.emplace_back(element);
 
 		const std::string logMessage = "Element '" + newElementName + "' was added to the simulation.";
 		log(tools::logger::LogLevel::INFO, logMessage);
