@@ -55,6 +55,8 @@ namespace dnf_composer
 			int getUniqueIdentifier() const;
 			std::string getUniqueName() const;
 			ElementLabel getLabel() const;
+			bool hasOutput() const;
+			bool hasInput() const;
 
 			std::vector<double> getComponent(const std::string& componentName);
 			std::vector<double>* getComponentPtr(const std::string& componentName);
@@ -63,6 +65,7 @@ namespace dnf_composer
 
 			std::vector<std::shared_ptr<Element>> getInputs();
 			std::unordered_map<std::shared_ptr<Element>, std::string> getInputsAndComponents();
+			std::vector<std::shared_ptr<Element>> getOutputs();
 		};
 	}
 }

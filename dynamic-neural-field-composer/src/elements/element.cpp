@@ -291,5 +291,27 @@ namespace dnf_composer
 		{
 			return inputs;
 		}
+
+		bool Element::hasOutput() const
+		{
+			return !outputs.empty();
+		}
+
+		bool Element::hasInput() const
+		{
+			return !inputs.empty();
+		}
+
+		std::vector<std::shared_ptr<Element>> Element::getOutputs()
+		{
+			std::vector<std::shared_ptr<Element>> outputVec;
+			outputVec.reserve(outputs.size());
+
+			for (const auto& key : outputs | std::views::keys)
+				outputVec.push_back(key);
+
+			return outputVec;
+		}
+
 	}
 }
