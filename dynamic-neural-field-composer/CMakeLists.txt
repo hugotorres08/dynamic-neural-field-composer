@@ -279,6 +279,15 @@ imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})
 
+# Two robot team
+set(TWO_ROBOT_TEAM two_robot_team)
+add_executable(${TWO_ROBOT_TEAM} "examples/two_robot_team.cpp")
+target_include_directories(${TWO_ROBOT_TEAM} PRIVATE include)
+target_link_libraries(${TWO_ROBOT_TEAM} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
 
 ## Example test_plot_control_window
 #set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)
