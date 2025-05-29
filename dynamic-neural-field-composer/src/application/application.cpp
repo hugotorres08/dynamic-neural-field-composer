@@ -75,8 +75,8 @@ namespace dnf_composer
 		const FontParameters fontParams{ std::string(PROJECT_DIR) + "/resources/fonts/Lexend-Light.ttf", 15 };
 
 		//const StyleParameters styleParams{ ImVec4(0.3f, 0.3f, 0.3f, 0.6f), colours::White };
-		constexpr ImVec4 themeColor = ImVec4(0.55f, 0.80f, 0.85f, 0.85f);
-		const StyleParameters styleParams{ themeColor, colours::White };
+		//constexpr ImVec4 themeColor = ImVec4(0.55f, 0.80f, 0.85f, 0.85f);
+		const StyleParameters styleParams{Theme::Light, colours::White };
 
 		const IconParameters iconParams{ std::string(PROJECT_DIR) + "/resources/icons/icon.ico" };
 		const BackgroundImageParameters bgParams{ std::string(PROJECT_DIR) + "/resources/images/background.png", ImageFitType::ZOOM_TO_FIT };
