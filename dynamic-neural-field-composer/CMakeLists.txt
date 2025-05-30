@@ -298,14 +298,14 @@ ${CMAKE_PROJECT_NAME})
 #imgui-platform-kit 
 #${CMAKE_PROJECT_NAME})
 #
-## Example test_couplings
-#set(TEST_COUPLINGS_EXAMPLE t-couplings-example)
-#add_executable(${TEST_COUPLINGS_EXAMPLE} "examples/test_couplings.cpp")
-#target_include_directories(${TEST_COUPLINGS_EXAMPLE} PRIVATE include)
-#target_link_libraries(${TEST_COUPLINGS_EXAMPLE} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
+# Example test_couplings
+set(TEST_COUPLINGS_EXAMPLE t-couplings-example)
+add_executable(${TEST_COUPLINGS_EXAMPLE} "examples/test_couplings.cpp")
+target_include_directories(${TEST_COUPLINGS_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_COUPLINGS_EXAMPLE} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
 #
 ## Example test_factory
 #set(TEST_FACTORY_EXAMPLE t-factory-example)
