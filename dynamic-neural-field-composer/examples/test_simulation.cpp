@@ -20,13 +20,14 @@ int main()
         app.addWindow<user_interface::MainWindow>();
         app.addWindow<imgui_kit::LogWindow>();
         app.addWindow<user_interface::ElementWindow>();
+        app.addWindow<user_interface::SimulationWindow>();
         app.addWindow<user_interface::PlotControlWindow>();
 
         element::ElementFactory factory;
         const element::ElementDimensions input_dimensions{200, 0.7};
         const auto nf_1 = factory.createElement(element::ElementLabel::NEURAL_FIELD,
             element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::NEURAL_FIELD}, input_dimensions},
-            element::NeuralFieldParameters{});
+            element::NeuralFieldParameters{ 100, -5 , element::SigmoidFunction{0.0, 10.0} });
         const auto gk_1 = factory.createElement(element::GAUSS_KERNEL,
             element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::GAUSS_KERNEL}, input_dimensions},
             element::GaussKernelParameters{});

@@ -286,13 +286,13 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
 #${CMAKE_PROJECT_NAME})
 
 # Example test_plot_control_window
-set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)
-add_executable(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} "examples/test_plot_control_window.cpp")
-target_include_directories(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
+#set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)
+#add_executable(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} "examples/test_plot_control_window.cpp")
+#target_include_directories(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE include)
+#target_link_libraries(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
 
 # Example test_couplings
 set(TEST_COUPLINGS_EXAMPLE t-couplings-example)

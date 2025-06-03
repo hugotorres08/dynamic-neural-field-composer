@@ -165,33 +165,33 @@ namespace dnf_composer::user_interface
 
     void MainWindow::handleShortcuts()
     {
-        const ImGuiIO& io = ImGui::GetIO();
+        // const ImGuiIO& io = ImGui::GetIO();
 
-	    if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Space)))
-			simulation->init();
-		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_C)))
-			simulation->close();
-		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_P)))
-			simulation->pause();
-		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_N)))
-		{
-			simulation->close();
-			simulation->clean();
-		}
-		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_O)))
-		{
-			FileDialog::file_dialog_open = true;
-			fileFlags.showOpenFileDialog = true;
-			FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
-		}
-        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)))
-            simulation->save();
-		if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)))
-		{
-			FileDialog::file_dialog_open = true;
-			fileFlags.showSaveFileDialog = true;
-			FileDialog::file_dialog_open_type = FileDialog::FileDialogType::SelectFolder;
-		}
+	    // if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Space)))
+		// 	simulation->init();
+		// if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_C)))
+		// 	simulation->close();
+		// if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_P)))
+		// 	simulation->pause();
+		// if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_N)))
+		// {
+		// 	simulation->close();
+		// 	simulation->clean();
+		// }
+		// if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_O)))
+		// {
+		// 	FileDialog::file_dialog_open = true;
+		// 	fileFlags.showOpenFileDialog = true;
+		// 	FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
+		// }
+        // if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)))
+        //     simulation->save();
+		// if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)))
+		// {
+		// 	FileDialog::file_dialog_open = true;
+		// 	fileFlags.showSaveFileDialog = true;
+		// 	FileDialog::file_dialog_open_type = FileDialog::FileDialogType::SelectFolder;
+		// }
     }
 
 }
