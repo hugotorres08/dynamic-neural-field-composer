@@ -4,7 +4,6 @@
 #include "activation_function.h"
 #include "simulation/simulation.h"
 #include "elements/kernel.h"
-#include "tools/logger.h"
 
 namespace dnf_composer
 {
@@ -60,11 +59,13 @@ namespace dnf_composer
 
 			std::string toString() const override
 			{
-				std::string result = "Neural field parameters\n";
-				result += "Tau: " + std::to_string(tau) + "\n";
-				result += "Resting level: " + std::to_string(startingRestingLevel) + "\n";
-				result += "Activation function: " + activationFunction->toString() + "\n";
-				return result;
+				std::ostringstream result;
+				result << "Parameters: ["
+					<< "Tau: " << std::fixed << std::setprecision(2) << tau << ", "
+					<< "Resting level: " << std::fixed << std::setprecision(2) << startingRestingLevel << ", "
+					<< "Activation Function: " << (activationFunction ? activationFunction->toString() : "None")
+					<< "]";
+				return result.str();
 			}
 
 		};
@@ -76,27 +77,38 @@ namespace dnf_composer
 			double endPosition;
 			double amplitude;
 			double width;
+			double previousCentroid = 0.0;
+			double velocity;
+			double acceleration;
 
 			NeuralFieldBump(double centroid = 0.0,
 				double startPosition = 0.0,
 				double endPosition = 0.0,
 				double amplitude = 0.0,
-				double width = 0.0)
+				double width = 0.0,
+				double previousCentroid = 0.0,
+				double velocity = 0.0,
+				double acceleration = 0.0)
 				: centroid(centroid),
 				startPosition(startPosition),
 				endPosition(endPosition),
 				amplitude(amplitude),
-				width(width)
+				width(width),
+				previousCentroid(previousCentroid),
+				velocity(velocity),
+				acceleration(acceleration)
 			{}
 
 			std::string toString() const
 			{
-				std::string str = "Bump\n";
-				str += "Centroid: " + std::to_string(centroid) + "\n";
-				str += "Amplitude: " + std::to_string(amplitude) + "\n";
-				str += "Start position: " + std::to_string(startPosition) + "\n";
-				str += "End position: " + std::to_string(endPosition) + "\n";
-				str += "Width: " + std::to_string(width) + "\n";
+				std::string str = "Bump: [";
+				str += "Centroid: " + std::format("{:.2f}", centroid) + ", ";
+				str += "Amplitude: " + std::format("{:.2f}", amplitude) + ", ";
+				str += "Width: " + std::format("{:.2f}", width) + ", ";
+				str += "Start pos.: " + std::format("{:.2f}", startPosition) + ", ";
+				str += "End pos.: " + std::format("{:.2f}", endPosition) + ", ";
+				str += "Velocity: " + std::format("{:.2f}", velocity) + ", ";
+				str += "Acceleration: " + std::format("{:.2f}", acceleration) + "]";
 				return str;
 			}
 
@@ -117,19 +129,21 @@ namespace dnf_composer
 
 			NeuralFieldState()
 				:bumps({}), stable(false), lowestActivation(0.0),
-				highestActivation(0.0), thresholdForStability(0.035)
+				highestActivation(0.0), thresholdForStability(0.895)
 			{}
 
 			std::string toString() const
 			{
-				std::string str = "Neural field state\n";
-				str += "Stable: " + std::to_string(stable) + "\n";
-				str += "Lowest activation: " + std::to_string(lowestActivation) + "\n";
-				str += "Highest activation: " + std::to_string(highestActivation) + "\n";
-				str += "Threshold for stability: " + std::to_string(thresholdForStability) + "\n";
-				str += "Bumps:\n";
+				std::string str = "Neural field state [";
+				str += "Stable: " + std::string(stable ? "true" : "false") + ", ";
+				str += "Lowest act.: " + std::format("{:.2f}", lowestActivation) + ", ";
+				str += "Highest act.: " + std::format("{:.2f}", highestActivation) + ", ";
+				str += "Threshold: " + std::format("{:.2f}", thresholdForStability) + "]\n";
+				str += "Bumps: {";
 				for (const auto& bump : bumps)
 					str += bump.toString();
+				str += "}";
+
 				return str;
 			}
 
@@ -160,14 +174,15 @@ namespace dnf_composer
 			double getHighestActivation() const { return state.highestActivation; }
 			std::vector<NeuralFieldBump> getBumps() const { return state.bumps; }
 			std::shared_ptr<Kernel> getSelfExcitationKernel() const;
+			double getStabilityThreshold() const { return state.thresholdForStability; }
 		protected:
 			void calculateActivation(double t, double deltaT);
 			void calculateOutput();
 			//void calculateCentroid();
-			void updateState();
+			void updateState(double deltaT);
 			void checkStability();
 			void updateMinMaxActivation();
-			void updateBumps();
+			void updateBumps(double deltaT);
 		};
 	}
 }

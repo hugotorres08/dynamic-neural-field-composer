@@ -21,15 +21,13 @@ namespace dnf_composer
 
 		void FieldMetricsWindow::getNeuralFieldsAndRenderCentroids() const
 		{
-			const int numberOfElementsInSimulation = simulation->getNumberOfElements();
 			ImGui::BeginTabBar("NeuralFieldTabs");
 
-			for (int i = 0; i < numberOfElementsInSimulation; i++)
+			for(const auto& element : simulation->getElements())
 			{
-				const auto simulationElement = simulation->getElement(i);
-				if (simulationElement->getLabel() == element::NEURAL_FIELD)
+				if (element->getLabel() == element::NEURAL_FIELD)
 				{
-					const auto neuralField = std::dynamic_pointer_cast<element::NeuralField>(simulationElement);
+					const auto neuralField = std::dynamic_pointer_cast<element::NeuralField>(element);
 					const std::string elementName = neuralField->getUniqueName();
 
 					if (ImGui::BeginTabItem(elementName.c_str()))
@@ -39,6 +37,8 @@ namespace dnf_composer
 					}
 				}
 			}
+
+
 			ImGui::EndTabBar();
 		}
 
@@ -64,7 +64,8 @@ namespace dnf_composer
 			for (size_t j = 0; j < bumps.size(); j++)
 			{
 				const element::NeuralFieldBump& bump = bumps[j];
-				ImGui::Text("Bump %d: Start %.2f, End %.2f, Amplitude %.2f, Width %.2f, Position %.2f", j, bump.startPosition, bump.endPosition, bump.amplitude, bump.width, bump.centroid);
+				ImGui::Text("Bump %d: Start %.2f, End %.2f, Amplitude %.2f, Width %.2f, Position %.2f, Velocity %.2f, Acceleration %.2f", 
+					j, bump.startPosition, bump.endPosition, bump.amplitude, bump.width, bump.centroid, bump.velocity, bump.acceleration);
 			}
 		}
 	}

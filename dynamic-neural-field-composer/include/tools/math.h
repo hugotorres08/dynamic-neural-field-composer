@@ -180,6 +180,39 @@ namespace dnf_composer
 			}
 
 			template<typename T>
+			std::vector<T> gaussDerivative(const std::vector<int>& rangeX, const T& position, const T& sigma, const T& amplitude)
+			{
+				std::vector<T> derivative(rangeX.size());
+				T variance = sigma * sigma;
+
+				for (size_t i = 0; i < derivative.size(); i++)
+				{
+					T x = rangeX[i];
+					derivative[i] = -(x - position) / variance * amplitude * std::exp(-0.5 * std::pow((x - position), 2) / variance);
+				}
+
+				return derivative;
+			}
+
+			template<typename T>
+			std::vector<T> gaussDerivativeNorm(const std::vector<int>& rangeX, const T& position, const T& sigma, const T& amplitude)
+			{
+				auto derivative = gaussDerivative(rangeX, position, sigma, amplitude);
+
+				// Normalize by the sum of absolute values to preserve sign
+				T sumOfAbs = std::accumulate(derivative.begin(), derivative.end(), static_cast<T>(0),
+					[](T sum, T value) { return sum + std::abs(value); });
+
+				if (sumOfAbs > static_cast<T>(0))
+				{
+					for (T& value : derivative)
+						value /= sumOfAbs;
+				}
+
+				return derivative;
+			}
+
+			template<typename T>
 			std::vector<T> obtainCircularVector(const std::vector<int>& indices, const std::vector<T>& contents)
 			{
 				std::vector<T> newContents(indices.size());

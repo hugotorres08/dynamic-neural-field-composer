@@ -2,10 +2,7 @@
 #pragma once
 
 #include "tools/math.h"
-
 #include "element.h"
-//#include "element_parameters/normal_noise_parameters.h"
-
 
 namespace dnf_composer
 {
@@ -13,7 +10,7 @@ namespace dnf_composer
 	{
 		struct NormalNoiseParameters : ElementSpecificParameters
 		{
-			NormalNoiseParameters(double amp = 0.01) : amplitude(amp) {}
+			NormalNoiseParameters(double amp = 0.2) : amplitude(amp) {}
 
 			double amplitude;
 			bool operator==(const NormalNoiseParameters& other) const
@@ -23,10 +20,9 @@ namespace dnf_composer
 			}
 			std::string toString() const override
 			{
-				std::string result;
-				result += "Normal noise parameters\n";
-				result += "Amplitude: ";
-				return result;
+				std::ostringstream result;
+				result << "Parameters: [Amplitude: " << std::fixed << std::setprecision(2) << amplitude << "]";
+				return result.str();
 			}
 		};
 

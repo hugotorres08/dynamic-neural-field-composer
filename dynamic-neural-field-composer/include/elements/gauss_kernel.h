@@ -36,13 +36,16 @@ namespace dnf_composer
 
 			std::string toString() const override
 			{
-				std::string result = "Gauss kernel parameters\n";
-				result += "Width: " + std::to_string(width) + "\n";
-				result += "Amplitude: " + std::to_string(amplitude) + "\n";
-				result += "Amplitude global: " + std::to_string(amplitudeGlobal) + "\n";
-				result += "Circular: " + std::to_string(circular) + "\n";
-				result += "Normalized: " + std::to_string(normalized) + "\n";
-				return result;
+				std::ostringstream result;
+				result << std::fixed << std::setprecision(2); // Ensures numbers have 2 decimal places
+				result << "Parameters: ["
+					<< "Width: " << width << ", "
+					<< "Amplitude: " << amplitude << ", "
+					<< "Amplitude global: " << amplitudeGlobal << ", "
+					<< "Circular: " << (circular ? "true" : "false") << ", "
+					<< "Normalized: " << (normalized ? "true" : "false")
+					<< "]";
+				return result.str();
 			}
 		};
 

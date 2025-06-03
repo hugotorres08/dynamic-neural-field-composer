@@ -50,8 +50,9 @@ namespace dnf_composer
 				components["kernel"][i] = parameters.amplitudeExc * gaussExc[i] -
 				parameters.amplitudeInh * gaussInh[i];
 
-			fullSum = 0;
+			fullSum = 0.0;
 			std::ranges::fill(components["input"], 0.0);
+			std::ranges::fill(components["output"], 0.0);  
 		}
 
 		void MexicanHatKernel::step(double t, double deltaT)
@@ -77,7 +78,7 @@ namespace dnf_composer
 		std::string MexicanHatKernel::toString() const
 		{
 			std::string result = "Mexican hat kernel element\n";
-			result += commonParameters.toString();
+			result += commonParameters.toString() + '\n';
 			result += parameters.toString();
 			return result;
 		}

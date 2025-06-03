@@ -45,8 +45,10 @@ namespace dnf_composer
 			components["kernel"].resize(rangeX.size());
 			for (int i = 0; i < components["kernel"].size(); i++)
 				components["kernel"][i] = parameters.amplitude * gauss[i];
-
+			 
+			fullSum = 0.0;
 			std::ranges::fill(components["input"], 0.0);
+			std::ranges::fill(components["output"], 0.0);
 		}
 
 		void GaussKernel::step(double t, double deltaT)
@@ -71,7 +73,7 @@ namespace dnf_composer
 		std::string GaussKernel::toString() const
 		{
 			std::string result = "Gauss kernel element\n";
-			result += commonParameters.toString();
+			result += commonParameters.toString() + '\n';
 			result += parameters.toString();
 			return result;
 		}

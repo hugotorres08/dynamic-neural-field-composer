@@ -3,8 +3,8 @@
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
 #include "simulation/simulation.h"
-
 #include "simulation/simulation_file_manager.h"
+
 
 
 namespace dnf_composer
@@ -179,6 +179,7 @@ namespace dnf_composer
 		clean();
 		const SimulationFileManager sfm{ shared_from_this(), readPath };
 		sfm.loadElementsFromJson();
+		init();
 	}
 
 	void Simulation::run(double runTime)
@@ -210,7 +211,7 @@ namespace dnf_composer
 			}
 		}
 
-		elements.push_back(element);
+		elements.emplace_back(element);
 
 		const std::string logMessage = "Element '" + newElementName + "' was added to the simulation.";
 		log(tools::logger::LogLevel::INFO, logMessage);
@@ -291,6 +292,14 @@ namespace dnf_composer
 		uniqueIdentifier = id;
 	}
 
+	void Simulation::setDeltaT(double deltaT)
+	{
+		if (deltaT <= 0)
+			throw Exception(ErrorCode::SIM_INVALID_PARAMETER);
+
+		this->deltaT = deltaT;
+	}
+
 	std::string Simulation::getUniqueIdentifier() const
 	{
 		return uniqueIdentifier;
@@ -302,13 +311,15 @@ namespace dnf_composer
 			if (element->getUniqueName() == id)
 				return element;
 
-		throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, id);
+		return nullptr;
+		//throw Exception(ErrorCode::SIM_ELEM_NOT_FOUND, id);
 	}
 
 	std::shared_ptr<element::Element> Simulation::getElement(const int index) const 
 	{
-		if (index < static_cast<int>(elements.size()))
-			return elements[index];
+		for (const auto& element : elements)
+			if (element->getUniqueIdentifier() == index)
+							return element;
 
 		throw Exception(ErrorCode::SIM_ELEM_INDEX, index);
 	}
@@ -341,6 +352,46 @@ namespace dnf_composer
 			}
 		}
 		return elementsThatHaveSpecifiedElementAsInput;
+	}
+
+	int Simulation::getHighestElementIndex() const
+	{
+		int highestIndex = 0;
+		for (const auto& element : elements)
+			if (element->getUniqueIdentifier() > highestIndex)
+				highestIndex = element->getUniqueIdentifier();
+		return highestIndex;
+	}
+
+	std::string Simulation::getIdentifier() const
+	{
+		return uniqueIdentifier;
+	}
+
+	double Simulation::getDeltaT() const
+	{
+		return deltaT;
+	}
+
+	double Simulation::getTZero() const
+	{
+		return tZero;
+	}
+
+	double Simulation::getT() const
+	{
+		return t;
+	}
+
+	bool Simulation::componentExists(const std::string& id, const std::string& componentName) const
+	{
+		const std::shared_ptr<element::Element> foundElement = getElement(id);
+		if (!foundElement)
+			return false;
+
+		const auto componentList = foundElement->getComponentList();
+
+		return std::ranges::find(componentList, componentName) != componentList.end();
 	}
 
 	bool Simulation::isInitialized() const

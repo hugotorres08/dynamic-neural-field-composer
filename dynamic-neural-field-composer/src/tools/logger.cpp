@@ -88,24 +88,31 @@ namespace dnf_composer
                 switch (level)
                 {
                 case DEBUG:     return "\033[92m"; // Green
-                case INFO:      return"\033[97m";  // White
+                case INFO:      return"\033[0m";
                 case WARNING:   return"\033[93m";  // Yellow
                 case ERROR:
                 case FATAL:     return"\033[91m";  // Red
-                default:        return "\033[97m"; // White
+                default:        return "\033[0m";
                 }
             }
 
             ImVec4 Logger::getLogLevelColorCodeGui(LogLevel level)
             {
+                ImVec4 currentTextColor = imgui_kit::colours::White;
+                if (ImGui::GetCurrentContext())
+                {
+                    const ImGuiStyle& style = ImGui::GetStyle();
+                    currentTextColor = style.Colors[ImGuiCol_Text];
+                }
+
                 switch (level)
                 {
                 case DEBUG:     return imgui_kit::colours::Green;
-                case INFO:      return imgui_kit::colours::Black;
+                case INFO:      return currentTextColor;
                 case WARNING:   return imgui_kit::colours::Yellow;
                 case ERROR:
                 case FATAL:     return imgui_kit::colours::Red; 
-                default:        return imgui_kit::colours::Black; 
+                default:        return currentTextColor;
                 }
             }
 

@@ -26,12 +26,14 @@ namespace dnf_composer
 
 		std::string ElementDimensions::toString() const
 		{
-			std::string result;
-			result += "Element spatial dimension parameters\n";
-			result += std::format("Maximum spatial dimension size: {}\n", x_max);
-			result += std::format("Spatial dimension step size: {}\n", d_x);
-			result += std::format("Number of samples in spatial dimension: {}\n", size);
-			return result;
+			std::ostringstream result;
+			result << std::fixed << std::setprecision(2); 
+			result << "Dimensions: ["
+				<< "x_max: " << x_max << ", "
+				<< "d_x: " << d_x << ", "
+				<< "Samples: " << size
+				<< "]";
+			return result.str();
 		}
 
 		ElementIdentifiers::ElementIdentifiers(ElementLabel label)
@@ -58,12 +60,13 @@ namespace dnf_composer
 
 		std::string ElementIdentifiers::toString() const
 		{
-			std::string result;
-			result += "Element identifiers\n";
-			result += std::format("Unique identifier: {}\n", uniqueIdentifier);
-			result += std::format("Unique name: {}\n", uniqueName);
-			result += std::format("Label: {}\n", ElementLabelToString.at(label));
-			return result;
+			std::ostringstream result;
+			result << "Identifiers: ["
+				<< "ID: " << uniqueIdentifier << ", "
+				<< "Name: " << uniqueName << ", "
+				<< "Type: " << ElementLabelToString.at(label)
+				<< "]";
+			return result.str();
 		}
 
 		ElementCommonParameters::ElementCommonParameters()
@@ -107,9 +110,9 @@ namespace dnf_composer
 		std::string ElementCommonParameters::toString() const
 		{
 			std::string result;
-			result += "Element common parameters\n";
-			result += identifiers.toString();
-			result += dimensionParameters.toString();
+			result += "Common parameters {";
+			result += "  " + identifiers.toString();
+			result += dimensionParameters.toString() + "}";
 			return result;
 		}
 

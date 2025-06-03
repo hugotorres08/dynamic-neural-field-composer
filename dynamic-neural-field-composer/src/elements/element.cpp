@@ -25,6 +25,7 @@ namespace dnf_composer
 
 		void Element::close()
 		{
+			// views::values can be used
 			for (auto& pair : components)
 			{
 				auto& component = pair.second;
@@ -120,6 +121,17 @@ namespace dnf_composer
 			return false;
 		}
 
+		void Element::removeInputs()
+		{
+			// views::keys can be used
+			for (const auto& input_pair : inputs)
+			{
+				const auto inputElement = input_pair.first;
+				inputElement->outputs.erase(this->shared_from_this());
+			}
+			inputs.clear();
+		}
+
 		void Element::updateInput()
 		{
 			std::ranges::fill(components["input"], 0);
@@ -146,14 +158,73 @@ namespace dnf_composer
 			return commonParameters.dimensionParameters.d_x;
 		}
 
+		bool Element::hasOutput(const std::string& outputElementName, const std::string& outputComponent)
+		{
+			const bool found = std::ranges::any_of(outputs, [&](const auto& pair) {
+				const auto& [key, value] = pair;
+				return key->commonParameters.identifiers.uniqueName == outputElementName && value == outputComponent;
+				});
+			if (found)
+				return true;
+			return false;
+		}
+
 		ElementCommonParameters Element::getElementCommonParameters() const
 		{
 			return commonParameters;
 		}
 
+		bool Element::hasOutput(int outputElementId, const std::string& outputComponent)
+		{
+			const bool found = std::ranges::any_of(outputs, [&](const auto& pair) {
+				const auto& [key, value] = pair;
+				return key->commonParameters.identifiers.uniqueIdentifier == outputElementId && value == outputComponent;
+				});
+			if (found)
+				return true;
+			return false;
+		}
+
+		void Element::removeOutputs()
+		{
+			// views::keys can be used
+			for (const auto& output_pair : outputs)
+			{
+				const auto outputElement = output_pair.first;
+				outputElement->inputs.erase(this->shared_from_this());
+			}
+			outputs.clear();
+		}
+
 		int Element::getSize() const
 		{
 			return commonParameters.dimensionParameters.size;
+		}
+
+		void Element::removeOutput(int uniqueId)
+		{
+			for (auto& key : outputs | std::views::keys)
+			{
+				if (key->commonParameters.identifiers.uniqueIdentifier == uniqueId) {
+					outputs.erase(key);
+					log(tools::logger::LogLevel::INFO, "Output '" + std::to_string(uniqueId) + "' removed successfully from '" 
+						+ this->getUniqueName() + ".");
+					return;
+				}
+			}
+		}
+
+		void Element::removeOutput(const std::string& outputElementId)
+		{
+			for (auto& key : outputs | std::views::keys)
+			{
+				if (key->commonParameters.identifiers.uniqueName == outputElementId) {
+					outputs.erase(key);
+					log(tools::logger::LogLevel::INFO, "Output '" + outputElementId + "' removed successfully from '" 
+						+ this->getUniqueName() + ".");
+					return;
+				}
+			}
 		}
 
 		std::string Element::getUniqueName() const
@@ -220,5 +291,27 @@ namespace dnf_composer
 		{
 			return inputs;
 		}
+
+		bool Element::hasOutput() const
+		{
+			return !outputs.empty();
+		}
+
+		bool Element::hasInput() const
+		{
+			return !inputs.empty();
+		}
+
+		std::vector<std::shared_ptr<Element>> Element::getOutputs()
+		{
+			std::vector<std::shared_ptr<Element>> outputVec;
+			outputVec.reserve(outputs.size());
+
+			for (const auto& key : outputs | std::views::keys)
+				outputVec.push_back(key);
+
+			return outputVec;
+		}
+
 	}
 }

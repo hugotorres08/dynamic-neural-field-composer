@@ -38,9 +38,15 @@ namespace dnf_composer
 				const std::string& inputComponent = "output");
 			void removeInput(const std::string& inputElementId);
 			void removeInput(int uniqueId);
+			void removeInputs();
 			bool hasInput(const std::string& inputElementName, const std::string& inputComponent);
 			bool hasInput(int inputElementId, const std::string& inputComponent);
 			void updateInput();
+			void removeOutput(const std::string& outputElementId);
+			void removeOutput(int uniqueId);
+			void removeOutputs();
+			bool hasOutput(const std::string& outputElementName, const std::string& outputComponent);
+			bool hasOutput(int outputElementId, const std::string& outputComponent);
 
 			int getMaxSpatialDimension() const;
 			int getSize() const;
@@ -49,6 +55,8 @@ namespace dnf_composer
 			int getUniqueIdentifier() const;
 			std::string getUniqueName() const;
 			ElementLabel getLabel() const;
+			bool hasOutput() const;
+			bool hasInput() const;
 
 			std::vector<double> getComponent(const std::string& componentName);
 			std::vector<double>* getComponentPtr(const std::string& componentName);
@@ -57,6 +65,7 @@ namespace dnf_composer
 
 			std::vector<std::shared_ptr<Element>> getInputs();
 			std::unordered_map<std::shared_ptr<Element>, std::string> getInputsAndComponents();
+			std::vector<std::shared_ptr<Element>> getOutputs();
 		};
 	}
 }

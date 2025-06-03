@@ -38,13 +38,16 @@ namespace dnf_composer
 
 			std::string toString() const override
 			{
-				std::string result = "Gaussian stimulus parameters\n";
-				result += "Width = " + std::to_string(width) + ", ";
-				result += "Amplitude = " + std::to_string(amplitude) + ", ";
-				result += "Position = " + std::to_string(position) + ", ";
-				result += "Circular = " + std::to_string(circular) + ", ";
-				result += "Normalized = " + std::to_string(normalized) + ", ";
-				return result;
+				std::ostringstream result;
+				result << std::fixed << std::setprecision(2); // Ensures numbers have 2 decimal places
+				result << "Parameters: ["
+					<< "Width: " << width << ", "
+					<< "Amplitude: " << amplitude << ", "
+					<< "Position: " << position << ", "
+					<< "Circular: " << (circular ? "true" : "false") << ", "
+					<< "Normalized: " << (normalized ? "true" : "false")
+					<< "]";
+				return result.str();
 			}
 		};
 

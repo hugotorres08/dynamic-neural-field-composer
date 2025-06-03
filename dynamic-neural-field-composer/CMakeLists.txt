@@ -75,6 +75,8 @@ set(elements_headers
     "include/elements/mexican_hat_kernel.h"
     "include/elements/neural_field.h"
     "include/elements/normal_noise.h"
+    "include/elements/oscillatory_kernel.h"
+    "include/elements/asymmetric_gauss_kernel.h"
 )
 set(element_parameters_headers
     "include/element_parameters/element_parameters.h"
@@ -105,9 +107,7 @@ set(user_interface_headers
     "include/user_interface/node_graph_window.h"
     "include/user_interface/main_window.h"
     "include/user_interface/widgets.h"
-)
-set(wizards_headers
-    #"include/wizards/learning_wizard.h"
+    "include/user_interface/plots_window.h"
 )
 
 set(header 
@@ -120,7 +120,6 @@ set(header
     ${exceptions_headers}
     ${user_interface_headers}
     ${user_interface_headers}
-    ${wizards_headers}
 )
 
 # Set source files
@@ -145,9 +144,11 @@ set(src
     "src/elements/gauss_stimulus.cpp"  
     "src/elements/kernel.cpp"
     "src/elements/mexican_hat_kernel.cpp"
+    "src/elements/oscillatory_kernel.cpp"
     "src/elements/neural_field.cpp" 
     "src/elements/normal_noise.cpp"
-    
+    "src/elements/asymmetric_gauss_kernel.cpp"
+   
     "src/element_parameters/element_parameters.cpp"
 #"src/element_parameters/field_coupling_parameters.cpp"
 ##"include/element_parameters/gauss_field_coupling_parameters.h"
@@ -172,17 +173,15 @@ set(src
     "src/user_interface/node_graph_window.cpp"
     "src/user_interface/main_window.cpp"
     "src/user_interface/widgets.cpp"
-    
-    #"src/wizards/learning_wizard.cpp"
+    "src/user_interface/plots_window.cpp"
+   
 )
 
 # Define library target
 add_library(${CMAKE_PROJECT_NAME} ${header} ${src})
-target_include_directories(${CMAKE_PROJECT_NAME} PUBLIC 
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    #$<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}> 
-    $<INSTALL_INTERFACE:${DNF_COMPOSER_INC_INSTALL_DIR}> 
-    #PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include 
+target_include_directories(${CMAKE_PROJECT_NAME} 
+    PUBLIC $<INSTALL_INTERFACE:include> 
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include 
 )
 
 # Setup imgui
@@ -215,16 +214,11 @@ set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES
 
 # Install the library (binaries)
 install(TARGETS ${CMAKE_PROJECT_NAME} EXPORT ${CMAKE_PROJECT_NAME}Targets
-    RUNTIME       DESTINATION ${DNF_COMPOSER_RUNTIME_INSTALL_DIR}
-    LIBRARY       DESTINATION ${DNF_COMPOSER_LIBRARY_INSTALL_DIR}
-    ARCHIVE       DESTINATION ${DNF_COMPOSER_ARCHIVE_INSTALL_DIR}
-    FRAMEWORK     DESTINATION ${DNF_COMPOSER_FRAMEWORK_INSTALL_DIR}
+    RUNTIME DESTINATION ${DNF_COMPOSER_RUNTIME_INSTALL_DIR}
+    LIBRARY DESTINATION ${DNF_COMPOSER_LIBRARY_INSTALL_DIR}
+    ARCHIVE DESTINATION ${DNF_COMPOSER_ARCHIVE_INSTALL_DIR}
+    INCLUDES DESTINATION include/dnf_composer # Explicitly set the install include path
 )
-
-## Install the headers
-#install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/
-#        DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer
-#        FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp")
 
 # Package version configuration
 include(CMakePackageConfigHelpers)
@@ -234,58 +228,67 @@ write_basic_package_version_file(${version_file}
     COMPATIBILITY AnyNewerVersion
 )
 
-# Install the headers
-install(FILES ${simulation_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/simulation)
-install(FILES ${application_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/application)
-install(FILES ${elements_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/elements)
-install(FILES ${tools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/tools)
-install(FILES ${exceptions_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/exceptions)
-install(FILES ${user_interface_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/user_interface)
-install(FILES ${wizards_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/wizards)
-install(FILES ${element_parameters_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/element_parameters)
-
+# Install the headers 
+install(FILES ${simulation_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/simulation)
+install(FILES ${visualization_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/visualization)
+install(FILES ${application_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/application)
+install(FILES ${elements_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/elements)
+install(FILES ${tools_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/tools)
+install(FILES ${exceptions_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/exceptions)
+install(FILES ${user_interface_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/user_interface)
+install(FILES ${element_parameters_headers} DESTINATION ${DNF_COMPOSER_INC_INSTALL_DIR}/dnf_composer/element_parameters)
 
 install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CONFIG_INSTALL_DIR}
     FILE ${CMAKE_PROJECT_NAME}-config.cmake
 )
 
-# Add executable project
-#set(EXE_PROJECT ${CMAKE_PROJECT_NAME}-exe)
-#add_executable(${EXE_PROJECT} "src/dynamic-neural-field-composer.cpp")
-#target_include_directories(${EXE_PROJECT} PRIVATE include)
-#target_link_libraries(${EXE_PROJECT} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
+# Entry point
+set(ENTRY_POINT entrypoint)
+add_executable(${ENTRY_POINT} "examples/entry.cpp")
+target_include_directories(${ENTRY_POINT} PRIVATE include)
+target_link_libraries(${ENTRY_POINT} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
 
-# Example test_plot
-#set(TEST_PLOT_EXAMPLE t-plot-example)
-#add_executable(${TEST_PLOT_EXAMPLE} "examples/test_plot.cpp")
-#target_include_directories(${TEST_PLOT_EXAMPLE} PRIVATE include)
-#target_link_libraries(${TEST_PLOT_EXAMPLE} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-#
-## Example test_visualization
-#set(TEST_VISUALIZATION_EXAMPLE t-vis-example)
-#add_executable(${TEST_VISUALIZATION_EXAMPLE} "examples/test_visualization.cpp")
-#target_include_directories(${TEST_VISUALIZATION_EXAMPLE} PRIVATE include)
-#target_link_libraries(${TEST_VISUALIZATION_EXAMPLE} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-#
-## Example test_application
-#set(TEST_APPLICATION_EXAMPLE t-app-example)
-#add_executable(${TEST_APPLICATION_EXAMPLE} "examples/test_application.cpp")
-#target_include_directories(${TEST_APPLICATION_EXAMPLE} PRIVATE include)
-#target_link_libraries(${TEST_APPLICATION_EXAMPLE} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
+# Testbench
+set(TESTBENCH testbench)
+add_executable(${TESTBENCH} "examples/testbench.cpp")
+target_include_directories(${TESTBENCH} PRIVATE include)
+target_link_libraries(${TESTBENCH} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
 
-# Example test_plot_control_window
+# Complementary action selection architecture
+set(COMP_ACTION_SELECTION_ARCH comp_act_selection)
+add_executable(${COMP_ACTION_SELECTION_ARCH} "examples/complementary_action_selection.cpp")
+target_include_directories(${COMP_ACTION_SELECTION_ARCH} PRIVATE include)
+target_link_libraries(${COMP_ACTION_SELECTION_ARCH} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+# Test asymmetric gauss kernel
+set(TEST_AGK test_agk)
+add_executable(${TEST_AGK} "examples/test_agk.cpp")
+target_include_directories(${TEST_AGK} PRIVATE include)
+target_link_libraries(${TEST_AGK} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+# Two robot team
+set(TWO_ROBOT_TEAM two_robot_team)
+add_executable(${TWO_ROBOT_TEAM} "examples/two_robot_team.cpp")
+target_include_directories(${TWO_ROBOT_TEAM} PRIVATE include)
+target_link_libraries(${TWO_ROBOT_TEAM} PRIVATE 
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
+
+
+## Example test_plot_control_window
 #set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)
 #add_executable(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} "examples/test_plot_control_window.cpp")
 #target_include_directories(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE include)
@@ -293,7 +296,7 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
 #imgui::imgui
 #imgui-platform-kit 
 #${CMAKE_PROJECT_NAME})
-
+#
 # Example test_couplings
 set(TEST_COUPLINGS_EXAMPLE t-couplings-example)
 add_executable(${TEST_COUPLINGS_EXAMPLE} "examples/test_couplings.cpp")
@@ -302,30 +305,30 @@ target_link_libraries(${TEST_COUPLINGS_EXAMPLE} PRIVATE
 imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})
-
-# Example test_factory
-set(TEST_FACTORY_EXAMPLE t-factory-example)
-add_executable(${TEST_FACTORY_EXAMPLE} "examples/test_factory.cpp")
-target_include_directories(${TEST_FACTORY_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_FACTORY_EXAMPLE} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Example test_nodegraph
-set(TEST_NODEGRAPH_EXAMPLE t-nodegraph-example)
-add_executable(${TEST_NODEGRAPH_EXAMPLE} "examples/test_nodegraph.cpp")
-target_include_directories(${TEST_NODEGRAPH_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_NODEGRAPH_EXAMPLE} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Example test_simulation
-set(TEST_SIMULATION_EXAMPLE t-simulation-example)
-add_executable(${TEST_SIMULATION_EXAMPLE} "examples/test_simulation.cpp")
-target_include_directories(${TEST_SIMULATION_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_SIMULATION_EXAMPLE} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
+#
+## Example test_factory
+#set(TEST_FACTORY_EXAMPLE t-factory-example)
+#add_executable(${TEST_FACTORY_EXAMPLE} "examples/test_factory.cpp")
+#target_include_directories(${TEST_FACTORY_EXAMPLE} PRIVATE include)
+#target_link_libraries(${TEST_FACTORY_EXAMPLE} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Example test_nodegraph
+#set(TEST_NODEGRAPH_EXAMPLE t-nodegraph-example)
+#add_executable(${TEST_NODEGRAPH_EXAMPLE} "examples/test_nodegraph.cpp")
+#target_include_directories(${TEST_NODEGRAPH_EXAMPLE} PRIVATE include)
+#target_link_libraries(${TEST_NODEGRAPH_EXAMPLE} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})
+#
+## Example test_simulation
+#set(TEST_SIMULATION_EXAMPLE t-simulation-example)
+#add_executable(${TEST_SIMULATION_EXAMPLE} "examples/test_simulation.cpp")
+#target_include_directories(${TEST_SIMULATION_EXAMPLE} PRIVATE include)
+#target_link_libraries(${TEST_SIMULATION_EXAMPLE} PRIVATE 
+#imgui::imgui
+#imgui-platform-kit 
+#${CMAKE_PROJECT_NAME})

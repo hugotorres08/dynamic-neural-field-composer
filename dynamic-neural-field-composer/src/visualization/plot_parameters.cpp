@@ -7,7 +7,9 @@ namespace dnf_composer
 		: xMin(0), xMax(100), yMin(-10.0), yMax(10.0), xStep(1.0), yStep(1.0)
 	{}
 
-	PlotDimensions::PlotDimensions(const double& x_min, const double& x_max, const double& y_min, const double& y_max, const double& x_step, const double& y_step)
+	PlotDimensions::PlotDimensions(const double& x_min, const double& x_max, 
+		const double& y_min, const double& y_max, 
+		const double& x_step, const double& y_step)
 		: xMin(x_min), xMax(x_max), yMin(y_min), yMax(y_max), xStep(x_step), yStep(y_step)
 	{
 		if (xMin >= xMax)
@@ -85,11 +87,11 @@ namespace dnf_composer
 	}
 
 	PlotAnnotations::PlotAnnotations()
-		:title("title"), x_label("x label"), y_label("y label"), legends()
+		:title("title"), x_label("x label"), y_label("y label")
 	{}
 
 	PlotAnnotations::PlotAnnotations(std::string title, std::string x_label, std::string y_label)
-		:title(std::move(title)), x_label(std::move(x_label)), y_label(std::move(y_label)), legends()
+		:title(std::move(title)), x_label(std::move(x_label)), y_label(std::move(y_label))
 	{}
 
 	std::string PlotAnnotations::toString() const
@@ -99,18 +101,12 @@ namespace dnf_composer
 		result += "title: " + title + ", ";
 		result += "x_label: " + x_label + ", ";
 		result += "y_label: " + y_label + "}";
-		result += "legends: ";
-		if (legends.empty())
-			result += "none";
-		else
-			for (const auto& l : legends)
-				result += ", " + l;
 		return result;
 	}
 
 	bool PlotAnnotations::operator==(const PlotAnnotations& other) const
 	{
-		if (title != other.title || x_label != other.x_label || y_label != other.y_label || legends != other.legends)
+		if (title != other.title || x_label != other.x_label || y_label != other.y_label )
 			return false;
 		return true;
 	}

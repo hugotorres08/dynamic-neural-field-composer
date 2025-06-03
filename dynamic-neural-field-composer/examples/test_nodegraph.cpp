@@ -6,7 +6,7 @@
 #include "user_interface/simulation_window.h"
 #include "user_interface/node_graph_window.h"
 #include "elements/element_factory.h"
-#include "wizards/learning_wizard.h"
+#include "user_interface/plots_window.h"
 
 
 int main()
@@ -15,7 +15,7 @@ int main()
 	{
 		using namespace dnf_composer;
 
-		const auto simulation = std::make_shared<Simulation>("default", 25.0, 0.0, 0.0);
+		const auto simulation = std::make_shared<Simulation>("test-nodegraph", 25.0, 0.0, 0.0);
 		const auto visualization = std::make_shared<Visualization>(simulation);
 		const Application app{ simulation, visualization };
 
@@ -25,6 +25,7 @@ int main()
 		app.addWindow<user_interface::ElementWindow>();
 		app.addWindow<user_interface::SimulationWindow>();
 		app.addWindow<user_interface::PlotControlWindow>();
+		app.addWindow<user_interface::PlotsWindow>();
 		app.addWindow<user_interface::NodeGraphWindow>();
 
 		element::ElementFactory factory;
@@ -36,21 +37,25 @@ int main()
 		const auto mhk_2 = factory.createElement(element::MEXICAN_HAT_KERNEL);
 		const auto nn_2 = factory.createElement(element::NORMAL_NOISE);
 
+		const auto ok_2 = factory.createElement(element::OSCILLATORY_KERNEL);
 		const auto gs_1 = factory.createElement(element::GAUSS_STIMULUS);
 		const auto gs_2 = factory.createElement(element::GAUSS_STIMULUS);
 
-		//const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING, element::ElementCommonParameters{}, element::GaussFieldCouplingParameters{false, false, {{50.0, 50.0, 5.0, 5.0}}});
-		//const auto fc_1 = std::make_shared<element::FieldCoupling>(element::ElementCommonParameters{}, element::FieldCouplingParameters{});
+		const auto gfc_1 = factory.createElement(element::GAUSS_FIELD_COUPLING, element::ElementCommonParameters{element::GAUSS_FIELD_COUPLING}, 
+			element::GaussFieldCouplingParameters{{100, 1.0},false, false, { {50.0, 50.0, 5.0, 5.0} }});
+		const auto fc_1 = std::make_shared<element::FieldCoupling>(element::ElementCommonParameters{element::FIELD_COUPLING}, element::FieldCouplingParameters{});
 
 		simulation->addElement(nf_1);
 		simulation->addElement(gk_1);
 		simulation->addElement(nn_1);
 		simulation->addElement(nf_2);
 		simulation->addElement(mhk_2);
+		simulation->addElement(ok_2);
 		simulation->addElement(nn_2);
 		simulation->addElement(gs_1);
 		simulation->addElement(gs_2);
-		//simulation->addElement(fc_1);
+		simulation->addElement(gfc_1);
+		simulation->addElement(fc_1);
 
 		nf_1->addInput(gk_1);
 		gk_1->addInput(nf_1);
@@ -62,8 +67,13 @@ int main()
 		nf_2->addInput(nn_2);
 		nf_2->addInput(gs_2);
 
+		ok_2->addInput(nf_1);
+		nf_2->addInput(ok_2);
+
 		visualization->plot({ {nf_1->getUniqueName(), "activation"}, {nf_1->getUniqueName(), "output"}, {nf_1->getUniqueName(), "input"} });
 		visualization->plot({ {nf_2->getUniqueName(), "activation"}, {nf_2->getUniqueName(), "output"}, {nf_2->getUniqueName(), "input"} });
+		visualization->plot({ {gk_1->getUniqueName(), "kernel"} });
+		visualization->plot({ {gk_1->getUniqueName(), "output"} });
 
 		//fc_1->addInput(nf_1);
 		//nf_2->addInput(fc_1);

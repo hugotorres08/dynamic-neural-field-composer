@@ -4,7 +4,6 @@
 #include "user_interface/plot_control_window.h"
 #include "user_interface/simulation_window.h"
 #include "elements/element_factory.h"
-#include "wizards/learning_wizard.h"
 
 
 int main()
@@ -77,14 +76,14 @@ int main()
 		visualization->plot({ {nf_2->getUniqueName(), "activation"}, {nf_2->getUniqueName(), "output"}, {nf_2->getUniqueName(), "input"} });
 		visualization->plot({ {mhk_2->getUniqueName(), "kernel"} });
 
-		visualization->plot(
+		/*visualization->plot(
 			PlotCommonParameters{
 				PlotType::HEATMAP,
 				PlotDimensions{0.0, 100.0, 0.0, 100.0, 1.0},
 				PlotAnnotations{"Gauss field coupling", "x", "y"} },
 				HeatmapParameters{ 0.0, 0.2 },
 			{ {gfc_1->getUniqueName(), "kernel"} }
-		);
+		);*/
 
 		visualization->plot({ {gfc_1->getUniqueName(), "output"} });
 

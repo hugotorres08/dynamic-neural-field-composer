@@ -5,7 +5,6 @@
 #include "user_interface/plot_control_window.h"
 #include "user_interface/simulation_window.h"
 #include "elements/element_factory.h"
-#include "wizards/learning_wizard.h"
 
 int main()
 {
@@ -22,6 +21,7 @@ int main()
         app.addWindow<user_interface::ElementWindow>();
         app.addWindow<user_interface::SimulationWindow>();
         app.addWindow<user_interface::PlotControlWindow>();
+        app.addWindow<user_interface::SimulationWindow>();
 
         element::ElementFactory factory;
         const element::ElementDimensions input_dimensions{200, 0.7};

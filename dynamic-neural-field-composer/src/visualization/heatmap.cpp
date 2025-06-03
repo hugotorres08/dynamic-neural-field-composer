@@ -28,8 +28,8 @@ namespace dnf_composer
 		return true;
 	}
 
-	Heatmap::Heatmap(const PlotCommonParameters& parameters, const HeatmapParameters& heatmapParameters, const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
-		: Plot(parameters, data, legends), heatmapParameters(heatmapParameters)
+	Heatmap::Heatmap(const PlotCommonParameters& parameters, const HeatmapParameters& heatmapParameters)
+		: Plot(parameters), heatmapParameters(heatmapParameters)
 	{
 	}
 
@@ -57,15 +57,11 @@ namespace dnf_composer
 		result << "Plot: { ";
 		result << "Unique identifier: " << uniqueIdentifier << ", ";
 		result << commonParameters.toString() << ", ";
-		result << "Data*: [ ";
-		for (auto& d : data)
-			result << reinterpret_cast<void*>(d) << ", ";
-		result << " ] }";
 		result << heatmapParameters.toString();
 		return result.str();
 	}
 
-	void Heatmap::render()
+	void Heatmap::render(const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
 	{
 		if (data.size() != 1)
 		{
@@ -178,8 +174,10 @@ namespace dnf_composer
 			static constexpr ImPlotAxisFlags flags = ImPlotAxisFlags_AutoFit;
 			ImPlot::SetupAxes(commonParameters.annotations.x_label.c_str(), commonParameters.annotations.y_label.c_str(), flags, flags);
 
+			const std::string& label = legends[0];
+
 			ImPlot::PlotHeatmap(
-				commonParameters.annotations.legends[0].c_str(),
+				label.c_str(),
 				flattened_matrix->data(),
 				rows, cols,
 				scaleMin, scaleMax, nullptr,

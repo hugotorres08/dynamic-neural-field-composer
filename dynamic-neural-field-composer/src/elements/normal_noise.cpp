@@ -37,7 +37,7 @@ namespace dnf_composer
 		{
 			std::string result;
 			result += "Normal noise element\n";
-			result += commonParameters.toString();
+			result += commonParameters.toString() + '\n';
 			result += parameters.toString();
 			return result;
 		}

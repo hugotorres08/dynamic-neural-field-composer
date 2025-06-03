@@ -5,6 +5,7 @@
 #include "simulation/simulation.h"
 #include "tools/file_dialog.h"
 
+
 namespace dnf_composer::user_interface
 {
 	struct FileFlags
@@ -22,6 +23,7 @@ namespace dnf_composer::user_interface
 		bool showToolAbout = false;
 		bool showImGuiDemo = false;
 		bool showImPlotDemo = false;
+		bool showImGuiKitStyleEditor = false;
 	};
 
 	class MainWindow : public imgui_kit::UserInterfaceWindow

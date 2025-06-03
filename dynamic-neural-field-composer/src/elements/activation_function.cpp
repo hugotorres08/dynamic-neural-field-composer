@@ -3,7 +3,7 @@
 
 // PVS-Studio Static Code Analyzer for C, C++, C#, and Java: https://pvs-studio.com
 
-#include "./elements/activation_function.h"
+#include "elements/activation_function.h"
 
 
 
@@ -40,8 +40,12 @@ namespace dnf_composer
 		std::string SigmoidFunction::toString() const
 		{
 			std::string result = "SigmoidFunction(";
-			result += "x_shift = " + std::to_string(x_shift) + ", ";
-			result += "steepness = " + std::to_string(steepness) + ")";
+			std::ostringstream stream_x_shift;
+			stream_x_shift << std::fixed << std::setprecision(2) << x_shift;
+			result += "x_shift = " + stream_x_shift.str() + ", ";
+			std::ostringstream stream_steepness;
+			stream_steepness << std::fixed << std::setprecision(2) << steepness;
+			result += "steepness = " + stream_steepness.str() + ")";
 			return result;
 		}
 
@@ -90,7 +94,9 @@ namespace dnf_composer
 		std::string HeavisideFunction::toString() const
 		{
 			std::string result = "HeavisideFunction(";
-			result += "x_shift = " + std::to_string(x_shift) + ")";
+			std::ostringstream stream;
+			stream << std::fixed << std::setprecision(2) << x_shift;
+			result += "x_shift = " + stream.str() + ")";
 			return result;
 		}
 

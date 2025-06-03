@@ -15,7 +15,7 @@ namespace dnf_composer
 
 		void ElementWindow::render()
 		{
-			if (ImGui::Begin("Element control"))
+			if (ImGui::Begin("Element Control"))
 			{
 				renderModifyElementParameters();
 			}
@@ -24,12 +24,9 @@ namespace dnf_composer
 
 		void ElementWindow::renderModifyElementParameters() const
 		{
-			const int numberOfElementsInSimulation = simulation->getNumberOfElements();
-
-			for (int i = 0; i < numberOfElementsInSimulation; i++)
+			for (const auto& element : simulation->getElements())
 			{
-				auto simulationElement = simulation->getElement(i);
-				switchElementToModify(simulationElement);
+				switchElementToModify(element);
 				ImGui::Separator();
 			}
 		}
@@ -39,7 +36,36 @@ namespace dnf_composer
 			const std::string elementId = element->getUniqueName();
 			const element::ElementLabel label = element->getLabel();
 
-			ImGui::Text("Element %s", elementId.c_str());
+			//// Set text color based on the element label
+			//switch (label)
+			//{
+			//case element::ElementLabel::NEURAL_FIELD:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Blue);
+			//	break;
+			//case element::ElementLabel::GAUSS_STIMULUS:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Green);
+			//	break;
+			//case element::ElementLabel::FIELD_COUPLING:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Red);
+			//	break;
+			//case element::ElementLabel::GAUSS_KERNEL:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Magenta);
+			//	break;
+			//case element::ElementLabel::MEXICAN_HAT_KERNEL:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Lime);
+			//	break;
+			//case element::ElementLabel::NORMAL_NOISE:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Violet);
+			//	break;
+			//case element::ElementLabel::GAUSS_FIELD_COUPLING:
+			//	ImGui::PushStyleColor(ImGuiCol_Text, imgui_kit::colours::Azure);
+			//	break;
+			//default:
+			//	break;
+			//}
+			//ImGui::PopStyleColor();
+
+			ImGui::SeparatorText( ("Element " + elementId).c_str() );
 
 			switch (label)
 			{
@@ -64,6 +90,14 @@ namespace dnf_composer
 			case element::ElementLabel::GAUSS_FIELD_COUPLING:
 				modifyElementGaussFieldCoupling(element);
 				break;
+			case element::ElementLabel::OSCILLATORY_KERNEL:
+				modifyElementOscillatoryKernel(element);
+				break;
+			case element::ElementLabel::ASYMMETRIC_GAUSS_KERNEL:
+				modifyElementAsymmetricGaussKernel(element);
+				break;
+			case element::ElementLabel::UNINITIALIZED:
+				break;
 			default:
 				log(tools::logger::LogLevel::ERROR, "There is a missing element in the TreeNode in simulation window.");
 				break;
@@ -76,10 +110,21 @@ namespace dnf_composer
 			element::NeuralFieldParameters nfp = neuralField->getParameters();
 
 			auto restingLevel = static_cast<float>(nfp.startingRestingLevel);
+			auto tau = static_cast<float>(nfp.tau);
+			auto stabilityThreshold = static_cast<float>(neuralField->getStabilityThreshold());
 
-			const std::string label = "##" + element->getUniqueName() + "Resting level";
-			ImGui::SliderFloat(label.c_str(), &restingLevel, -30, 0);
+			std::string label = "##" + element->getUniqueName() + "Resting level";
+			ImGui::SliderFloat(label.c_str(), &restingLevel, -30.0f, 0.0f);
 			ImGui::SameLine(); ImGui::Text("Resting level");
+
+			label = "##" + element->getUniqueName() + "Tau";
+			ImGui::SliderFloat(label.c_str(), &tau, 1.0f, 300.0f);
+			ImGui::SameLine(); ImGui::Text("Tau");
+
+			// stability threshold
+			label = "##" + element->getUniqueName() + "Stability threshold";
+			ImGui::SliderFloat(label.c_str(), &stabilityThreshold, 0.0f, 2.0f);
+			ImGui::SameLine(); ImGui::Text("Stability threshold");
 
 			static constexpr double epsilon = 1e-6;
 			if (std::abs(restingLevel - static_cast<float>(nfp.startingRestingLevel)) > epsilon) 
@@ -87,6 +132,18 @@ namespace dnf_composer
 				nfp.startingRestingLevel = restingLevel;
 				neuralField->setParameters(nfp);
 			}
+
+			if (std::abs(tau - static_cast<float>(nfp.tau)) > epsilon)
+			{
+				nfp.tau = tau;
+				neuralField->setParameters(nfp);
+			}
+
+			if (std::abs(stabilityThreshold - static_cast<float>(neuralField->getStabilityThreshold())) > epsilon)
+			{
+				neuralField->setThresholdForStability(stabilityThreshold);
+			}
+
 		}
 
 		void ElementWindow::modifyElementGaussStimulus(const std::shared_ptr<element::Element>& element) 
@@ -109,7 +166,8 @@ namespace dnf_composer
 			ImGui::SameLine(); ImGui::Text("Width");
 
 			label = "##" + element->getUniqueName() + "Position";
-			ImGui::SliderFloat(label.c_str(), &position, 0, static_cast<float>(stimulus->getElementCommonParameters().dimensionParameters.x_max));
+			ImGui::SliderFloat(label.c_str(), &position, 0,
+				static_cast<float>(stimulus->getElementCommonParameters().dimensionParameters.x_max));
 			ImGui::SameLine(); ImGui::Text("Position");
 
 			label = "##" + element->getUniqueName() + "Circular";
@@ -165,7 +223,7 @@ namespace dnf_composer
 			ImGui::SameLine(); ImGui::Text("Learning rate");
 
 			label = "##" + element->getUniqueName() + "Scalar";
-			ImGui::SliderFloat(label.c_str(), &scalar, 0, 20);
+			ImGui::SliderFloat(label.c_str(), &scalar, -20, 20);
 			ImGui::SameLine(); ImGui::Text("Scalar");
 
 			label = "##" + element->getUniqueName() + "Activate learning";
@@ -222,15 +280,15 @@ namespace dnf_composer
 			bool circular = gkp.circular;
 			bool normalized = gkp.normalized;
 
-			std::string label = "##" + element->getUniqueName() + "Amplitude.";
-			ImGui::SliderFloat(label.c_str(), &amplitude, 0, 100);
-			ImGui::SameLine(); ImGui::Text("Amplitude.");
+			std::string label = "##" + element->getUniqueName() + "Amplitude";
+			ImGui::SliderFloat(label.c_str(), &amplitude, -50, 50);
+			ImGui::SameLine(); ImGui::Text("Amplitude");
 
-			label = "##" + element->getUniqueName() + "Width.";
+			label = "##" + element->getUniqueName() + "Width";
 			ImGui::SliderFloat(label.c_str(), &width, 0, 30);
 			ImGui::SameLine(); ImGui::Text("Width");
 
-			label = "##" + element->getUniqueName() + "Amplitude global.";
+			label = "##" + element->getUniqueName() + "Amplitude global";
 			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 10);
 			ImGui::SameLine(); ImGui::Text("Amplitude global");
 
@@ -272,7 +330,7 @@ namespace dnf_composer
 			bool normalized = mhkp.normalized;
 
 			std::string label = "##" + element->getUniqueName() + "Amplitude exc.";
-			ImGui::SliderFloat(label.c_str(), &amplitudeExc, 0, 100);
+			ImGui::SliderFloat(label.c_str(), &amplitudeExc, -50, 50);
 			ImGui::SameLine(); ImGui::Text("Amplitude exc.");
 
 			label = "##" + element->getUniqueName() + "Width exc.";
@@ -287,7 +345,7 @@ namespace dnf_composer
 			ImGui::SliderFloat(label.c_str(), &widthInh, 0, 30);
 			ImGui::SameLine(); ImGui::Text("Width inh.");
 
-			label = "##" + element->getUniqueName() + "Amplitude global.";
+			label = "##" + element->getUniqueName() + "Amplitude global";
 			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 10);
 			ImGui::SameLine(); ImGui::Text("Amplitude global");
 
@@ -405,6 +463,177 @@ namespace dnf_composer
 					gfc->setParameters(gfcp);
 				}
 			}
+
+			// Section: Add New Coupling
+			ImGui::Separator();
+
+			// Button to open the modal
+			if (ImGui::Button("Add new coupling"))
+			{
+				ImGui::OpenPopup("Add Coupling Modal");
+			}
+
+			// Modal dialog for adding a coupling
+			if (ImGui::BeginPopupModal("Add Coupling Modal", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+			{
+				static float new_x_i = 0.0f, new_x_j = 0.0f, new_amplitude = 1.0f, new_width = 1.0f;
+
+				ImGui::Text("Specify new coupling parameters:");
+				ImGui::Separator();
+
+				std::string label_new_params = "##New_x_i";
+				ImGui::SliderFloat(label_new_params.c_str(), &new_x_i, 0, static_cast<float>(other_size));
+				ImGui::SameLine(); ImGui::Text("New x_i");
+
+				label_new_params = "##New_x_j";
+				ImGui::SliderFloat(label_new_params.c_str(), &new_x_j, 0, static_cast<float>(size));
+				ImGui::SameLine(); ImGui::Text("New x_j");
+
+				label_new_params = "##NewAmplitude";
+				ImGui::SliderFloat(label_new_params.c_str(), &new_amplitude, 0, 100);
+				ImGui::SameLine(); ImGui::Text("New Amplitude");
+
+				label_new_params = "##NewWidth";
+				ImGui::SliderFloat(label_new_params.c_str(), &new_width, 1, 30);
+				ImGui::SameLine(); ImGui::Text("New Width");
+
+				if (ImGui::Button("Add Coupling", ImVec2(120, 0)))
+				{
+					element::GaussCoupling newCoupling{
+						static_cast<double>(new_x_i),
+							static_cast<double>(new_x_j),
+							static_cast<double>(new_amplitude),
+							static_cast<double>(new_width)
+					};
+					gfc->addCoupling(newCoupling);
+					gfc->init();
+
+					// Reset parameters
+					new_x_i = 0.0f;
+					new_x_j = 0.0f;
+					new_amplitude = 1.0f;
+					new_width = 1.0f;
+
+					ImGui::CloseCurrentPopup();
+				}
+				ImGui::SameLine();
+				if (ImGui::Button("Cancel", ImVec2(120, 0)))
+				{
+					ImGui::CloseCurrentPopup();
+				}
+
+				ImGui::EndPopup();
+			}
 		}
+
+		void ElementWindow::modifyElementOscillatoryKernel(const std::shared_ptr<element::Element>& element)
+		{
+			const auto kernel = std::dynamic_pointer_cast<element::OscillatoryKernel>(element);
+			element::OscillatoryKernelParameters okp = kernel->getParameters();
+
+			auto amplitude = static_cast<float>(okp.amplitude);
+			auto decay = static_cast<float>(okp.decay);
+			auto zeroCrossings = static_cast<float>(okp.zeroCrossings);
+			auto amplitudeGlobal = static_cast<float>(okp.amplitudeGlobal);
+			bool circular = okp.circular;
+			bool normalized = okp.normalized;
+
+			std::string label = "##" + element->getUniqueName() + "Amplitude";
+			ImGui::SliderFloat(label.c_str(), &amplitude, 0, 30);
+			ImGui::SameLine(); ImGui::Text("Amplitude");
+
+			label = "##" + element->getUniqueName() + "Decay";
+			ImGui::SliderFloat(label.c_str(), &decay, 0.001f, 10);
+			ImGui::SameLine(); ImGui::Text("Decay");
+
+			label = "##" + element->getUniqueName() + "Zero crossings";
+			ImGui::SliderFloat(label.c_str(), &zeroCrossings, 0, 1);
+			ImGui::SameLine(); ImGui::Text("Zero crossings");
+
+			label = "##" + element->getUniqueName() + "Amplitude global";
+			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 0);
+			ImGui::SameLine(); ImGui::Text("Amplitude global");
+
+			label = "##" + element->getUniqueName() + "Circular";
+			ImGui::Checkbox(label.c_str(), &circular);
+			ImGui::SameLine(); ImGui::Text("Circular");
+
+			label = "##" + element->getUniqueName() + "Normalized";
+			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &normalized);
+			ImGui::SameLine(); ImGui::Text("Normalized");
+
+
+			static constexpr double epsilon = 1e-6;
+			if (std::abs(amplitude - static_cast<float>(okp.amplitude)) > epsilon ||
+								std::abs(decay - static_cast<float>(okp.decay)) > epsilon ||
+								std::abs(zeroCrossings - static_cast<float>(okp.zeroCrossings)) > epsilon ||
+								std::abs(amplitudeGlobal - static_cast<float>(okp.amplitudeGlobal)) > epsilon ||
+								circular != okp.circular ||
+								normalized != okp.normalized)
+			{
+				okp.amplitude = amplitude;
+				okp.decay = decay;
+				okp.zeroCrossings = zeroCrossings;
+				okp.amplitudeGlobal = amplitudeGlobal;
+				okp.circular = circular;
+				okp.normalized = normalized;
+				kernel->setParameters(okp);
+			}
+		}
+
+		void ElementWindow::modifyElementAsymmetricGaussKernel(const std::shared_ptr<element::Element>& element)
+		{
+			const auto kernel = std::dynamic_pointer_cast<element::AsymmetricGaussKernel>(element);
+			element::AsymmetricGaussKernelParameters agkp = kernel->getParameters();
+
+			auto amplitude = static_cast<float>(agkp.amplitude);
+			auto width = static_cast<float>(agkp.width);
+			auto amplitudeGlobal = static_cast<float>(agkp.amplitudeGlobal);
+			auto timeShift = static_cast<float>(agkp.timeShift);
+			bool circular = agkp.circular;
+			bool normalized = agkp.normalized;
+
+			std::string label = "##" + element->getUniqueName() + "Amplitude";
+			ImGui::SliderFloat(label.c_str(), &amplitude, -30, 30);
+			ImGui::SameLine(); ImGui::Text("Amplitude");
+
+			label = "##" + element->getUniqueName() + "Width";
+			ImGui::SliderFloat(label.c_str(), &width, 0, 30);
+			ImGui::SameLine(); ImGui::Text("Width");
+
+			label = "##" + element->getUniqueName() + "Amplitude global";
+			ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 10);
+			ImGui::SameLine(); ImGui::Text("Amplitude global");
+
+			label = "##" + element->getUniqueName() + "Time shift";
+			ImGui::SliderFloat(label.c_str(), &timeShift, -10, 10);
+			ImGui::SameLine(); ImGui::Text("Time shift");
+
+			label = "##" + element->getUniqueName() + "Circular";
+			ImGui::Checkbox(label.c_str(), &circular);
+			ImGui::SameLine(); ImGui::Text("Circular");
+
+			label = "##" + element->getUniqueName() + "Normalized";
+			ImGui::SameLine(); ImGui::Checkbox(label.c_str(), &normalized);
+			ImGui::SameLine(); ImGui::Text("Normalized");
+
+			static constexpr double epsilon = 1e-6;
+			if (std::abs(amplitude - static_cast<float>(agkp.amplitude)) > epsilon ||
+								std::abs(width - static_cast<float>(agkp.width)) > epsilon ||
+								std::abs(amplitudeGlobal - static_cast<float>(agkp.amplitudeGlobal)) > epsilon ||
+								std::abs(timeShift - static_cast<float>(agkp.timeShift)) > epsilon ||
+								circular != agkp.circular ||
+								normalized != agkp.normalized)
+			{
+				agkp.amplitude = amplitude;
+				agkp.width = width;
+				agkp.amplitudeGlobal = amplitudeGlobal;
+				agkp.timeShift = timeShift;
+				agkp.circular = circular;
+				agkp.normalized = normalized;
+				kernel->setParameters(agkp);
+			}
+		}
+
 	}
 }

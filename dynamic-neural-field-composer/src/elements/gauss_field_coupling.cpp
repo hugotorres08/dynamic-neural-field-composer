@@ -66,7 +66,7 @@ namespace dnf_composer
 		std::string GaussFieldCoupling::toString() const
 		{
 			std::string result = "Gauss field coupling element\n";
-			result += commonParameters.toString();
+			result += commonParameters.toString() + '\n';
 			result += parameters.toString();
 			return result;
 		}
@@ -118,7 +118,7 @@ namespace dnf_composer
 			{
 				const std::string logMessage = "Incorrect number of inputs for gauss field coupling '"
 					+ commonParameters.identifiers.uniqueName + "'. Should be 1, is " + std::to_string(inputs.size()) + ".";
-				log(tools::logger::LogLevel::ERROR, logMessage);
+				log(tools::logger::LogLevel::WARNING, logMessage);
 				return;
 			}
 
@@ -126,7 +126,7 @@ namespace dnf_composer
 			{
 				const std::string logMessage = "Incorrect input type for field coupling '"
 					+ commonParameters.identifiers.uniqueName + "'. Should be a neural field, is " + ElementLabelToString.at(inputs.begin()->first->getLabel()) + ".";
-				log(tools::logger::LogLevel::ERROR, logMessage);
+				log(tools::logger::LogLevel::WARNING, logMessage);
 				return;
 			}
 

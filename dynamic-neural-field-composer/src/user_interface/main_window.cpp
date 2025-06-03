@@ -1,5 +1,7 @@
 #include "user_interface/main_window.h"
 
+#include <imgui-platform-kit/themes.h>
+
 namespace dnf_composer::user_interface
 {
 	MainWindow::MainWindow(const std::shared_ptr<Simulation>& simulation)
@@ -74,6 +76,38 @@ namespace dnf_composer::user_interface
 
             if (ImGui::BeginMenu("Settings"))
             {
+                static char newIdentifier[128] = "";   // Buffer for editing the identifier
+                static bool initialized = false;      // Flag to track initialization
+
+                if (!initialized)
+                {
+                    strncpy_s(newIdentifier, simulation->getIdentifier().c_str(), sizeof(newIdentifier));
+                    initialized = true;
+                }
+
+                ImGui::Text("Simulation Identifier:");
+                ImGui::InputText("##inline_identifier", newIdentifier, sizeof(newIdentifier));
+
+                ImGui::SameLine();
+                if (ImGui::Button("Save##menu_identifier"))
+                {
+                    simulation->setUniqueIdentifier(newIdentifier);
+                }
+
+                ImGui::Separator();
+
+                static auto deltaT = static_cast<float>(simulation->getDeltaT());
+                ImGui::Text("Time Step (deltaT): ");
+                ImGui::SliderFloat("##menu_deltaT_slider", &deltaT, 0.001f, 25.0, "%.3f");
+                if (ImGui::IsItemDeactivatedAfterEdit())
+                    simulation->setDeltaT(deltaT);
+
+                ImGui::Separator();
+
+                ImGui::Text("Current Time (t): ");
+                ImGui::SameLine();
+                ImGui::Text("%.3f", simulation->getT());
+
                 ImGui::EndMenu();
             }
 
@@ -104,6 +138,8 @@ namespace dnf_composer::user_interface
                     &advancedSettingsFlags.showToolStyleEditor);
                 ImGui::MenuItem("About Dear ImGui", nullptr,
                     &advancedSettingsFlags.showToolAbout);
+                ImGui::MenuItem("Dear ImGui Kit Style Editor", nullptr,
+                    &advancedSettingsFlags.showImGuiKitStyleEditor);
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
@@ -161,6 +197,8 @@ namespace dnf_composer::user_interface
 		}
         if (advancedSettingsFlags.showToolAbout)
 			ImGui::ShowAboutWindow(&advancedSettingsFlags.showToolAbout);
+        if (advancedSettingsFlags.showImGuiKitStyleEditor)
+			imgui_kit::showImGuiKitThemeSelector(&advancedSettingsFlags.showImGuiKitStyleEditor);
     }
 
     void MainWindow::handleShortcuts()

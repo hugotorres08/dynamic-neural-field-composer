@@ -55,15 +55,18 @@ namespace dnf_composer
 
 			std::string toString() const override
 			{
-				std::string result = "Lateral interactions kernel parameters\n";
-				result += "Width excitation: " + std::to_string(widthExc) + "\n";
-				result += "Amplitude excitation: " + std::to_string(amplitudeExc) + "\n";
-				result += "Width inhibition: " + std::to_string(widthInh) + "\n";
-				result += "Amplitude inhibition: " + std::to_string(amplitudeInh) + "\n";
-				result += "Amplitude global: " + std::to_string(amplitudeGlobal) + "\n";
-				result += "Circular: " + std::to_string(circular) + "\n";
-				result += "Normalized: " + std::to_string(normalized) + "\n";
-				return result;
+				std::ostringstream result;
+				result << std::fixed << std::setprecision(2);
+				result << "Parameters: ["
+					<< "Width exc.: " << widthExc << ", "
+					<< "Amplitude exc.: " << amplitudeExc << ", "
+					<< "Width inh.: " << widthInh << ", "
+					<< "Amplitude inh.: " << amplitudeInh << ", "
+					<< "Amplitude glob.: " << amplitudeGlobal << ", "
+					<< "Circular: " << (circular ? "true" : "false") << ", "
+					<< "Normalized: " << (normalized ? "true" : "false")
+					<< "]";
+				return result.str();
 			}
 		};
 

@@ -28,8 +28,8 @@ namespace dnf_composer
 	}
 
 
-	LinePlot::LinePlot(const PlotCommonParameters& parameters, const LinePlotParameters& linePlotParameters, const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
-		: Plot(parameters, data, legends), linePlotParameters(linePlotParameters)
+	LinePlot::LinePlot(const PlotCommonParameters& parameters, const LinePlotParameters& linePlotParameters)
+		: Plot(parameters), linePlotParameters(linePlotParameters)
 	{
 		if (commonParameters.type != PlotType::LINE_PLOT)
 			throw std::invalid_argument("LinePlot: parameters.plotType must be PlotType::Line.");
@@ -61,15 +61,11 @@ namespace dnf_composer
 		result << "Plot: { ";
 		result << "Unique identifier: " << uniqueIdentifier << ", ";
 		result << commonParameters.toString() << ", ";
-		result << "Data*: [ ";
-		for (auto& d : data)
-			result << reinterpret_cast<void*>(d) << ", ";
-		result << " ] }";
 		result << linePlotParameters.toString();
 		return result.str();
 	}
 
-	void LinePlot::render()
+	void LinePlot::render(const std::vector<std::vector<double>*>& data, const std::vector<std::string>& legends)
 	{
         static constexpr double safeMargin = 0.01;
 		bool whereDimensionsChangedByUser = false;
@@ -208,11 +204,11 @@ namespace dnf_composer
             }
         }
 
-        ImPlot::SetupLegend(ImPlotLocation_South, ImPlotLegendFlags_Horizontal);
+        ImPlot::SetupLegend(ImPlotLocation_SouthWest, ImPlotLegendFlags_None);
 
 		for (size_t j = 0; j < data.size(); ++j) 
 		{
-            std::string label = commonParameters.annotations.legends[j];
+			const std::string& label = legends[j];
             const std::vector<double>& line_data = *data[j];
 
             std::vector<double> shiftedXValues(line_data.size());
@@ -223,7 +219,8 @@ namespace dnf_composer
 
             ImPlot::PlotLine(label.c_str(), shiftedXValues.data(), line_data.data(), static_cast<int>(line_data.size()));
         }
-        ImPlot::EndPlot();
+
+		ImPlot::EndPlot();
 	}
 
 }

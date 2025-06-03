@@ -21,7 +21,6 @@ namespace dnf_composer
 		{LearningRule::HEBB, "Hebb"},
 		{LearningRule::OJA, "Oja"},
 		{LearningRule::DELTA, "Delta"}
-
 	};
 
 	namespace element
@@ -42,14 +41,28 @@ namespace dnf_composer
 				learningRate(learningRate), isLearningActive(false)
 			{}
 
+			bool operator==(const FieldCouplingParameters& other) const
+			{
+				constexpr double epsilon = 1e-6;
+
+				return std::abs(inputFieldDimensions.x_max - other.inputFieldDimensions.x_max) < epsilon &&
+					std::abs(inputFieldDimensions.d_x - other.inputFieldDimensions.d_x) < epsilon &&
+					learningRule == other.learningRule &&
+					std::abs(scalar - other.scalar) < epsilon &&
+					std::abs(learningRate - other.learningRate) < epsilon;
+			}
+
 			std::string toString() const override
 			{
-				std::string result = "Field coupling parameters\n";
-				result += "Input field dimensions: " + inputFieldDimensions.toString() + "\n";
-				result += "Learning rule: " + LearningRuleToString.at(learningRule) + "\n";
-				result += "Learning rate: " + std::to_string(learningRate) + "\n";
-				result += "Scalar: " + std::to_string(scalar) + "\n";
-				return result;
+				std::ostringstream result;
+				result << std::fixed << std::setprecision(2);
+				result << "Parameters: ["
+					<< "Input field dimensions: " << inputFieldDimensions.toString() << ", "
+					<< "Learning rule: " << LearningRuleToString.at(learningRule) << ", "
+					<< "Learning rate: " << learningRate << ", "
+					<< "Scalar: " << scalar
+					<< "]";
+				return result.str();
 			}
 		};
 
