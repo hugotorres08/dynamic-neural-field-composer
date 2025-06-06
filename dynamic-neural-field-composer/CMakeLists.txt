@@ -288,16 +288,15 @@ imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})
 
+# Example test_plot_control_window
+set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)
+add_executable(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} "examples/test_plot_control_window.cpp")
+target_include_directories(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE
+imgui::imgui
+imgui-platform-kit
+${CMAKE_PROJECT_NAME})
 
-## Example test_plot_control_window
-#set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)
-#add_executable(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} "examples/test_plot_control_window.cpp")
-#target_include_directories(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE include)
-#target_link_libraries(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-#
 # Example test_couplings
 set(TEST_COUPLINGS_EXAMPLE t-couplings-example)
 add_executable(${TEST_COUPLINGS_EXAMPLE} "examples/test_couplings.cpp")
@@ -306,30 +305,30 @@ target_link_libraries(${TEST_COUPLINGS_EXAMPLE} PRIVATE
 imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})
-#
-## Example test_factory
-#set(TEST_FACTORY_EXAMPLE t-factory-example)
-#add_executable(${TEST_FACTORY_EXAMPLE} "examples/test_factory.cpp")
-#target_include_directories(${TEST_FACTORY_EXAMPLE} PRIVATE include)
-#target_link_libraries(${TEST_FACTORY_EXAMPLE} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-#
-## Example test_nodegraph
-#set(TEST_NODEGRAPH_EXAMPLE t-nodegraph-example)
-#add_executable(${TEST_NODEGRAPH_EXAMPLE} "examples/test_nodegraph.cpp")
-#target_include_directories(${TEST_NODEGRAPH_EXAMPLE} PRIVATE include)
-#target_link_libraries(${TEST_NODEGRAPH_EXAMPLE} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
-#
-## Example test_simulation
-#set(TEST_SIMULATION_EXAMPLE t-simulation-example)
-#add_executable(${TEST_SIMULATION_EXAMPLE} "examples/test_simulation.cpp")
-#target_include_directories(${TEST_SIMULATION_EXAMPLE} PRIVATE include)
-#target_link_libraries(${TEST_SIMULATION_EXAMPLE} PRIVATE 
-#imgui::imgui
-#imgui-platform-kit 
-#${CMAKE_PROJECT_NAME})
+
+# Example test_factory
+set(TEST_FACTORY_EXAMPLE t-factory-example)
+add_executable(${TEST_FACTORY_EXAMPLE} "examples/test_factory.cpp")
+target_include_directories(${TEST_FACTORY_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_FACTORY_EXAMPLE} PRIVATE
+imgui::imgui
+imgui-platform-kit
+${CMAKE_PROJECT_NAME})
+
+# Example test_nodegraph
+set(TEST_NODEGRAPH_EXAMPLE t-nodegraph-example)
+add_executable(${TEST_NODEGRAPH_EXAMPLE} "examples/test_nodegraph.cpp")
+target_include_directories(${TEST_NODEGRAPH_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_NODEGRAPH_EXAMPLE} PRIVATE
+imgui::imgui
+imgui-platform-kit
+${CMAKE_PROJECT_NAME})
+
+# Example test_simulation
+set(TEST_SIMULATION_EXAMPLE t-simulation-example)
+add_executable(${TEST_SIMULATION_EXAMPLE} "examples/test_simulation.cpp")
+target_include_directories(${TEST_SIMULATION_EXAMPLE} PRIVATE include)
+target_link_libraries(${TEST_SIMULATION_EXAMPLE} PRIVATE
+imgui::imgui
+imgui-platform-kit
+${CMAKE_PROJECT_NAME})

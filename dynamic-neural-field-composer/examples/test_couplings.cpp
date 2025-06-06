@@ -14,7 +14,7 @@ int main()
 	{
 		using namespace dnf_composer;
 
-		const auto simulation = std::make_shared<Simulation>("default", 25.0, 0.0, 0.0);
+		const auto simulation = std::make_shared<Simulation>("t-couplings-example", 1.0, 0.0, 0.0);
 		const auto visualization = std::make_shared<Visualization>(simulation);
 		const Application app{ simulation, visualization };
 
@@ -37,10 +37,10 @@ int main()
 			element::MexicanHatKernelParameters{});
 		const auto nn_1 = factory.createElement(element::NORMAL_NOISE,
 			element::ElementCommonParameters{element::ElementIdentifiers{"normal noise stkl past field"}, input_dimensions},
-			element::NormalNoiseParameters{});
+			element::NormalNoiseParameters{0.05});
 		const auto gs_1 = factory.createElement(element::GAUSS_STIMULUS,
 			element::ElementCommonParameters{element::ElementIdentifiers{"stimulus stkl past field"}, input_dimensions},
-			element::GaussStimulusParameters{});
+			element::GaussStimulusParameters{5, 15, 20});
 
 		const element::ElementDimensions output_dimensions{280, 1.0};
 		const auto nf_2 = factory.createElement(element::NEURAL_FIELD,
@@ -51,10 +51,10 @@ int main()
 			element::GaussKernelParameters{});
 		const auto nn_2 = factory.createElement(element::NORMAL_NOISE,
 			element::ElementCommonParameters{element::ElementIdentifiers{"normal noise stkl present field"}, output_dimensions},
-			element::NormalNoiseParameters{});
+			element::NormalNoiseParameters{0.05});
 		const auto gs_2 = factory.createElement(element::GAUSS_STIMULUS,
 			element::ElementCommonParameters{element::ElementIdentifiers{"stimulus stkl present field"}, output_dimensions},
-			element::GaussStimulusParameters{});
+			element::GaussStimulusParameters{5, -15, 40});
 		const auto fc_1 = factory.createElement(element::FIELD_COUPLING,
 			element::ElementCommonParameters{element::ElementIdentifiers{"coupling past-present"}, output_dimensions},
 			element::FieldCouplingParameters{input_dimensions});
@@ -70,10 +70,10 @@ int main()
 			element::MexicanHatKernelParameters{});
 		const auto nn_3 = factory.createElement(element::NORMAL_NOISE,
 			element::ElementCommonParameters{ element::ElementIdentifiers{"normal noise stkl next field"}, input_dimensions },
-			element::NormalNoiseParameters{});
+			element::NormalNoiseParameters{0.05});
 		const auto gs_3 = factory.createElement(element::GAUSS_STIMULUS,
 			element::ElementCommonParameters{ element::ElementIdentifiers{"stimulus stkl next field"}, input_dimensions },
-			element::GaussStimulusParameters{});
+			element::GaussStimulusParameters{5, 15, 60});
 		const auto fc_2 = factory.createElement(element::FIELD_COUPLING,
 			element::ElementCommonParameters{ element::ElementIdentifiers{"coupling present-next"}, output_dimensions },
 			element::FieldCouplingParameters{ input_dimensions });
@@ -93,8 +93,6 @@ int main()
 		simulation->addElement(nn_3);
 		simulation->addElement(gs_3);
 		simulation->addElement(fc_2);
-
-
 
 		nf_1->addInput(mhk_1);
 		mhk_1->addInput(nf_1);

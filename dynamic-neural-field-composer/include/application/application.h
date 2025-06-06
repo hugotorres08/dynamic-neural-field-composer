@@ -36,7 +36,7 @@ namespace dnf_composer
 		std::shared_ptr<imgui_kit::UserInterface> gui;
 		bool guiActive;
 	public:
-		Application(const std::shared_ptr<Simulation>& simulation = nullptr, const std::shared_ptr<Visualization>& visualization = nullptr);
+		explicit Application(const std::shared_ptr<Simulation>& simulation = nullptr, const std::shared_ptr<Visualization>& visualization = nullptr);
 
 		void init() const;
 		void step() const;
@@ -66,12 +66,14 @@ namespace dnf_composer
 		}
 
 		void toggleGUI();
-		bool hasGUIBeenClosed() const;
-		bool isGUIActive() const;
+		[[nodiscard]] bool hasGUIBeenClosed() const;
+		[[nodiscard]] bool isGUIActive() const;
 
 		~Application() = default;
 	private:
 		void setGUIParameters();
+		void loadImGuiIniFile() const;
+		static void enableKeyboardShortcuts();
 	};
 }
 
