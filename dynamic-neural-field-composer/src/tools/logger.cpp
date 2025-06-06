@@ -17,6 +17,7 @@ namespace dnf_composer
                 : logLevel(level), outputMode(mode)
             {}
 
+
             void Logger::log(const std::string& message) const
             {
                 if (logLevel < Logger::minLogLevel)
@@ -31,34 +32,42 @@ namespace dnf_composer
 
                 const std::string levelStr = getLogLevelText(logLevel);
                 const std::string prefixStr = "<dnf-composer> " + levelStr;
-                std::ostringstream oss;
-                const std::string finalMessage = oss.str();
-                std::string colorCode;
-
                 const ImVec4 color = getLogLevelColorCodeGui(logLevel);
+
                 switch (outputMode)
                 {
                 case LogOutputMode::ALL:
-                    colorCode = getLogLevelColorCodeCmd(logLevel);
-                    oss << colorCode << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] "<< prefixStr << " " << message;
-                    log_cmd(oss.str());
-                    std::ostringstream().swap(oss); // swap m with a default constructed stringstream
-                    oss << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] "<< prefixStr << " "  << " " << message;
-                    log_ui(color, oss.str());
+                    {
+                        // Console output
+                        std::ostringstream consoleOss;
+                        std::string colorCode = getLogLevelColorCodeCmd(logLevel);
+                        consoleOss << colorCode << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] " << prefixStr << " " << message;
+                        log_cmd(consoleOss.str());
+
+                        // GUI output (separate stringstream)
+                        std::ostringstream guiOss;
+                        guiOss << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] " << prefixStr << " " << message;
+                        log_ui(color, guiOss.str());
+                    }
                     break;
                 case LogOutputMode::CONSOLE:
-                    colorCode = getLogLevelColorCodeCmd(logLevel);
-                    oss << colorCode << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] " << prefixStr << " " << message;
-                    log_cmd(oss.str());
+                    {
+                        std::ostringstream oss;
+                        std::string colorCode = getLogLevelColorCodeCmd(logLevel);
+                        oss << colorCode << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] " << prefixStr << " " << message;
+                        log_cmd(oss.str());
+                    }
                     break;
                 case LogOutputMode::GUI:
-                    oss << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] " << prefixStr << " " <<  " " << message;
-                    log_ui(color, oss.str());
+                    {
+                        std::ostringstream oss;
+                        oss << "[" << std::put_time(&buf, "%Y-%m-%d %X") << "] " << prefixStr << " " << message;
+                        log_ui(color, oss.str());
+                    }
                     break;
                 default:
                     break;
                 }
-
             }
 
             void Logger::log_cmd(const std::string& message)
