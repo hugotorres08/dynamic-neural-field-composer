@@ -54,7 +54,7 @@ int main()
 			element::NormalNoiseParameters{0.05});
 		const auto gs_2 = factory.createElement(element::GAUSS_STIMULUS,
 			element::ElementCommonParameters{element::ElementIdentifiers{"stimulus stkl present field"}, output_dimensions},
-			element::GaussStimulusParameters{5, -15, 40});
+			element::GaussStimulusParameters{5, 15, 40});
 		const auto fc_1 = factory.createElement(element::FIELD_COUPLING,
 			element::ElementCommonParameters{element::ElementIdentifiers{"coupling past-present"}, output_dimensions},
 			element::FieldCouplingParameters{input_dimensions});
