@@ -9,6 +9,7 @@
 #include "exceptions/exception.h"
 #include "simulation/simulation.h"
 #include "visualization/visualization.h"
+#include "user_interface/main_window.h"
 
 namespace dnf_composer
 {
@@ -34,13 +35,22 @@ namespace dnf_composer
 		std::shared_ptr<Simulation> simulation;
 		std::shared_ptr<Visualization> visualization;
 		std::shared_ptr<imgui_kit::UserInterface> gui;
+		std::unique_ptr<user_interface::MainWindow> mainWindow;
+
 		bool guiActive;
+		bool useFixedLayout;
 	public:
-		explicit Application(const std::shared_ptr<Simulation>& simulation = nullptr, const std::shared_ptr<Visualization>& visualization = nullptr);
+		explicit Application(const std::shared_ptr<Simulation>& simulation = nullptr,
+			const std::shared_ptr<Visualization>& visualization = nullptr);
 
 		void init() const;
 		void step() const;
 		void close() const;
+
+		void setFixedLayout(bool enabled) { useFixedLayout = enabled; }
+		bool isUsingFixedLayout() const { return useFixedLayout; }
+
+		user_interface::MainWindow* getMainWindow() const { return mainWindow.get(); }
 
 		// For window types that do not require Simulation* or Visualization* arguments
 		template<typename WindowType, typename... Args,
