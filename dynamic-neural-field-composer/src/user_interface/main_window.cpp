@@ -93,8 +93,9 @@ namespace dnf_composer::user_interface
 
                 if (!initialized)
                 {
-                    strncpy_s(newIdentifier, simulation->getIdentifier().c_str(), sizeof(newIdentifier));
-                    initialized = true;
+                    //strncpy_s(newIdentifier, simulation->getIdentifier().c_str(), sizeof(newIdentifier));
+					snprintf(newIdentifier, sizeof(newIdentifier), "%s", simulation->getIdentifier().c_str());
+                	initialized = true;
                 }
 
                 ImGui::Text("Simulation Identifier");
@@ -201,19 +202,19 @@ namespace dnf_composer::user_interface
 				{
 					simulation->save(path);
                     fileFlags.showSaveSimulationDialog = false;
-					strcpy_s(path, "");
+                	snprintf(path, sizeof(path), "%s", "");
 				}
                 else if (fileFlags.showOpenSimulationDialog)
                 {
                     simulation->read(path);
                     fileFlags.showOpenSimulationDialog = false;
-                    strcpy_s(path, "");
+                	snprintf(path, sizeof(path), "%s", "");
                 }
                 else if (fileFlags.showOpenLayoutDialog)
                 {
                     handleOpenLayoutDialog(path);
 					fileFlags.showOpenLayoutDialog = false;
-					strcpy_s(path, "");
+                	snprintf(path, sizeof(path), "%s", "");
                 }
 			}
         }

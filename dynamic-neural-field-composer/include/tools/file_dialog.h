@@ -7,6 +7,7 @@
 #include <time.h>
 #include <filesystem>
 #include <sstream>
+#include "utils.h"
 
 namespace FileDialog {
 
@@ -241,7 +242,11 @@ namespace FileDialog {
 				std::time_t tt = std::chrono::system_clock::to_time_t(st);
 
 				std::tm mt;
-				localtime_s(&mt, &tt);
+				if (!dnf_composer::tools::utils::safe_localtime(&tt, &mt)) {
+					// Handle error - you might want to throw an exception or use a default
+					// For example:
+					throw std::runtime_error("Failed to convert time");
+				}
 				std::stringstream ss;
 				ss << std::put_time(&mt, "%F %R");
 
@@ -288,7 +293,7 @@ namespace FileDialog {
 				ImGui::InputText("##newfolder", new_folder_name, sizeof(new_folder_name));
 				if (ImGui::Button("Create##1")) {
 					if (strlen(new_folder_name) <= 0) {
-						strcpy_s(new_folder_error, "Folder name can't be empty");
+						snprintf(new_folder_error, sizeof(new_folder_error), "%s", "Folder name can't be empty");
 					}
 					else {
 						std::string new_file_path = file_dialog_current_path + (file_dialog_current_path.back() == '\\' ? "" : "\\") + new_folder_name;
@@ -298,8 +303,8 @@ namespace FileDialog {
 				}
 				ImGui::SameLine();
 				if (ImGui::Button("Cancel##1")) {
-					strcpy_s(new_folder_name, "");
-					strcpy_s(new_folder_error, "");
+					snprintf(new_folder_name, sizeof(new_folder_name), "%s", "");
+					snprintf(new_folder_error, sizeof(new_folder_error), "%s", "");
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::TextColored(ImColor(1.0f, 0.0f, 0.2f, 1.0f), new_folder_error);
@@ -329,7 +334,7 @@ namespace FileDialog {
 				file_dialog_file_select_index = 0;
 				file_dialog_folder_select_index = 0;
 				file_dialog_current_file = "";
-				strcpy_s(file_dialog_error, "");
+				snprintf(file_dialog_error, sizeof(file_dialog_error), "%s", "");
 				initial_path_set = false;
 				file_dialog_open = false;
 				};
@@ -341,23 +346,28 @@ namespace FileDialog {
 			if (ImGui::Button("Choose")) {
 				if (type == FileDialogType::SelectFolder) {
 					if (file_dialog_current_folder == "") {
-						strcpy_s(file_dialog_error, "Error: You must select a folder!");
+						snprintf(file_dialog_error, sizeof(file_dialog_error), "%s", "Error: You must select a folder!");
 					}
 					else {
 						auto path = file_dialog_current_path + (file_dialog_current_path.back() == '\\' ? "" : "\\") + file_dialog_current_file;
-						strcpy_s(buffer, path.length() + 1, path.c_str());
-						strcpy_s(file_dialog_error, "");
+						snprintf(buffer, path.length() + 1, "%s", path.c_str());
+						//strcpy_s(buffer, path.length() + 1, path.c_str());
+						snprintf(file_dialog_error, sizeof(file_dialog_error), "%s", "");
+						//strcpy_s(file_dialog_error, "");
 						reset_everything();
 					}
 				}
 				else if (type == FileDialogType::OpenFile) {
 					if (file_dialog_current_file == "") {
-						strcpy_s(file_dialog_error, "Error: You must select a file!");
+						snprintf(file_dialog_error, sizeof(file_dialog_error), "%s", "Error: You must select a file!");
+						//strcpy_s(file_dialog_error, "Error: You must select a file!");
 					}
 					else {
 						auto path = file_dialog_current_path + (file_dialog_current_path.back() == '\\' ? "" : "\\") + file_dialog_current_file;
-						strcpy_s(buffer, path.length() + 1, path.c_str());
-						strcpy_s(file_dialog_error, "");
+						snprintf(buffer, path.length() + 1, "%s", path.c_str());
+						//strcpy_s(buffer, path.length() + 1, path.c_str());
+						snprintf(file_dialog_error, sizeof(file_dialog_error), "%s", "");
+						//strcpy_s(file_dialog_error, "");
 						reset_everything();
 					}
 				}

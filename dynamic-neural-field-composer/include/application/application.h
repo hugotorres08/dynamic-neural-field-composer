@@ -1,10 +1,10 @@
 #pragma once
 
 #include <type_traits>
-#if defined(_WIN32)
+//#if defined(_WIN32)
 #include <imgui-platform-kit/user_interface.h>
-#elif defined(__linux__)
-#endif
+//#elif defined(__linux__)
+//#endif
 
 #include "exceptions/exception.h"
 #include "simulation/simulation.h"
