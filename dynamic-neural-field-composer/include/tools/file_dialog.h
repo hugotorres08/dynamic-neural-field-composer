@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <imgui.h>
@@ -255,13 +256,21 @@ namespace FileDialog {
 			}
 			ImGui::EndChild();
 
-			std::string selected_file_path = file_dialog_current_path
-				+ (file_dialog_current_path.back() == '\\' ? "" : "\\")
-				+ (file_dialog_current_folder.empty() ? file_dialog_current_folder : file_dialog_current_file);
-			//char* buf = &selected_file_path[0];
+			// Use std::filesystem::path for proper path concatenation
+			std::filesystem::path basePath(file_dialog_current_path);
+			std::filesystem::path selectedPath;
+
+			if (!file_dialog_current_folder.empty()) {
+				selectedPath = basePath / file_dialog_current_folder;
+			} else if (!file_dialog_current_file.empty()) {
+				selectedPath = basePath / file_dialog_current_file;
+			} else {
+				selectedPath = basePath;
+			}
+
+			std::string selected_file_path = selectedPath.string();
+
 			ImGui::PushItemWidth(724);
-			//ImGui::InputText("##text", buf, sizeof(buf), ImGuiInputTextFlags_ReadOnly);
-			//ImGui::LabelText("##text", buf, sizeof(buf));
 
 			ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6);
 
@@ -296,8 +305,9 @@ namespace FileDialog {
 						snprintf(new_folder_error, sizeof(new_folder_error), "%s", "Folder name can't be empty");
 					}
 					else {
-						std::string new_file_path = file_dialog_current_path + (file_dialog_current_path.back() == '\\' ? "" : "\\") + new_folder_name;
-						std::filesystem::create_directory(new_file_path);
+						// Use std::filesystem::path for proper path concatenation
+						std::filesystem::path new_folder_path = std::filesystem::path(file_dialog_current_path) / new_folder_name;
+						std::filesystem::create_directory(new_folder_path);
 						ImGui::CloseCurrentPopup();
 					}
 				}
@@ -318,7 +328,9 @@ namespace FileDialog {
 				ImGui::TextUnformatted(file_dialog_current_folder.c_str());
 				ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 6);
 				if (ImGui::Button("Yes")) {
-					std::filesystem::remove(file_dialog_current_path + (file_dialog_current_path.back() == '\\' ? "" : "\\") + file_dialog_current_folder);
+					// Use std::filesystem::path for proper path concatenation
+					std::filesystem::path folder_to_delete = std::filesystem::path(file_dialog_current_path) / file_dialog_current_folder;
+					std::filesystem::remove(folder_to_delete);
 					ImGui::CloseCurrentPopup();
 				}
 				ImGui::SameLine();
@@ -349,25 +361,24 @@ namespace FileDialog {
 						snprintf(file_dialog_error, sizeof(file_dialog_error), "%s", "Error: You must select a folder!");
 					}
 					else {
-						auto path = file_dialog_current_path + (file_dialog_current_path.back() == '\\' ? "" : "\\") + file_dialog_current_file;
+						// Use std::filesystem::path for proper path concatenation
+						std::filesystem::path folder_path = std::filesystem::path(file_dialog_current_path) / file_dialog_current_folder;
+						std::string path = folder_path.string();
 						snprintf(buffer, path.length() + 1, "%s", path.c_str());
-						//strcpy_s(buffer, path.length() + 1, path.c_str());
 						snprintf(file_dialog_error, sizeof(file_dialog_error), "%s", "");
-						//strcpy_s(file_dialog_error, "");
 						reset_everything();
 					}
 				}
 				else if (type == FileDialogType::OpenFile) {
 					if (file_dialog_current_file == "") {
 						snprintf(file_dialog_error, sizeof(file_dialog_error), "%s", "Error: You must select a file!");
-						//strcpy_s(file_dialog_error, "Error: You must select a file!");
 					}
 					else {
-						auto path = file_dialog_current_path + (file_dialog_current_path.back() == '\\' ? "" : "\\") + file_dialog_current_file;
+						// Use std::filesystem::path for proper path concatenation
+						std::filesystem::path file_path = std::filesystem::path(file_dialog_current_path) / file_dialog_current_file;
+						std::string path = file_path.string();
 						snprintf(buffer, path.length() + 1, "%s", path.c_str());
-						//strcpy_s(buffer, path.length() + 1, path.c_str());
 						snprintf(file_dialog_error, sizeof(file_dialog_error), "%s", "");
-						//strcpy_s(file_dialog_error, "");
 						reset_everything();
 					}
 				}

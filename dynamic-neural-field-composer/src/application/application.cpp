@@ -73,7 +73,11 @@ namespace dnf_composer
 												{std::string(PROJECT_DIR) + "/resources/fonts/JetBrainsMono-Light.ttf", 16},
 			});
 		const StyleParameters styleParams{ Theme::GreenLeaf };
+#ifdef _WIN32
 		const IconParameters iconParams{ std::string(PROJECT_DIR) + "/resources/icons/icon.ico" };
+#else
+		const IconParameters iconParams{ std::string(PROJECT_DIR) + "/resources/icons/icon.png" };
+#endif
 		const BackgroundImageParameters bgParams{ std::string(PROJECT_DIR) + "/resources/images/background.png", ImageFitType::ZOOM_TO_FIT };
 		const UserInterfaceParameters guiParameters{ winParams, fontParams, styleParams, iconParams, bgParams };
 		gui = std::make_shared<UserInterface>(guiParameters);
