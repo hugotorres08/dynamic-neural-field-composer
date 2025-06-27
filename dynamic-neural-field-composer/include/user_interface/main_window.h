@@ -41,12 +41,6 @@ namespace dnf_composer::user_interface
 		AdvancedSettingsFlags advancedSettingsFlags;
 		FileFlags fileFlags;
 		InterfaceFlags interfaceFlags;
-
-		// Dialog states
-		std::unique_ptr<LayoutManager> layoutManager;
-		bool showOpenLayoutDialog;
-		bool showSaveLayoutDialog;
-		char layoutFilename[256];
 	public:
 		explicit MainWindow(const std::shared_ptr<Simulation>& simulation);
 		MainWindow(const MainWindow&) = delete;
@@ -55,14 +49,10 @@ namespace dnf_composer::user_interface
 		MainWindow& operator=(MainWindow&&) = delete;
 
 		void render() override;
-		LayoutManager* getLayoutManager() const { return layoutManager.get(); }
 		~MainWindow() override = default;
 	private:
 		static void renderFullscreenWindow();
 		void renderMainMenuBar();
-		void renderPanels();
-		void handleLayoutDialogs();
-		void setupDockspace();
 		void renderFileWindows();
 		void renderAdvancedSettingsWindows();
 		void handleShortcuts();

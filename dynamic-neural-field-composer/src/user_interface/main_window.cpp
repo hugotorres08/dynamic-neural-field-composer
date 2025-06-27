@@ -5,49 +5,17 @@
 namespace dnf_composer::user_interface
 {
 	MainWindow::MainWindow(const std::shared_ptr<Simulation>& simulation)
-		: simulation(simulation), layoutManager(std::make_unique<LayoutManager>()),
-		  showOpenLayoutDialog(false), showSaveLayoutDialog(false)
-	{
-		strcpy(layoutFilename, "default_layout.json");
-	}
+		: simulation(simulation)
+	{}
 
 
 	void MainWindow::render()
 	{
-  //       renderFullscreenWindow();
-		// renderMainMenuBar();
-  //       renderFileWindows();
-  //       renderAdvancedSettingsWindows();
-  //       handleShortcuts();
-		// Get main viewport
-		ImGuiViewport* viewport = ImGui::GetMainViewport();
-
-		// Update layout manager with main window bounds
-		layoutManager->setMainWindowBounds(viewport->Pos, viewport->Size);
-
-		// Setup fullscreen window
-		ImGui::SetNextWindowPos(viewport->Pos);
-		ImGui::SetNextWindowSize(viewport->Size);
-		ImGui::SetNextWindowViewport(viewport->ID);
-
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
-		window_flags |= ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-
-		bool p_open = true;
-		ImGui::Begin("DNF Composer", &p_open, window_flags);
-		ImGui::PopStyleVar(3);
-
+		renderFullscreenWindow();
 		renderMainMenuBar();
-		renderPanels();
-		handleLayoutDialogs();
-
-		ImGui::End();
+		renderFileWindows();
+		renderAdvancedSettingsWindows();
+		handleShortcuts();
 	}
 
     void MainWindow::renderFullscreenWindow()
@@ -72,12 +40,9 @@ namespace dnf_composer::user_interface
 		// Set window to be behind all other windows
 		//ImGui::SetNextWindowBgAlpha(0.0f); // Make background completely transparent
 
-
         if (ImGui::Begin("Fullscreen window", nullptr, flags))
-        {
-        }
+        {}
         ImGui::End();
-
     }
 
     void MainWindow::renderMainMenuBar()
@@ -124,7 +89,6 @@ namespace dnf_composer::user_interface
 
                 if (!initialized)
                 {
-                    //strncpy_s(newIdentifier, simulation->getIdentifier().c_str(), sizeof(newIdentifier));
 					snprintf(newIdentifier, sizeof(newIdentifier), "%s", simulation->getIdentifier().c_str());
                 	initialized = true;
                 }
@@ -213,34 +177,6 @@ namespace dnf_composer::user_interface
             }
             ImGui::EndMainMenuBar();
         }
-
-		if (ImGui::BeginMenu("View")) {
-			if (ImGui::MenuItem("Simulation Control", nullptr,
-				layoutManager->isPanelVisible("simulation_control"))) {
-				layoutManager->togglePanelVisibility("simulation_control");
-				}
-			if (ImGui::MenuItem("Element Window", nullptr,
-				layoutManager->isPanelVisible("element_window"))) {
-				layoutManager->togglePanelVisibility("element_window");
-				}
-			if (ImGui::MenuItem("Field Metrics", nullptr,
-				layoutManager->isPanelVisible("field_metrics"))) {
-				layoutManager->togglePanelVisibility("field_metrics");
-				}
-			if (ImGui::MenuItem("Node Graph", nullptr,
-				layoutManager->isPanelVisible("node_graph"))) {
-				layoutManager->togglePanelVisibility("node_graph");
-				}
-			if (ImGui::MenuItem("Plot Control", nullptr,
-				layoutManager->isPanelVisible("plot_control"))) {
-				layoutManager->togglePanelVisibility("plot_control");
-				}
-			if (ImGui::MenuItem("Plots Window", nullptr,
-				layoutManager->isPanelVisible("plots_window"))) {
-				layoutManager->togglePanelVisibility("plots_window");
-				}
-			ImGui::EndMenu();
-		}
     }
 
     void MainWindow::renderFileWindows()
@@ -382,77 +318,4 @@ namespace dnf_composer::user_interface
 			log(tools::logger::LogLevel::INFO, "Flexible layout enabled - windows can be moved freely.");
 		}
 	}
-
-	void MainWindow::renderPanels() {
-        // Render simulation control panel
-        if (layoutManager->isPanelVisible("simulation_control")) {
-            layoutManager->beginPanel("simulation_control");
-            // Render simulation control content here
-            ImGui::Text("Simulation Control");
-            if (ImGui::Button("Start")) { /* start simulation */ }
-            if (ImGui::Button("Stop")) { /* stop simulation */ }
-            if (ImGui::Button("Reset")) { /* reset simulation */ }
-            layoutManager->endPanel();
-        }
-
-        // Render element window
-        if (layoutManager->isPanelVisible("element_window")) {
-            layoutManager->beginPanel("element_window");
-            ImGui::Text("Element Window");
-            // Add your element window content here
-            layoutManager->endPanel();
-        }
-
-        // Render field metrics
-        if (layoutManager->isPanelVisible("field_metrics")) {
-            layoutManager->beginPanel("field_metrics");
-            ImGui::Text("Field Metrics");
-            // Add your field metrics content here
-            layoutManager->endPanel();
-        }
-
-        // Render node graph
-        if (layoutManager->isPanelVisible("node_graph")) {
-            layoutManager->beginPanel("node_graph");
-            ImGui::Text("Node Graph");
-            // Add your node graph content here
-            layoutManager->endPanel();
-        }
-
-        // Render plot control
-        if (layoutManager->isPanelVisible("plot_control")) {
-            layoutManager->beginPanel("plot_control");
-            ImGui::Text("Plot Control");
-            // Add your plot control content here
-            layoutManager->endPanel();
-        }
-
-        // Render plots window
-        if (layoutManager->isPanelVisible("plots_window")) {
-            layoutManager->beginPanel("plots_window");
-            ImGui::Text("Plots Window");
-            // Add your plots content here
-            layoutManager->endPanel();
-        }
-    }
-
-    void MainWindow::handleLayoutDialogs() {
-        // Handle open layout dialog
-        if (showOpenLayoutDialog) {
-            FileDialog::ShowFileDialog_s(&showOpenLayoutDialog, layoutFilename,
-                                       FileDialog::FileDialogType::OpenFile);
-            if (!showOpenLayoutDialog && strlen(layoutFilename) > 0) {
-                layoutManager->loadLayout(layoutFilename);
-            }
-        }
-
-        // Handle save layout dialog
-        if (showSaveLayoutDialog) {
-            FileDialog::ShowFileDialog_s(&showSaveLayoutDialog, layoutFilename,
-                                       FileDialog::FileDialogType::OpenFile);
-            if (!showSaveLayoutDialog && strlen(layoutFilename) > 0) {
-                layoutManager->saveLayout(layoutFilename);
-            }
-        }
-    }
 }
