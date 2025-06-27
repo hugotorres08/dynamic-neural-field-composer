@@ -108,7 +108,6 @@ set(user_interface_headers
         "include/user_interface/main_window.h"
         "include/user_interface/widgets.h"
         "include/user_interface/plots_window.h"
-        "include/user_interface/layout_manager.h"
 )
 
 set(header 
@@ -167,7 +166,6 @@ set(src
 
         "src/exceptions/exception.cpp"
 
-        "src/user_interface/layout_manager.cpp"
         "src/user_interface/plot_control_window.cpp"
         "src/user_interface/simulation_window.cpp"
         "src/user_interface/field_metrics_window.cpp"

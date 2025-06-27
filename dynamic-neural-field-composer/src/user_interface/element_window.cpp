@@ -105,7 +105,7 @@ namespace dnf_composer::user_interface
 	}
 
 	void ElementWindow::modifyElementNeuralField(const std::shared_ptr<element::Element>& element)
-	{
+{
 		const auto neuralField = std::dynamic_pointer_cast<element::NeuralField>(element);
 		element::NeuralFieldParameters nfp = neuralField->getParameters();
 
@@ -114,37 +114,53 @@ namespace dnf_composer::user_interface
 		auto stabilityThreshold = static_cast<float>(neuralField->getStabilityThreshold());
 
 		std::string label = "##" + element->getUniqueName() + "Resting level";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &restingLevel, -30.0f, 0.0f);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Resting level input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &restingLevel, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Resting level");
 
 		label = "##" + element->getUniqueName() + "Tau";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &tau, 1.0f, 300.0f);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Tau input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &tau, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Tau");
 
 		// stability threshold
 		label = "##" + element->getUniqueName() + "Stability threshold";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &stabilityThreshold, 0.0f, 2.0f);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Stability threshold input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &stabilityThreshold, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Stability threshold");
 
-		static constexpr double epsilon = 1e-6;
-		if (std::abs(restingLevel - static_cast<float>(nfp.startingRestingLevel)) > epsilon)
-		{
-			nfp.startingRestingLevel = restingLevel;
-			neuralField->setParameters(nfp);
-		}
 
-		if (std::abs(tau - static_cast<float>(nfp.tau)) > epsilon)
-		{
-			nfp.tau = tau;
-			neuralField->setParameters(nfp);
-		}
-
-		if (std::abs(stabilityThreshold - static_cast<float>(neuralField->getStabilityThreshold())) > epsilon)
-		{
-			neuralField->setThresholdForStability(stabilityThreshold);
-		}
-
+	static constexpr double epsilon = 1e-6;
+	if (std::abs(restingLevel - static_cast<float>(nfp.startingRestingLevel)) > epsilon)
+	{
+		nfp.startingRestingLevel = restingLevel;
+		neuralField->setParameters(nfp);
 	}
+
+	if (std::abs(tau - static_cast<float>(nfp.tau)) > epsilon)
+	{
+		nfp.tau = tau;
+		neuralField->setParameters(nfp);
+	}
+
+	if (std::abs(stabilityThreshold - static_cast<float>(neuralField->getStabilityThreshold())) > epsilon)
+	{
+		neuralField->setThresholdForStability(stabilityThreshold);
+	}
+}
+
 
 	void ElementWindow::modifyElementGaussStimulus(const std::shared_ptr<element::Element>& element)
 	{
@@ -158,16 +174,31 @@ namespace dnf_composer::user_interface
 		bool normalized = gsp.normalized;
 
 		std::string label = "##" + element->getUniqueName() + "Amplitude";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &amplitude, 0, 30);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Amplitude input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &amplitude, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Amplitude");
 
 		label = "##" + element->getUniqueName() + "Width";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &width, 0, 30);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Width input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &width, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Width");
 
 		label = "##" + element->getUniqueName() + "Position";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &position, 0,
 		                   static_cast<float>(stimulus->getElementCommonParameters().dimensionParameters.x_max));
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Position input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &position, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Position");
 
 		label = "##" + element->getUniqueName() + "Circular";
@@ -219,11 +250,21 @@ namespace dnf_composer::user_interface
 		}
 
 		label = "##" + element->getUniqueName() + "Learning rate";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &learningRate, 0, 1);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Learning rate input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &learningRate, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Learning rate");
 
 		label = "##" + element->getUniqueName() + "Scalar";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &scalar, -20, 20);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Scalar input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &scalar, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Scalar");
 
 		label = "##" + element->getUniqueName() + "Activate learning";
@@ -281,15 +322,30 @@ namespace dnf_composer::user_interface
 		bool normalized = gkp.normalized;
 
 		std::string label = "##" + element->getUniqueName() + "Amplitude";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &amplitude, -50, 50);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Amplitude input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &amplitude, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Amplitude");
 
 		label = "##" + element->getUniqueName() + "Width";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &width, 0, 30);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Width input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &width, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Width");
 
 		label = "##" + element->getUniqueName() + "Amplitude global";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 10);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Amplitude global input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &amplitudeGlobal, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Amplitude global");
 
 		label = "##" + element->getUniqueName() + "Circular";
@@ -330,23 +386,48 @@ namespace dnf_composer::user_interface
 		bool normalized = mhkp.normalized;
 
 		std::string label = "##" + element->getUniqueName() + "Amplitude exc.";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &amplitudeExc, -50, 50);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Amplitude exc. input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &amplitudeExc, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Amplitude exc.");
 
 		label = "##" + element->getUniqueName() + "Width exc.";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &widthExc, 0, 30);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Width exc. input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &widthExc, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Width exc.");
 
 		label = "##" + element->getUniqueName() + "Amplitude inh.";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &amplitudeInh, 0, 100);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Amplitude inh. input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &amplitudeInh, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Amplitude inh.");
 
 		label = "##" + element->getUniqueName() + "Width inh.";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &widthInh, 0, 30);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Width inh. input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &widthInh, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Width inh.");
 
 		label = "##" + element->getUniqueName() + "Amplitude global";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 10);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Amplitude global input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &amplitudeGlobal, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Amplitude global");
 
 		label = "##" + element->getUniqueName() + "Circular";
@@ -385,8 +466,13 @@ namespace dnf_composer::user_interface
 
 		auto amplitude = static_cast<float>(nnp.amplitude);
 
-		const std::string label = "##" + element->getUniqueName() + "Amplitude";
+		std::string label = "##" + element->getUniqueName() + "Amplitude";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &amplitude, 0, 5);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Amplitude input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &amplitude, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Amplitude");
 
 		static constexpr double epsilon = 1e-6;
@@ -482,18 +568,22 @@ namespace dnf_composer::user_interface
 			ImGui::Separator();
 
 			std::string label_new_params = "##New_x_i";
+			ImGui::SetNextItemWidth(250);
 			ImGui::SliderFloat(label_new_params.c_str(), &new_x_i, 0, static_cast<float>(other_size));
 			ImGui::SameLine(); ImGui::Text("New x_i");
 
 			label_new_params = "##New_x_j";
+			ImGui::SetNextItemWidth(250);
 			ImGui::SliderFloat(label_new_params.c_str(), &new_x_j, 0, static_cast<float>(size));
 			ImGui::SameLine(); ImGui::Text("New x_j");
 
 			label_new_params = "##NewAmplitude";
+			ImGui::SetNextItemWidth(250);
 			ImGui::SliderFloat(label_new_params.c_str(), &new_amplitude, 0, 100);
 			ImGui::SameLine(); ImGui::Text("New Amplitude");
 
 			label_new_params = "##NewWidth";
+			ImGui::SetNextItemWidth(250);
 			ImGui::SliderFloat(label_new_params.c_str(), &new_width, 1, 30);
 			ImGui::SameLine(); ImGui::Text("New Width");
 
@@ -539,19 +629,39 @@ namespace dnf_composer::user_interface
 		bool normalized = okp.normalized;
 
 		std::string label = "##" + element->getUniqueName() + "Amplitude";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &amplitude, 0, 30);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Amplitude input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &amplitude, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Amplitude");
 
 		label = "##" + element->getUniqueName() + "Decay";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &decay, 0.001f, 10);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Decay input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &decay, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Decay");
 
 		label = "##" + element->getUniqueName() + "Zero crossings";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &zeroCrossings, 0, 1);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Zero crossings input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &zeroCrossings, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Zero crossings");
 
 		label = "##" + element->getUniqueName() + "Amplitude global";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 0);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Amplitude global input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &amplitudeGlobal, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Amplitude global");
 
 		label = "##" + element->getUniqueName() + "Circular";
@@ -594,19 +704,39 @@ namespace dnf_composer::user_interface
 		bool normalized = agkp.normalized;
 
 		std::string label = "##" + element->getUniqueName() + "Amplitude";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &amplitude, -30, 30);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Amplitude input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &amplitude, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Amplitude");
 
 		label = "##" + element->getUniqueName() + "Width";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &width, 0, 30);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Width input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &width, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Width");
 
 		label = "##" + element->getUniqueName() + "Amplitude global";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &amplitudeGlobal, -10, 10);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Amplitude global input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &amplitudeGlobal, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Amplitude global");
 
 		label = "##" + element->getUniqueName() + "Time shift";
+		ImGui::SetNextItemWidth(250);
 		ImGui::SliderFloat(label.c_str(), &timeShift, -10, 10);
+		ImGui::SameLine();
+		label = "##" + element->getUniqueName() + "Time shift input";
+		ImGui::SetNextItemWidth(80);
+		ImGui::InputFloat(label.c_str(), &timeShift, 0.0f, 0.0f, "%.3f");
 		ImGui::SameLine(); ImGui::Text("Time shift");
 
 		label = "##" + element->getUniqueName() + "Circular";
