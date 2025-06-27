@@ -252,7 +252,6 @@ namespace dnf_composer::user_interface
 		ImNodeEditor::PinPivotAlignment(ImVec2(1.0f, 0.5f));
 		ImGui::Text("Output");
 		ImNodeEditor::EndPin();
-
 	}
 
 	void NodeGraphWindow::renderElementNodeConnections(const std::shared_ptr<element::Element>& element)
