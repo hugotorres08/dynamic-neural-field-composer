@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.15)
+﻿cmake_minimum_required(VERSION 3.20...3.30)
 
 project(dynamic-neural-field-composer
         DESCRIPTION "A C++ application to simulate Dynamic Neural Field Architectures"
@@ -244,92 +244,28 @@ install(EXPORT ${CMAKE_PROJECT_NAME}Targets DESTINATION ${DNF_COMPOSER_CMAKE_CON
 )
 
 
-# Entry point
-set(ENTRY_POINT entrypoint)
-add_executable(${ENTRY_POINT} "examples/entry.cpp")
-target_include_directories(${ENTRY_POINT} PRIVATE include)
-target_link_libraries(${ENTRY_POINT} PRIVATE 
+# Main launcher
+set(LAUNCHER launcher)
+add_executable(${LAUNCHER} "src/dynamic-neural-field-composer.cpp")
+target_include_directories(${LAUNCHER} PRIVATE include)
+target_link_libraries(${LAUNCHER} PRIVATE
 imgui::imgui
 imgui-platform-kit 
 ${CMAKE_PROJECT_NAME})
 
-# Testbench
-set(TESTBENCH testbench)
-add_executable(${TESTBENCH} "examples/testbench.cpp")
-target_include_directories(${TESTBENCH} PRIVATE include)
-target_link_libraries(${TESTBENCH} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
+# Function to add example executables
+function(add_example_executable target_name source_file)
+    add_executable(${target_name} "examples/${source_file}")
+    target_include_directories(${target_name} PRIVATE include)
+    target_link_libraries(${target_name} PRIVATE
+            imgui::imgui
+            imgui-platform-kit
+            ${CMAKE_PROJECT_NAME})
+endfunction()
 
-# Complementary action selection architecture
-set(COMP_ACTION_SELECTION_ARCH comp_act_selection)
-add_executable(${COMP_ACTION_SELECTION_ARCH} "examples/complementary_action_selection.cpp")
-target_include_directories(${COMP_ACTION_SELECTION_ARCH} PRIVATE include)
-target_link_libraries(${COMP_ACTION_SELECTION_ARCH} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Test asymmetric gauss kernel
-set(TEST_AGK test_agk)
-add_executable(${TEST_AGK} "examples/test_agk.cpp")
-target_include_directories(${TEST_AGK} PRIVATE include)
-target_link_libraries(${TEST_AGK} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Two robot team
-set(TWO_ROBOT_TEAM two_robot_team)
-add_executable(${TWO_ROBOT_TEAM} "examples/two_robot_team.cpp")
-target_include_directories(${TWO_ROBOT_TEAM} PRIVATE include)
-target_link_libraries(${TWO_ROBOT_TEAM} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Example test_plot_control_window
-set(TEST_PLOT_CONTROL_WINDOW_EXAMPLE t-plot_control_window-example)
-add_executable(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} "examples/test_plot_control_window.cpp")
-target_include_directories(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_PLOT_CONTROL_WINDOW_EXAMPLE} PRIVATE
-imgui::imgui
-imgui-platform-kit
-${CMAKE_PROJECT_NAME})
-
-# Example test_couplings
-set(TEST_COUPLINGS_EXAMPLE t-couplings-example)
-add_executable(${TEST_COUPLINGS_EXAMPLE} "examples/test_couplings.cpp")
-target_include_directories(${TEST_COUPLINGS_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_COUPLINGS_EXAMPLE} PRIVATE 
-imgui::imgui
-imgui-platform-kit 
-${CMAKE_PROJECT_NAME})
-
-# Example test_factory
-set(TEST_FACTORY_EXAMPLE t-factory-example)
-add_executable(${TEST_FACTORY_EXAMPLE} "examples/test_factory.cpp")
-target_include_directories(${TEST_FACTORY_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_FACTORY_EXAMPLE} PRIVATE
-imgui::imgui
-imgui-platform-kit
-${CMAKE_PROJECT_NAME})
-
-# Example test_nodegraph
-set(TEST_NODEGRAPH_EXAMPLE t-nodegraph-example)
-add_executable(${TEST_NODEGRAPH_EXAMPLE} "examples/test_nodegraph.cpp")
-target_include_directories(${TEST_NODEGRAPH_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_NODEGRAPH_EXAMPLE} PRIVATE
-imgui::imgui
-imgui-platform-kit
-${CMAKE_PROJECT_NAME})
-
-# Example test_simulation
-set(TEST_SIMULATION_EXAMPLE t-simulation-example)
-add_executable(${TEST_SIMULATION_EXAMPLE} "examples/test_simulation.cpp")
-target_include_directories(${TEST_SIMULATION_EXAMPLE} PRIVATE include)
-target_link_libraries(${TEST_SIMULATION_EXAMPLE} PRIVATE
-imgui::imgui
-imgui-platform-kit
-${CMAKE_PROJECT_NAME})
+# Define all examples
+add_example_executable(ex_comp_act_selection ex_complementary_action_selection.cpp)
+add_example_executable(ex_asymmetric_gauss_kernel ex_asymmetric_gauss_kernel.cpp)
+add_example_executable(ex_two_robot_team ex_two_robot_team.cpp)
+add_example_executable(ex_field_couplings ex_field_couplings.cpp)
+add_example_executable(ex_gauss_and_field_couplings ex_gauss_and_field_couplings.cpp)
