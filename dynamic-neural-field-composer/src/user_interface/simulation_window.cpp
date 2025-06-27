@@ -16,7 +16,7 @@ namespace dnf_composer
 
 		void SimulationWindow::render()
 		{
-			if (ImGui::Begin("Simulation Control"))
+			if (ImGui::Begin("Simulation Control", nullptr, imgui_kit::getGlobalWindowFlags()))
 			{
 				renderSimulationControlButtons();
 				renderSimulationProperties();

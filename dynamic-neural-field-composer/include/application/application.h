@@ -1,14 +1,15 @@
 #pragma once
 
 #include <type_traits>
-#if defined(_WIN32)
+//#if defined(_WIN32)
 #include <imgui-platform-kit/user_interface.h>
-#elif defined(__linux__)
-#endif
+//#elif defined(__linux__)
+//#endif
 
 #include "exceptions/exception.h"
 #include "simulation/simulation.h"
 #include "visualization/visualization.h"
+#include "user_interface/main_window.h"
 
 namespace dnf_composer
 {
@@ -34,13 +35,22 @@ namespace dnf_composer
 		std::shared_ptr<Simulation> simulation;
 		std::shared_ptr<Visualization> visualization;
 		std::shared_ptr<imgui_kit::UserInterface> gui;
+		std::unique_ptr<user_interface::MainWindow> mainWindow;
+
 		bool guiActive;
+		bool useFixedLayout;
 	public:
-		Application(const std::shared_ptr<Simulation>& simulation = nullptr, const std::shared_ptr<Visualization>& visualization = nullptr);
+		explicit Application(const std::shared_ptr<Simulation>& simulation = nullptr,
+			const std::shared_ptr<Visualization>& visualization = nullptr);
 
 		void init() const;
 		void step() const;
 		void close() const;
+
+		void setFixedLayout(bool enabled) { useFixedLayout = enabled; }
+		bool isUsingFixedLayout() const { return useFixedLayout; }
+
+		user_interface::MainWindow* getMainWindow() const { return mainWindow.get(); }
 
 		// For window types that do not require Simulation* or Visualization* arguments
 		template<typename WindowType, typename... Args,
@@ -66,12 +76,14 @@ namespace dnf_composer
 		}
 
 		void toggleGUI();
-		bool hasGUIBeenClosed() const;
-		bool isGUIActive() const;
+		[[nodiscard]] bool hasGUIBeenClosed() const;
+		[[nodiscard]] bool isGUIActive() const;
 
 		~Application() = default;
 	private:
 		void setGUIParameters();
+		void loadImGuiIniFile() const;
+		static void enableKeyboardShortcuts();
 	};
 }
 

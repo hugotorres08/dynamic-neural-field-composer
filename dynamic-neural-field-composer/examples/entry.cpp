@@ -15,7 +15,7 @@ int main()
 	{
 		using namespace dnf_composer;
 
-		const auto simulation = std::make_shared<Simulation>("blank", 20.0, 0.0, 0.0);
+		const auto simulation = std::make_shared<Simulation>("blank");
 		const auto visualization = std::make_shared<Visualization>(simulation);
 		const Application app{ simulation, visualization };
 
@@ -27,7 +27,7 @@ int main()
 		app.addWindow<user_interface::PlotControlWindow>();
 		app.addWindow<user_interface::PlotsWindow>();
 		app.addWindow<user_interface::NodeGraphWindow>();
-		
+
 		app.init();
 
 		while (!app.hasGUIBeenClosed())

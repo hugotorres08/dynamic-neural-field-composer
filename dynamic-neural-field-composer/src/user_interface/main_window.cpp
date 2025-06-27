@@ -5,30 +5,73 @@
 namespace dnf_composer::user_interface
 {
 	MainWindow::MainWindow(const std::shared_ptr<Simulation>& simulation)
-	: simulation{ simulation }
-    {
-
+		: simulation(simulation), layoutManager(std::make_unique<LayoutManager>()),
+		  showOpenLayoutDialog(false), showSaveLayoutDialog(false)
+	{
+		strcpy(layoutFilename, "default_layout.json");
 	}
+
 
 	void MainWindow::render()
 	{
-        //renderFullscreenWindow();
+  //       renderFullscreenWindow();
+		// renderMainMenuBar();
+  //       renderFileWindows();
+  //       renderAdvancedSettingsWindows();
+  //       handleShortcuts();
+		// Get main viewport
+		ImGuiViewport* viewport = ImGui::GetMainViewport();
+
+		// Update layout manager with main window bounds
+		layoutManager->setMainWindowBounds(viewport->Pos, viewport->Size);
+
+		// Setup fullscreen window
+		ImGui::SetNextWindowPos(viewport->Pos);
+		ImGui::SetNextWindowSize(viewport->Size);
+		ImGui::SetNextWindowViewport(viewport->ID);
+
+		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
+		window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse;
+		window_flags |= ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+		window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+
+		bool p_open = true;
+		ImGui::Begin("DNF Composer", &p_open, window_flags);
+		ImGui::PopStyleVar(3);
+
 		renderMainMenuBar();
-        renderFileWindows();
-        renderAdvancedSettingsWindows();
-        handleShortcuts();
+		renderPanels();
+		handleLayoutDialogs();
+
+		ImGui::End();
 	}
 
     void MainWindow::renderFullscreenWindow()
     {
         static bool use_work_area = true;
-        static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoSavedSettings;
+        static ImGuiWindowFlags flags = ImGuiWindowFlags_NoDecoration
+		| ImGuiWindowFlags_NoMove
+		| ImGuiWindowFlags_NoResize
+		| ImGuiWindowFlags_NoBringToFrontOnFocus
+		| ImGuiWindowFlags_NoNavFocus
+		//| ImGuiWindowFlags_NoInputs           // Prevents all mouse/keyboard input
+		//| ImGuiWindowFlags_NoBackground       // Makes window background transparent
+		| ImGuiWindowFlags_NoScrollbar        // Removes scrollbars
+		| ImGuiWindowFlags_NoScrollWithMouse  // Prevents mouse wheel scrolling
+		| ImGuiWindowFlags_NoCollapse         // Prevents collapsing (redundant with NoDecoration but explicit)
+		| ImGuiWindowFlags_NoTitleBar;        // Removes title bar (redundant with NoDecoration but explicit)
 
-        // We demonstrate using the full viewport area or the work area (without menu-bars, task-bars etc.)
-        // Based on your use case you may want one or the other.
-        const ImGuiViewport* viewport = ImGui::GetMainViewport();
-        ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
-        ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
+		const ImGuiViewport* viewport = ImGui::GetMainViewport();
+		ImGui::SetNextWindowPos(use_work_area ? viewport->WorkPos : viewport->Pos);
+		ImGui::SetNextWindowSize(use_work_area ? viewport->WorkSize : viewport->Size);
+
+		// Set window to be behind all other windows
+		//ImGui::SetNextWindowBgAlpha(0.0f); // Make background completely transparent
+
 
         if (ImGui::Begin("Fullscreen window", nullptr, flags))
         {
@@ -51,7 +94,7 @@ namespace dnf_composer::user_interface
                 if (ImGui::MenuItem("Open", "Ctrl+O"))
                 {
                     FileDialog::file_dialog_open = true;
-                    fileFlags.showOpenFileDialog = true;
+                    fileFlags.showOpenSimulationDialog = true;
                     FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
                 }
                 if (ImGui::MenuItem("Save", "Ctrl+S"))
@@ -61,10 +104,10 @@ namespace dnf_composer::user_interface
                 if (ImGui::MenuItem("Save As", "Ctrl+Shift+S"))
                 {
                     FileDialog::file_dialog_open = true;
-                    fileFlags.showSaveFileDialog = true;
+                    fileFlags.showSaveSimulationDialog = true;
                     FileDialog::file_dialog_open_type = FileDialog::FileDialogType::SelectFolder;
                 }
-                if (ImGui::MenuItem("Quit", "Alt+F4"))
+                if (ImGui::MenuItem("Quit", "Ctrl+q"))
                 {
                     simulation->save();
 	                simulation->close();
@@ -81,11 +124,12 @@ namespace dnf_composer::user_interface
 
                 if (!initialized)
                 {
-                    strncpy_s(newIdentifier, simulation->getIdentifier().c_str(), sizeof(newIdentifier));
-                    initialized = true;
+                    //strncpy_s(newIdentifier, simulation->getIdentifier().c_str(), sizeof(newIdentifier));
+					snprintf(newIdentifier, sizeof(newIdentifier), "%s", simulation->getIdentifier().c_str());
+                	initialized = true;
                 }
 
-                ImGui::Text("Simulation Identifier:");
+                ImGui::Text("Simulation Identifier");
                 ImGui::InputText("##inline_identifier", newIdentifier, sizeof(newIdentifier));
 
                 ImGui::SameLine();
@@ -97,14 +141,14 @@ namespace dnf_composer::user_interface
                 ImGui::Separator();
 
                 static auto deltaT = static_cast<float>(simulation->getDeltaT());
-                ImGui::Text("Time Step (deltaT): ");
+                ImGui::Text("Time Step (deltaT) ");
                 ImGui::SliderFloat("##menu_deltaT_slider", &deltaT, 0.001f, 25.0, "%.3f");
                 if (ImGui::IsItemDeactivatedAfterEdit())
                     simulation->setDeltaT(deltaT);
 
                 ImGui::Separator();
 
-                ImGui::Text("Current Time (t): ");
+                ImGui::Text("Current Time (t) ");
                 ImGui::SameLine();
                 ImGui::Text("%.3f", simulation->getT());
 
@@ -122,6 +166,35 @@ namespace dnf_composer::user_interface
                 ImGui::EndMenu();
             }
 
+        	if (ImGui::BeginMenu("Interface Settings"))
+        	{
+        		if (ImGui::MenuItem("Load Layout", "Ctrl+L"))
+        		{
+        			FileDialog::file_dialog_open = true;
+        			fileFlags.showOpenLayoutDialog = true;
+        			FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
+        		}
+        		if (ImGui::MenuItem("Save Layout"))
+        		{
+        			std::string savePath = std::string(PROJECT_DIR) + "/resources/layouts/"
+						+ simulation->getIdentifier() + "_layout.ini";
+        			ImGui::SaveIniSettingsToDisk(savePath.c_str());
+        			log(tools::logger::LogLevel::INFO, "Saved layout to " + savePath + ".");
+        		}
+        		if (ImGui::MenuItem("Fixed Layout", nullptr, &interfaceFlags.fixedLayout))
+        		{
+        			toggleFixedLayout();
+        		}
+
+        		ImGui::Separator();
+
+        		ImGui::MenuItem("Dear ImGuiStyle Editor", nullptr,
+					&advancedSettingsFlags.showToolStyleEditor);
+        		ImGui::MenuItem("Dear ImGui Kit Style Editor", nullptr,
+					&advancedSettingsFlags.showImGuiKitStyleEditor);
+        		ImGui::EndMenu();
+        	}
+
             if (ImGui::BeginMenu("Advanced Settings"))
             {
                 ImGui::MenuItem("Dear ImGui Demo", nullptr,
@@ -134,16 +207,40 @@ namespace dnf_composer::user_interface
                     &advancedSettingsFlags.showToolDebugLog);
                 ImGui::MenuItem("Dear ImGui ID Stack Tool", nullptr,
                     &advancedSettingsFlags.showToolIdStackTool);
-                ImGui::MenuItem("Dear ImGuiStyle Editor", nullptr,
-                    &advancedSettingsFlags.showToolStyleEditor);
                 ImGui::MenuItem("About Dear ImGui", nullptr,
                     &advancedSettingsFlags.showToolAbout);
-                ImGui::MenuItem("Dear ImGui Kit Style Editor", nullptr,
-                    &advancedSettingsFlags.showImGuiKitStyleEditor);
                 ImGui::EndMenu();
             }
             ImGui::EndMainMenuBar();
         }
+
+		if (ImGui::BeginMenu("View")) {
+			if (ImGui::MenuItem("Simulation Control", nullptr,
+				layoutManager->isPanelVisible("simulation_control"))) {
+				layoutManager->togglePanelVisibility("simulation_control");
+				}
+			if (ImGui::MenuItem("Element Window", nullptr,
+				layoutManager->isPanelVisible("element_window"))) {
+				layoutManager->togglePanelVisibility("element_window");
+				}
+			if (ImGui::MenuItem("Field Metrics", nullptr,
+				layoutManager->isPanelVisible("field_metrics"))) {
+				layoutManager->togglePanelVisibility("field_metrics");
+				}
+			if (ImGui::MenuItem("Node Graph", nullptr,
+				layoutManager->isPanelVisible("node_graph"))) {
+				layoutManager->togglePanelVisibility("node_graph");
+				}
+			if (ImGui::MenuItem("Plot Control", nullptr,
+				layoutManager->isPanelVisible("plot_control"))) {
+				layoutManager->togglePanelVisibility("plot_control");
+				}
+			if (ImGui::MenuItem("Plots Window", nullptr,
+				layoutManager->isPanelVisible("plots_window"))) {
+				layoutManager->togglePanelVisibility("plots_window");
+				}
+			ImGui::EndMenu();
+		}
     }
 
     void MainWindow::renderFileWindows()
@@ -160,17 +257,23 @@ namespace dnf_composer::user_interface
         {
             if (strlen(path) > 0)
 			{
-                if( fileFlags.showSaveFileDialog)
+                if( fileFlags.showSaveSimulationDialog)
 				{
 					simulation->save(path);
-                    fileFlags.showSaveFileDialog = false;
-					strcpy_s(path, "");
+                    fileFlags.showSaveSimulationDialog = false;
+                	snprintf(path, sizeof(path), "%s", "");
 				}
-                else if (fileFlags.showOpenFileDialog)
+                else if (fileFlags.showOpenSimulationDialog)
                 {
                     simulation->read(path);
-                    fileFlags.showOpenFileDialog = false;
-                    strcpy_s(path, "");
+                    fileFlags.showOpenSimulationDialog = false;
+                	snprintf(path, sizeof(path), "%s", "");
+                }
+                else if (fileFlags.showOpenLayoutDialog)
+                {
+                    handleOpenLayoutDialog(path);
+					fileFlags.showOpenLayoutDialog = false;
+                	snprintf(path, sizeof(path), "%s", "");
                 }
 			}
         }
@@ -205,31 +308,151 @@ namespace dnf_composer::user_interface
     {
         const ImGuiIO& io = ImGui::GetIO();
 
-	    if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_Space)))
+	    if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_Space))
 			simulation->init();
-		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_C)))
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_C))
 			simulation->close();
-		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_P)))
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_P))
 			simulation->pause();
-		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_N)))
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_N))
 		{
 			simulation->close();
 			simulation->clean();
 		}
-		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_O)))
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_O))
 		{
 			FileDialog::file_dialog_open = true;
-			fileFlags.showOpenFileDialog = true;
+			fileFlags.showOpenSimulationDialog = true;
 			FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
 		}
-        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)))
+        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_S))
             simulation->save();
-		if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGui::GetKeyIndex(ImGuiKey_S)))
+		if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_S))
 		{
 			FileDialog::file_dialog_open = true;
-			fileFlags.showSaveFileDialog = true;
+			fileFlags.showSaveSimulationDialog = true;
 			FileDialog::file_dialog_open_type = FileDialog::FileDialogType::SelectFolder;
 		}
+	    if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_L))
+	    {
+	        FileDialog::file_dialog_open = true;
+	        fileFlags.showOpenLayoutDialog = true;
+	        FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
+	    }
+	    if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_Q))
+	        std::exit(0);
     }
 
+    void MainWindow::handleOpenLayoutDialog(const char* path)
+    {
+	    if (std::filesystem::exists(path))
+	    {
+	        if (std::filesystem::path(path).extension() == ".ini")
+	        {
+	            const std::string iniFilePathStorage = path;
+	            auto io = ImGui::GetIO();
+	            io.IniFilename = iniFilePathStorage.c_str();
+	            ImGui::LoadIniSettingsFromDisk(io.IniFilename);
+	            log(tools::logger::LogLevel::INFO, "Layout file loaded successfully.");
+	        }
+	        else
+	        {
+	            log(tools::logger::LogLevel::ERROR, "File is not a .ini file.");
+	        }
+	    }
+	    else
+	    {
+	        log(tools::logger::LogLevel::ERROR, "File does not exist.");
+	    }
+    }
+
+	void MainWindow::toggleFixedLayout() const
+	{
+		if (interfaceFlags.fixedLayout)
+		{
+			imgui_kit::setGlobalWindowFlags(ImGuiWindowFlags_NoMove |
+										   ImGuiWindowFlags_NoCollapse |
+										   ImGuiWindowFlags_NoResize);
+
+			log(tools::logger::LogLevel::INFO, "Fixed layout enabled - windows are locked in place.");
+		}
+		else
+		{
+			imgui_kit::setGlobalWindowFlags(0);
+			log(tools::logger::LogLevel::INFO, "Flexible layout enabled - windows can be moved freely.");
+		}
+	}
+
+	void MainWindow::renderPanels() {
+        // Render simulation control panel
+        if (layoutManager->isPanelVisible("simulation_control")) {
+            layoutManager->beginPanel("simulation_control");
+            // Render simulation control content here
+            ImGui::Text("Simulation Control");
+            if (ImGui::Button("Start")) { /* start simulation */ }
+            if (ImGui::Button("Stop")) { /* stop simulation */ }
+            if (ImGui::Button("Reset")) { /* reset simulation */ }
+            layoutManager->endPanel();
+        }
+
+        // Render element window
+        if (layoutManager->isPanelVisible("element_window")) {
+            layoutManager->beginPanel("element_window");
+            ImGui::Text("Element Window");
+            // Add your element window content here
+            layoutManager->endPanel();
+        }
+
+        // Render field metrics
+        if (layoutManager->isPanelVisible("field_metrics")) {
+            layoutManager->beginPanel("field_metrics");
+            ImGui::Text("Field Metrics");
+            // Add your field metrics content here
+            layoutManager->endPanel();
+        }
+
+        // Render node graph
+        if (layoutManager->isPanelVisible("node_graph")) {
+            layoutManager->beginPanel("node_graph");
+            ImGui::Text("Node Graph");
+            // Add your node graph content here
+            layoutManager->endPanel();
+        }
+
+        // Render plot control
+        if (layoutManager->isPanelVisible("plot_control")) {
+            layoutManager->beginPanel("plot_control");
+            ImGui::Text("Plot Control");
+            // Add your plot control content here
+            layoutManager->endPanel();
+        }
+
+        // Render plots window
+        if (layoutManager->isPanelVisible("plots_window")) {
+            layoutManager->beginPanel("plots_window");
+            ImGui::Text("Plots Window");
+            // Add your plots content here
+            layoutManager->endPanel();
+        }
+    }
+
+    void MainWindow::handleLayoutDialogs() {
+        // Handle open layout dialog
+        if (showOpenLayoutDialog) {
+            FileDialog::ShowFileDialog_s(&showOpenLayoutDialog, layoutFilename,
+                                       FileDialog::FileDialogType::OpenFile);
+            if (!showOpenLayoutDialog && strlen(layoutFilename) > 0) {
+                layoutManager->loadLayout(layoutFilename);
+            }
+        }
+
+        // Handle save layout dialog
+        if (showSaveLayoutDialog) {
+            FileDialog::ShowFileDialog_s(&showSaveLayoutDialog, layoutFilename,
+                                       FileDialog::FileDialogType::OpenFile);
+            if (!showSaveLayoutDialog && strlen(layoutFilename) > 0) {
+                layoutManager->saveLayout(layoutFilename);
+            }
+        }
+    }
 }
