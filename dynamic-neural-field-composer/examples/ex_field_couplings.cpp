@@ -165,6 +165,8 @@ int main()
 		}
 
 		app.close();
+
+		return 0;
 	}
 	catch (const dnf_composer::Exception& ex)
 	{
