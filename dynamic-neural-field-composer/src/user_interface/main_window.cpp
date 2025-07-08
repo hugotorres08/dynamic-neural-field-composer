@@ -244,39 +244,62 @@ namespace dnf_composer::user_interface
     {
         const ImGuiIO& io = ImGui::GetIO();
 
-        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_Space))
-            simulation->init();
-        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_C))
-            simulation->close();
-        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_P))
-            simulation->pause();
-        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_N))
-        {
-            simulation->close();
-            simulation->clean();
-        }
-        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_O))
-        {
-            FileDialog::file_dialog_open = true;
-            fileFlags.showOpenSimulationDialog = true;
-            FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
-        }
+	    if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_Space))
+			simulation->init();
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_C))
+			simulation->close();
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_P))
+			simulation->pause();
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_N))
+		{
+			simulation->close();
+			simulation->clean();
+		}
+		if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_O))
+		{
+			FileDialog::file_dialog_open = true;
+			fileFlags.showOpenSimulationDialog = true;
+			FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
+		}
         if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_S))
             simulation->save();
-        if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_S))
-        {
-            FileDialog::file_dialog_open = true;
-            fileFlags.showSaveSimulationDialog = true;
-            FileDialog::file_dialog_open_type = FileDialog::FileDialogType::SelectFolder;
-        }
-        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_L))
-        {
-            FileDialog::file_dialog_open = true;
-            fileFlags.showOpenLayoutDialog = true;
-            FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
-        }
-        if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_Q))
-            std::exit(0);
+		if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_S))
+		{
+			FileDialog::file_dialog_open = true;
+			fileFlags.showSaveSimulationDialog = true;
+			FileDialog::file_dialog_open_type = FileDialog::FileDialogType::SelectFolder;
+		}
+	    if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_L))
+	    {
+	        FileDialog::file_dialog_open = true;
+	        fileFlags.showOpenLayoutDialog = true;
+	        FileDialog::file_dialog_open_type = FileDialog::FileDialogType::OpenFile;
+	    }
+	    if (io.KeyCtrl && ImGui::IsKeyPressed(ImGuiKey_Q))
+	        std::exit(0);
+    }
+
+    void MainWindow::handleOpenLayoutDialog(const char* path)
+    {
+	    if (std::filesystem::exists(path))
+	    {
+	        if (std::filesystem::path(path).extension() == ".ini")
+	        {
+	            const std::string iniFilePathStorage = path;
+	            auto io = ImGui::GetIO();
+	            io.IniFilename = iniFilePathStorage.c_str();
+	            ImGui::LoadIniSettingsFromDisk(io.IniFilename);
+	            log(tools::logger::LogLevel::INFO, "Layout file loaded successfully.");
+	        }
+	        else
+	        {
+	            log(tools::logger::LogLevel::ERROR, "File is not a .ini file.");
+	        }
+	    }
+	    else
+	    {
+	        log(tools::logger::LogLevel::ERROR, "File does not exist.");
+	    }
     }
 
 	void MainWindow::toggleFixedLayout() const

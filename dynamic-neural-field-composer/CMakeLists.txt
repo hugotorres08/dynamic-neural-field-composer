@@ -247,18 +247,9 @@ set(LAUNCHER launcher)
 add_executable(${LAUNCHER} "src/dynamic-neural-field-composer.cpp")
 target_include_directories(${LAUNCHER} PRIVATE include)
 target_link_libraries(${LAUNCHER} PRIVATE
-    imgui::imgui
-    imgui-platform-kit 
-    ${CMAKE_PROJECT_NAME})
-
-# Entry point
-set(ENTRY_POINT entrypoint)
-add_executable(${ENTRY_POINT} "examples/entry.cpp")
-target_include_directories(${ENTRY_POINT} PRIVATE include)
-target_link_libraries(${ENTRY_POINT} PRIVATE
-    imgui::imgui
-    imgui-platform-kit 
-    ${CMAKE_PROJECT_NAME})
+imgui::imgui
+imgui-platform-kit 
+${CMAKE_PROJECT_NAME})
 
 # Function to add example executables
 function(add_example_executable target_name source_file)

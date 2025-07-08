@@ -27,11 +27,12 @@ int main()
         app.addWindow<user_interface::PlotsWindow>();
         app.addWindow<user_interface::NodeGraphWindow>();
 
+
         element::ElementFactory factory;
         const element::ElementDimensions input_dimensions{200, 0.7};
         const auto nf_1 = factory.createElement(element::ElementLabel::NEURAL_FIELD,
             element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::NEURAL_FIELD}, input_dimensions},
-            element::NeuralFieldParameters{ 100, -5 , element::SigmoidFunction{0.0, 10.0} });
+            element::NeuralFieldParameters{});
         const auto gk_1 = factory.createElement(element::GAUSS_KERNEL,
             element::ElementCommonParameters{element::ElementIdentifiers{element::ElementLabel::GAUSS_KERNEL}, input_dimensions},
             element::GaussKernelParameters{});
