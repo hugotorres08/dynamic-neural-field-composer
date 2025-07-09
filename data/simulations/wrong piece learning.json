@@ -1,0 +1,182 @@
+[
+    {
+        "activationFunction": {
+            "steepness": 10.0,
+            "type": "sigmoid",
+            "x_shift": 0.0
+        },
+        "d_x": 1.0,
+        "inputs": [
+            [
+                "kernel parts not needed field",
+                "output"
+            ],
+            [
+                "normal noise parts not needed field",
+                "output"
+            ],
+            [
+                "stimulus parts not needed field",
+                "output"
+            ]
+        ],
+        "label": [
+            1,
+            "neural field"
+        ],
+        "restingLevel": -5.0,
+        "tau": 25.0,
+        "uniqueName": "parts not needed field",
+        "x_max": 280
+    },
+    {
+        "amplitudeExc": 11.0,
+        "amplitudeGlobal": -0.1,
+        "amplitudeInh": 15.0,
+        "circular": true,
+        "d_x": 1.0,
+        "inputs": [
+            [
+                "parts not needed field",
+                "output"
+            ]
+        ],
+        "label": [
+            4,
+            "mexican hat kernel"
+        ],
+        "normalized": true,
+        "uniqueName": "kernel parts not needed field",
+        "widthExc": 2.5,
+        "widthInh": 5.0,
+        "x_max": 280
+    },
+    {
+        "amplitude": 0.05,
+        "d_x": 1.0,
+        "inputs": null,
+        "label": [
+            7,
+            "normal noise"
+        ],
+        "uniqueName": "normal noise parts not needed field",
+        "x_max": 280
+    },
+    {
+        "activationFunction": {
+            "steepness": 10.0,
+            "type": "sigmoid",
+            "x_shift": 0.0
+        },
+        "d_x": 1.0,
+        "inputs": [
+            [
+                "kernel wrong piece field",
+                "output"
+            ],
+            [
+                "coupling parts not needed - wrong piece",
+                "output"
+            ],
+            [
+                "normal noise wrong piece field",
+                "output"
+            ],
+            [
+                "stimulus wrong piece field",
+                "output"
+            ]
+        ],
+        "label": [
+            1,
+            "neural field"
+        ],
+        "restingLevel": -5.0,
+        "tau": 25.0,
+        "uniqueName": "wrong piece field",
+        "x_max": 280
+    },
+    {
+        "amplitudeExc": 11.0,
+        "amplitudeGlobal": -0.1,
+        "amplitudeInh": 15.0,
+        "circular": true,
+        "d_x": 1.0,
+        "inputs": [
+            [
+                "wrong piece field",
+                "output"
+            ]
+        ],
+        "label": [
+            4,
+            "mexican hat kernel"
+        ],
+        "normalized": true,
+        "uniqueName": "kernel wrong piece field",
+        "widthExc": 2.5,
+        "widthInh": 5.0,
+        "x_max": 280
+    },
+    {
+        "amplitude": 0.05,
+        "d_x": 1.0,
+        "inputs": null,
+        "label": [
+            7,
+            "normal noise"
+        ],
+        "uniqueName": "normal noise wrong piece field",
+        "x_max": 280
+    },
+    {
+        "amplitude": 20.0,
+        "circular": true,
+        "d_x": 1.0,
+        "inputs": null,
+        "label": [
+            2,
+            "gauss stimulus"
+        ],
+        "normalized": false,
+        "position": 240.0,
+        "uniqueName": "stimulus parts not needed field",
+        "width": 5.0,
+        "x_max": 280
+    },
+    {
+        "amplitude": 20.0,
+        "circular": true,
+        "d_x": 1.0,
+        "inputs": null,
+        "label": [
+            2,
+            "gauss stimulus"
+        ],
+        "normalized": false,
+        "position": 260.0,
+        "uniqueName": "stimulus wrong piece field",
+        "width": 5.0,
+        "x_max": 280
+    },
+    {
+        "d_x": 1.0,
+        "input_d_x": 1.0,
+        "input_x_max": 280,
+        "inputs": [
+            [
+                "parts not needed field",
+                "output"
+            ]
+        ],
+        "label": [
+            8,
+            "field coupling"
+        ],
+        "learningRate": 0.01,
+        "learningRule": 0,
+        "scalar": 1.0,
+        "uniqueName": "coupling parts not needed - wrong piece",
+        "x_max": 280
+    }
+]
